@@ -26,8 +26,9 @@ define([
 			worldVO.levelCenterPositions = this.generateLevelCenterPositions(seed);
 			worldVO.features = this.generateWorldFeatures(seed, worldTemplateVO, worldVO.levelCenterPositions);
 			worldVO.stages = this.generateStages(seed);
-			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO.features, worldVO.levelCenterPositions);
-			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions, worldVO.levelCenterPositions);
+			worldVO.requiredPositions = this.generateRequiredPositions(seed, worldVO.levelCenterPositions, worldVO.features);
+			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO.features, worldVO.levelCenterPositions, worldVO.requiredPositions);
+			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions, worldVO.levelCenterPositions, worldVO.requiredPositions);
 			worldVO.passageTypes = worldTemplateVO.passageTypes || this.generatePassageTypes(seed, worldVO);
 		},
 
@@ -51,7 +52,7 @@ define([
 				if (l < 13) centerX = Math.round((13 - l) * -5);
 
 				// avoid crater
-				if (l >= topLevel - 2) centerX = centerX += 6;
+				if (l >= topLevel - 2) centerX = centerX += 5;
 
 				result[l] = new PositionVO(l, centerX, 0);
 			}
@@ -72,15 +73,17 @@ define([
 			collapseAreas.push(new AreaVO(topLevel - 1, -3, 3, -3, 3));
 			collapseAreas.push(new AreaVO(topLevel - 2, -1, 1, -1, 1));
 			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_COLLAPSE, collapseAreas));
+			log.i("collapse: " + collapseAreas.join(", "))
 			
 			// mountain (far northeast)
 			let mountainAreas = [];
-			let mountainCenter = new PositionVO(bottomLevel, 30, -40);
+			let mountainCenter = new PositionVO(bottomLevel, 25, -25);
 			for (let l = bottomLevel; l <= topLevel; l++) {
 				let height = l - bottomLevel;
 				let reductionPct = height/(height + 6);
 				let radiusPct = 1 - reductionPct;
-				let mountainRadius = Math.max(4, Math.round(20 *radiusPct));
+				let mountainRadius = Math.max(4, Math.round(25 * radiusPct));
+				if (l == 13 || l == 14) continue;
 				mountainAreas.push(new AreaVO(l, mountainCenter.sectorX - mountainRadius, mountainCenter.sectorX + mountainRadius, mountainCenter.sectorY - mountainRadius, mountainCenter.sectorY + mountainRadius));
 			}
 			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_MOUNTAIN, mountainAreas));
@@ -113,17 +116,22 @@ define([
 				}
 			}
 
-			// sunwells (west)
-			let well1Areas = [];
-			let well2Areas = [];
-			let well1Center = new PositionVO(topLevel, -20, 10);
-			let well2Center = new PositionVO(topLevel, -40, 10);
-			for (let l = 15; l <= topLevel; l++) {
-				well1Areas.push(new AreaVO(l, well1Center.sectorX - 1, well1Center.sectorX + 1, well1Center.sectorY - 2, well1Center.sectorY + 2));
-				well2Areas.push(new AreaVO(l, well2Center.sectorX - 1, well2Center.sectorX + 1, well2Center.sectorY - 2, well2Center.sectorY + 2));
+			// sunwells (east, higher levels)
+			let wellXOffset = WorldCreatorRandom.randomInt(seed, -10, 10);
+			let wellYOffset = WorldCreatorRandom.randomInt(seed/2, 0, 5);
+			let wellCenters = [ 
+				new PositionVO(topLevel, -20 + wellXOffset, 6 + wellYOffset),
+				new PositionVO(topLevel, -20 + wellXOffset, -6 - wellYOffset),
+			];
+			for (let i = 0; i < wellCenters.length; i++) {
+				let wellCenter = wellCenters[i];
+				let wellAreas = [];
+				for (let l = 15; l <= topLevel; l++) {
+					wellAreas.push(new AreaVO(l, wellCenter.sectorX - 1, wellCenter.sectorX + 1, wellCenter.sectorY - 3, wellCenter.sectorY + 3));
+				}
+				result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_WELL, wellAreas));
+				log.i("sunwell: " + wellAreas.join(", "))
 			}
-			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_WELL, well1Areas));
-			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_WELL, well2Areas));
 
 			// train tracks and stations
 			let findFeaturePositions = function (level, featureType) {
@@ -222,26 +230,84 @@ define([
 			}
 			return stages;
 		},
+
+		generateRequiredPositions: function (seed, levelCenterPositions, features) {
+			let result = {};
+
+			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);	
+
+			let addRequiredPositionNearFeature = function (l, featureType, distance) {
+				let positionVO = WorldSkeletonGenerator.generateRequiredPositionNearFeature(seed, l, levelCenterPositions[l], features, featureType, distance);
+				if (!positionVO) return;
+				log.i("required position: " + positionVO + " near feature " + featureType);
+				result[l].push(positionVO);
+			};
+			
+			for (let l = topLevel; l >= bottomLevel; l--) {
+				result[l] = [];
+
+				let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+
+				if (l == 12) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_PILLAR, 0);
+				if (l == 15) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_MOUNTAIN, 1);
+				if (campOrdinal == 11) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_WELL, 1);
+				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_1) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, 0);
+				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_2) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, 0);
+				if (l >= topLevel - 1) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_COLLAPSE, 1);
+			}
+
+			return result;
+		},
+
+		generateRequiredPositionNearFeature: function (seed, level, levelCenterPosition, features, featureType, distance) {
+			let validFeatures = features.filter(featureVO => featureVO.type == featureType && featureVO.spansLevel(level));
+			if (validFeatures.length == 0) {
+				log.w("could not generate required position near feature: no valid features found (level: " + level + ", feature: " + featureType + ")", "world");
+				return null;
+			}
+
+			let featurePositions = [];
+			for (let i = 0; i < validFeatures.length; i++) {
+				let positions = validFeatures[i].getPositions(level);
+				for (let j = 0; j < positions.length; j++) {
+					let positionVO = positions[j];
+					featurePositions.push(positionVO);
+				}
+			}
+
+			let validPositions = [];
+			for (let i = 0; i < featurePositions.length; i++) {
+				validPositions = validPositions.concat(WorldCreatorHelper.getPositionsAtDistance(featurePositions[i], distance));
+			}
+
+			validPositions = validPositions.filter(pos => !WorldCreatorHelper.containsBlockingFeature(pos, features));
+
+			return WorldCreatorHelper.getClosestPosition(validPositions, levelCenterPosition);
+		},
 		
-		generateCampPositions: function (seed, features, centers) {
+		generateCampPositions: function (seed, features, centers, requiredPositions) {
 			let positionsByLevel = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 			let maxCampDist = 4;
+			
 			for (let l = topLevel; l >= bottomLevel; l--) {
 				let position = null;
 				let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, l);
 				let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+
 				if (isCampableLevel) {
-					let maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal - 1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-					let maxCenterDist = Math.min(15, Math.floor(maxPathLen * 0.8 - maxCampDist));					
 					let center = centers[l];
+					let maxPathLen = WorldCreatorConstants.getMaxPathLength(campOrdinal - 1, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+					let maxDistToCenter = Math.min(15, Math.floor(maxPathLen * 0.8 - maxCampDist));
+					let requiredPos = requiredPositions[l];
 
 					if (l == 13) {
 						position = new PositionVO(l, 0, 0);
 					} else {
-						let isValid = function (pos) { return WorldSkeletonGenerator.isValidCampPos(seed, pos, positionsByLevel, features); };
-						position = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, "camp pos", l, maxCenterDist, center, 0, isValid);
+						let isValid = (pos) => WorldSkeletonGenerator.isValidCampPos(seed, pos, center, positionsByLevel, features, requiredPos);
+						position = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, "camp pos", l, center, maxDistToCenter, 0, isValid);
 					}
 				}
 				positionsByLevel[l] = position;
@@ -249,7 +315,7 @@ define([
 			return positionsByLevel;
 		},
 		
-		generatePassagePositions: function (seed, features, campPositions, levelCenterPositions) {
+		generatePassagePositions: function (seed, features, campPositions, levelCenterPositions, requiredPositions) {
 			let result = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
@@ -257,8 +323,13 @@ define([
 				let campThisUp = this.getNextCampPosUp(seed, campPositions, l, true);
 				let campPosDown = this.getNextCampPosDown(seed, campPositions, l, false);
 				let previousDown = l == topLevel ? null : result[l+1].down;
+				let requiredPositionsForPassageDown = [];
+				if (requiredPositions[l]) requiredPositionsForPassageDown = requiredPositionsForPassageDown.concat(requiredPositions[l]);
+				if (requiredPositions[l-1]) requiredPositionsForPassageDown = requiredPositionsForPassageDown.concat(requiredPositions[l-1]);
+
 				let up = previousDown ? new PositionVO(l, previousDown.sectorX, previousDown.sectorY) : null;
-				let down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, features, levelCenterPositions[l], up, campThisUp, campPosDown);
+				let down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, features, levelCenterPositions[l], up, campThisUp, campPosDown, requiredPositionsForPassageDown);
+				
 				result[l] = { up: up, down: down };
 			}
 			return result;
@@ -276,13 +347,13 @@ define([
 			return result;
 		},
 		
-		getPassageDownPosition: function (seed, level, features, levelCenter, passageUp, campPos1, campPos2) {
+		getPassageDownPosition: function (seed, level, features, levelCenter, passageUp, campPos1, campPos2, requiredPositions) {
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
 			if (campPos1 == null) campPos1 = levelCenter;
 			if (campPos2 == null) campPos2 = levelCenter;
 			
 			// find average of the max positions = position that adds 0 to the max path length
-			let allPos = [campPos1, campPos2, levelCenter];
+			let allPos = [ campPos1, campPos2, levelCenter ];
 			let averagePos = PositionConstants.getMiddlePoint(allPos);
 			averagePos.level = level;
 			
@@ -298,8 +369,8 @@ define([
 			for (let i = 0; i < 5; i++) {
 				let rseed = seed % (1000 - i * 99) + 7 + (level + 13) * 101;
 				let candidate = WorldCreatorRandom.randomSectorPositionWithCheck(
-					rseed, "passage down pos " + level, level, maxDiff, averagePos, minDiff,
-					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2)
+					rseed, "passage down pos " + level, level, averagePos, maxDiff, minDiff,
+					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2, levelCenter, requiredPositions)
 				);
 				let score = PositionConstants.getDistanceTo(candidate, averagePos);
 				candidates.push({ result: candidate, score: score });
@@ -330,11 +401,11 @@ define([
 			return null;
 		},
 
-		isValidCampPos: function (seed, pos, positionsByLevel, features) {
+		isValidCampPos: function (seed, pos, center, positionsByLevel, features, requiredPositions) {
 			// blocked: positions in holes etc
 			if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
 			// blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
-			var min = 5;
+			let min = 5;
 			for (let i = 2; i <= 3; i++) {
 				var prevPositions = positionsByLevel[pos.level + i];
 				if (!prevPositions) continue;
@@ -345,23 +416,30 @@ define([
 				}
 			}
 			// blocked: positions too far away from camp positions on previous two levels
-			var campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
-			var maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, pos.level);
+			let maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
 			for (let i = 1; i < 3; i++) {
-				var prevPositions = positionsByLevel[pos.level + i];
+				let prevPositions = positionsByLevel[pos.level + i];
 				if (!prevPositions) continue;
 				for (let j = 0; j < prevPositions.length; j++) {
-					var prevPos = prevPositions[j];
-					var dist = PositionConstants.getBlockDistanceTo(pos, prevPos);
-					var max = Math.min(maxPathLengthC2P * (1 + (i-1) * 0.25), 35);
+					let prevPos = prevPositions[j];
+					let dist = PositionConstants.getBlockDistanceTo(pos, prevPos);
+					let max = Math.min(maxPathLengthC2P * (1 + (i-1) * 0.25), 35);
 					if (dist > max) return { isValid: false, reason: "max distance between camps on previous levels ", details: pos + " vs " + prevPos };
 				}
+			}
+			// blocked: too far from required positions
+			if (requiredPositions.length > 0) {
+				let requiredPositionsCenter = PositionConstants.getMiddlePoint(requiredPositions);
+				let maxDistToRequiredPositions = Math.max(10, PositionConstants.getDistanceTo(center, requiredPositionsCenter));
+				let distanceToRequiredPositions = PositionConstants.getDistanceTo(pos, requiredPositionsCenter);
+				if (distanceToRequiredPositions > maxDistToRequiredPositions) return { isValid: false, reason: "distance to required positions too long" };
 			}
 			// otherwise ok
 			return { isValid: true };
 		},
 		
-		isValidPassageDownPos: function (seed, pos, features, passageUp, campPos1, campPos2) {
+		isValidPassageDownPos: function (seed, pos, features, passageUp, campPos1, campPos2, levelCenter, requiredPositions) {
 			let campOrdinal = Math.min(WorldCreatorHelper.getCampOrdinal(seed, pos.level), WorldCreatorHelper.getCampOrdinal(seed, pos.level - 1));
 			let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, pos.level);
 			let maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
@@ -414,6 +492,14 @@ define([
 						}
 					}
 				}
+			}
+
+			// check passage isn't too far from required positions
+			if (requiredPositions.length > 0) {
+				let requiredPositionsCenter = PositionConstants.getMiddlePoint(requiredPositions);
+				let maxDistToRequiredPositions = Math.max(10, PositionConstants.getDistanceTo(levelCenter, requiredPositionsCenter));
+				let distanceToRequiredPositions = PositionConstants.getDistanceTo(pos, requiredPositionsCenter);
+				if (distanceToRequiredPositions > maxDistToRequiredPositions) return { isValid: false, reason: "distance to required positions too long" };
 			}
 			
 			return { isValid: true };

@@ -486,13 +486,13 @@ define([
 
 		getLevelFeatureDescription: function (sector, featureType) {
 			switch (featureType) {
-				case WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER:
+				case WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE:
 					let directionToCollapse = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_COLLAPSE);
 					return "The area to the " + directionToCollapse + " has collapsed.";
-				case WorldConstants.FEATURE_HOLE_WELL_BORDER:
+				case WorldConstants.FEATURE_HOLE_WELL_EDGE:
 					let directionToWell = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_WELL);
 					return "The area is lit by a nearby sunwell.";
-				case WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER:
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE:
 					let directionToMountain = GameGlobals.levelHelper.getDirectionToFeature(sector, WorldConstants.FEATURE_HOLE_MOUNTAIN);
 					return "A mountain interrupts the City to the " + PositionConstants.getDirectionName(directionToMountain);
 				case WorldConstants.FEATURE_STRUCTURE_PILLAR:

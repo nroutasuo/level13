@@ -15,6 +15,7 @@ define(['ash'], function (Ash) {
 			this.levelCenterPositions = {}; // level -> PositionVO
 			this.passagePositions = {}; // level -> { up: PositionVO, down: PositionVO }
 			this.passageTypes = {}; // level -> { up: string, down: string }
+			this.requiredPositions = {}; // level -> list of positions (can be empty)
 			this.stages = []; // list of StageVO
 			
 			this.levels = {}; // level -> levelVO

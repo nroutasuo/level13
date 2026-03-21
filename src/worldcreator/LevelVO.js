@@ -121,15 +121,6 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstant
 			if (!this.sectorsByPos[sectorVO.position.sectorX]) this.sectorsByPos[sectorVO.position.sectorX] = {};
 			this.sectorsByPos[sectorVO.position.sectorX][sectorVO.position.sectorY] = sectorVO;
 			
-			// featurePositions are temp date used during structure gen and not available if structure gen not active (if recreating level from template)
-			if (this.featurePositions) {
-				for (let f = 0; f < this.featurePositions.length; f++) {
-					let featurePosition = this.featurePositions[f];
-					let matchingPosition = featurePosition.positions.find(position => sectorVO.position.equals(position));
-					if (matchingPosition) featurePosition.numPositionsAdded++;
-				}
-			}
-			
 			if (this.sectors.length == 1) {
 				this.minX = sectorVO.position.sectorX;
 				this.maxX = sectorVO.position.sectorX;
@@ -426,7 +417,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstant
 			let result = [];
 
 			for (let i = 0; i < this.features.length; i++) {
-				let derivedFeature = WorldCreatorConstants.getBorderFeature(this.features[i].type);
+				let derivedFeature = WorldCreatorConstants.getEdgeFeature(this.features[i].type);
 				if (!derivedFeature) continue;
 				if (this.features[i].bordersPosition(pos)) {
 					result.push(derivedFeature);

@@ -8,6 +8,8 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE: "passage_to_passage",
 		CRITICAL_PATH_TYPE_CAMP_TO_POI_1: "camp_to_poi_1",
 		CRITICAL_PATH_TYPE_CAMP_TO_POI_2: "camp_to_poi_2",
+
+		REQUIRED_PATH_TYPE_CAMP_TO_POI_X: "camp_to_poi_x",
 		
 		TOWER_RADIUS: 20,
 		AREA_SIZE_CENTRAL: 20,
@@ -101,6 +103,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 			switch (pathType) {
 				case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_1:
 				case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_2:
+				case this.CRITICAL_PATH_TYPE_CAMP_TO_POI_X:
 					// there, scout/fight, and back (these paths have a lot of points so less strict -> faster world creation)
 					var maxScoutCost = PlayerStatConstants.MAX_SCOUT_LOCALE_STAMINA_COST;
 					var fightCost = 10 * 3;
@@ -218,7 +221,6 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		isFeatureBlockingSectors: function (featureType) {
 			switch (featureType) {
 				case WorldConstants.FEATURE_HOLE_COLLAPSE:
-				case WorldConstants.FEATURE_HOLE_EDGE:
 				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
 				case WorldConstants.FEATURE_HOLE_WELL:
 					return true;
@@ -227,12 +229,15 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 			return false;
 		},
 
-		getBorderFeature: function (featureType) {
+		isFeaturePreferredForSectors: function (featureType) {
+			return !this.isFeatureBlockingSectors(featureType);
+		},
+
+		getEdgeFeature: function (featureType) {
 			switch (featureType) {
-				case WorldConstants.FEATURE_HOLE_COLLAPSE: return WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER;
-				case WorldConstants.FEATURE_HOLE_EDGE: return WorldConstants.FEATURE_HOLE_EDGE_BORDER;
-				case WorldConstants.FEATURE_HOLE_MOUNTAIN: return WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER;
-				case WorldConstants.FEATURE_HOLE_WELL: return WorldConstants.FEATURE_HOLE_WELL_BORDER;
+				case WorldConstants.FEATURE_HOLE_COLLAPSE: return WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE;
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN: return WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE;
+				case WorldConstants.FEATURE_HOLE_WELL: return WorldConstants.FEATURE_HOLE_WELL_EDGE;
 			}
 
 			return null;

@@ -256,7 +256,7 @@ define([
 			if (sectorVO.isPassageUp) return false;
 			if (sectorVO.isPassageDown) return false;
 			if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return false;
-			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER)) return false;
+			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE)) return false;
 			return true;
 		},
 

@@ -84,7 +84,6 @@ define([
 			// setup
 			levelVO.requiredPaths = WorldCreatorHelper.getRequiredPaths(worldVO, levelVO);
 			levelVO.structureSettings = this.getLevelStructureSettings(levelVO);			
-			levelVO.featurePositions = this.getLevelFeaturePositions(worldVO, levelVO);
 			
 			// create central structure
 			levelVO.currentShapeID = "x";
@@ -125,7 +124,6 @@ define([
 
 			// cleanup
 			levelVO.structureSettings = null;
-			levelVO.featurePositions = null;
 		},
 
 		getLevelStructureSettings: function (levelVO) {
@@ -225,31 +223,6 @@ define([
 
 			return result;
 		},
-
-		getLevelFeaturePositions: function (worldVO, levelVO) {
-			let result = [];
-
-			for (let i = 0; i < worldVO.features.length; i++) {
-				let featureVO = worldVO.features[i];
-				if (!featureVO.spansLevel(levelVO.level)) continue;
-				
-				// collapse: require some edge position
-				if (featureVO.type == WorldConstants.FEATURE_HOLE_COLLAPSE) {
-					let positions = WorldCreatorHelper.getFeatureEdgePositions(featureVO, levelVO.level);
-					result.push({ type: featureVO.type, positions: positions, numPositionsAdded: 0 });
-				}
-
-				// giga center: require all positions
-				if (featureVO.type == WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER) {
-					let positions = WorldCreatorHelper.getFeaturePositions(featureVO, levelVO.level);
-					for (let j = 0; j < positions.length; j++) {
-						result.push({ type: featureVO.type, positions: [ positions[j] ], numPositionsAdded: 0 });
-					}
-				}
-			}
-
-			return result;
-		},
 		
 		createRequiredPaths: function (seed, worldVO, levelVO) {
 			if (levelVO.requiredPaths.length === 0) return;
@@ -274,17 +247,6 @@ define([
 				}
 				
 				this.connectNewPath(worldVO, levelVO, existingSectors, pathResult.path);
-			}
-			
-			for (let i = 0; i < levelVO.featurePositions.length; i++) {
-				let featurePosition = levelVO.featurePositions[i];
-				if (featurePosition.numPositionsAdded > 0) continue;
-
-				let candidates = featurePosition.positions.map(pos => ({ position: pos }));
-				let existingSectors = levelVO.sectors.concat();
-
-				let pair = WorldCreatorHelper.getConnectionPair(levelVO, existingSectors, candidates);
-				this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position);
 			}
 		},
 		
@@ -459,6 +421,7 @@ define([
 			if (levelVO.passageUpPosition) pois.push(levelVO.passageUpPosition);
 			if (levelVO.passageDownPosition) pois.push(levelVO.passageDownPosition);
 			if (levelVO.campPosition) pois.push(levelVO.campPosition);
+			if (levelVO.requiredPositions && levelVO.requiredPositions.length > 0) pois = pois.concat(levelVO.requiredPositions);
 			
 			let possibleShapes = this.getPossibleCentralStructureShapes(seed, worldVO, levelVO);
 
@@ -3123,19 +3086,6 @@ define([
 			
 			return true;
 		},
-
-		isFeaturePosition: function (levelVO, sectorPos) {
-			for (let f = 0; f < levelVO.featurePositions.length; f++) {
-				let featurePosition = levelVO.featurePositions[f];
-
-				for (let k = 0; k < featurePosition.positions.length; k++) {
-					let featurePositionCandidate = featurePosition.positions[k];
-					if (PositionConstants.areEqual(sectorPos, featurePositionCandidate)) return true;
-				}
-			}
-
-			return false;
-		},
 		
 		getConnectedSectors: function (worldVO, point, sectors, stage, maxdist) {
 			let result = { connected: [], disconnected: [] };
@@ -3613,10 +3563,11 @@ define([
 						
 						// blocking features
 						score += WorldCreatorHelper.containsBlockingFeature(pos, LevelStructureGenerator.currentFeatures) ? -1 : 0;
+
+						// other features
+						score += WorldCreatorHelper.containsSectorFeature(pos, LevelStructureGenerator.currentFeatures) ? 1 : 0;
 					}
 				}
-
-				score += LevelStructureGenerator.getPathsFeaturePositionScore(levelVO, paths);
 
 				return score || 0;
 			};
@@ -3925,9 +3876,6 @@ define([
 					let district = levelVO.getDistrictIndexByPosition(pos, actualStage);
 					if (districts.indexOf(district) < 0) districts.push(district);
 
-					// features
-					if (LevelStructureGenerator.isFeaturePosition(levelVO, pos)) pathScore += 1;
-
 					// keeping sector entrance simple
 					if (hasSector && PositionConstants.areEqual(pos, levelVO.getEntrancePassagePosition())) pathScore -= 10;
 
@@ -3970,53 +3918,6 @@ define([
 			if (districts.length > 1) score -= (districts.length - 1) * 3;
 
 			return score;
-		},
-
-		getPathsFeaturePositionScore: function (levelVO, paths) {
-			let hasFeature = false;
-			let hasAlignedFeature = false;
-
-			for (let f = 0; f < levelVO.featurePositions.length; f++) {
-				let featurePosition = levelVO.featurePositions[f];
-				let isNew = featurePosition.numPositionsAdded > 0;
-
-				featureLoop: for (let k = 0; k < featurePosition.positions.length; k++) {
-					let featurePositionCandidate = featurePosition.positions[k];
-
-					for (let i = 0; i < paths.length; i++) {
-						let path = paths[i];
-
-						for (let j = 0; j < path.len; j++) {
-							let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
-
-							if (featurePositionCandidate.equals(pos)) {
-								isIncluded = true;
-
-								// paths include at least one new feature: max score
-								if (isNew) return 5;
-
-								// paths include this feature: move to next feature
-								hasFeature = true;
-
-								break featureLoop;
-							}
-
-							if (hasAlignedFeature) continue;
-
-							let alignment = PositionConstants.getPositionAlignment(pos, featurePositionCandidate);
-
-							if (alignment > 0) {
-								hasAlignedFeature  = true;
-							}
-						}
-					}
-				}
-			}
-
-			if (hasFeature) return 3;
-			if (hasAlignedFeature) return 1;
-			
-			return 0;
 		},
 
 		getAverageDensityForPath: function (levelVO, path, d) {

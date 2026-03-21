@@ -12,6 +12,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.buildingDensity = 0; // 0-10
 			this.criticalPathTypes = [];
 			this.damage = 0; // 0-10
+			this.districtIndex = 0;
 			this.examineSpots = [];
 			this.features = []; // list of type
 			this.graffiti = 0;

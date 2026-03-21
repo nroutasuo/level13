@@ -68,6 +68,7 @@ define([
 			levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE] = WorldCreatorHelper.getNumSectorsForLevelStage(worldVO.seed, levelVO.campOrdinal, levelVO.level, WorldConstants.CAMP_STAGE_LATE);
 
 			levelVO.levelMapCenterPosition = worldVO.levelCenterPositions[l];
+			levelVO.requiredPositions = worldVO.requiredPositions[l] || [];
 			levelVO.levelPOICenterPosition = this.getLevelPOICenterPosition(worldVO, levelVO);
 
 			// generated

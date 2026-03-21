@@ -1087,7 +1087,7 @@ define([
 			if (l == 14) damage = Math.max(3, damage);
 			if (l == worldVO.topLevel) damage = Math.max(2, damage);
 			if (l == worldVO.bottomLevel) damage = Math.max(1, damage);
-			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER)) damage = Math.max(5, damage);
+			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE)) damage = Math.max(5, damage);
 			if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) damage = Math.min(5, damage);
 			sectorVO.damage = MathUtils.clamp(Math.round(damage), 0, 10);
 
@@ -1153,6 +1153,11 @@ define([
 
 			if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) {
 				density = 7;
+			}
+
+			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL)) {
+				minDensity = 1;
+				maxDensity = 3;
 			}
 
 			sectorVO.buildingDensity = MathUtils.clamp(Math.round(density), minDensity, maxDensity);
@@ -2105,6 +2110,10 @@ define([
 			
 			let l = sectorVO.position.level;
 			let savedValue = sectorTemplateVO.sunlit || 0;
+
+			if (l == 13) {
+				if (sectorVO.position.sectorX < -4) return 1;
+			}
 			
 			let isHole = function (pos) {
 				let features = worldVO.getFeaturesByPos(pos);
@@ -2115,7 +2124,7 @@ define([
 			};
 
 			let hasSunlitFeature = function (sectorVO) {
-				return sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL_BORDER);
+				return sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL_EDGE) || sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL);
 			}
 			
 			if (l === worldVO.topLevel) {

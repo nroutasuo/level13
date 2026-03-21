@@ -8,7 +8,8 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
 	'game/constants/WorldConstants',
-], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants) {
+	'game/vos/PositionVO',
+], function (Ash, ResourcesVO, WorldCreatorRandom, WorldCreatorConstants, LevelConstants, PositionConstants, SectorConstants, WorldConstants, PositionVO) {
 
 	let WorldCreatorHelper = {
 		
@@ -132,6 +133,24 @@ define([
 					resultDist = dist;
 				}
 			}
+			return result;
+		},
+
+		getPositionsAtDistance: function (position, distance) {
+			let result = [];
+
+			if (distance == 0) position;
+
+			for (let dx = -distance; dx <= distance; dx++) {
+				let dy = distance - Math.abs(dx);
+
+				result.push(new PositionVO(position.level, position.sectorX + dx, position.sectorY + dy));
+
+				if (dy !== 0) {
+					result.push(new PositionVO(position.level, position.sectorX + dx, position.sectorY - dy));
+				}
+			}
+
 			return result;
 		},
 		
@@ -345,19 +364,7 @@ define([
 				}
 			}
 			return result;
-		},
-
-		getFeaturePositions: function (featureVO, level) {
-			let result = [];
-
-			for (let i = 0; i < featureVO.areas.length; i++) {
-				let areaVO = featureVO.areas[i];
-				if (areaVO.level != level) continue;
-				result = result.concat(areaVO.getPositions(level));
-			}
-
-			return result;
-		},		
+		},	
 
 		getFeatureEdgePositions: function (featureVO, level) {
 			let result = [];
@@ -728,24 +735,26 @@ define([
 		},
 		
 		getRequiredPaths: function (worldVO, levelVO) {
-			var level = levelVO.level;
-			var campOrdinal = levelVO.campOrdinal;
-			var campPosition = levelVO.campPosition;
-			var passageUpPosition = levelVO.passageUpPosition;
-			var passageDownPosition = levelVO.passageDownPosition;
+			let level = levelVO.level;
+			let campOrdinal = levelVO.campOrdinal;
+			let campPosition = levelVO.campPosition;
+			let passageUpPosition = levelVO.passageUpPosition;
+			let passageDownPosition = levelVO.passageDownPosition;
+
+			let startPosition = levelVO.getExcursionStartPosition();
 			
-			var maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
-			var maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+			let maxPathLenP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+			let maxPathLenC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
 			
-			var requiredPaths = [];
+			let requiredPaths = [];
 			
 			if (campPosition) {
 				// passages up -> camps -> passages down
-				var isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
-				var passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
-				var passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : null;
-				var passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
-				var passageDownStage = isGoingDown ? null : WorldConstants.CAMP_STAGE_EARLY;
+				let isGoingDown = level <= 13 && level >= worldVO.bottomLevel;
+				let passageUpPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP : WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
+				let passageUpStage = isGoingDown ? WorldConstants.CAMP_STAGE_EARLY : null;
+				let passageDownPathType = isGoingDown ? WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE : WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_CAMP;
+				let passageDownStage = isGoingDown ? null : WorldConstants.CAMP_STAGE_EARLY;
 				if (level == 13) {
 					passageUpPathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE;
 					passageUpStage = null;
@@ -772,6 +781,14 @@ define([
 				// passage up -> passage down
 				requiredPaths.push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
 			}
+
+			if (levelVO.requiredPositions) {
+				for (let i = 0; i < levelVO.requiredPositions.length; i++) {
+					let requiredPosition = levelVO.requiredPositions[i];
+					requiredPaths.push({ start: startPosition, end: requiredPosition, maxlen: maxPathLenC2P, type: WorldCreatorConstants.REQUIRED_PATH_TYPE_CAMP_TO_POI_X });
+				}
+			}
+
 			return requiredPaths;
 		},
 
@@ -995,6 +1012,22 @@ define([
 				let feature = features[i];
 				if (!WorldCreatorConstants.isFeatureBlockingSectors(feature.type)) continue;
 				if (feature.containsPosition(pos)) {
+					return true;
+				}
+			}
+			return false;
+		},
+		
+		containsSectorFeature: function (pos, features) {
+			for (let i = 0; i < features.length; i++) {
+				let feature = features[i];
+
+				if (WorldCreatorConstants.isFeaturePreferredForSectors(feature.type) && feature.containsPosition(pos)) {
+					return true;
+				}
+
+				let edgeFeature = WorldCreatorConstants.getEdgeFeature(feature.type);
+				if (edgeFeature && WorldCreatorConstants.isFeaturePreferredForSectors(edgeFeature) && feature.bordersPosition(pos)) {
 					return true;
 				}
 			}

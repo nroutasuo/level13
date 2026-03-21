@@ -55,13 +55,11 @@ define(['ash'], function (Ash) {
 		
 		// world features
 		FEATURE_HOLE_COLLAPSE: "collapse",
-		FEATURE_HOLE_COLLAPSE_BORDER: "collapse-border",
-		FEATURE_HOLE_EDGE: "edge", // mythical for now
-		FEATURE_HOLE_EDGE_BORDER: "edge-border", 
+		FEATURE_HOLE_COLLAPSE_EDGE: "collapse-edge",
 		FEATURE_HOLE_WELL: "well",
-		FEATURE_HOLE_WELL_BORDER: "well-edge",
+		FEATURE_HOLE_WELL_EDGE: "well-edge",
 		FEATURE_HOLE_MOUNTAIN: "mountain", 
-		FEATURE_HOLE_MOUNTAIN_BORDER: "mountain-border", 
+		FEATURE_HOLE_MOUNTAIN_EDGE: "mountain-edge", 
 		FEATURE_STRUCTURE_GIGA_CENTER: "giga",
 		FEATURE_STRUCTURE_PILLAR: "pillar",
 		FEATURE_TRAIN_TRACKS_NEW: "tracks-new",
@@ -204,8 +202,6 @@ define(['ash'], function (Ash) {
 			switch (featureType) {
 				case WorldConstants.FEATURE_HOLE_COLLAPSE:
 				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
-				case WorldConstants.FEATURE_HOLE_EDGE:
-				case WorldConstants.FEATURE_HOLE_WELL:
 					return 1;
 			}
 

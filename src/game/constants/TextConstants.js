@@ -57,11 +57,11 @@ function (Ash, DescriptionMapper, Text, TextBuilder, GameConstants, EnemyConstan
 
 		getLevelFeatureName: function (featureType) {
 			switch (featureType) {
-				case WorldConstants.FEATURE_HOLE_COLLAPSE_BORDER:
+				case WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE:
 					return "collapse";
-				case WorldConstants.FEATURE_HOLE_WELL_BORDER:
+				case WorldConstants.FEATURE_HOLE_WELL_EDGE:
 					return "sunwell";
-				case WorldConstants.FEATURE_HOLE_MOUNTAIN_BORDER:
+				case WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE:
 					return "mountain";
 				case WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER:
 					return "giga center";

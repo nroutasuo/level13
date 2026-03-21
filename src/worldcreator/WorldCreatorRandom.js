@@ -72,10 +72,12 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 				var additionalRandom = 0;
 				do {
 					var s1 = seed + (i + 1) * 369 + additionalRandom * 55;
-					sector = this.randomSector(s1, worldVO, levelVO, options.requireCentral, options.pathConstraints);
-					
-					if (!checkedSectors[sector.id]) checkedSectors[sector.id] = 0;
-					checkedSectors[sector.id]++;
+					sector = this.randomSector(s1, worldVO, levelVO, options.pathConstraints);
+
+					if (sector != null) {
+						if (!checkedSectors[sector.id]) checkedSectors[sector.id] = 0;
+						checkedSectors[sector.id]++;
+					}
 					
 					additionalRandom++;
 					if (additionalRandom > 500) {
@@ -232,22 +234,23 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 		},
 		
 		// Pseudo-random sector position on the given level, with a check for validity and look for nearby positions of position is not valid
-		randomSectorPositionWithCheck: function (seed, id, level, areaSize, centerPos, minDist, check) {
-			var getAlternative = function (i) {
-				var res = WorldCreatorRandom.randomSectorPosition(seed + i, level, areaSize, centerPos, minDist);
+		randomSectorPositionWithCheck: function (seed, id, level, centerPos, maxDist, minDist, check) {
+			let getAlternative = function (i) {
+				var res = WorldCreatorRandom.randomSectorPosition(seed + i, level, centerPos, maxDist, minDist);
 				return res;
 			};
 			return this.randomResultWithCheck(seed, id, getAlternative, check);
 		},
 		
 		// Pseudo-random sector position on the given level, within the given area (distance from 0,0 or centerPos)
-		randomSectorPosition: function (seed, level, areaSize, centerPos, minDist) {
+		randomSectorPosition: function (seed, level, centerPos, maxDist, minDist) {
 			centerPos = centerPos || new PositionVO(level, 0, 0);
+			maxDist = maxDist || 10;
 			minDist = minDist || 0;
-			var sectorX = this.randomInt(seed * 335, -areaSize, areaSize + 1);
+			let sectorX = this.randomInt(seed * 3, -maxDist, maxDist + 1);
 			if (sectorX > 0 && sectorX < minDist) sectorX = minDist;
 			if (sectorX < 0 && sectorX > minDist) sectorX =- minDist;
-			var sectorY = this.randomInt(seed * 7812 + level, -areaSize, areaSize + 1);
+			let sectorY = this.randomInt(seed * 5, -maxDist, maxDist + 1);
 			if (sectorY > 0 && sectorY < minDist) sectorY = minDist;
 			if (sectorY < 0 && sectorY > minDist) sectorY =- minDist;
 			let result = new PositionVO(level, Math.round(centerPos.sectorX + sectorX), Math.round(centerPos.sectorY + sectorY));

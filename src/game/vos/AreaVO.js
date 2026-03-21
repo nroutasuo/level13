@@ -79,6 +79,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			}
 			return result;
 		},
+
+		toString: function () {
+			return "Area(level: " + this.level + " x:" + this.minX + "-" + this.maxX + ", y:" + this.minY + "-" + this.maxY + ")";
+		},
 		
 		equals: function (areaVO) {
 			if (!areaVO) return false;
