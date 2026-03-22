@@ -202,6 +202,7 @@ define(['ash'], function (Ash) {
 			switch (featureType) {
 				case WorldConstants.FEATURE_HOLE_COLLAPSE:
 				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
+				case WorldConstants.FEATURE_HOLE_WELL:
 					return 1;
 			}
 

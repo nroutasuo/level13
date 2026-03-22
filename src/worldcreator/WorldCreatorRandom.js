@@ -437,6 +437,8 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			if (PositionConstants.areEqual(startPos, endPos)) {
 				return [];
 			}
+
+			options = options || {};
 			
 			let makePathSectorVO = function (position) {
 				if (!position) return null;

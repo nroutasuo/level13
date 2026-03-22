@@ -75,8 +75,8 @@ define([
 			levelVO.stageCenterPositions = this.getStageCenterPositions(worldVO, levelVO);
 			levelVO.workshopResource = this.getWorkshopResource(seed, worldVO, levelTemplateVO, levelVO);
 			levelVO.levelStyle = levelTemplateVO.levelStyle || this.getLevelArchitecturalStyle(seed, levelVO);
-			levelVO.districts = this.getDistricts(worldVO, levelVO);
 			levelVO.features = worldVO.getFeaturesByLevel(l);
+			levelVO.districts = this.getDistricts(worldVO, levelVO);
 			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
 			levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 		},
@@ -148,10 +148,10 @@ define([
 				let stageI = isEarly ? i : i - numEarly;
 				let stage = isEarly ? WorldConstants.CAMP_STAGE_EARLY : WorldConstants.CAMP_STAGE_LATE;
 				let position = positions[i];
-				let type = this.getDistrictType(levelVO, stage, position, i, stageI, previousDistrict ? previousDistrict.type : null);
+				let type = this.getDistrictType(levelVO, stage, position, positions, i, stageI, previousDistrict ? previousDistrict.type : null);
 				let districtVO = new DistrictVO(position, stage, type);
 				districtVO.wear = this.getDistrictWear(levelVO, type, i);
-				districtVO.wealth = this.getDistrictWealth(levelVO, type, i);
+				districtVO.wealth = this.getDistrictWealth(levelVO, type, position, positions, i);
 				districtVO.size = this.getDistrictSize(levelVO, type, districtVO.wealth, districtVO.wear, position);
 				districtVO.affiliation = this.getDistrictAffiliation(levelVO, type, i);
 				districtVO.style = this.getDistrictStyle(levelVO, stage, type, districtVO.wealth, districtVO.affiliation, i);
@@ -198,7 +198,7 @@ define([
 			return result;
 		},
 
-		getDistrictType: function (levelVO, stage, position, i, stageI, previousType) {
+		getDistrictType: function (levelVO, stage, position, positions, i, stageI, previousType) {
 			let possibleTypes = [];
 
 			// hard-coded
@@ -213,9 +213,6 @@ define([
 			if (levelVO.workshopResource && stage == WorldConstants.CAMP_STAGE_LATE && stageI == 0) {
 				return SectorConstants.SECTOR_TYPE_INDUSTRIAL;
 			}
-
-			// - positions near certain features
-			if (levelVO.getDistanceToFeature(position, WorldConstants.FEATURE_HOLE_WELL) < 10) return SectorConstants.SECTOR_TYPE_RESIDENTIAL;
 
 			// - level 14
 			if (levelVO.level == 14) return SectorConstants.SECTOR_TYPE_INDUSTRIAL;
@@ -257,6 +254,16 @@ define([
 				if (centrality < 0.25) possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
 			}
 
+			// - positions near certain features
+			if (this.isDistrictNearFeature(WorldConstants.FEATURE_HOLE_WELL, levelVO, position, positions)) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+				possibleTypes = possibleTypes.filter(t => t != SectorConstants.SECTOR_TYPE_EMPTY && t != SectorConstants.SECTOR_TYPE_MAINTENANCE && t != SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+			} else if (this.isDistrictNearFeature(WorldConstants.FEATURE_HOLE_MOUNTAIN, levelVO, position, positions)) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+			} else if (this.isDistrictNearFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, levelVO, position, positions)) {
+				possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+			}
+
 			// - make previous one less likely to avoid repetition
 			if (previousType && possibleTypes.length > 1) {
 				let index = possibleTypes.indexOf(previousType);
@@ -267,6 +274,18 @@ define([
 			}
 
 			return WorldCreatorRandom.randomItemFromArray(levelVO.level * 100 + i, possibleTypes);
+		},
+
+		isDistrictNearFeature: function (featureType, levelVO, position, positions) {
+			// this is a bit of an educated guess since we don't know the size of the districts yet so what district the feature ends up being a part of is not guaranteed
+			let distance = levelVO.getDistanceToFeature(position, featureType); 
+			if (distance < 5) return true;
+			if (distance > 30) return false;
+			
+			let closestPositions = positions.filter(pos => levelVO.getDistanceToFeature(pos, featureType) >= 0).sort(pos => levelVO.getDistanceToFeature(pos, featureType));
+			if (closestPositions.length == 0) return false;
+
+			return closestPositions[0].equals(position);
 		},
 
 		getDistrictAffiliation: function (levelVO, type, i) {
@@ -322,7 +341,7 @@ define([
 			return MathUtils.clamp(Math.round(wear), 0, 10);
 		},
 
-		getDistrictWealth: function (levelVO, type, i) {
+		getDistrictWealth: function (levelVO, type, position, positions, i) {
 			if (type == SectorConstants.SECTOR_TYPE_EMPTY) return 0;
 			if (type == SectorConstants.SECTOR_TYPE_MAINTENANCE) return 5;
 
@@ -373,6 +392,12 @@ define([
 
 			if (levelVO.level == this.CITY_STATE_LEVEL) {
 				min = Math.max(min, 4);
+			}
+
+			if (this.isDistrictNearFeature(WorldConstants.FEATURE_HOLE_WELL, levelVO, position, positions)) {
+				min = 4;
+				max = Math.max(min, max);
+				max++;
 			}
 
 			let result = WorldCreatorRandom.randomInt(levelVO.seed % 33 + levelVO.level + i * 3, min, max + 1);

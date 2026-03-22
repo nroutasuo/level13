@@ -68,6 +68,7 @@ define([
 
 		generateLevel: function (seed, worldVO, levelTemplateVO, levelVO) {
 			// level-wide features 1
+			this.generateRequiredFeatures(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateWorkshops(seed, worldVO, levelTemplateVO, levelVO);
 			
 			// sector features 1
@@ -75,7 +76,6 @@ define([
 				let sectorVO = levelVO.sectors[s];
 				let sectorTemplateVO = levelTemplateVO.sectors[s] || {};
 
-				sectorVO.requiredFeatures = this.getRequiredFeatures(seed, worldVO, levelVO, sectorVO);
 				sectorVO.sectorType = this.getSectorType(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				sectorVO.sectorStyle = this.getSectorStyle(seed, worldVO, levelVO, sectorTemplateVO, sectorVO);
 				sectorVO.sunlit = this.isSunlit(seed, worldVO, levelVO, sectorTemplateVO, sectorVO) || 0;
@@ -113,6 +113,97 @@ define([
 			for (let s = 0; s < levelVO.sectors.length; s++) {
 				let sectorVO = levelVO.sectors[s];
 				sectorVO.sunlit = sectorVO.sunlit || this.isSunlitByNeighbours(worldVO, levelVO, sectorVO) || 0;
+			}
+		},
+		
+		generateRequiredFeatures: function (seed, worldVO, levelTemplateVO, levelVO) {
+			let requiredFeatures = {};
+
+			// TODO set requiredFeatures.beacon again (deleted due to using too complex critical path logic)
+
+			// sectors sunlit by mirror systems
+			let numMirrorSystems = 0;
+			if (levelVO.level < 12 && levelVO.habitability > 0) numMirrorSystems++;
+			if (levelVO.levelStyle == SectorConstants.STYLE_WESTERN) numMirrorSystems++;
+			if (levelVO.levelStyle == SectorConstants.STYLE_NEOWESTERN) numMirrorSystems++;
+			if (levelVO.levelOrdinal < 3) numMirrorSystems = 0;
+			this.generateRequiredFeaturesMirrorSystems(seed, worldVO, levelTemplateVO, levelVO, numMirrorSystems);
+			
+			return requiredFeatures;
+		},
+
+		generateRequiredFeaturesMirrorSystems: function (seed, worldVO, levelTemplateVO, levelVO, numMirrorSystems) {
+			if (numMirrorSystems <= 0) return;
+
+			let getMirrorSectorScore = function (sectorVO) {
+				let score = 0;
+				let districtVO = levelVO.districts[sectorVO.districtIndex];
+				let districtType = districtVO.type;
+				if (districtType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) score += 1;
+				if (districtType == SectorConstants.SECTOR_TYPE_MAINTENANCE) score -= 2;
+				if (districtType == SectorConstants.SECTOR_TYPE_COMMERCIAL) score += 2;
+				if (districtType == SectorConstants.SECTOR_TYPE_PUBLIC) score += 2;
+				if (districtType == SectorConstants.SECTOR_TYPE_EMPTY) score -= 3;
+				if (districtType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+					if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_AGRICORP) {
+						score += 3;
+					} else {
+						score -= 1;
+					}
+				}
+				if (districtVO.wealth < 4) score--;
+				score += WorldCreatorHelper.getPositionDistrictCentrality(levelVO, sectorVO.position, sectorVO.stage);
+				return score;
+			};
+			let mirrorSectorOptions = { excludedZones: [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_PASSAGE_TO_PASSAGE ], excludedFeatures: [ "hasWorkshop" ] };
+			let mirrorSectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, numMirrorSystems, numMirrorSystems + 1, mirrorSectorOptions, getMirrorSectorScore);
+
+			for (let i = 0; i < mirrorSectors.length; i++) {
+				let sectorVO = mirrorSectors[i];
+ 
+				let minX = sectorVO.position.sectorX;
+				let maxX = sectorVO.position.sectorX;
+				let minY = sectorVO.position.sectorY;
+				let maxY = sectorVO.position.sectorY;
+
+				let neighbourDirections = levelVO.getNeighbourDirections(sectorVO.position.sectorX, sectorVO.position.sectorY);
+				if (neighbourDirections.length < 2) {
+					// one neighbour: large area
+					minX -= 4;
+					maxX += 4;
+					minY -= 4;
+					maxY += 4;
+				} else if (neighbourDirections.length >= 5) {
+					// lots of neighbours: small area
+					minX -= 1;
+					maxX += 1;
+					minY -= 1;
+					maxY += 1;
+				} else if (neighbourDirections.indexOf(PositionConstants.DIRECTION_NORTH) >= 0 && neighbourDirections.indexOf(PositionConstants.DIRECTION_SOUTH) >= 0) {
+					// vertical line
+					minY -= 4;
+					maxY += 4;
+				} else if (neighbourDirections.indexOf(PositionConstants.DIRECTION_WEST) >= 0 && neighbourDirections.indexOf(PositionConstants.DIRECTION_EASTs) >= 0) {
+					// horizontal line
+					minX -= 4;
+					maxX += 4;
+				} else {
+					// medium area
+					minX -= 2;
+					maxX += 2;
+					minY -= 2;
+					maxY += 2;
+				}
+
+				for (let x = minX; x <= maxX; x++) {
+					for (let y = minY; y <= maxY; y++) {
+						let sectorVO2 = levelVO.getSector(x, y);
+						if (!sectorVO2) continue;
+						let path = WorldCreatorRandom.findPathOnLevel(levelVO, sectorVO.position, sectorVO2.position, false, true, null, 5);
+						if (!path) continue;
+						sectorVO2.requiredFeatures["mirror"] = true;
+					}
+				}
 			}
 		},
 		
@@ -1037,14 +1128,6 @@ define([
 			}
 		},
 		
-		getRequiredFeatures: function (seed, worldVO, levelVO, sectorVO) {
-			let requiredFeatures = {};
-
-			// TODO set requiredFeatures.beacon again (deleted due to using too complex critical path logic)
-			
-			return requiredFeatures;
-		},
-		
 		generateTexture: function (seed, worldVO, levelVO, sectorTemplateVO, sectorVO) {
 			let l = sectorVO.position.level;
 			let x = sectorVO.position.sectorX || 300;
@@ -1201,6 +1284,8 @@ define([
 				if (districtVO.type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) wealthRandom = 3;
 				if (districtVO.type == SectorConstants.SECTOR_TYPE_PUBLIC) wealthRandom = 1;
 				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) maxWealth = 8;
+				if (levelVO.getDistanceToFeature(sectorVO.position, WorldConstants.FEATURE_HOLE_WELL) < 3) minWealth = 5;
+				if (levelVO.getDistanceToFeature(sectorVO.position, WorldConstants.FEATURE_HOLE_WELL) < 2) wealthOffset++;
 
 				let wealth = districtVO.wealth + wealthOffset + WorldCreatorRandom.randomInt(seed + l + Math.abs(x + y), -wealthRandom, wealthRandom);
 
@@ -1422,7 +1507,7 @@ define([
 			if (l === worldVO.bottomLevel) {
 				col.food = col.food > 0 ? col.food + 2 : 0;
 				col.water = col.water > 0 ? col.water + 3 : 0;
-				sca.herbs = WorldCreatorRandom.random(seed * l / (x + 50) + y * 423) * sectorVO.wear > 6 ? WorldConstants.resourcePrevalence.RARE : 0;
+				sca.herbs = WorldCreatorRandom.randomBool(seed / 22 + x + y * 2, sectorVO.wear * 10) ? WorldConstants.resourcePrevalence.RARE : 0;
 			}
 			
 			// adjustments for sector features
@@ -1965,6 +2050,13 @@ define([
 
 				if (levelVO.level > 10 && levelVO.level < 18 && districtVO.wealth < 7) possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
 
+				if (levelVO.getDistanceToFeature(sectorVO.position, WorldConstants.FEATURE_HOLE_WELL) < 3) {
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
+					possibleTypes = possibleTypes.filter(t => t != SectorConstants.SECTOR_TYPE_EMPTY && t != SectorConstants.SECTOR_TYPE_MAINTENANCE && t != SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+				}
+
 				let s1 = 1 + Math.abs(sectorVO.position.sectorX * 2) + Math.abs(sectorVO.position.sectorY);
 				sectorType = WorldCreatorRandom.randomItemFromArray(s1, possibleTypes);
 			}
@@ -2110,21 +2202,17 @@ define([
 			
 			let l = sectorVO.position.level;
 			let savedValue = sectorTemplateVO.sunlit || 0;
-
-			if (l == 13) {
-				if (sectorVO.position.sectorX < -4) return 1;
-			}
 			
 			let isHole = function (pos) {
 				let features = worldVO.getFeaturesByPos(pos);
 				for (let i = 0; i < features.length; i++) {
 					return WorldConstants.isFeatureHole(features[i].type);
 				}
-				return 0;
+				return false;
 			};
 
 			let hasSunlitFeature = function (sectorVO) {
-				return sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL_EDGE) || sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL);
+				return sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL_EDGE) || sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE) || sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE);
 			}
 			
 			if (l === worldVO.topLevel) {
@@ -2137,19 +2225,23 @@ define([
 				// greenhouse (herbs workshop) sectors: all lit
 				return 1;
 			} else {
-				// others: sunlight only if ceiling or edge is open
-				// - sector itself is a hole
+				// others: sunlight only with certain conditions
+				// - sector itself is a hole or adjacent to a hole
 				if (isHole(sectorVO.position)) return 1;
 				if (hasSunlitFeature(sectorVO)) return 1;
 				// - sector(s) above are holes or damaged enough
 				for (let level = l + 1; l <= worldVO.topLevel; l++) {
-					var pos = new PositionVO(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
-					var sectorVO2 = worldVO.getLevel(l).getSector(pos.sectorX, pos.sectorY, 5);
+					let pos = new PositionVO(level, sectorVO.position.sectorX, sectorVO.position.sectorY);
+					let sectorVO2 = worldVO.getLevel(l).getSector(pos.sectorX, pos.sectorY);
 					if (isHole(pos)) return 1;
-					if (!sectorVO2 || (sectorVO.wear < 8 && sectorVO.damage < 5)) break;
+					if (sectorVO2 && sectorVO.wear < 8 && sectorVO.damage < 5) break;
 					if (sectorVO2 && sectorVO2.sunlit) return 1;
 				}
+				// - sector itself has mirror
+				if (sectorVO.requiredFeatures.mirror) return 1;
 			}
+
+			return 0;
 		},
 		
 		isSunlitByNeighbours: function (worldVO, levelVO, sectorVO) {
@@ -2157,13 +2249,25 @@ define([
 			
 			let numTotal = 0;
 			let numSunlit = 0;
+
 			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
+
 			for (let i = 0; i < neighbours.length; i++) {
 				numTotal++;
-				if (neighbours[i].sunlit) numSunlit++;
+				if (neighbours[i].sunlit > 0.5) numSunlit++;
 			}
-			let isSunlit = numSunlit / numTotal > 0.8;
-			return isSunlit ? 0.5 : 0;
+
+			if (numSunlit <= 0) return false;
+			
+			let neighbourSunlitRatio = numSunlit / numTotal;
+
+			let sunlightThreshold = MathUtils.map(sectorVO.buildingDensity, 0, 10, 3/4, 5/6);
+			let halfThreshold = MathUtils.map(sectorVO.buildingDensity, 0, 10, 1/4, 4/5);
+
+			if (neighbourSunlitRatio >= sunlightThreshold) return 1;
+			if (neighbourSunlitRatio >= halfThreshold) return 0.5;
+			
+			return false;
 		},
 
 		isSunlitAllowed: function (worldVO, levelVO, sectorVO, isStrict) {
