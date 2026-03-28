@@ -76,6 +76,7 @@ define([
 				this.checkLevelSize,
 				this.checkLevelContinuous, 
 				this.checkLevelPosition,
+				this.checkLevelDistricts,
 				this.checkLevelDensity,
 				this.checkLevelPathLengths, 
 				this.checkLevelCampsAndPassages, 
@@ -124,12 +125,16 @@ define([
 			let issues = [];
 
 			// TODO clear more of this data after world gen is done
-			let notSavedKeysWorld = [ "districts", "stages", "examineSpotsPerLevel" ];
+			let notSavedKeysWorld = [ 
+				"examineSpotsPerLevel", 
+				"stages"
+			];
 			let notSavedKeysLevel = [ 
-				// derived data (no need to save in template per sector but available in SectorVO for convenience)
+				// derived data (no need to save in template per sector but available in LevelVO for convenience)
 				"localeSectors", 
 				"paths", 
 				"raidDangerFactor", 
+				"requiredPositions",
 				"sectorNeighourCountCache",
 				"sectorsByPos", 
 				"sectorsByStage", 
@@ -188,6 +193,14 @@ define([
 							if (notSavedKeysLevel.indexOf(key2) >= 0 && !levelTemplateVOValue) continue;
 							if (levelVOValue == levelTemplateVOValue) continue;
 							if (levelVOValue.equals && levelVOValue.equals(levelTemplateVOValue)) continue;
+
+							if (!levelTemplateVOValue) {
+								issues.push({ 
+									severity: WorldValidator.SEVERITY_CRITICAL, 
+									desc: "LevelVO->LevelTemplateVO mismatch: " + key2 + " [" + levelVOValue + "] [missing]"
+								});
+								continue;
+							}
 
 							if (key2 === "sectors") {
 								for (let s in levelVOValue) {
@@ -385,11 +398,6 @@ define([
 
 					let districtStyle = districtVO.style;
 					if (allDistrictStyles.indexOf(districtStyle) < 0) allDistrictStyles.push(districtStyle);
-
-					let districtSectors =  worldVO.levels[l].sectors.filter(s => s.districtIndex == i);
-					if (districtSectors.length < 3) {
-						issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on district (" + i + ") on level " + l });
-					}
 				}
 
 				if (l == 14) continue;
@@ -409,6 +417,21 @@ define([
 
 			if (allDistrictStyles.indexOf(SectorConstants.STYLE_CITTADINIAN) < 0 && allDistrictStyles.indexOf(SectorConstants.STYLE_KIEVAN) < 0) {
 				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "no city state found in world" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkLevelDistricts: function (worldVO, levelVO) {
+			let issues = [];
+
+			let districts = levelVO.districts;
+
+			for (let i = 0; i < districts.length; i++) {
+				let districtSectors =  levelVO.sectors.filter(s => s.districtIndex == i);
+				if (districtSectors.length < 3) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on district (" + i + ") on level " + levelVO.level });
+				}
 			}
 
 			return { isValid: issues.length === 0, issues: issues };

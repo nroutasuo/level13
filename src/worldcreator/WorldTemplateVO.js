@@ -1,5 +1,6 @@
 // subset of WorldVO that is saved after generation and can be used as input to world generation to ensure backwards compability and world consistency across versions
-define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcreator/WorldFeatureVO'], function (Ash, LevelTemplateVO, PositionVO, WorldFeatureVO) {
+define(['ash', 'utils/SaveUtils', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcreator/WorldFeatureVO'], 
+function (Ash, SaveUtils, LevelTemplateVO, PositionVO, WorldFeatureVO) {
 
 	let WorldTemplateVO = Ash.Class.extend({
 	
@@ -16,6 +17,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcrea
 			this.levelCenterPositions = worldVO.levelCenterPositions;
 			this.passagePositions = worldVO.passagePositions;
 			this.passageTypes = worldVO.passageTypes;
+			this.requiredPositions = worldVO.requiredPositions;
 
 			this.levels = {};
 			
@@ -36,6 +38,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcrea
 			copy.levelCenterPositions = this.levelCenterPositions;
 			copy.passagePositions = this.passagePositions;
 			copy.passageTypes = this.passageTypes;
+			copy.requiredPositions = this.requiredPositions;
 
 			copy.levels = {};
 			
@@ -68,14 +71,7 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcrea
 				}
 			}
 			
-			this.levelCenterPositions = {};
-			for (let l in saveObject.levelCenterPositions) {
-				let saveObjectPosition = saveObject.levelCenterPositions[l];
-				if (saveObjectPosition) {
-					this.levelCenterPositions[l] = new PositionVO();
-					this.levelCenterPositions[l].customLoadFromSave(saveObjectPosition);
-				}
-			}
+			this.levelCenterPositions = SaveUtils.loadDictionary(saveObject.levelCenterPositions, PositionVO);
 
 			this.passagePositions = {};
 			for (let i in saveObject.passagePositions) {
@@ -101,19 +97,17 @@ define(['ash', 'worldcreator/LevelTemplateVO', 'game/vos/PositionVO', 'worldcrea
 			}
 
 			this.passageTypes = saveObject.passageTypes;
-			
-			this.levels = {};
-			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
-				let levelData = saveObject.levels[l];
-				this.levels[l] = new LevelTemplateVO();
-				this.levels[l].customLoadFromSave(levelData);
-			}
 
-			this.features = [];
-			for (let i = 0; i < saveObject.features.length; i++) {
-				this.features[i] = new WorldFeatureVO();
-				this.features[i].customLoadFromSave(saveObject.features[i]);
+			this.requiredPositions = [];
+			if (saveObject.requiredPositions) {
+				for (let l = this.topLevel; l >= this.bottomLevel; l--) {
+					let levelData = saveObject.requiredPositions[l];
+					this.requiredPositions[l] = SaveUtils.loadList(levelData, PositionVO);
+				}
 			}
+			
+			this.levels = SaveUtils.loadDictionary(saveObject.levels, LevelTemplateVO);
+			this.features = SaveUtils.loadList(saveObject.features, WorldFeatureVO);
 		},
 		
 	});
