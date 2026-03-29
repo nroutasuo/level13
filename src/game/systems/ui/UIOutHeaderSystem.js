@@ -1033,7 +1033,8 @@ define([
 						value *= GameGlobals.sectorHelper.getBeaconMovementBonus(this.currentLocationNodes.head.entity, this.playerStatsNodes.head.perks);
 						value *= GameGlobals.sectorHelper.getHazardsMovementMalus(this.currentLocationNodes.head.entity);
 						value = Math.round(value * 10) / 10;
-						isVisible = GameGlobals.gameState.unlockedFeatures.camp;
+						let hasEffect = value != 1 || detail.length > 0;
+						isVisible = hasEffect && GameGlobals.gameState.unlockedFeatures.camp;
 						flipNegative = true;
 						break;
 					
