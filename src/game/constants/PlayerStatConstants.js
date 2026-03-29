@@ -4,6 +4,7 @@ define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (As
 
 		VISION_BASE: 25,
 		VISION_BASE_SUNLIT: 50,
+		VISION_BASE_DUSKY: 70,
 		HEALTH_MINIMUM: 10,
 		HEALTH_TO_STAMINA_FACTOR: 10,
 		
@@ -12,6 +13,8 @@ define(['ash', 'game/GameGlobals', 'game/constants/PerkConstants'], function (As
 		STAMINA_GAINED_FROM_NAP_2: 200,
 		STAMINA_GAINED_FROM_GROVE: 200,
 		STAMINA_GAINED_FROM_POTION_1: 500,
+
+		NOT_AWAKE_LIGHT_COMFORT_LEVEL: -1,
 
 		getStaminaWarningLimit: function (staminaComponent) {
 			var maxStamina = staminaComponent.maxStamina;

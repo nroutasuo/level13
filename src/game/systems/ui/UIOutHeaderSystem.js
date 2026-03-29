@@ -398,7 +398,7 @@ define([
 
 			GameGlobals.uiFunctions.toggle(this.elements.statIndicatorVision, !isSmallLayout || !isInCamp);
 			this.elements.valVision.text(shownVision + " / " + maxVision);
-			this.updateStatsCallout("Makes exploration safer and scavenging more effective", this.elements.statIndicatorVision, playerStatsNode.vision.accSources);
+			this.updateStatCalloutWithMax("Makes exploration safer and scavenging more effective", this.elements.statIndicatorVision, playerStatsNode.vision.maxSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorVision, maxVision - shownVision, shownVision < maxVision);
 
 			GameGlobals.uiFunctions.toggle(this.elements.statIndicatorHealth, !isSmallLayout);
@@ -409,7 +409,7 @@ define([
 
 			GameGlobals.uiFunctions.toggle($("#stats-stamina"), GameGlobals.gameState.unlockedFeatures.scavenge);
 			this.elements.valStamina.text(showStamina + " / " + maxStamina);
-			this.updateStatsCallout("Required for exploration", this.elements.statIndicatorStamina, playerStatsNode.stamina.accSources);
+			this.updateStatCalloutWithAcc("Required for exploration", this.elements.statIndicatorStamina, playerStatsNode.stamina.accSources);
 			this.updateChangeIndicator(this.elements.changeIndicatorStamina, playerStatsNode.stamina.accumulation, playerStamina < maxStamina, isResting || isHealing);
 
 			this.elements.valVision.toggleClass("warning", playerVision <= 25);
@@ -535,7 +535,7 @@ define([
 			let animate = UIAnimations.shouldAnimateChange(previousValue, currentValue, previousUpdate, now, component.accumulation);
 			UIAnimations.animateOrSetNumber(valueElement, animate, displayValue, suffix, flipNegative, (v) => { return Math.floor(v); });
 			
-			this.updateStatsCallout("", $container, component.accSources);
+			this.updateStatCalloutWithAcc("", $container, component.accSources);
 			this.updateChangeIndicator(changeIndicatorElement, component.accumulation, isVisible && !isAtLimit);
 			this.previousStats[stat] = currentValue;
 			this.previousStatsUpdates[stat] = now;
@@ -573,7 +573,8 @@ define([
 			UIConstants.updateCalloutContent($indicatorElem, content);
 		},
 
-		updateStatsCallout: function (description, $indicatorElem, changeSources, hideNumbers) {
+		// stat callout showing change/accumulation sources
+		updateStatCalloutWithAcc: function (description, $indicatorElem, changeSources, hideNumbers) {
 			var sources = "";
 			var source;
 			var total = 0;
@@ -603,6 +604,25 @@ define([
 				var totals = "Total: " + Math.round(total * 10000)/10000 + "/s";
 				content += (total > 0 ? ("<hr/>" + totals) : "");
 			}
+			
+			UIConstants.updateCalloutContent($indicatorElem, content);
+		},
+
+		// stat callout focused on what constitutes to the max value, less about accumulation
+		updateStatCalloutWithMax: function (description, $indicatorElem, maxSources) {
+			let sources = "";
+			for (let i in maxSources) {
+				let source = maxSources[i];
+				if (source.amount != 0) {
+					let amount = Math.round(source.amount * 1000)/1000;
+					if (amount == 0 && source.amount > 0) {
+						amount = "<&nbsp;" + (1/1000);
+					}
+					sources += source.source + ": " + amount + "<br/>";
+				}
+			}
+			
+			let content = description + (description && sources ? "<hr/>" : "") + sources;
 			
 			UIConstants.updateCalloutContent($indicatorElem, content);
 		},
