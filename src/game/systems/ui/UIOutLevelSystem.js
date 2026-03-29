@@ -434,7 +434,7 @@ define([
 		},
 
 		getTextureDescription: function (hasVision, sector, position, featuresComponent, sectorStatus, localesComponent) {
-			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
 			let hasGlowStickLight = sectorStatus.glowStickSeconds > 0;
 			let hasLight = hasVision || featuresComponent.sunlit || hasGlowStickLight;
 			
@@ -443,9 +443,11 @@ define([
 			var desc = TextConstants.getSectorDescription(hasVision, features) + ". ";
 
 			// light / darkness description
-			if (featuresComponent.sunlit) {
+			if (featuresComponent.sunlit >= 1) {
 				if (hasVision) desc += "The area is swathed in relentless <span class='hl-functionality'>daylight</span>. ";
 				else desc += "The area is swathed in blinding <span class='hl-functionality'>sunlight</span>. ";
+			} else if (featuresComponent.sunlit > 0) {
+				desc += "The area is illuminated by <span class='hl-functionality'>indirect sunlight</span> from a nearby sector. ";
 			} else {
 				if (sectorStatus.glowStickSeconds > -5) {
 					if (sectorStatus.glowStickSeconds < 5)

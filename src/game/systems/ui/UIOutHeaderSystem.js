@@ -283,7 +283,7 @@ define([
 		},
 
 		initDynamicBackgroundItems: function () {
-			let isSunlit = $("body").hasClass("sunlit");
+			let isSunlit = !$("body").hasClass("dark");
 			if (isSunlit) {
 				log.w("can't init dynamic background items while sunlit theme is active");
 				return;
@@ -735,13 +735,13 @@ define([
 			let perks = perksComponent.getAll();
 
 			let perksList = isSmallLayout ? this.perksListMobile : this.perksListDefault;
-			let sunlit = this.elements.body.hasClass("sunlit");
-			let themeChanged = sunlit != this.lastPerkUpdateSunlit;
+			let theme = this.getCurrentTheme();
+			let themeChanged = theme != this.lastPerkUpdateTheme;
 			let newItems = UIList.update(perksList, perks, themeChanged);
 
 			this.handleNewPerks(newItems);
 
-			this.lastPerkUpdateSunlit = sunlit;
+			this.lastPerkUpdateTheme = theme;
 		},
 
 		handleNewPerks: function (newItems) {
@@ -769,12 +769,11 @@ define([
 
 			let isSmallLayout = this.elements.body.hasClass("layout-small");
 			let isResting = this.isResting();
-			let now = new Date().getTime();
-			let sunlit = this.elements.body.hasClass("sunlit");
+			let theme = this.getCurrentTheme();
 			let isNegative = PerkConstants.isNegative(perk);
-			let backgroundColor = ColorConstants.getColor(sunlit, "bg_box_1");
+			let backgroundColor = ColorConstants.getColor(theme, "bg_box_1");
 			
-			let fillColor = isNegative ? ColorConstants.getColor(sunlit, "bg_warning_stronger") : ColorConstants.getColor(sunlit, "bg_element_1");
+			let fillColor = isNegative ? ColorConstants.getColor(theme, "bg_warning_stronger") : ColorConstants.getColor(theme, "bg_element_1");
 			let warningPercentage = perk.removeTimer > 0 ? 
 				perk.effectFactor * 100:
 				PerkConstants.getPerkActivePercent(perk) * 100;
@@ -1199,15 +1198,21 @@ define([
 		},
 		
 		updateTheme: function () {
-			let sunlit = false;
+			let theme = UIConstants.THEME_DARK;
+
+			let getThemeBySunlitValue = function (sunlit) {
+				if (sunlit > 0.5) return UIConstants.THEME_SUNLIT;
+				if (sunlit > 0) return UIConstants.THEME_DUSKY;
+				return UIConstants.THEME_DARK;
+			}
 			
 			if (this.currentLocationNodes.head) {
 				let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
-				sunlit = featuresComponent.sunlit;
+				theme = getThemeBySunlitValue(featuresComponent.sunlit);
 			}
 			
 			if (GameGlobals.gameState.isFinished || GameGlobals.gameState.isLaunchCompleted) {
-				sunlit = false;
+				theme = UIConstants.THEME_DARK;
 			}
 			
 			if (this.playerStatsNodes.head && this.playerStatsNodes.head.entity.has(MovementComponent)) {
@@ -1215,31 +1220,35 @@ define([
 				let movementSector = GameGlobals.levelHelper.getSectorByPosition(movementComponent.level, movementComponent.sectorX, movementComponent.sectorY);
 				if (movementSector) {
 					let movementSectorFeaturesComponent = movementSector.get(SectorFeaturesComponent);
-					sunlit = movementSectorFeaturesComponent.sunlit;
+					theme = getThemeBySunlitValue(movementSectorFeaturesComponent.sunlit);
 				}
 			}
 			
-			if (GameGlobals.gameState.uiStatus.forceSunlit) sunlit = true;
-			if (GameGlobals.gameState.uiStatus.forceDark) sunlit = false;
+			if (GameGlobals.gameState.uiStatus.forcedTheme) theme = GameGlobals.gameState.uiStatus.forcedTheme;
 
 			// nice if theme transition can happen while loading new level when moving to a new level
 			// if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
-			this.updateThemeTo(sunlit);
+			this.updateThemeTo(theme);
+		},
+
+		getCurrentTheme: function () {
+			return UIConstants.getCurrentTheme(this.elements.body);
 		},
 		
-		updateThemeTo: function (sunlit) {
-			let wasSunlit = this.elements.body.hasClass("sunlit");
-			if (sunlit == wasSunlit) {
+		updateThemeTo: function (theme) {
+			let currentTheme = this.getCurrentTheme();
+			if (theme == currentTheme) {
 				return;
 			}
 			
-			log.i("[ui] update theme to: " + (sunlit ? "sunlit" : "dark"));
-			this.transitionTheme(wasSunlit, sunlit);
+			log.i("[ui] update theme to: " + theme);
+			this.transitionTheme(currentTheme, theme);
 		},
 		
 		updateThemedIcons: function () {
-			let sunlit = this.elements.body.hasClass("sunlit");
+			let theme = this.getCurrentTheme();
+			let sunlit = theme != UIConstants.THEME_DARK;
 			for (let i = 0; i < this.themedIcons.length; i++) {
 				let icon = this.themedIcons[i];
 				let path = sunlit ? icon.pathSunlit : icon.pathDark;
@@ -1294,10 +1303,11 @@ define([
 
 		updatePageBackgroundColor: function () {
 			let visionLevel = this.visionLevel;
+			let theme = this.getCurrentTheme();
 			let sunlit = this.elements.body.hasClass("sunlit");
-			let backgroundColor = ColorConstants.getColor(sunlit, "bg_page_vision_level_" + visionLevel);
+			let backgroundColor = ColorConstants.getColor(theme, "bg_page_vision_level_" + visionLevel);
 
-			log.i("update page background color: sunlit:" + sunlit + " | visionLevel:" + visionLevel, "ui");
+			log.i("update page background color: theme:" + theme + " | visionLevel:" + visionLevel, "ui");
 			
 			$("body").css("background", backgroundColor);
 			
@@ -1331,6 +1341,7 @@ define([
 		
 		transitionTheme: function (oldValue, newValue) {
 			if (oldValue == newValue) return;
+
 			if (this.currentThemeTransitionTargetValue != null && this.currentThemeTransitionTargetValue === newValue) {
 				return;
 			}
@@ -1361,8 +1372,9 @@ define([
 			$("#theme-transition-overlay").stop(true).animate({ opacity: 1 }, fadeOutDuration).delay(transitionDuration).animate({ opacity: 0 }, fadeInDuration);
 			
 			this.currentThemeTransitionID = setTimeout(function () {
-				sys.elements.body.toggleClass("sunlit", newValue);
-				sys.elements.body.toggleClass("dark", !newValue);
+				sys.elements.body.toggleClass("sunlit", newValue == UIConstants.THEME_SUNLIT);
+				sys.elements.body.toggleClass("dark", newValue == UIConstants.THEME_DARK);
+				sys.elements.body.toggleClass("dusky", newValue == UIConstants.THEME_DUSKY);
 				
 				sys.updatePageBackgroundColor();
 				sys.updateVisionStatus();

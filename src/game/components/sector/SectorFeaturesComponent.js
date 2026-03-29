@@ -18,7 +18,7 @@ define(
 		wear: 0, // 0-10
 		damage: 0, // 0-10
 		districtIndex: 0,
-		sunlit: false,
+		sunlit: 0,
 		ground: false,
 		surface: false,
 		levelFeatures: [], // list of type
@@ -55,7 +55,7 @@ define(
 			this.districtIndex = features.districtIndex;
 			this.sectorType = features.sectorType;
 			this.sectorStyle = features.sectorStyle;
-			this.sunlit = features.sunlit || false;
+			this.sunlit = features.sunlit || 0;
 			this.ground = features.ground || false;
 			this.surface = features.surface || false;
 			this.hazards = features.hazards || null;

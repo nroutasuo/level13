@@ -18,7 +18,11 @@ define(['ash',
 	CharacterConstants, ColorConstants, GameConstants, StoryConstants, ExplorerConstants, ItemConstants, BagConstants, PerkConstants, UpgradeConstants, PlayerActionConstants, TextConstants,
 	UIAnimations) {
 
-	var UIConstants = {
+	let UIConstants = {
+
+		THEME_SUNLIT: "sunlit",
+		THEME_DUSKY: "dusky",
+		THEME_DARK: "dark",
 
 		FEATURE_MISSING_TITLE: "Missing feature",
 		FEATURE_MISSING_COPY: "This feature is not yet implemented. Come back later!",
@@ -87,6 +91,13 @@ define(['ash',
 			logMessage: "logMessage",
 			openPopup: "openPopup",
 			closePopup: "closePopup",
+		},
+
+		getCurrentTheme: function ($body) {
+			if ($body.hasClass("sunlit")) return UIConstants.THEME_SUNLIT;
+			if ($body.hasClass("dark")) return UIConstants.THEME_DARK;
+			if ($body.hasClass("dusky")) return UIConstants.THEME_DUSKY;
+			return null;
 		},
 		
 		getIconOrFallback: function (icon) {

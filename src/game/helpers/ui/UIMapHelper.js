@@ -824,7 +824,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 			// border(s) for sectors with hazards or sunlight
 			let isLevelSunlit = level == GameGlobals.worldState.getSurfaceLevel();
-			let isSectorSunlit = sectorFeatures.sunlit;
+			let isSectorSunlit = sectorFeatures.sunlit > 0;
 			let showBorderForSunlit = (!isLevelSunlit || !isLocationSunlit) && MapUtils.showSunlightInMapMode(options.mapMode);
 			let hasSunlitBorder = isSectorSunlit && showBorderForSunlit;
 			
@@ -845,7 +845,9 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				if (hasSunlitBorder) {
 					let extraBorderColor = ColorConstants.getColor(isLocationSunlit, "map_stroke_sector_sunlit");
 					let isPartial = hasHazardBorder && options.mapMode != MapUtils.MAP_MODE_HAZARDS;
-					drawSectorBorder(extraBorderColor, true, isPartial, 10);
+					let shadowBlur = sectorFeatures.sunlit >= 1 ? 10 : 0;
+					let isThickBorder = sectorFeatures.sunlit >= 1 ? true : false;
+					drawSectorBorder(extraBorderColor, isThickBorder, isPartial, shadowBlur);
 				}
 			}
 			

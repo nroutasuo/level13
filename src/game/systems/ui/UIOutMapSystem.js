@@ -759,7 +759,8 @@ define([
 				return label + " (<span class='warning'>" + value + "</span>)";
 			};
 			
-			if (featuresComponent.sunlit) result.push("sunlit");
+			if (featuresComponent.sunlit > 0.5) result.push("sunlit");
+			else if (featuresComponent.sunlit > 0) result.push("indirectly sunlit");
 			if (hazards.debris > 0) result.push("debris");
 			if (hazards.territory > 0) result.push("gang territory");
 			

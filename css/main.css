@@ -3146,6 +3146,2671 @@ body.dark .vis-camp-building-z3 {
 body.dark .vis-camp-building-z4 {
   z-index: 0;
 }
+body.dusky {
+  background: #7c7c7c;
+  color: #202220;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
+  line-height: 1.35em;
+  /* WEBKIT BROWSERS */
+}
+body.dusky .centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+body.dusky .hidden {
+  display: none !important;
+}
+body.dusky .container-disabled {
+  pointer-events: none;
+}
+body.dusky .nowrap {
+  white-space: nowrap;
+}
+body.dusky .layout-regular .nowrap-on-regular-layout {
+  white-space: nowrap;
+}
+body.dusky .unselectable {
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
+}
+body.dusky .noninteractive {
+  pointer-events: none;
+}
+body.dusky .centered {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+body.dusky .strike-through,
+body.dusky .strike-through p {
+  text-decoration: line-through;
+  opacity: 0.9;
+}
+body.dusky .container-dimmed .dimmable {
+  opacity: 0.5;
+}
+body.dusky .info-icon {
+  width: 1em;
+  height: 1em;
+}
+body.dusky .info-icon img {
+  height: 1em;
+  width: 1em;
+  line-height: 1em;
+  vertical-align: middle;
+}
+body.dusky img.icon-ui-generic {
+  height: 1.5em;
+  width: 1.5em;
+}
+body.dusky img.icon-centered,
+body.dusky .block-centered {
+  display: block;
+  margin: auto;
+}
+body.dusky .shadowed-basic {
+  -webkit-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  -moz-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+}
+body.dusky .lvl13-box-1 {
+  background-color: #999;
+  border: 1px solid #666;
+}
+body.dusky .lvl13-box-2 {
+  background: "inherit";
+  border: 1px solid #666;
+}
+body.dusky span.hl-functionality {
+  font-weight: bold;
+}
+body.dusky span.text-style-highlight {
+  font-weight: bold;
+}
+body.dusky span.text-style-nowrap {
+  white-space: nowrap;
+}
+body.dusky .p-meta {
+  color: rgba(0, 0, 0, 0.5);
+}
+body.dusky .dimmed {
+  color: #666;
+}
+body.dusky .secondary {
+  color: #202220;
+}
+body.dusky .columns-container {
+  display: flex;
+  gap: 5px;
+  margin: 0.5em 0;
+}
+body.dusky .columns-container-vcenter {
+  align-items: center;
+}
+body.dusky .columns-child {
+  flex: 1;
+}
+body.dusky .columns-child-small {
+  flex: 0;
+}
+body.dusky .fullwidth {
+  width: 100%;
+  margin: 0.5em 0;
+}
+body.dusky .full-width {
+  width: 100%;
+  margin: 0.5em 0;
+}
+body.dusky td,
+body.dusky th {
+  transition: all 0.15s;
+}
+body.dusky .balancing-tab table {
+  font-size: 0.85rem;
+}
+body.dusky table.spacious {
+  margin: 5px 0px;
+}
+body.dusky table.spacious td {
+  padding: 2px 5px;
+}
+body.dusky table.spacious td:last-child {
+  padding-right: 0px;
+}
+body.dusky table.spacious td:first-child {
+  padding-left: 0px;
+}
+body.dusky table.updating td {
+  background: rgba(250, 0, 0, 0.15);
+}
+body.dusky table.borders td {
+  border: 1px solid #666;
+}
+body.dusky table.borders th {
+  background: #bbb;
+}
+body.dusky table.borders th.alt-1 {
+  background: #6af;
+}
+body.dusky table.borders th.alt-2 {
+  background: #6fa;
+}
+body.dusky table.borders th.alt-3 {
+  background: #fa6;
+}
+body.dusky table.borders td.alt-1 {
+  background: rgba(102, 170, 255, 0.2);
+}
+body.dusky table.borders td.alt-2 {
+  background: rgba(102, 255, 170, 0.2);
+}
+body.dusky table.borders td.alt-3 {
+  background: rgba(255, 170, 102, 0.2);
+}
+body.dusky table th.sortable {
+  background: #bbb;
+  cursor: pointer;
+}
+body.dusky table.highlight-row tr:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+body.dusky table th.foldable-table-header {
+  background: #bbb;
+  cursor: pointer;
+}
+body.dusky table th.foldable-table-header.folded-table-header {
+  background: #bbb;
+  font-weight: bold;
+  cursor: pointer;
+}
+body.dusky td.folded-table-cell,
+body.dusky th.folded-table-cell {
+  min-width: 1px !important;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 1px;
+  padding: 0;
+  color: transparent;
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
+}
+body.dusky td.nowidth {
+  width: 0%;
+}
+body.dusky td.minwidth {
+  width: 5%;
+}
+body.dusky td.maxwidth {
+  width: 95%;
+}
+body.dusky td.textwidth {
+  width: 5%;
+  white-space: nowrap;
+}
+body.dusky td.list-amount,
+body.dusky td.list-storage {
+  min-width: 30pt;
+  text-align: center;
+}
+body.dusky td.list-ordinal {
+  min-width: 10pt;
+  text-align: center;
+}
+body.dusky td.list-description {
+  padding-left: 10px;
+}
+body.dusky td.list-action {
+  text-align: center;
+  width: 100pt;
+}
+body.dusky td.list-main {
+  text-align: center;
+}
+body.dusky td.item-name {
+  min-width: 8em;
+}
+body.dusky .layout-small td.item-name {
+  min-width: 6em;
+}
+body.dusky td.text-overflow {
+  font-size: 0.75rem;
+  width: 6em;
+  max-width: 6em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+body.dusky td.text-overflow-wide {
+  font-size: 0.75rem;
+  width: 10em;
+  max-width: 10em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+body.dusky th.th-number {
+  text-align: center;
+}
+body.dusky th.th-text {
+  text-align: left;
+}
+body.dusky td.bg-reset {
+  background: #999;
+}
+body.dusky tr.current,
+body.dusky div.current {
+  background: #bbb;
+  border-color: #bbb;
+}
+body.dusky tr.header-mini {
+  font-size: 0.85rem;
+}
+body.dusky hr {
+  color: #333;
+  margin: 1em 5px;
+  border: none;
+  border-top: 1px #333 solid;
+  height: 1px;
+}
+body.dusky table td {
+  padding: 0px 2px;
+}
+body.dusky td > button,
+body.dusky td > div.container-btn-action {
+  margin-left: 0px;
+}
+body.dusky button {
+  cursor: pointer;
+}
+body.dusky img {
+  transition: all 0.15s;
+}
+body.dusky ::-moz-selection {
+  background: #ccc;
+}
+body.dusky ::selection {
+  background: #ccc;
+}
+body.dusky h1,
+body.dusky h2,
+body.dusky h3,
+body.dusky h4,
+body.dusky h5,
+body.dusky h6 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  letter-spacing: 0.1pt;
+  text-transform: uppercase;
+}
+body.dusky h3,
+body.dusky h4 {
+  margin: 1em 0 0.5em 0;
+}
+body.dusky h4 {
+  margin: 1em 0 0.5em 0;
+}
+body.dusky a {
+  border: none !important;
+  background: inherit !important;
+}
+body.dusky a:hover {
+  color: #000 !important;
+}
+body.dusky a:link,
+body.dusky a:visited {
+  color: #202220;
+}
+body.dusky .p-dense,
+body.dusky .p-dense p {
+  margin: 0.25em 0;
+}
+body.dusky p.nomargin {
+  margin: 0;
+}
+body.dusky .ui-anim {
+  transform: scale(1.15, 1.15);
+  opacity: 0.8;
+  font-weight: bold;
+}
+body.dusky .ui-anim-negative {
+  color: #e64646 !important;
+}
+body.dusky button {
+  width: 95pt;
+  padding: 8px 16px;
+  margin: 4px;
+  z-index: 2;
+  font-weight: 500;
+  position: relative;
+  text-transform: lowercase;
+  background: #b7b7b7;
+  color: #202220;
+  border: 1px solid #555;
+}
+body.dusky button:hover {
+  color: #000 !important;
+  border-color: #4a4a4a;
+  background-color: #ccc;
+}
+body.dusky button:focus-visible {
+  outline: 2px solid #4a4a4a;
+}
+body.dusky button.btn-disabled:hover {
+  background-color: #b7b7b7 !important;
+}
+body.dusky button:active {
+  position: relative;
+  top: 1px;
+}
+body.dusky button,
+body.dusky ul.tabs li {
+  transition: color 0.2s;
+}
+body.dusky button.action {
+  border-width: 2px;
+  margin: 0px;
+  margin-bottom: 0px;
+  white-space: nowrap;
+}
+body.dusky button.action.multiline {
+  white-space: normal;
+}
+body.dusky button.btn-secondary {
+  border-width: 1px;
+}
+body.dusky button.action-move {
+  width: 55px;
+}
+body.dusky button.context {
+  width: auto;
+  display: inline;
+  float: right;
+}
+body.dusky button.btn-wide {
+  width: 110pt;
+}
+body.dusky button.btn-x-wide {
+  width: 180pt;
+}
+body.dusky button.btn-narrow {
+  width: 80pt;
+}
+body.dusky button.btn-compact {
+  width: auto;
+  min-width: 2.5em;
+  padding: 8px 10px;
+}
+body.dusky button.btn-mini {
+  width: auto;
+  padding: 4px 8px;
+}
+body.dusky button.btn-glyph {
+  font-weight: bold;
+  width: 1.5em;
+  height: 1.5em;
+  margin: 1px 2px;
+  padding: 1px;
+  font-size: 1em;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1em;
+  border-width: 1px;
+  border-radius: 1px;
+}
+body.dusky button.btn-glyph img {
+  max-width: 1em;
+  max-height: 1em;
+  margin: auto;
+}
+body.dusky button.btn-glyph-big {
+  width: auto !important;
+  min-width: 2.5em;
+  padding-left: 0;
+  padding-right: 0;
+}
+body.dusky .layout-small button.btn-glyph-big {
+  min-width: 2em;
+}
+body.dusky button.btn-meta {
+  width: auto;
+  padding: 0px 3px;
+  border-radius: 0px !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: none;
+  border-width: 0px;
+  text-transform: lowercase;
+  z-index: inherit;
+}
+body.dusky button.btn-meta-float {
+  float: right;
+}
+body.dusky button.btn-meta:hover {
+  text-decoration: underline;
+}
+body.dusky div.container-btn-action {
+  display: inline-block;
+  padding: -1px;
+  margin: 4px 6px;
+  border-width: 0px;
+}
+body.dusky table div.container-btn-action {
+  margin: 2px 2px;
+}
+body.dusky table.dense div.container-btn-action {
+  margin: 2px 2px;
+}
+body.dusky div.container-btn-action button {
+  margin: -1px;
+}
+body.dusky .callout-container hr {
+  margin: 0.25em 3px;
+}
+body.dusky .cooldown-reqs {
+  height: 5px;
+  width: 0%;
+  padding: 0;
+  border-width: 0px;
+  transition: all 0.1s;
+}
+body.dusky .cooldown-duration {
+  background: rgba(100, 100, 100, 0.25);
+}
+body.dusky button .cooldown-action,
+body.dusky button .cooldown-duration {
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 0;
+}
+body.dusky .cooldown-action {
+  background-color: rgba(136, 136, 136, 0.3);
+}
+body.dusky .cooldown-reqs {
+  background-color: rgba(136, 136, 136, 0.3);
+}
+body.dusky button.btn-disabled,
+body.dusky li.disabled {
+  opacity: 0.65;
+  cursor: default !important;
+}
+body.dusky button.btn-disabled-vision {
+  opacity: 0.2;
+  color: rgba(0, 0, 0, 0) !important;
+}
+body.dusky button.btn-disabled-vision:hover {
+  opacity: 0.65;
+}
+body.dusky button.btn-disabled-basic,
+body.dusky button.btn-disabled-vision,
+body.dusky button.btn-disabled-resources,
+body.dusky li.disabled {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  font-weight: normal !important;
+}
+body.dusky button.action.btn-disabled-basic,
+body.dusky button.btn-disabled-vision,
+body.dusky li.disabled {
+  text-decoration: line-through !important;
+}
+body.dusky button.action.btn-disabled-basic:before {
+  content: "\00a0";
+}
+body.dusky button.action.btn-disabled-basic:after {
+  content: "\00a0";
+}
+body.dusky button.btn-disabled-basic,
+body.dusky button.btn-disabled-vision,
+body.dusky button.btn-disabled-resources,
+body.dusky button.btn-disabled-cooldown {
+  border-color: #666;
+  color: #333 !important;
+}
+body.dusky .button-detail-label {
+  margin: -4px 0 2px 0;
+}
+body.dusky .hotkey-hint {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  text-transform: uppercase;
+  color: #202220;
+  border: 1px solid #666;
+  border-radius: 0.25em;
+  height: 1em;
+  width: 1em;
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+body.dusky .container-btn-action .hotkey-hint {
+  display: none;
+}
+body.dusky .container-btn-action:hover .hotkey-hint {
+  display: block;
+}
+body.dusky button.btn-disabled .hotkey-hint {
+  display: none !important;
+}
+body.dusky div.container-btn-action:hover + div.btn-callout,
+body.dusky div.btn-callout:hover,
+body.dusky .info-callout-target:hover + div.info-callout,
+body.dusky div.info-callout:hover,
+body.dusky div.container-btn-action:focus + div.btn-callout,
+body.dusky div.btn-callout:focus,
+body.dusky .info-callout-target:focus + div.info-callout,
+body.dusky div.info-callout:focus {
+  display: block;
+}
+body.dusky .info-callout-target-side:hover + div.info-callout,
+body.dusky .info-callout-target-side + div.info-callout:hover,
+body.dusky .info-callout-target-side:focus + div.info-callout,
+body.dusky .info-callout-target-side + div.info-callout:focus {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+body.dusky div.btn-callout,
+body.dusky div.info-callout {
+  text-align: left;
+  display: none;
+  position: absolute;
+  width: 100%;
+  min-width: 60pt;
+  max-width: 100pt;
+  z-index: 5;
+  text-transform: none;
+}
+body.dusky div.btn-callout {
+  width: 100%;
+  text-align: center;
+  top: 37px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0.95;
+}
+body.dusky div.info-callout {
+  width: auto;
+  min-width: 50%;
+  max-width: 100%;
+}
+body.dusky .btn-callout-empty {
+  visibility: hidden;
+}
+body.dusky .container-btn-action-disabled-reason .btn-callout-empty {
+  visibility: visible !important;
+}
+body.dusky .info-callout-side + div.info-callout {
+  max-width: unset;
+}
+body.dusky .info-callout-target {
+  border-width: 0px;
+  border-style: solid;
+  padding: 0px;
+  margin: 0px;
+  cursor: help;
+  display: inline-block;
+}
+body.dusky div.btn-callout-content,
+body.dusky div.info-callout-content {
+  background: #b7b7b7;
+  color: #202220;
+  border: 1px solid #333;
+}
+body.dusky .item div.info-callout-target,
+body.dusky .res div.info-callout-target,
+body.dusky .resultlist li div.info-callout-target,
+body.dusky .itemlist div.info-callout-target {
+  border-width: 0px;
+  background-color: inherit;
+}
+body.dusky .info-callout-target-small + div.info-callout {
+  width: auto !important;
+  max-width: none !important;
+  white-space: nowrap;
+}
+body.dusky .layout-small .info-callout-target-small + div.info-callout {
+  white-space: normal;
+  min-width: 10em;
+}
+body.dusky .info-callout-target-side + div.info-callout {
+  max-width: none;
+  width: auto;
+  height: 100%;
+  top: 0;
+  white-space: nowrap;
+}
+body.dusky .btn-callout-content {
+  white-space: normal;
+}
+body.dusky div.callout-container {
+  position: relative;
+  display: inline-block;
+}
+body.dusky div.btn-callout-content,
+body.dusky div.info-callout-content {
+  font-size: 0.85rem;
+  line-height: 1.2em;
+  overflow-wrap: break-word;
+}
+body.dusky div.btn-callout-content,
+body.dusky div.info-callout-content {
+  padding: 4px;
+}
+body.dusky .info-callout button,
+body.dusky .npc-container button {
+  padding: 4px 8px;
+}
+body.dusky div.btn-callout-content,
+body.dusky div.info-callout-content {
+  -webkit-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  -moz-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+}
+body.dusky .info-callout-content-section-long {
+  white-space: normal;
+}
+body.dusky div.callout-arrow-up,
+body.dusky div.callout-arrow-left {
+  width: 0;
+  height: 0;
+  z-index: 10;
+  position: relative;
+  margin: 0 0 0 calc(7px/2);
+  margin: 0px auto;
+}
+body.dusky div.callout-arrow-up {
+  border-bottom-color: #333 !important;
+  top: 0px;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid;
+}
+body.dusky div.callout-arrow-left {
+  border-right-color: #333 !important;
+  left: 0px;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid;
+}
+body.dusky .item div.callout-arrow-up {
+  margin: 0 0 0 2px;
+}
+body.dusky .info-callout-target-small + div.info-callout .callout-arrow-up {
+  margin: 0 0 0 5px !important;
+}
+body.dusky span.action-effect-description {
+  display: block;
+}
+body.dusky span.action-effect-description-entry {
+  display: block;
+}
+body.dusky span.action-risk {
+  display: block;
+}
+body.dusky span.action-cost-blocker-storage {
+  text-decoration: line-through;
+}
+body.dusky span.action-cost-blocker {
+  color: #666;
+}
+body.dusky span.action-cost-negated {
+  text-decoration: line-through;
+  color: #666;
+}
+body.dusky .action-separator {
+  display: block;
+  width: 10px;
+  height: 10px;
+}
+body.dusky ul.tabs {
+  margin: 0;
+  list-style-type: none;
+}
+body.dusky ul.tabs li {
+  background: #7c7c7c;
+  display: inline-block;
+  margin: 0px;
+  padding: 5px 10px 5px 10px;
+  border-width: 2px;
+  border-style: solid;
+  position: relative;
+  z-index: 0;
+  white-space: nowrap;
+  top: 3px;
+  height: 2.25em;
+  cursor: pointer;
+  text-transform: lowercase;
+  border-color: #666;
+  box-sizing: border-box;
+}
+body.dusky ul.tabs li.selected {
+  font-weight: bold;
+  z-index: 2;
+  width: auto;
+}
+body.dusky ul.tabs li.selected,
+body.dusky ul.tabs li.selected:hover {
+  background: #999;
+}
+body.dusky ul.tabs li:hover {
+  text-decoration: underline;
+  background: #ccc;
+}
+body.dusky ul.tabs li.selected {
+  border-color: #666;
+  border-bottom-color: #999;
+}
+body.dusky ul.tabs li span {
+  display: inline-block;
+  overflow-x: hidden;
+  width: 100%;
+}
+body.dusky div.popup {
+  background: #7c7c7c;
+  border: 2px solid #666;
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  min-width: 30%;
+  max-width: 60%;
+  -webkit-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  -moz-box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+  box-shadow: 1px 2px 5px 2px rgba(48, 48, 48, 0.25);
+}
+body.dusky div.popup-ingame {
+  z-index: 16;
+}
+body.dusky div.popup-meta {
+  z-index: 26;
+}
+body.dusky div#popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(108, 108, 108, 0.85);
+  z-index: 15;
+}
+body.dusky div.popup-overlay-meta {
+  z-index: 25;
+}
+body.dusky .tab-options {
+  float: right;
+}
+body.dusky .stepper {
+  text-align: center;
+  min-width: 70px;
+  vertical-align: middle;
+  margin: 1px;
+  white-space: nowrap;
+}
+body.dusky .stepper button {
+  margin: 0;
+}
+body.dusky .stepper button[data-type="minus"] {
+  border-radius: 7px 0px 0px 7px;
+}
+body.dusky .stepper button[data-type="plus"] {
+  border-radius: 0px 7px 7px 0px;
+}
+body.dusky .horizontal-select {
+  display: flex;
+  align-items: center;
+  margin: 2px 0;
+}
+body.dusky .horizontal-select-title {
+  background: #999;
+  padding: 1px 8px;
+}
+body.dusky .horizontal-select-list {
+  padding: 0;
+  margin: 0;
+}
+body.dusky .horizontal-select-option {
+  background: #b7b7b7;
+  border: 1px solid #333;
+  padding: 1px 5px;
+  margin: 0 2px;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 3px;
+}
+body.dusky .horizontal-select-option:hover {
+  background: #bbb;
+  border-color: ligten(#333, 10%);
+}
+body.dusky .horizontal-select-option.selected {
+  background: #bbb;
+}
+body.dusky .stat-indicator {
+  display: block;
+  white-space: nowrap;
+  padding-right: 5px;
+}
+body.dusky .stat-indicator span {
+  display: inline-block;
+  margin: auto 0 auto 1px;
+}
+body.dusky .stat-indicator span.label {
+  text-transform: lowercase;
+}
+body.dusky .stat-indicator span.value {
+  text-align: center;
+  margin-left: 4px;
+}
+body.dusky .stat-indicator .value,
+body.dusky .stat-indicator .value-total,
+body.dusky .stat-indicator .change,
+body.dusky .stat-indicator .forecast {
+  color: #202220;
+}
+body.dusky .stat-indicator .change,
+body.dusky .stat-indicator .forecast {
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+body.dusky .stat-indicator .progress {
+  height: 0.5em;
+  width: 35px;
+  display: inline-block;
+  vertical-align: middle;
+}
+body.dusky .stat-indicator .progress-wrap {
+  margin: auto 1px auto 3px;
+}
+body.dusky .stat-indicator-with-fill {
+  font-size: 0.85rem;
+  border: 2px solid #bbb;
+  background: linear-gradient(to right, #bbb 50%, transparent 50%);
+  width: 13em;
+}
+body.dusky .change-indicator {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  background-size: 100%;
+  margin: 0px 2px;
+  opacity: 0.75;
+  vertical-align: middle;
+}
+body.dusky .indicator-even {
+  background-image: url('../img/eldorado/icon-even.png');
+  opacity: 0.25;
+}
+body.dusky .indicator-decrease {
+  background-image: url('../img/eldorado/icon-decrease.png');
+}
+body.dusky .item-comparison-badge .indicator-decrease {
+  opacity: 0.25;
+}
+body.dusky .indicator-increase {
+  background-image: url('../img/eldorado/icon-increase.png');
+}
+body.dusky .indicator-fastincrease {
+  background-image: url('../img/eldorado/icon-fastincrease.png');
+}
+body.dusky .indicator-equipped {
+  background-image: url('../img/eldorado/icon-checkmark.png');
+  opacity: 0.5;
+}
+body.dusky .indicator-unique {
+  background-image: url('../img/eldorado/icon-unique.png');
+}
+body.dusky .collapsible-container {
+  margin: 5px 0px;
+}
+body.dusky .collapsible-container {
+  border: 1px solid #666;
+}
+body.dusky .collapsible-header {
+  background-color: #bbb;
+  cursor: pointer;
+  margin: 0px;
+  padding: 5px 30px 5px 10px;
+  background-image: url('../img/open-iconic/arrow-circle-top-2x.png');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+body.dusky .collapsible-header:hover {
+  background-color: #ddd;
+}
+body.dusky .collapsible-header.collapsible-collapsed {
+  background-image: url('../img/open-iconic/arrow-circle-bottom-2x.png');
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+body.dusky .collapsible-content {
+  margin: 5px 10px;
+  display: none;
+}
+body.dusky .progress {
+  width: 100%;
+  max-width: 300px;
+  height: 1em;
+  border-width: 0px !important;
+  line-height: 1.3;
+}
+body.dusky .progress.full-width,
+body.dusky .progress.full-width .progress {
+  max-width: 100%;
+  height: 1.5em;
+  line-height: 1.5em;
+}
+body.dusky .progress-wrap {
+  background-color: #bbb;
+  margin: 2px 0;
+  border: 0px;
+  outline: 1px solid #bbb;
+  overflow: hidden;
+  position: relative;
+}
+body.dusky .progress-wrap-science {
+  background-color: #6af !important;
+}
+body.dusky .progress-multibar-container {
+  display: flex;
+  margin: 5px 0;
+}
+body.dusky .progress-multibar-container .progress-wrap {
+  display: inline-block !important;
+  margin: 0px;
+}
+body.dusky .progress-bar {
+  left: 0;
+  top: 0;
+  position: absolute;
+  background: #bbb;
+}
+body.dusky .progress-label {
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: 100%;
+  font-size: 0.85rem;
+  text-align: center;
+  vertical-align: text-top;
+}
+body.dusky .progress-bar-change {
+  background: #bbb;
+  position: absolute;
+  width: 0%;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dusky .canvas-container {
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  border-width: 1px !important;
+}
+body.dusky .canvas-container {
+  border: 1px solid #666;
+}
+body.dusky .scroll-position-container {
+  padding: 5px;
+  position: relative;
+  overflow: hidden;
+}
+body.dusky .scroll-position-indicator {
+  position: absolute;
+  background: #666;
+}
+body.dusky .scroll-position-indicator-vertical {
+  width: 100%;
+  height: 50%;
+  min-height: 10px;
+  min-width: 10px;
+  top: 10px;
+  left: 0;
+}
+body.dusky .scroll-position-indicator-horizontal {
+  height: 100%;
+  width: 50%;
+  min-width: 10px;
+  min-height: 10px;
+  top: 0;
+  left: 10px;
+}
+body.dusky .scrollable.scroll-enabled {
+  cursor: all-scroll;
+}
+body.dusky .scrollable-container {
+  max-height: 100vh;
+  overflow-y: scroll;
+  background: #999;
+  border: #666 1px solid;
+  border-radius: 3px;
+}
+body.dusky .bubble {
+  background-color: #ccc;
+  color: #202220;
+  display: inline-block;
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 16px !important;
+  height: 16px !important;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  line-height: 18px;
+}
+body.dusky #switch .bubble {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+body.dusky .bubble-even {
+  background-image: url('../img/eldorado/icon-even-dark.png');
+  opacity: 0.25;
+}
+body.dusky .bubble-decrease {
+  background-image: url('../img/eldorado/icon-decrease-dark.png');
+}
+body.dusky .bubble-increase {
+  background-image: url('../img/eldorado/icon-increase-dark.png');
+}
+body.dusky .bubble-fastincrease {
+  background-image: url('../img/eldorado/icon-fastincrease-dark.png');
+}
+body.dusky .container-relative {
+  position: relative;
+  display: inline-block;
+}
+body.dusky .container-relative p {
+  margin: 0;
+}
+body.dusky .container-nomargin {
+  margin: 0;
+}
+body.dusky .actionbox,
+body.dusky .infobox,
+body.dusky .buttonbox {
+  margin: 6px 0px;
+}
+body.dusky .infobox {
+  padding: 0px 0px 5px 0px;
+}
+body.dusky .infobox-scrollable {
+  border: 1px solid #666;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  max-height: 12em;
+}
+body.dusky .infobox-scrollable-header {
+  margin: 1.5em 0 0 0;
+}
+body.dusky .actionbox {
+  padding: 3px 0px;
+}
+body.dusky .textbox {
+  padding: 10px 0px;
+  max-width: 70em;
+}
+body.dusky .divbox {
+  margin: 10px 0 10px 0;
+}
+body.dusky .inventorybox {
+  border-color: #666;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 5px 0px 2px 0px;
+  margin: 5px 0px;
+  min-height: 1em;
+  min-width: 1em;
+  vertical-align: top;
+}
+body.dusky .inventorybox ul li {
+  background: inherit !important;
+  margin: 0px 2px 2px 0px;
+  padding: 0;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  position: relative;
+}
+body.dusky .inventorydivision {
+  width: 49%;
+  display: table-cell;
+  position: relative;
+  vertical-align: top;
+  padding-top: 2.5em;
+  margin-top: -5px;
+}
+body.dusky .inventorydivision-with-footer {
+  padding-bottom: 2em;
+}
+body.dusky .inventorydivision .inventorybox-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  width: 100%;
+  padding: 5px 0;
+}
+body.dusky .inventorydivision:first-child .inventorybox-header {
+  border-radius: 10px 0 0 0;
+  text-wrap: nowrap;
+}
+body.dusky .inventorydivision:last-child .inventorybox-header {
+  border-radius: 0 10px 0 0;
+}
+body.dusky .inventorydivision .inventorybox-footer {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  margin: 0;
+  width: 100%;
+}
+body.dusky .regular-layout #common-popup .inventorybox ul {
+  min-width: 380px;
+  width: 100%;
+}
+body.dusky .inventorybox ul,
+body.dusky .ul-horizontal {
+  padding: 0px;
+  margin: 0px;
+}
+body.dusky .inventorybox-negative > li {
+  opacity: 80%;
+}
+body.dusky .highlightbox,
+body.dusky .inventorybox-header,
+body.dusky .inventorybox-footer {
+  background: #bbb;
+  border-color: #bbb;
+}
+body.dusky .info-detail {
+  font-size: 0.85rem;
+  line-height: 1.15em;
+  display: block;
+}
+body.dusky ul.buttonlist {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+body.dusky .li-item-negative {
+  border: 2px solid #ee1111 !important;
+}
+body.dusky .item-slot {
+  background: inherit !important;
+  margin: 0px 2px 2px 0px;
+  padding: 0;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  position: relative;
+}
+body.dusky .item-slot.highlighted,
+body.dusky .explorer-slot.highlighted {
+  border-color: #595959;
+  color: #454945;
+}
+body.dusky .item-slot-big {
+  width: 55px;
+  height: 70px;
+}
+body.dusky .item-slot-equipment .item-count {
+  background: #fa6;
+}
+body.dusky .item-slot-consumable .item-count {
+  background: #6af;
+}
+body.dusky .item-slot-ingredient .item-count {
+  background: #6fa;
+}
+body.dusky .item-slot-other .item-count {
+  background: #bbb;
+}
+body.dusky .item-slot-equipped,
+body.dusky .explorer-slot-selected {
+  border-color: #333;
+}
+body.dusky .item-equipped,
+body.dusky .explorer-selected {
+  background: #bbb;
+}
+body.dusky .item-broken {
+  border: red;
+  background: linear-gradient(90deg, #999 0%, #999 50%, rgba(250, 0, 0, 0.35) 50%, rgba(250, 0, 0, 0.35) 100%) !important;
+}
+body.dusky .item-slot-type-empty,
+body.dusky .explorer-slot-type-empty {
+  font-size: 0.85rem;
+  text-align: center;
+  display: inline-block;
+  opacity: 0.25;
+  width: 100%;
+  font-style: oblique;
+}
+body.dusky .item-slot-type-equipped,
+body.dusky .explorer-slot-type-selected {
+  font-size: 0.85rem;
+  text-align: center;
+  width: 55px;
+  height: 70px;
+  line-height: 70px;
+  display: inline-block;
+}
+body.dusky .item-slot-type-equipped {
+  font-size: 0.85rem;
+  text-align: center;
+  display: inline-block;
+}
+body.dusky .item-slot-type-equipped {
+  width: 55px;
+  height: 70px;
+  line-height: 70px;
+}
+body.dusky .item-slot-big .item-slot-image {
+  left: calc(55px / 2 - 18px);
+  top: calc(70px / 2 - 18px + 10px);
+}
+body.dusky .item-slot-name,
+body.dusky .item-slot-type-equipped,
+body.dusky .explorer-slot-type-selected {
+  background-color: #bbb;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  line-height: 1.05em;
+  height: auto;
+  max-height: 1.9em;
+  padding: 0.35em 0;
+}
+body.dusky .item-slot.highlighted .item-slot-type-equipped,
+body.dusky .explorer-slot.highlighted .explorer-slot-type-selected {
+  background: #cfcfcf;
+}
+body.dusky .item-slot-effect {
+  display: none;
+}
+body.dusky .item-slot-name {
+  bottom: 0px;
+  opacity: 0;
+}
+body.dusky .item-slot-type-equipped,
+body.dusky .explorer-slot-type-selected {
+  top: 0px;
+}
+body.dusky .item-slot-simple {
+  border-width: 0px !important;
+}
+body.dusky div.item-slot > div,
+body.dusky div.item-slot > span {
+  position: absolute;
+  cursor: default;
+}
+body.dusky #container-party-slots {
+  display: flex;
+  gap: 5px;
+}
+body.dusky .explorer-slot-explorer {
+  width: 100%;
+  display: block;
+  text-align: center;
+}
+body.dusky .explorer-slot {
+  display: inline-block;
+  min-width: 80px;
+}
+body.dusky ul.itemlist,
+body.dusky ul.resultlist {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+body.dusky .itemlist li {
+  display: inline-flex;
+}
+body.dusky .item,
+body.dusky .res {
+  vertical-align: middle;
+  display: inline-flex;
+  position: relative;
+  margin: 2px;
+  padding: 5px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+}
+body.dusky .item,
+body.dusky .res,
+body.dusky .li-item-negative,
+body.dusky .li-item-positive {
+  background: #999;
+  border: 2px solid #666;
+}
+body.dusky .item.highlighted {
+  background: #b3b3b3;
+  border-color: #999999;
+}
+body.dusky .res {
+  border-radius: 0 !important;
+  margin: 8px 6px 6px 6px !important;
+  padding: 0px !important;
+  border-width: 1px;
+}
+body.dusky .item img,
+body.dusky .li-item-negative img,
+body.dusky .li-item-positive img {
+  margin: auto;
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+}
+body.dusky .res img {
+  margin: -2px 1px 8px 1px;
+  vertical-align: middle;
+  height: 12px;
+  width: 12px;
+}
+body.dusky .item div.item-count,
+body.dusky .res div.item-count {
+  background: transparent;
+  border-width: 1px;
+  color: #202220;
+  font-size: 0.75rem;
+  position: absolute;
+  bottom: -0.9em;
+  left: -2px;
+  min-width: 100%;
+  max-height: 1em;
+  padding: 0 1px;
+  line-height: 1em;
+  text-align: center;
+  z-index: 3;
+  border-radius: 5px;
+}
+body.dusky li.item-with-count {
+  margin-bottom: 1em;
+}
+body.dusky .warning,
+body.dusky .warning span,
+body.dusky li.li-item-negative,
+body.dusky .item-slot-lost .item-count,
+body.dusky .btn-warning {
+  color: #e64646 !important;
+}
+body.dusky hr.warning {
+  border-color: #e64646 !important;
+}
+body.dusky .warning.progress-wrap {
+  background: #e64646 !important;
+  outline-color: #e64646 !important;
+}
+body.dusky .warning .progress-label {
+  color: #202220 !important;
+}
+body.dusky .inventorybox-negative,
+body.dusky .item-slot-lost .item-count {
+  border: 1px solid #ee1111 !important;
+}
+body.dusky .item-comparison-indicator {
+  background-size: 100%;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 10px;
+  height: 10px;
+}
+body.dusky .item-comparison-badge {
+  top: -11px;
+  right: -11px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #333;
+  padding: 2px;
+  border-radius: 6px;
+  background: #999;
+}
+body.dusky .npc-dialogue-indicator {
+  background-image: url('../img/eldorado/icon-dialogue.png');
+  background-size: 100%;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+body.dusky .indicator-disabled {
+  display: none;
+}
+body.dusky .indicator-urgent {
+  display: block;
+}
+body.dusky .explorer-icons {
+  display: flex;
+  justify-content: center;
+  height: 1em;
+  gap: 1px;
+}
+body.dusky .explorer-icons img,
+body.dusky .explorer-icons div {
+  height: 1em;
+  width: 1em;
+  position: initial;
+}
+body.dusky .npc-quest-indicator {
+  background-size: 100%;
+  background-image: url('../img/eldorado/icon-quest.png');
+  width: 10px;
+  height: 10px;
+}
+body.dusky .npc-quest-badge {
+  top: 1px;
+  left: 5px;
+  position: absolute;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #333;
+  padding: 2px;
+  border-radius: 3px;
+  background: "inherit";
+}
+body.dusky .npc-container {
+  display: inline-flex;
+  flex-direction: column;
+  border: 1px solid #333;
+  min-width: 50px;
+  min-height: 50px;
+  margin: 2px;
+  background-color: #bbb;
+  position: relative;
+}
+body.dusky .npc-container.highlighted {
+  border-color: #595959;
+  color: #454945;
+}
+body.dusky .npc-visitor {
+  background-color: #bbb;
+}
+body.dusky .npc-container-mini {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+}
+body.dusky .npc-portrait {
+  vertical-align: middle;
+  display: inline-flex;
+  flex-direction: column;
+  position: relative;
+  margin: 2px 0;
+  width: 100%;
+}
+body.dusky .npc-container .item-comparison-badge {
+  top: 1px;
+  right: 5px;
+}
+body.dusky .npc-type-indicator {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  right: 5px;
+  width: 12px;
+  height: 12px;
+}
+body.dusky .npc-type-indicator img {
+  width: 100%;
+}
+body.dusky .npc-portrait img {
+  margin: auto;
+  vertical-align: middle;
+  height: 32px;
+  width: 32px;
+  padding: 1px;
+}
+body.dusky img.portrait {
+  height: 32px;
+  width: 32px;
+}
+body.dusky .npc-container span {
+  text-align: center;
+}
+body.dusky .npc-container .button-row-2 button {
+  width: 48px !important;
+}
+body.dusky .interaction-options {
+  display: flex;
+  flex-direction: column;
+}
+body.dusky .debug-info {
+  color: #202220;
+  background: #22992299;
+  font-size: 0.85rem;
+}
+body.dusky p.debug-info {
+  margin: 0;
+}
+body.dusky .dev-hud {
+  opacity: 0.75;
+  background: #999;
+  padding: 1px;
+  border-radius: 5px;
+  z-index: 100;
+}
+body.dusky .dev-hud:hover {
+  opacity: 1;
+}
+body.dusky .status-badge {
+  float: right;
+  padding: 0 0.75em;
+  border-radius: 1em;
+  height: 1em;
+}
+body.dusky .status-badge {
+  background: #bbb;
+}
+body.dusky input,
+body.dusky select,
+body.dusky textarea {
+  background-color: #7c7c7c;
+  color: #202220;
+  border: 1px solid #666;
+}
+body.dusky select:hover {
+  border-color: #666;
+}
+body.dusky input[type=range] {
+  background: inherit;
+  border: none;
+  margin: 3px 5px;
+  vertical-align: middle;
+  cursor: pointer;
+  height: 20px;
+  -webkit-appearance: none;
+}
+body.dusky input[type=range]:focus {
+  outline: none;
+}
+body.dusky input[type=range]::-webkit-slider-runnable-track {
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #7c7c7c;
+}
+body.dusky input[type=range]::-webkit-slider-thumb {
+  border: 1px solid #666;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #202220;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+body.dusky input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #7c7c7c;
+}
+body.dusky input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: #7c7c7c;
+}
+body.dusky input[type=range]::-moz-range-thumb {
+  border: 1px solid #666;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #202220;
+  cursor: pointer;
+}
+body.dusky input[type=range]::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+body.dusky input[type=range]::-ms-fill-lower {
+  background: #202220;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+body.dusky input[type=range]::-ms-fill-upper {
+  background: #202220;
+  border: 0px solid #000000;
+  border-radius: 2px;
+}
+body.dusky input[type=range]::-ms-thumb {
+  margin-top: 1px;
+  border: 1px solid #666;
+  height: 15px;
+  width: 15px;
+  border-radius: 15px;
+  background: #202220;
+  cursor: pointer;
+}
+body.dusky input[type=range]:focus::-ms-fill-lower {
+  background: #202220;
+}
+body.dusky input[type=range]:focus::-ms-fill-upper {
+  background: #202220;
+}
+body.dusky .checkbox,
+body.dusky input[type=checkbox] {
+  width: 1em;
+  height: 1em;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  margin: 1px 3px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+body.dusky .checkbox-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+}
+body.dusky select {
+  margin: 0px 5px;
+  padding: 1px 3px;
+  min-width: 5em;
+}
+body.dusky .select-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+body.dusky .select-container .label {
+  flex-flow: 1;
+}
+body.dusky input.amount {
+  width: 30pt;
+  margin: 0;
+  padding: 1px;
+  text-align: center;
+  border-width: 1px 0px;
+}
+body.dusky .sub-page-container {
+  padding: 10px 20px;
+}
+body.dusky .faq-category h3 {
+  text-transform: uppercase;
+  font-size: inherit;
+}
+body.dusky #log {
+  background: none;
+}
+body.dusky #log ul,
+body.dusky #log-latest ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+body.dusky #log ul li,
+body.dusky #log-latest ul li {
+  margin: 0px 0px 0.8em 0px;
+}
+body.dusky #log .msg {
+  display: block;
+}
+body.dusky #log-overlay {
+  height: 100%;
+  width: 100%;
+  position: inherit;
+  pointer-events: none;
+  top: 0;
+}
+body.dusky #log ul li.log-loaded,
+body.dusky #log ul li.log-loaded span {
+  color: #666;
+}
+body.dusky span.time,
+body.dusky span.msg-camp-level {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+body.dusky span.msg-count,
+body.dusky span.time,
+body.dusky span.msg-camp-level {
+  color: #202220;
+}
+body.dusky #header-camp-container {
+  display: flex;
+}
+body.dusky .header-row {
+  padding: 3px 5px;
+}
+body.dusky .header-section {
+  margin: 0px 5px 0px 0px;
+  padding: 0px 2px;
+}
+body.dusky #header-bag-storage,
+body.dusky #bag-resources {
+  display: inline-block;
+}
+body.dusky #main-header-camp {
+  width: 100%;
+  display: flex;
+}
+body.dusky #main-header-camp-overview {
+  flex-basis: auto;
+}
+body.dusky #main-header-camp-resources {
+  flex-grow: 1;
+}
+body.dusky #header-tribe-container {
+  margin-bottom: 5px;
+  padding-left: 5px;
+}
+body.dusky #grid-switch-content {
+  z-index: 1;
+  position: relative;
+}
+body.dusky #statsbar-resources-camp {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 5px;
+}
+body.dusky #statsbar-resources-mobile {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+body.dusky #statsbar-resources-mobile .stat-indicator {
+  width: 5em;
+}
+body.dusky #statsbar-tribe-stats-regular,
+body.dusky #bag-resources-regular {
+  display: inline-block;
+}
+body.dusky #statsbar-self .stat-indicator {
+  display: inline-block;
+}
+body.dusky #header-self-bar {
+  text-align: center;
+  padding: 5px 3px;
+  font-size: 0.85rem;
+  border-width: 2px;
+  background: #999;
+}
+body.dusky #header-self-bar ul {
+  margin-top: 10px;
+}
+body.dusky #header-self-bar > span,
+body.dusky #header-size .stat-indicator span {
+  display: block;
+}
+body.dusky #header-self-bar .stat-indicator {
+  margin: 1px 0px;
+  width: 100%;
+  max-width: 70px;
+  line-height: 1em;
+}
+body.dusky #header-self-bar .callout-container {
+  width: 100%;
+}
+body.dusky #header-self-bar .stat-indicator .value {
+  font-size: 0.75rem;
+  margin: 3px 0;
+}
+body.dusky #header-self-bar .change-indicator {
+  vertical-align: top;
+  margin: 0.2em 0 0 0.25em;
+}
+body.dusky #header-self-bar div.callout-arrow-up {
+  margin: 0 0 0 30.5px;
+}
+body.dusky .stat-indicator-secondary {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+}
+body.dusky .stat-indicator-secondary img {
+  width: 1.75em;
+  height: 1.75em;
+}
+body.dusky .stat-indicator-secondary .value {
+  min-width: 2em;
+  font-size: 100%;
+  margin: 0;
+}
+body.dusky #container-equipment-stats-side {
+  line-height: 1em;
+}
+body.dusky #container-equipment-stats-mobile div {
+  display: inline-block;
+}
+body.dusky #grid-location-header {
+  padding: 10px 0px 0px 0px;
+}
+body.dusky #grid-location-header h1,
+body.dusky #grid-location-header img {
+  display: inline-block;
+  vertical-align: middle;
+}
+body.dusky #level-icon {
+  margin: 3px 3px 3px 0;
+  width: 2.5em;
+  height: 2.5em;
+}
+body.dusky #mobile-header {
+  background: #999;
+  border-bottom: 5px solid #7c7c7c;
+}
+body.dusky #mobile-header img.stat-icon {
+  height: 1em;
+  width: 1em;
+}
+body.dusky .mobile-header-section {
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  flex-wrap: wrap;
+}
+body.dusky #mobile-header-notification-container {
+  width: 100%;
+  min-height: 1em;
+}
+body.dusky #mobile-header .stat-indicator {
+  text-align: center;
+}
+body.dusky #mobile-header .stat-indicator-with-fill {
+  max-width: 5em;
+}
+body.dusky .item-bag-options {
+  margin-top: 5px;
+}
+body.dusky #bag-resources > .callout-container {
+  max-width: 49%;
+}
+body.dusky .notification-player {
+  padding: 0px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #333;
+  font-size: 0.85rem;
+  display: none;
+  margin-top: 5px;
+}
+body.dusky .notification-player .progress {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  height: 1.25em;
+}
+body.dusky #footer {
+  padding: 1px 5px 1px 95px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 5px;
+}
+body.dusky ul#game-options,
+body.dusky ul#game-options-extended {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 0 0px;
+  line-height: 1em;
+  display: table;
+  float: right;
+}
+body.dusky ul#game-options li,
+body.dusky ul#game-options-extended li {
+  list-style-type: none;
+  display: table-cell;
+  vertical-align: middle;
+}
+body.dusky #game-version,
+body.dusky #game-msg {
+  display: inline-block;
+  text-transform: lowercase;
+}
+body.dusky #game-msg {
+  flex-grow: 1;
+}
+body.dusky .sticky-footer .one-quarter {
+  height: 2px;
+  padding: 0px;
+}
+body.dusky span.improvement-badge {
+  padding: 3px;
+  margin: 1px;
+  background-color: #999;
+  border: 1px solid #666;
+  border-radius: 5px;
+  min-width: 1em;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}
+body.dusky span.improvement-badge.badge-disabled {
+  color: #333;
+}
+body.dusky span.improvement-count {
+  font-weight: bold;
+}
+body.dusky span.improvement-badge.improvement-upgrade-level {
+  position: absolute;
+  background-color: #bbb;
+  top: -1px;
+  right: -1px;
+  padding: 0 1px !important;
+  font-size: 0.75rem;
+  width: 1em;
+}
+body.dusky #in-population-status span {
+  display: inline-block;
+}
+body.dusky #in-population-details > div {
+  width: 100%;
+}
+body.dusky #in-characters ul {
+  padding: 0;
+}
+body.dusky #in-characters li {
+  display: inline-block;
+}
+body.dusky .changelog-type {
+  padding: 2px 5px;
+  border-width: 1px;
+  border-style: solid;
+  margin: 0px 5px 0px 0px;
+  border-color: #666;
+}
+body.dusky #changelog {
+  font-size: 0.85rem;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+body.dusky #changelog ul {
+  padding: 0 0 0 2em;
+  margin: 0.25em 0 1em 0;
+  list-style-type: none;
+}
+body.dusky #changelog li {
+  position: relative;
+  line-height: 1.35em;
+}
+body.dusky #changelog li:before {
+  width: 7px;
+  height: 7px;
+  background: #ccc;
+  content: ".";
+  position: absolute;
+  left: -1em;
+  top: 0.375em;
+  display: inline-block;
+  overflow: hidden;
+}
+body.dusky #minimap-background-container {
+  position: relative;
+  height: 224px;
+  width: 224px;
+  border-width: 2px;
+  margin: auto;
+}
+body.dusky #minimap-background {
+  opacity: 0.75;
+}
+body.dusky #minimap-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+body.dusky #out-container-compass,
+body.dusky #out-container-compass-actions {
+  text-align: center;
+  width: 224px;
+}
+body.dusky #out-container-compass canvas,
+body.dusky #out-container-compass-actions table {
+  margin-left: auto;
+  margin-right: auto;
+}
+body.dusky #table-out-actions-movement {
+  margin-top: 10px;
+}
+body.dusky #mainmap-container-container {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dusky #mainmap-container-ascii {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+  font-family: monospace;
+}
+body.dusky #mainmap-container-ascii textarea {
+  width: 100%;
+}
+body.dusky #trade-caravans-outgoing-container tr {
+  border-width: 3px;
+  border-bottom-width: 0px;
+  border-style: solid;
+  border-color: transparent;
+}
+body.dusky #trade-caravans-outgoing-container tr.selected {
+  border-color: #bbb;
+}
+body.dusky .trade-caravans-outgoing-plan {
+  border-width: 3px;
+  border-top-width: 0px;
+}
+body.dusky .row-detail-indicator {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  text-align: center;
+}
+body.dusky .row-detail-indicator {
+  color: #202220;
+}
+body.dusky #trade-caravans-outgoing-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+body.dusky .trade-caravan-outgoing-item span {
+  padding-right: 5px;
+}
+body.dusky #mainmap-ascii-legend {
+  padding: 5px;
+}
+body.dusky #incoming-caravan-popup-multiplier {
+  justify-content: flex-end;
+  font-size: 0.85rem;
+  margin-bottom: 1em;
+}
+body.dusky .camp-overview-production,
+body.dusky .camp-overview-stats {
+  font-size: 0.85rem;
+}
+body.dusky .camp-overview-name {
+  max-width: 5em;
+  white-space: nowrap;
+}
+body.dusky .camp-overview-name .label {
+  overflow-x: hidden;
+  max-width: 5em;
+}
+body.dusky .camp-overview-btn {
+  text-align: center;
+}
+body.dusky td.camp-overview-level {
+  padding: 0 2px;
+  width: 1em;
+}
+body.dusky .camp-overview-level-container {
+  border-radius: 1.75em;
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 2px auto;
+  vertical-align: middle;
+  font-weight: bold;
+}
+body.dusky .lvl-container-camp-normal {
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  background-color: #bbb;
+  border-color: #bbb;
+}
+body.dusky .lvl-container-camp-outpost {
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  background-color: #bbb;
+  border-color: #bbb;
+}
+body.dusky tr.camp-overview-camp {
+  border-style: solid;
+  border-width: 1px;
+}
+body.dusky .camp-overview-lvl14 {
+  text-align: center;
+  height: 1em;
+}
+body.dusky #camp-overview hr {
+  margin: 0;
+  border: 1px solid #bbb;
+}
+body.dusky #resultlist-inventorymanagement-found ul li,
+body.dusky #resultlist-loststuff-lost ul li {
+  border-width: 0px;
+  padding-bottom: 5px;
+}
+body.dusky #resultlist-inventorymanagement .inventorybox {
+  margin: 3px auto;
+}
+body.dusky .layout-regular #resultlist-inventorymanagement .inventorybox {
+  max-width: 25vw;
+}
+body.dusky .layout-mobile #resultlist-inventorymanagement .inventorybox {
+  max-width: 90vw;
+}
+body.dusky ul.resultlist li {
+  margin: 0px 3px;
+  background-color: transparent;
+}
+body.dusky ul.resultlist-positive li:before {
+  content: "+ ";
+}
+body.dusky div#resultlist-static-inventory ul {
+  padding: 0;
+  margin: 5px 0;
+}
+body.dusky .layout-mobile #switch {
+  padding: 0 !important;
+}
+body.dusky div.grid-content {
+  background: #999;
+  border: 1px solid #666;
+}
+body.dusky .blueprint:hover {
+  border-width: 2px !important;
+}
+body.dusky .blueprint-piece-box {
+  width: 2em;
+  height: 2em;
+  display: inline-block;
+  margin: 0px 3px;
+  border-width: 2px;
+  border-style: solid;
+  vertical-align: middle;
+}
+body.dusky .layout-small .blueprint-piece-box {
+  width: 2em;
+  height: 2em;
+}
+body.dusky .blueprint-piece-box-found {
+  background: #bbb;
+  border-color: #333;
+}
+body.dusky .blueprint-piece-box-missing {
+  background: #999;
+  border: 2px solid #666;
+}
+body.dusky .blueprint-piece-box img {
+  margin: 0.4em;
+  width: 1.2em;
+  height: 1.2em;
+}
+body.dusky .layout-small .blueprint-piece-box img {
+  margin: 0.2em;
+  width: 0.8em;
+  height: 0.8em;
+}
+body.dusky .event-starting {
+  animation: event-end 1.3s step-end infinite;
+  animation-timing-function: ease-in-out;
+}
+body.dusky .event-ending {
+  animation: event-end 1.3s step-end infinite;
+  animation-timing-function: ease-in-out;
+}
+body.dusky .event-no-timer .progress-bar {
+  opacity: 0.5 !important;
+}
+@keyframes event-end {
+  0% {
+    opacity: inherit;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+body.dusky #fight-popup {
+  min-width: 35%;
+}
+body.dusky .fight-damage-indicator,
+body.dusky .fight-status-indicator {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dusky .fight-damage-indicator {
+  color: #ee1111;
+  right: -3em;
+}
+body.dusky .fight-status-indicator {
+  color: #202220;
+  right: -5em;
+}
+body.dusky .fight-status-stunned {
+  color: #333;
+}
+body.dusky #fight-popup-enemy-stats {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dusky #fight-popup-enemy-difficulty {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+body.dusky #milestone-next-unlocks {
+  margin: 1em 0;
+}
+body.dusky .unlocks-list-entry {
+  display: block;
+}
+body.dusky .reqs-list-entry {
+  display: inline-block;
+  margin: 0 5px 0 0;
+}
+body.dusky .reqs-checkmark {
+  background-image: url('../img/eldorado/icon-checkmark.png');
+  background-repeat: no-repeat;
+  background-image: url(../img/eldorado/icon-checkmark-dark.png);
+  background-size: 1em 1em;
+  background-position: center;
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+}
+body.dusky #manage-save-popup {
+  width: 42em;
+  max-width: 90% !important;
+}
+body.dusky #manage-save-popup textarea {
+  font-size: 0.85rem;
+  color: #202220;
+  overflow-x: hidden;
+}
+body.dusky #save-list-container {
+  padding: 3px;
+  display: flex;
+  gap: 5px;
+  border: 1px solid #333;
+}
+body.dusky #save-list {
+  flex: 0.65;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+body.dusky #save-list-options {
+  flex: 0.35;
+  border: 1px solid #666;
+}
+body.dusky #save-list-options.selected {
+  background-color: #bbb;
+}
+body.dusky #save-list-options {
+  padding: 3px;
+}
+body.dusky #save-list-options-empty {
+  display: flex;
+  height: 100%;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+body.dusky #manage-save-textarea {
+  font-size: 0.85rem;
+}
+body.dusky .li-save-slot {
+  width: 100%;
+  min-height: 1em;
+  text-align: left;
+  border: 1px solid #666;
+}
+body.dusky .save-slot-header {
+  padding: 3px 3px 0 3px;
+}
+body.dusky .save-slot-content {
+  padding: 0px 3px 3px 3px;
+}
+body.dusky .save-slot-info {
+  color: #202220;
+}
+body.dusky .li-save-slot.selected {
+  background-color: #bbb;
+}
+body.dusky .li-save-slot div {
+  margin: 0 3px;
+}
+body.dusky .save-slot-date {
+  float: right;
+  color: #202220;
+}
+body.dusky #game-stats-container {
+  max-height: 70vh;
+  padding: 0 5px;
+}
+body.dusky #game-stats-container td {
+  text-align: left;
+}
+body.dusky .game-stat-name {
+  text-align: left;
+}
+body.dusky .game-stat-category {
+  text-align: left;
+  text-transform: uppercase;
+  padding-top: 1em;
+}
+body.dusky .game-stat-highscore-value {
+  color: #202220;
+}
+body.dusky .game-stat-highscore-entry {
+  color: #202220;
+}
+body.dusky .settings-entry {
+  display: block;
+}
+body.dusky .hotkey-list-item {
+  display: flex;
+  gap: 5px;
+}
+body.dusky .hotkey-list-item-label {
+  min-width: 35%;
+  text-align: left;
+}
+body.dusky #mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #7c7c7c;
+}
+body.dusky #mobile-overlay p,
+body.dusky #mobile-overlay h2 {
+  margin: 1em;
+}
+body.dusky .loading-content,
+body.dusky .thinking-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: rgba(124, 124, 124, 0.5);
+}
+body.dusky .loading-spinner {
+  text-align: center;
+  width: 100%;
+  position: relative;
+  top: 50%;
+  left: 0;
+  user-select: none;
+}
+body.dusky .loading-spinner .loading-dot {
+  background: #ccc;
+  width: 11px;
+  height: 11px;
+  margin: 2px;
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.3s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.3s infinite ease-in-out both;
+  user-select: none;
+}
+body.dusky .loading-spinner .loading-dot1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+body.dusky .loading-spinner .loading-dot2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+body.dusky .loading-spinner .loading-dot3 {
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
+}
+@-webkit-keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+  }
+}
+@keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+body.dusky #theme-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: #8E8F8E;
+  transition: opacity 0s;
+  opacity: 0;
+}
+body.dusky div {
+  scrollbar-color: #bbb #bbb;
+}
+body.dusky div ::-webkit-scrollbar {
+  width: 11px;
+  background: #bbb;
+}
+body.dusky div ::-webkit-scrollbar-track {
+  background: #bbb;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+body.dusky div ::-webkit-scrollbar-button {
+  background: #bbb;
+  display: none;
+}
+body.dusky div ::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: calc(11px / 2);
+}
+body.dusky div ::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+body.dusky div ::-webkit-scrollbar-thumb:window-inactive {
+  background: #bbb;
+}
+body.dusky div ::-webkit-scrollbar-corner,
+body.dusky div ::-webkit-resizer {
+  background: rgba(187, 187, 187, 0.75) !important;
+  border: 0px solid rgba(187, 187, 187, 0.75);
+  box-shadow: none;
+}
+body.dusky div ::-webkit-scrollbar-corner:hover,
+body.dusky div ::-webkit-resizer:hover {
+  background: rgba(102, 102, 102, 0.75) !important;
+  border: 0px solid rgba(187, 187, 187, 0.75);
+  box-shadow: none;
+}
+body.dusky #minimap {
+  overflow: hidden;
+}
+body.dusky #mainmap {
+  overflow: hidden;
+}
+body.dusky #mainmap,
+body.dusky #researched-upgrades-vis {
+  overflow: hidden;
+}
+body.dusky .canvas-overlay {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+}
+body.dusky .canvas-overlay-cell {
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: table;
+  line-height: 0.85;
+}
+body.dusky .canvas-overlay-cell p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+body.dusky .map-overlay-cell {
+  width: 11px;
+  height: 11px;
+  border: none;
+}
+body.dusky .map-overlay-cell:hover {
+  background: #202220;
+}
+body.dusky .map-overlay-cell.selected {
+  background: #202220;
+  outline: 5px solid rgba(0, 0, 0, 0.5);
+}
+body.dusky #researched-upgrades-vis-container {
+  max-height: 300px;
+}
+body.dusky .upgrades-overlay-cell {
+  width: 85px;
+  height: 22px;
+  color: #202220;
+}
+body.dusky .upgrades-overlay-cell:hover {
+  background: rgba(32, 34, 32, 0.1);
+}
+body.dusky #tab-vis-in {
+  border: 2px solid #666;
+  padding: 0;
+}
+body.dusky #tab-vis-in-container {
+  position: relative;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  height: 100px;
+}
+body.dusky #vis-camp-info-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 16px;
+  background: #bbb;
+  font-size: 0.75rem;
+  padding: 1px;
+  vertical-align: middle;
+  text-align: center;
+  z-index: 9;
+}
+body.dusky .vis-camp-layer {
+  position: absolute;
+  top: 0;
+}
+body.dusky .vis-camp-building-container {
+  background: transparent;
+  border-radius: 3px;
+  border: 2px dotted transparent;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  font-size: 0.75rem;
+  color: transparent;
+}
+body.dusky .vis-camp-building-container.filled {
+  display: none;
+}
+body.dusky .vis-camp-floor {
+  background: #bbb;
+  position: absolute;
+  left: 0px;
+}
+body.dusky .vis-camp-building {
+  position: absolute;
+  opacity: 1;
+  width: 12px;
+  height: 12px;
+  z-index: 3;
+  font-size: 0.75rem;
+}
+body.dusky .vis-camp-building-z0 {
+  z-index: 4;
+}
+body.dusky .vis-camp-building-z1 {
+  z-index: 3;
+}
+body.dusky .vis-camp-building-z2 {
+  z-index: 2;
+}
+body.dusky .vis-camp-building-z3 {
+  z-index: 1;
+}
+body.dusky .vis-camp-building-z4 {
+  z-index: 0;
+}
 body.sunlit {
   background: #fbfbfb;
   color: #202220;

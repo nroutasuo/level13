@@ -63,8 +63,16 @@ define(function () {
 				campvis_building_z3_detail: "#444",
 				campvis_building_z4_detail: "#333",
 			},
+			dusky: {
+				bg_page: "#7c7c7c",
+				bg_page_vision_level_0: "#7c7c7c",
+				bg_page_vision_level_1: "#7c7c7c",
+				bg_page_vision_level_2: "#7c7c7c",
+				bg_page_vision_level_3: "#7c7c7c",
+				bg_page_vision_level_4: "#7c7c7c",
+				bg_element_1: "#c5c5c5",
+			},
 			sunlit: {
-				// f4f2ea
 				bg_page: "#fdfdfd",
 				bg_page_vision_level_0: "#fdfdfd",
 				bg_page_vision_level_1: "#fdfdfd",
@@ -133,10 +141,16 @@ define(function () {
 			}
 		},
 		
-		getColor: function (sunlit, name) {
-			var theme = sunlit ? "sunlit" : "dark";
-			var color = this.colors[theme][name];
+		getColor: function (theme, name) {
+			if (typeof theme === "boolean") theme = theme ? "sunlit" : "dark";
+			let color = this.colors[theme][name];
+
+			if (!color && theme == "dusky") {
+				return this.getColor("sunlit", name);
+			}
+
 			if (!color) {
+				debugger
 				log.w("No such color: " + name);
 				return "#000";
 			}
@@ -144,7 +158,7 @@ define(function () {
 		},
 		
 		getGlobalColor: function (name) {
-			var color = this.colors.global[name];
+			let color = this.colors.global[name];
 			if (!color) {
 				log.w("No such color: " + name);
 				return "#000";
