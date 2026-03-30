@@ -1,10 +1,10 @@
-// Reusable utility classes meant to be as generic as possible
+// Reusable utility classes meant to be as generic as possible (unthemed)
 
-// GENERAL UTILITY CLASSES
+// GENERAL
 
 .centered {
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: auto !important;
+	margin-right: auto !important;
 }
 
 .hidden {
@@ -32,11 +32,6 @@
 
 .noninteractive {
 	pointer-events: none;
-}
-
-.centered {
-	margin-left: auto !important;
-	margin-right: auto !important;
 }
 
 .strike-through, .strike-through p {
@@ -70,24 +65,6 @@ img.icon-centered, .block-centered {
 	margin: auto;
 }
 
-.shadowed-basic {
-	-webkit-box-shadow: 1px 2px @shadow-blur-radius @shadow-spread-radius @color-shadow;
-	-moz-box-shadow:    1px 2px @shadow-blur-radius @shadow-spread-radius @color-shadow;
-	box-shadow:         1px 2px @shadow-blur-radius @shadow-spread-radius @color-shadow;
-}
-
-// LEVEL 13 UTILITY CLASSES
-
-.lvl13-box-1 {
-	background-color: @color-bg-box-1;
-	border: @border-width-box-1 solid @color-border-box-1;
-}
-
-.lvl13-box-2 {
-	background: @color-bg-box-2;
-	border: 1px solid @color-border-box-2;
-}
-
 span.hl-functionality {
 	font-weight: bold;
 }
@@ -96,21 +73,19 @@ span.text-style-highlight {
 	font-weight: bold;
 }
 
-span.text-style-nowrap {
-	white-space: nowrap;
+.container-nomargin {
+	margin: 0;
 }
 
-.p-meta {
-	color: @color-text-meta;
+.status-badge {
+	float: right;
+	padding: 0 0.75em;
+	border-radius: 1em;
+	height: 1em
 }
 
-.dimmed {
-	color: @color-text-dimmed;
-}
 
-.secondary {
-	color: @color-text-secondary;
-}
+// COLUMNS LAYOUTS
 
 .columns-container {
 	display: flex;
@@ -130,14 +105,18 @@ span.text-style-nowrap {
 	flex: 0;
 }
 
-// TABLE UTILITY CLASSES
 
-.fullwidth {
-	width: 100%;
-	margin: 0.5em 0;
+// TABLES
+
+table td {
+	padding: 0px 2px;
 }
 
-.full-width {
+td > button, td > div.container-btn-action {
+	margin-left: 0px;
+}
+
+.fullwidth {
 	width: 100%;
 	margin: 0.5em 0;
 }
@@ -166,62 +145,6 @@ table.spacious td:first-child {
 	padding-left: 0px;
 }
 
-table.updating td {
-	background: @color-bg-warning;
-}
-
-table.borders td {
-	border: 1px solid @color-border-box-2;
-}
-
-table.borders th {
-	background: @color-bg-element-1;
-}
-
-table.borders th.alt-1 {
-	background: @color-bg-science;
-}
-
-table.borders th.alt-2 {
-	background: @color-bg-nature;
-}
-
-table.borders th.alt-3 {
-	background: @color-bg-community;
-}
-
-table.borders td.alt-1 {
-	background: fade(@color-bg-science, 20%)
-}
-
-table.borders td.alt-2 {
-	background: fade(@color-bg-nature, 20%);
-}
-
-table.borders td.alt-3 {
-	background: fade(@color-bg-community, 20%);
-}
-
-table th.sortable {
-	background: @color-bg-element-2;
-	cursor: pointer;
-}
-
-table.highlight-row tr:hover {
-	background: rgba(255, 255, 255, 0.1);
-}
-
-table th.foldable-table-header {
-	background: @color-bg-element-2;
-	cursor: pointer;
-}
-
-table th.foldable-table-header.folded-table-header {
-	background: @color-bg-element-2;
-	font-weight: bold;
-	cursor: pointer;
-}
-
 td.folded-table-cell, th.folded-table-cell {
     min-width: 1px !important;
     overflow: hidden;
@@ -231,8 +154,6 @@ td.folded-table-cell, th.folded-table-cell {
     color: transparent;
 	.unselectable();
 }
-
-// TABLE CELL UTILITY CLASSES
 
 td.nowidth {
 	width: 0%;
@@ -304,17 +225,4 @@ th.th-number {
 
 th.th-text {
 	text-align: left;
-}
-
-td.bg-reset {
-	background: @color-bg-box-1;
-}
-
-tr.current, div.current {
-	background: @color-bg-element-1;
-	border-color: @color-bg-element-1;
-}
-
-tr.header-mini {
-	font-size: @font-size-small;
 }

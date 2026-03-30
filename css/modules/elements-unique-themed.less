@@ -1,0 +1,286 @@
+// Themed colours for specific elements
+
+// TAB BAR
+
+ul.tabs li {
+	background: @color-bg-page;
+	border-color: @color-border-box-2;
+}
+
+ul.tabs li.selected, ul.tabs li.selected:hover {
+	background: @color-bg-box-1;
+}
+
+ul.tabs li:hover {
+	text-decoration: underline;
+	background: @color-bg-clickable-button;
+}
+
+ul.tabs li.selected {
+	border-color: @color-border-box-1;
+	border-bottom-color: @color-bg-box-1;
+}
+
+
+// CONTENT GRID
+	
+div.grid-content {
+	background: @color-bg-box-1;
+	border: @theme-border-width-box-1 solid @color-border-box-1;
+}
+
+
+// "HEADER" SELF-BAR
+
+#header-self-bar {
+	background: @color-bg-box-1;
+}
+
+
+// OUTGOING CARAVANS TABLE AND LIST
+
+#trade-caravans-outgoing-container tr.selected {
+	border-color: @color-bg-element-1;
+}
+
+ .row-detail-indicator {
+	color: @color-text-secondary;
+}// SAVE MANAGEMENT POPUP
+
+#manage-save-popup textarea {
+	color: @color-text-secondary;
+}
+
+#save-list-container {
+	border: 1px solid @color-border-strong;
+}
+
+#save-list-options {
+	border: 1px solid @color-border-box-1;
+}
+
+#save-list-options.selected {	
+	background-color: @color-bg-element-1;
+}
+
+.li-save-slot {
+	border: 1px solid @color-border-box-1;
+}
+
+.save-slot-info {
+    color: @color-text-secondary;
+}
+
+.li-save-slot.selected {
+	background-color: @color-bg-element-1;
+}
+.save-slot-date {
+    color: @color-text-secondary;
+}
+
+
+// MAIN LOG
+
+#log ul li.log-loaded, #log ul li.log-loaded span {
+	color: @color-text-dimmed;
+}
+
+span.time, span.msg-camp-level {
+	.opacity-transition-reset();
+	font-size: @font-size-tiny;
+	vertical-align: middle;
+}
+
+span.msg-count, span.time, span.msg-camp-level {
+	color: @color-text-secondary;
+}
+
+
+// TRIBE OVERVIEW TABLE
+
+.lvl-container-camp-normal {
+	background-color: @color-bg-element-3;
+	border-color: @color-bg-element-3;
+}
+
+.lvl-container-camp-outpost {
+	background-color: @color-bg-element-2;
+	border-color: @color-bg-element-2;
+}
+
+#camp-overview hr {
+	margin: 0;
+	border: 1px solid @color-bg-element-2;
+}
+
+
+// CAMP BUILDINGS
+
+span.improvement-badge {
+	background-color: @color-bg-box-1;
+	border: 1px solid @color-border-box-1;
+}
+
+span.improvement-badge.badge-disabled {
+	color: @color-text-disabled;
+}
+
+span.improvement-badge.improvement-upgrade-level {
+	background-color: @color-bg-element-1;
+}
+
+
+// CAMP POPULATION AND WORKERS
+
+#in-population-status span {
+	display: inline-block;
+}
+
+#in-population-details > div {
+	width: 100%;
+}
+
+#in-characters ul {
+	padding: 0;
+}
+
+#in-characters li {
+	display: inline-block;
+}
+
+
+// MAIN MAP
+
+#mainmap-container-container {
+	.opacity-transition-reset();
+}
+
+.map-overlay-cell:hover {
+	background: @color-text-default;
+}
+
+.map-overlay-cell.selected {
+	background: @color-text-default;
+	outline: 5px solid @color-text-meta;
+}
+
+
+// TECH TREE
+
+.upgrades-overlay-cell:hover {
+	background: fade(@color-text-default, 10%)
+}
+
+.upgrades-overlay-cell {
+	color: @color-text-dark;
+}
+
+
+// CAMP VIS
+
+#tab-vis-in {
+	border: 2px solid @color-border-box-1;
+}
+
+#vis-camp-info-overlay {
+	background: @color-bg-element-1;
+}
+
+.vis-camp-floor {
+	background: @color-bg-element-1;
+}
+
+
+// MOBILE OVERLAY
+
+#mobile-overlay {
+    background: @color-bg-page;
+}
+
+// GAME STAT POPUP
+
+.game-stat-highscore-value {
+	color: @color-text-secondary;
+}
+
+.game-stat-highscore-entry {
+	color: @color-text-secondary;
+}
+
+
+// BLUEPRINT PIECES
+
+.blueprint-piece-box-found {
+	background: @color-bg-element-2;
+	border-color: @color-border-strong;
+}
+
+.blueprint-piece-box-missing {
+	background: @color-bg-box-1;
+	border: 2px solid @color-border-box-1;
+}
+
+
+// EXPLORER ICONS AND QUEST INDICATOR
+
+.npc-quest-indicator {
+	background-size: 100%;
+	background-image: @img-indicator-quest;
+	width: 10px;
+	height: 10px;
+}
+
+.npc-quest-badge {
+	border-color: @color-border-strong;
+	background: @color-bg-box-2;
+}
+
+
+// NPCS
+
+.npc-container {
+	border: 1px solid @color-border-strong;
+	background-color: @color-bg-element-1;
+}
+
+.npc-container.highlighted {
+	border-color: lighten(@color-border-strong, 15%);
+	color: lighten(@color-text-default, 15%);
+}
+
+.npc-visitor {
+	background-color: @color-bg-element-2;
+}
+
+
+// CHANGELOG
+
+.changelog-type {
+	border-color: @color-border-box-1;
+}
+
+#changelog li:before{
+	background: @color-bg-contrast;
+}
+
+
+// LOADER ELEMENTS
+
+.loading-content, .thinking-content {
+	background: fade(@color-bg-page, 50);
+}
+
+.loading-spinner .loading-dot {
+	background: @color-bg-contrast;
+}
+
+
+// MILESTONE PAGE 
+
+.reqs-checkmark {
+	background-image: @img-indicator-checkmark-default;
+    background-repeat: no-repeat;
+    background-image: url(../img/eldorado/icon-checkmark-dark.png);
+    background-size: 1em 1em;
+    background-position: center;
+}

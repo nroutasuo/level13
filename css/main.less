@@ -2,8 +2,14 @@
 
 // MODULES THAT DON'T USE THEMES (colors)
 
-@import "modules/layout";
-@import "modules/vision";
+@import "modules/buttons-base";
+@import "modules/classes-base";
+@import "modules/elements-common-base";
+@import "modules/elements-unique-base";
+@import "modules/input-base";
+@import "modules/layout-base";
+@import "modules/loader-base";
+@import "modules/vision-base";
 
 // GLOBAL SETTINGS
 
@@ -43,17 +49,13 @@ body.sunlit {
 	.color-theme(sunlit);
 }
 
+// MODULES USING THEMES
+
 .color-theme(@theme) {
-	// MODULES USING THEMES
-	@import "modules/base-classes";
-	@import "modules/base-elements";
-	@import "modules/base-typography";
-	@import "modules/elements-buttons";
-	@import "modules/elements-common";
-	@import "modules/elements-input";
-	@import "modules/elements-meta";
-	@import "modules/elements-special";
-	@import "modules/loader";
-	@import "modules/scrollbar";
-	@import "modules/vis";
+	@import "modules/buttons-themed";
+	@import "modules/classes-themed";
+	@import "modules/elements-common-themed";
+	@import "modules/elements-unique-themed";
+	@import "modules/input-themed";
+	@import "modules/scrollbar-themed";
 }

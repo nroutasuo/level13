@@ -1,0 +1,393 @@
+// Themed colours for common elements
+
+
+// BASE TEXT, LINKS AND HEADERS
+
+::-moz-selection {
+	background: @color-bg-contrast;
+}
+
+::selection {
+	background: @color-bg-contrast;
+}
+
+// COLLAPSIPBLE CONTAINERS
+
+.collapsible-container {
+	border: 1px solid @color-border-box-2;
+}
+
+.collapsible-header:hover {
+	background-color: @color-bg-clickable-element;
+}
+
+.collapsible-header {
+	background-color: @color-bg-element-1;
+	background-image: @img-arrow-circle-up;
+	background-position: right 8px center;
+	background-repeat: no-repeat;
+}
+
+.collapsible-header.collapsible-collapsed {
+	background-image: @img-arrow-circle-down;
+}
+
+// DIVIDERS
+
+hr {
+	color: @color-border-strong;
+	border:none;
+	border-top:1px @color-border-strong solid;
+}
+
+
+// CALLOUTS
+
+div.btn-callout-content, div.info-callout-content {
+	background: @color-bg-button;
+	color: @color-text-default;
+	border: 1px solid @color-border-strong;
+}
+
+div.btn-callout-content, div.info-callout-content {
+	.shadowed-basic();
+}
+
+
+// CALLOUT ARROWS
+
+div.callout-arrow-up, div.callout-arrow-left  {
+	border-bottom-color: @color-border-strong !important;
+}
+
+
+// ACTION CALLOUT DETAILS
+
+span.action-cost-blocker {
+	color: @color-text-dimmed;
+}
+
+span.action-cost-negated {
+	text-decoration: line-through;
+	color: @color-text-dimmed;
+}
+
+// POPUPS
+
+div.popup {
+	background: @color-bg-popup;
+	border: 2px solid @color-border-box-1;
+	.shadowed-basic();
+}
+
+div#popup-overlay {
+	background-color: @color-popup-overlay;
+}
+
+// HORIZONTAL SELECT
+
+.horizontal-select-title {
+	background: @color-bg-box-1;
+}
+
+.horizontal-select-option {
+	background: @color-bg-button;
+	border: 1px solid @color-border-strong;
+}
+
+.horizontal-select-option:hover {
+	background: @color-bg-element-2;
+	border-color: ligten(@color-border-strong, 10%);
+}
+
+.horizontal-select-option.selected {
+	background: @color-bg-element-2;
+}
+
+
+// STAT INDICATORS
+
+.stat-indicator .value, .stat-indicator .value-total, .stat-indicator .change, .stat-indicator .forecast {
+	color: @color-text-secondary;
+}
+
+.stat-indicator-with-fill {
+	font-size: @font-size-small;
+	border: 2px solid @color-bg-element-1;
+    background: linear-gradient(to right, @color-bg-element-1 50%, transparent 50%);
+	width: 13em;
+}
+
+
+// ITEM COMPARISON INDICATORS
+
+.item-comparison-badge {
+	border-color: @color-border-strong;
+	background: @color-bg-box-1;
+}
+
+
+// CHANGE INDICATORS
+
+.indicator-even {
+	background-image: @img-indicator-even-default;
+	opacity: 0.25;
+}
+
+.indicator-decrease {
+	background-image: @img-indicator-decrease-default;
+}
+
+.item-comparison-badge .indicator-decrease {
+	opacity: 0.25;
+}
+
+.indicator-increase {
+	background-image: @img-indicator-increase-default;
+}
+
+.indicator-fastincrease {
+	background-image: @img-indicator-fastincrease-default;
+}
+
+.indicator-equipped {
+	background-image: @img-indicator-checkmark-default;
+	opacity: 0.5;
+}
+
+.indicator-unique {
+	background-image: @img-indicator-unique-default;
+}
+
+
+// DIALOGUE INDICATORS
+
+.npc-dialogue-indicator {
+	background-image: @img-indicator-dialogue;
+	background-size: 100%;
+	border: none;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+// PROGRESS BAR
+
+.progress-wrap {
+	background-color: @color-bg-element-3;
+	outline: 1px solid @color-bg-element-3;
+}
+
+.progress-bar {
+	background: @color-bg-element-1;
+}
+
+.progress-bar-change {
+	background: @color-bg-element-2;
+	position: absolute;
+	width: 0%;
+	.opacity-transition-reset();
+}
+
+.progress-wrap-science {
+	background-color: @color-bg-science !important;
+}
+
+// PLAYER NOTIFICATION (BUSY INDICATOR)
+
+.notification-player {
+	border-color: @color-border-strong;
+}
+
+
+// SCROLLABLE CANVASES AND CANVAS CONTAINERS
+
+.canvas-container {
+	border: 1px solid @color-border-box-2;
+}
+
+.scrollable-container {
+	background: @color-bg-box-1;
+	border: @color-border-box-1 1px solid;
+}
+
+.scroll-position-indicator {
+	background: @color-border-box-1;
+}
+
+
+// BUBBLES (content notifications)
+
+.bubble {
+	background-color: @color-bg-contrast;
+	color: @color-text-dark;
+}
+
+.bubble-even {
+	background-image: @img-indicator-even-contrast;
+	opacity: 0.25;
+}
+
+.bubble-decrease {
+	background-image: @img-indicator-decrease-contrast;
+}
+
+.bubble-increase {
+	background-image: @img-indicator-increase-contrast;
+}
+
+.bubble-fastincrease {
+	background-image: @img-indicator-fastincrease-contrast;
+}
+
+
+// INFO/ACTION/TEXT/DIVBOXES
+
+.infobox-scrollable {
+	border: 1px solid @color-border-box-2;
+}
+
+
+// INVENTORYBOX
+
+.inventorybox {
+	border-color: @color-border-box-1;
+}
+
+.highlightbox, .inventorybox-header, .inventorybox-footer {
+	background: @color-bg-element-1;
+	border-color: @color-bg-element-1;
+}
+
+
+// ITEMS, EXPLORERS, ITEMSLOTS, EXPLORERSLOTS
+
+.li-item-negative {
+	border: 2px solid @color-border-warning !important;
+}
+
+.item-slot.highlighted, .explorer-slot.highlighted {
+	border-color: lighten(@color-border-strong, 15%);
+	color: lighten(@color-text-default, 15%);
+}
+
+.item-slot-big {
+	width: @item-slot-big-width;
+	height: @item-slot-big-height;
+}
+
+.item-slot-equipment .item-count {
+	background: @color-bg-community;
+}
+
+.item-slot-consumable .item-count {
+	background: @color-bg-science;
+}
+
+.item-slot-ingredient .item-count {
+	background: @color-bg-nature;
+}
+
+.item-slot-other .item-count {
+	background: @color-bg-element-2;
+}
+
+.item-slot-equipped, .explorer-slot-selected {
+	border-color: @color-border-strong;
+}
+
+.item-equipped, .explorer-selected {
+	background: @color-bg-element-1;
+}
+
+.item-broken {
+	border: red;
+	background: linear-gradient(90deg, @color-bg-box-1 0%, @color-bg-box-1 50%, @color-bg-warning-stronger 50%, @color-bg-warning-stronger 100%) !important;
+}
+
+.item-slot-name, .item-slot-type-equipped, .explorer-slot-type-selected {
+	background-color: @color-bg-element-1;
+}
+
+.item-slot.highlighted .item-slot-type-equipped, .explorer-slot.highlighted .explorer-slot-type-selected {
+	background: lighten( @color-bg-element-1, 8%);
+}
+
+.item, .res, .li-item-negative, .li-item-positive {
+	background: @color-bg-box-1;
+	border: 2px solid @color-border-box-1;
+}
+
+.item.highlighted {
+	background: lighten(@color-bg-box-1, 10%);
+	border-color: lighten(@color-border-box-1, 20%);
+}
+
+.item div.item-count, .res div.item-count {
+	color: @color-text-secondary;
+}
+
+
+// WARNINGS AND NEGATIVE ITEMS
+
+.warning, .warning span, li.li-item-negative, .item-slot-lost .item-count, .btn-warning {
+	color: @color-global-warning !important;
+}
+
+hr.warning {
+	border-color: @color-global-warning !important;
+}
+
+.warning.progress-wrap {
+	background: @color-global-warning !important;
+	outline-color: @color-global-warning !important;
+}
+
+.warning .progress-label {
+	color: @color-text-default !important;
+}
+
+.inventorybox-negative, .item-slot-lost .item-count {
+	border: 1px solid @color-border-warning !important;
+}
+
+
+// FIGHT POPUP
+
+.fight-damage-indicator, .fight-status-indicator {
+	.opacity-transition-reset();
+}
+
+.fight-damage-indicator {
+	color: @color-border-warning;
+	right: -3em;
+}
+
+.fight-status-indicator {
+	color: @color-text-secondary;
+	right: -5em;
+}
+
+.fight-status-stunned {
+	color: @color-text-disabled;
+}
+
+#fight-popup-enemy-stats {
+	.opacity-transition-reset();
+}
+
+#fight-popup-enemy-difficulty {
+	.opacity-transition-reset();
+}
+
+
+// UNSORTED
+
+.status-badge {
+	background: @color-bg-element-1;
+}
+
+#mobile-header {
+    background: @color-bg-box-1;
+    border-bottom: 5px solid @color-bg-page;
+}

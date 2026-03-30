@@ -1,0 +1,113 @@
+// Themed colours for generic classes
+
+// GENERAL
+
+.shadowed-basic {
+	-webkit-box-shadow: 1px 2px @theme-shadow-blur-radius @theme-shadow-spread-radius @color-shadow;
+	-moz-box-shadow:    1px 2px @theme-shadow-blur-radius @theme-shadow-spread-radius @color-shadow;
+	box-shadow:         1px 2px @theme-shadow-blur-radius @theme-shadow-spread-radius @color-shadow;
+}
+
+.p-meta {
+	color: @color-text-meta;
+}
+
+.dimmed {
+	color: @color-text-dimmed;
+}
+
+.secondary {
+	color: @color-text-secondary;
+}
+
+.lvl13-box-1 {
+	background-color: @color-bg-box-1;
+	border: @theme-border-width-box-1 solid @color-border-box-1;
+}
+
+.lvl13-box-2 {
+	background: @color-bg-box-2;
+	border: 1px solid @color-border-box-2;
+}
+
+.ui-anim {
+	transform: scale(1.15, 1.15);
+	opacity: 0.8;
+	font-weight: bold;
+}
+
+.ui-anim-negative {
+	color: @color-global-warning !important;
+}
+
+
+// TABLES
+
+table.updating td {
+	background: @color-bg-warning;
+}
+
+table.borders td {
+	border: 1px solid @color-border-box-2;
+}
+
+table.borders th {
+	background: @color-bg-element-1;
+}
+
+table.borders th.alt-1 {
+	background: @color-bg-science;
+}
+
+table.borders th.alt-2 {
+	background: @color-bg-nature;
+}
+
+table.borders th.alt-3 {
+	background: @color-bg-community;
+}
+
+table.borders td.alt-1 {
+	background: fade(@color-bg-science, 20%)
+}
+
+table.borders td.alt-2 {
+	background: fade(@color-bg-nature, 20%);
+}
+
+table.borders td.alt-3 {
+	background: fade(@color-bg-community, 20%);
+}
+
+table th.sortable {
+	background: @color-bg-element-2;
+	cursor: pointer;
+}
+
+table.highlight-row tr:hover {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+table th.foldable-table-header {
+	background: @color-bg-element-2;
+	cursor: pointer;
+}
+
+table th.foldable-table-header.folded-table-header {
+	background: @color-bg-element-2;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+td.bg-reset {
+	background: @color-bg-box-1;
+}
+
+tr.current, div.current {
+	background: @color-bg-element-1;
+	border-color: @color-bg-element-1;
+}
+
+tr.header-mini {
+	font-size: @font-size-small;
+}

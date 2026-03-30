@@ -1,0 +1,84 @@
+// Overriding styles for browser input elements (unthemed)
+
+@size-input-range-thumb: 15px;
+
+select {
+	margin: 0px 5px;
+	padding: 1px 3px;
+	min-width: 5em;
+}
+
+.select-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.select-container .label {
+	flex-flow: 1;
+}
+
+input.amount {
+	width: 30pt;
+	margin: 0;
+	padding: 1px;
+	text-align: center;
+	border-width: 1px 0px;
+}
+
+.checkbox-label {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0;
+}
+
+input[type=range] {
+	margin: 3px 5px;
+	vertical-align: middle;
+	cursor: pointer;
+	height: 20px;
+	-webkit-appearance: none;
+}
+
+input[type=range]:focus {
+	outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+	height: 5px;
+	cursor: pointer;
+	animate: 0.2s;
+}
+
+input[type=range]::-webkit-slider-thumb {
+	height: @size-input-range-thumb;
+	width: @size-input-range-thumb;
+	border-radius: @size-input-range-thumb;
+	cursor: pointer;
+	-webkit-appearance: none;
+	margin-top: -5px;
+}
+
+input[type=range]::-moz-range-track {
+	width: 100%;
+	height: 5px;
+	cursor: pointer;
+	animate: 0.2s;
+}
+
+input[type=range]::-moz-range-thumb {
+	height: @size-input-range-thumb;
+	width: @size-input-range-thumb;
+	border-radius: @size-input-range-thumb;
+	cursor: pointer;
+}
+
+input[type=range]::-ms-track {
+	width: 100%;
+	height: 5px;
+	cursor: pointer;
+	animate: 0.2s;
+	background: transparent;
+	border-color: transparent;
+	color: transparent;
+}

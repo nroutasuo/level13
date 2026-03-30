@@ -1,0 +1,778 @@
+// Specific elements (unthemed)
+
+
+
+// TAB BAR
+
+ul.tabs {
+	margin: 0;
+	list-style-type: none;
+}
+
+ul.tabs li {
+	display: inline-block;
+	margin: 0px;
+	padding: 5px 10px 5px 10px;
+	border-width: 2px;
+	border-style: solid;
+	position: relative;
+	z-index: 0;
+	white-space: nowrap;
+	top: 3px;
+	height: 2.25em;
+	cursor: pointer;
+	text-transform: lowercase;
+	box-sizing: border-box;
+}
+
+ul.tabs li.selected {
+	font-weight: bold;
+	z-index: 2;
+	width: auto;
+}
+
+ul.tabs li span {
+	display: inline-block;
+	overflow-x: hidden;
+	width: 100%;
+}
+
+
+// LOCATION HEADER
+
+#grid-location-header {
+	padding: 10px 0px 0px 0px;
+}
+
+#grid-location-header h1, #grid-location-header img {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#level-icon {
+	margin: 3px 3px 3px 0;
+	width: 2.5em;
+	height: 2.5em;
+}
+
+// PLAYER NOTIFICATION (BUSY INDICATOR)
+
+.notification-player {
+	padding: 0px;
+	border-width: 2px;
+	border-style: solid;
+    font-size: @font-size-small;
+    display: none;
+    margin-top: 5px;
+}
+
+.notification-player .progress {
+	width: 100%;
+	max-width: 100%;
+	margin: 0;
+	height: 1.25em;
+}
+
+
+// INCOMING CARAVAN POPUP
+
+#incoming-caravan-popup-multiplier {
+	justify-content: flex-end;
+	font-size: @font-size-small;
+	margin-bottom: 1em;
+}
+
+
+// OUTGOING CARAVANS TABLE AND LIST
+
+#trade-caravans-outgoing-container tr {
+	border-width: 3px;
+	border-bottom-width: 0px;
+	border-style: solid;
+	border-color: transparent;
+}
+
+.trade-caravans-outgoing-plan {
+	border-width: 3px;
+	border-top-width: 0px;
+}
+
+.row-detail-indicator {
+	display: inline-block;
+	width: 1.5em;
+	height: 1.5em;
+	text-align: center;
+}
+
+#trade-caravans-outgoing-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.trade-caravan-outgoing-item span {
+	padding-right: 5px;
+}
+
+
+// FIGHT POPUP
+
+#fight-popup {
+	min-width: 35%;
+}
+
+.fight-damage-indicator, .fight-status-indicator {
+	margin: 0;
+	font-size: @font-size-small;
+	font-weight: bold;
+	position: absolute;
+	top: 0;
+}
+
+
+// SAVE MANAGEMENT POPUP
+
+#manage-save-popup {
+	width: 42em;
+	max-width: 90% !important;
+}
+
+#manage-save-popup textarea {
+	font-size: @font-size-small;
+	overflow-x: hidden;
+}
+
+#save-list-container {
+	padding: 3px;
+    display: flex;
+	gap: 5px;
+}
+
+#save-list {
+	flex: 0.65;
+	display: flex;	
+    flex-direction: column;
+    gap: 3px;
+}
+
+#save-list-options {
+	flex: 0.35;
+	padding: 3px;
+}
+
+#save-list-options-empty {
+    display: flex;
+    height: 100%;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
+#manage-save-textarea {
+	font-size: @font-size-small;
+}
+
+.li-save-slot {
+	width: 100%;
+	min-height: 1em;
+	text-align: left;
+}
+
+.save-slot-header {
+	padding: 3px 3px 0 3px;
+}
+
+.save-slot-content {
+	padding: 0px 3px 3px 3px;
+}
+
+.li-save-slot div {
+	margin: 0 3px;
+}
+
+.save-slot-date {
+	float: right;
+}
+
+
+// MAIN LOG
+
+#log {
+	background: none;
+}
+
+#log ul, #log-latest ul {
+	list-style-type: none;
+	padding-left:0;
+	margin: 0;
+}
+
+#log ul li, #log-latest ul li {
+	margin: 0px 0px 0.8em 0px;
+}
+
+#log .msg { display: block; }
+
+#log-overlay {
+	height: 100%;
+	width: 100%;
+	position: inherit;
+	pointer-events: none;
+	top: 0;
+}
+
+// MOBILE OVERLAY
+
+#mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    width: 100%;
+    height: 100%;
+}
+
+#mobile-overlay p, #mobile-overlay h2 {
+	margin: 1em;
+}
+
+
+// SETTINGS POPUP
+
+.settings-entry {
+	display: block;
+}
+
+.hotkey-list-item {
+    display: flex;
+    gap: 5px;
+}
+
+.hotkey-list-item-label {
+    min-width: 35%;
+    text-align: left;
+}
+
+
+// GAME STAT POPUP
+
+#game-stats-container {
+	max-height: 70vh;
+    padding: 0 5px;
+}
+
+#game-stats-container td {
+	text-align: left;
+}
+
+.game-stat-name {
+    text-align: left;
+}
+
+.game-stat-category {
+	text-align: left;
+	text-transform: uppercase;
+	padding-top: 1em;
+}// BLUPRINT PIECES
+
+.blueprint:hover {
+	border-width: 2px !important;
+}
+
+.blueprint-piece-box {
+	width: 2em;
+	height: 2em;
+	display: inline-block;
+	margin: 0px 3px;
+	border-width: 2px;
+	border-style: solid;
+	vertical-align: middle;
+}
+
+.layout-small .blueprint-piece-box {
+	width: 2em;
+	height: 2em;
+}
+
+.blueprint-piece-box img {
+	margin: 0.4em;
+	width: 1.2em;
+	height: 1.2em;
+}
+
+.layout-small .blueprint-piece-box img {
+	margin: 0.2em;
+	width: 0.8em;
+	height: 0.8em;
+}
+
+
+// TRIBE OVERVIEW TABLE
+
+.camp-overview-production, .camp-overview-stats {
+	font-size: @font-size-small;
+}
+
+.camp-overview-name {
+	max-width: 5em;
+	white-space: nowrap;
+}
+
+.camp-overview-name .label {
+	overflow-x: hidden;
+	max-width: 5em;
+}
+
+.camp-overview-btn {
+	text-align: center;
+}
+
+td.camp-overview-level {
+	padding: 0 2px;
+	width: 1em;
+}
+
+.camp-overview-level-container {
+	border-radius: 1.75em;
+	text-align: center;
+	font-size: @font-size-small;
+	margin: 2px auto;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+.lvl-container-camp-normal {
+	width: 2em;
+	height: 2em;
+	line-height: 2em;
+}
+
+.lvl-container-camp-outpost {
+	width: 1.5em;
+	height: 1.5em;
+	line-height: 1.5em;
+}
+
+tr.camp-overview-camp {
+	border-style: solid;
+	border-width: 1px;
+}
+
+.camp-overview-lvl14 {
+	text-align: center;
+	height: 1em;
+}
+
+
+// CAMP BUILDINGS
+
+span.improvement-badge {
+	padding: 3px;
+	margin: 1px;
+	border-radius: 5px;
+	min-width: 1em;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+}
+
+span.improvement-count {
+	font-weight: bold;
+}
+
+span.improvement-badge.improvement-upgrade-level {
+	position: absolute;
+	top: -1px;
+	right: -1px;
+	padding: 0 1px !important;
+	font-size: @font-size-tiny;
+	width: 1em;
+}
+
+
+// OUT MINIMAP AND MOVEMENT BUTTONS
+
+#minimap-background-container {
+	position: relative;
+    height: 224px;
+    width: 224px;
+	border-width: 2px;
+    margin: auto;
+}
+
+#minimap-background {
+	opacity: 0.75;
+}
+
+#minimap-container {
+	position: absolute;
+	top: 12px;
+	left: 12px;
+}
+
+#out-container-compass, #out-container-compass-actions {
+	text-align: center;
+	width: 224px;
+}
+
+#out-container-compass canvas, #out-container-compass-actions table {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#table-out-actions-movement {
+	margin-top: 10px;
+}
+
+
+// MAIN MAP
+
+#mainmap-container-ascii {
+    display: block;
+    padding: 5px;
+    margin: 5px;
+    font-family: monospace;
+}
+
+#mainmap-container-ascii textarea {
+	width: 100%;
+}
+
+#mainmap-ascii-legend {
+	padding: 5px;
+}
+
+
+// BAG SCREEN
+
+.item-bag-options {
+	margin-top: 5px;
+}
+
+#bag-resources > .callout-container {
+	max-width: 49%;
+}
+
+
+// EXPLORER ICONS AND QUEST INDICATOR
+
+.npc-quest-badge {
+	top: 1px;
+	left: 5px;
+	position: absolute;
+	border-width: 1px;
+	border-style: solid;
+	padding: 2px;
+	border-radius: 3px;
+}
+
+
+// NPCS
+
+.npc-container {
+	display: inline-flex;
+	flex-direction: column;
+	min-width: 50px;
+	min-height: 50px;
+	margin: 2px;
+	position: relative;
+}
+
+.npc-container-mini {
+	width: 36px;
+	height: 36px;
+	min-width: 36px;
+	min-height: 36px;
+}
+
+.npc-portrait {
+	vertical-align: middle;
+	display: inline-flex;
+	flex-direction: column;
+	position: relative;
+	margin: 2px 0;
+	width: 100%;
+}
+
+.npc-container .item-comparison-badge {
+	top: 1px;
+	right: 5px;
+}
+
+.npc-type-indicator {
+	position: absolute;
+	top: 1px;
+	left: 2px;
+	right: 5px;
+	width: 12px;
+	height: 12px;
+}
+
+.npc-type-indicator img {
+	width: 100%;
+}
+
+.npc-portrait img {
+	margin: auto;
+	vertical-align: middle;
+	height: 32px;
+	width: 32px;
+	padding: 1px;
+}
+
+img.portrait {
+	height: 32px;
+	width: 32px;
+}
+
+.npc-container span {
+	text-align: center;
+}
+
+.npc-container .button-row-2 button {
+	width: 48px !important;
+}
+
+.interaction-options {
+	display: flex;
+	flex-direction: column;
+}
+
+// MAPS
+
+#minimap {
+	overflow: hidden;
+}
+
+#mainmap {
+	overflow: hidden;
+}
+
+#mainmap, #researched-upgrades-vis {
+	overflow: hidden;
+}
+
+.canvas-overlay {
+	position: absolute;
+	top: 0;
+	pointer-events: none;
+}
+
+.canvas-overlay-cell {
+	position: absolute;
+	pointer-events: auto;
+	cursor: pointer;
+	font-size: @font-size-tiny;
+	display: table;
+	line-height: 0.85;
+}
+
+.canvas-overlay-cell p {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.map-overlay-cell {
+	width: 11px;
+	height: 11px;
+	border: none;
+}
+
+
+// TECH TREE
+
+#researched-upgrades-vis-container {
+	max-height: 300px;
+}
+
+.upgrades-overlay-cell {
+	width: 85px;
+	height: 22px;
+}
+
+
+// CAMP VIS
+
+#tab-vis-in {
+	padding: 0;
+}
+
+#tab-vis-in-container {
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+	overflow: hidden;
+	height: 100px;
+}
+
+#vis-camp-info-overlay {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 16px;
+	font-size: @font-size-tiny;
+	padding: 1px;
+	vertical-align: middle;
+	text-align: center;
+	z-index: 9;
+}
+
+.vis-camp-layer {
+	position: absolute;
+	top: 0;
+}
+
+.vis-camp-building-container {
+	background: transparent;
+	border-radius: 3px;
+	border: 2px dotted transparent;
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2;
+	font-size: @font-size-tiny;
+	color: transparent;
+}
+
+.vis-camp-building-container.filled {
+	display: none;
+}
+
+.vis-camp-floor {
+	position: absolute;
+	left: 0px;
+}
+
+.vis-camp-building {
+	position: absolute;
+	opacity: 1;
+	width: 12px;
+	height: 12px;
+	z-index: 3;
+	font-size: @font-size-tiny;
+}
+
+.vis-camp-building-z0 {
+	z-index: 4;
+}
+
+.vis-camp-building-z1 {
+	z-index: 3;
+}
+
+.vis-camp-building-z2 {
+	z-index: 2;
+}
+
+.vis-camp-building-z3 {
+	z-index: 1;
+}
+
+.vis-camp-building-z4 {
+	z-index: 0;
+}
+
+
+// TRIBE LEVEL / MILESTONES
+
+#milestone-next-unlocks {
+	margin: 1em 0;
+}
+
+.unlocks-list-entry {
+	display: block;
+}
+
+.reqs-list-entry {
+	display: inline-block;
+	margin: 0 5px 0 0;
+}
+
+.reqs-checkmark {
+    display: inline-block;
+    height: 1em;
+    width: 1em;
+}
+
+
+// CHANGELOG
+
+.changelog-type {
+	padding: 2px 5px;
+	border-width: 1px;
+	border-style: solid;
+	margin: 0px 5px 0px 0px;
+}
+
+#changelog {
+	font-size: @font-size-small;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#changelog ul {
+	padding: 0 0 0 2em;
+	margin: 0.25em 0 1em 0;
+	list-style-type: none;
+}
+
+#changelog li {
+	position: relative;
+	line-height: 1.35em;
+}
+
+#changelog li:before{
+	width: 7px;
+	height: 7px;
+	content: ".";
+	position: absolute;
+	left: -1em;
+	top: 0.375em;
+	display: inline-block;
+	overflow: hidden;
+}
+
+
+// META PAGES
+
+.sub-page-container {
+	padding: 10px 20px;
+}
+
+.faq-category {
+	h3 {
+		text-transform: uppercase;
+		font-size: inherit;
+	}
+}
+
+
+// DEBUG OVERLAY
+
+.debug-info {
+	color: #bbb;
+	background: #22992299;
+	font-size: @font-size-small;
+}
+
+p.debug-info {
+	margin: 0;
+}
+
+.dev-hud {
+	opacity: 0.75;
+	background: #999;
+	padding: 1px;
+	border-radius: 5px;
+	z-index: 100;
+}
+
+.dev-hud:hover {
+	opacity: 1;
+}
+

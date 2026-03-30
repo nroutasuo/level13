@@ -1,0 +1,369 @@
+// Base page layout including log, sticky footer etc (unthemed)
+
+// GENERAL
+
+@header-side-width: 75px;
+@header-side-space: @header-side-width + 20px;
+@footer-height: 55px;
+
+html {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+	margin: 0;
+	border-width: 0px !important;
+	overflow-x: hidden;
+}
+
+#grid-main {
+	height: 100%;
+}
+
+.game-opacity-controller {
+	.opacity-transition-reset();
+	overflow: hidden;
+}
+
+div.grid-content {
+	margin: 0px 0px 15px 0px !important;
+	padding: 15px;
+}
+
+div.grid-content .grid .unit {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+#grid-switch-content {
+	z-index: 1;
+	position: relative;
+}
+
+
+// LOG
+
+#log {
+	padding-right: 50px;
+}
+
+.layout-regular #log {
+	max-width: 244px;
+	width: 25%;
+}
+
+.layout-small #log {
+	width: 100%;
+}
+
+
+// MAIN NAVIGATION (SWITCH)
+
+#switch, #switch-content {
+	padding: 0 !important;
+}
+
+#grid-switch {
+	margin: 0px !important;
+	border: 0;
+	padding: 0;
+}
+	
+ul.tabs {
+	padding: 0 !important;
+}
+
+#tab-header {
+	margin: 5px 0px
+}
+
+#tab-header h2 {
+	 margin: 2px 0px;
+ }
+
+
+ // FOOTER
+
+.sticky-footer {
+	height: @footer-height;
+	padding: 10px 0;
+	display: none;
+}
+
+.sticky-footer-push {
+	margin: 0;
+	height: @footer-height;
+}
+
+.sticky-footer-wrapper {
+	min-height: 100%;
+	height: auto !important;
+	margin: 0 auto -@footer-height;
+}
+
+
+// VARIOUS HEADERS
+
+#header-side {
+	position: fixed;
+	z-index: 5;
+	width: @header-side-width;
+	margin-left: -@header-side-space;
+}
+
+#mobile-header {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    padding: 10px 0px;
+	width: 100%;
+}
+
+#mobile-header img.stat-icon {
+	height: 1em;
+	width: 1em;
+}
+
+.mobile-header-section {
+	display: flex;
+    justify-content: center;
+	padding: 3px;
+	flex-wrap: wrap;
+}
+
+#mobile-header-notification-container {
+	width: 100%;
+	min-height: 1em;
+}
+
+#mobile-header .stat-indicator {
+	text-align: center;
+}
+
+#mobile-header .stat-indicator-with-fill {
+	max-width: 5em;
+}
+
+#notification-player-mobile {
+	width: 95%;
+}
+
+#header-camp-container {
+	display: flex;
+}
+
+.header-row {
+	padding: 3px 5px !important;
+}
+
+.header-section {
+	margin: 0px 5px 0px 0px;
+	padding: 0px 2px;
+}
+
+#header-bag-storage, #bag-resources {
+	display: inline-block;
+}
+
+#main-header-camp {
+	width: 100%;
+	display: flex;
+}
+
+#main-header-camp-overview {
+	flex-basis: auto;
+}
+
+#main-header-camp-resources {
+	flex-grow: 1;
+}
+
+#header-tribe-container {
+	margin-bottom: 5px;
+    padding-left: 5px;
+}
+
+#statsbar-resources-camp {
+	width: 100%;
+	display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: 5px;
+}
+
+#statsbar-resources-mobile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#statsbar-resources-mobile .stat-indicator {
+	width: 5em;
+}
+
+#statsbar-tribe-stats-regular, #bag-resources-regular {
+	display: inline-block;
+}
+
+
+// FOOTER
+
+#footer {
+	padding: 1px 5px 1px  @header-side-space;
+	display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 5px;
+ }
+
+ul#game-options, ul#game-options-extended {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 0 0px;
+	line-height: 1em;
+	display: table;
+	float: right;
+}
+
+ul#game-options li, ul#game-options-extended li {
+	list-style-type: none;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#game-version, #game-msg {
+	display: inline-block;
+	text-transform: lowercase;
+}
+
+#game-msg {
+    flex-grow: 1;
+}
+
+.sticky-footer .one-quarter {
+	height: 2px;
+	padding: 0px;
+}
+
+
+// "HEADER" SELF-BAR
+
+#statsbar-self .stat-indicator {
+	display: inline-block;
+}
+
+#header-self-bar {
+	text-align: center;
+	padding: 5px 3px;
+	font-size: @font-size-small;
+	border-width: 2px;
+}
+
+#header-self-bar ul {
+	margin-top: 10px;
+}
+
+#header-self-bar > span, #header-size .stat-indicator span {
+	display: block;
+}
+
+#header-self-bar .stat-indicator {
+	margin: 1px 0px;
+	width: 100%;
+	max-width: @header-side-width - 5;
+	line-height: 1em;
+}
+
+#header-self-bar .callout-container {
+	width: 100%;
+}
+
+#header-self-bar .stat-indicator .value {
+	font-size: @font-size-tiny;
+	margin: 3px 0;
+}
+
+#header-self-bar .change-indicator {
+	vertical-align: top;
+	margin: 0.2em 0 0 0.25em;
+}
+
+#header-self-bar div.callout-arrow-up {
+	margin: 0 0 0 (@header-side-width/2 - @callout-arrow-size);
+}
+
+.stat-indicator-secondary {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.stat-indicator-secondary img {
+	width: 1.75em;
+	height: 1.75em;
+}
+
+.stat-indicator-secondary .value {
+	min-width: 2em;
+	font-size: 100%;
+	margin: 0;
+}
+
+#container-equipment-stats-side {
+	line-height: 1em;
+}
+
+#container-equipment-stats-mobile div {
+	display: inline-block;
+}
+
+
+// LAYOUT DIFFERENCES BETWEEN SCREEN SIZES / DEVICE TYPES
+
+.layout-regular #unit-main, #footer {
+	padding-left: @header-side-space;
+}
+
+.layout-small #footer {
+	font-size: @font-size-small;
+}
+
+.layout-regular #mobile-header {
+	display: none;
+}
+
+.layout-small #header-side {
+	display: none;
+}
+
+.layout-small #grid-main-header {
+	display: none;
+}
+
+.layout-small .hide-in-small-layout {
+	display: none;
+	visibility: hidden;
+}
+
+.hide-from-visual-layout {
+	position: absolute;
+	left: -10000px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.layout-mobile #switch {
+	padding: 0 !important;
+}
