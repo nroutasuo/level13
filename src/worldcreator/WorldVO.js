@@ -1,5 +1,5 @@
 // result of world generation, used to create level and sector entities
-define(['ash'], function (Ash) {
+define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreatorConstants) {
 
 	let WorldVO = Ash.Class.extend({
 	
@@ -33,6 +33,8 @@ define(['ash'], function (Ash) {
 
 		// called at the end of a world creation call
 		resetInternalData: function () {
+			this.featuresByPosition = [];
+			
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
 				if (levelVO) levelVO.resetInternalData();
@@ -41,6 +43,8 @@ define(['ash'], function (Ash) {
 
 		// called after entities have been generated
 		resetCaches: function () {
+			this.featuresByPosition = [];
+
 			for (let l = this.topLevel; l >= this.bottomLevel; l--) {
 				let levelVO = this.levels[l];
 				if (levelVO) levelVO.resetCaches();
@@ -72,13 +76,29 @@ define(['ash'], function (Ash) {
 			return result;
 		},
 		
-		getFeaturesByPos: function (pos) {
+		getFeatureTypesByPos: function (pos) {
+			if (this.featuresByPosition[pos.level] && this.featuresByPosition[pos.level][pos.sectorX] && this.featuresByPosition[pos.level][pos.sectorX][pos.sectorY]) {
+				return this.featuresByPosition[pos.level][pos.sectorX][pos.sectorY];
+			}
+
 			let result = [];
+
 			for (let i = 0; i < this.features.length; i++) {
-				if (this.features[i].containsPosition(pos)) {
-					result.push(this.features[i]);
+				let featureVO = this.features[i];
+				if (featureVO.containsPosition(pos)) {
+					result.push(featureVO.type);
+				} else if (featureVO.bordersPosition(pos)) {
+					let edgeFeature = WorldCreatorConstants.getEdgeFeature(featureVO.type);
+					if (edgeFeature) {
+						result.push(edgeFeature);
+					}
 				}
 			}
+
+			if (!this.featuresByPosition[pos.level]) this.featuresByPosition[pos.level] = [];
+			if (!this.featuresByPosition[pos.level][pos.sectorX]) this.featuresByPosition[pos.level][pos.sectorX] = [];
+			this.featuresByPosition[pos.level][pos.sectorX][pos.sectorY] = result;
+
 			return result;
 		},
 		

@@ -1134,7 +1134,7 @@ define([
 			let y = sectorVO.position.sectorY || 300;
 			let districtVO = levelVO.districts[sectorVO.districtIndex];
 
-			let features = worldVO.getFeaturesByPos(sectorVO.position);
+			let features = worldVO.getFeatureTypesByPos(sectorVO.position);
 			let surroundingFeatures = WorldCreatorHelper.getFeaturesSurrounding(worldVO, levelVO, sectorVO.position);
 			let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
 			let neighboursCount = neighbours.length;
@@ -1152,8 +1152,8 @@ define([
 
 			// damage
 			let damage = sectorTemplateVO.damage || 0;
-			let getFeatureDamage = function (feature) {
-				switch (feature.type) {
+			let getFeatureDamage = function (featureType) {
+				switch (featureType) {
 					case WorldConstants.FEATURE_HOLE_COLLAPSE: return 8;
 					default: return 0;
 				}
@@ -1162,7 +1162,7 @@ define([
 				damage = Math.max(damage, getFeatureDamage(features[i]));
 			}
 			for (let i = 0; i < surroundingFeatures.length; i++) {
-				var d = surroundingFeatures[i].getDistanceTo(sectorVO.position);
+				let d = levelVO.getDistanceToFeature(sectorVO.position, surroundingFeatures[i]);
 				damage = Math.max(damage, getFeatureDamage(surroundingFeatures[i]) - d * 2);
 			}
 			if (sectorVO.isCamp) damage = Math.min(3, damage);
@@ -2204,9 +2204,9 @@ define([
 			let savedValue = sectorTemplateVO.sunlit || 0;
 			
 			let isHole = function (pos) {
-				let features = worldVO.getFeaturesByPos(pos);
+				let features = worldVO.getFeatureTypesByPos(pos);
 				for (let i = 0; i < features.length; i++) {
-					return WorldConstants.isFeatureHole(features[i].type);
+					return WorldConstants.isFeatureHole(features[i]);
 				}
 				return false;
 			};

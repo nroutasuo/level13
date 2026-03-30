@@ -119,7 +119,7 @@ function (Ash, ConsoleLogger, WorldConstants, WorldCreatorHelper, WorldCreatorLo
 				print += y + "\t";
 				for (var x = minX; x <= maxX; x++) {
 					var position = { level: levelVO.level, sectorX: x, sectorY: y};
-					var features = worldVO.getFeaturesByPos(position);
+					var features = worldVO.getFeatureTypesByPos(position);
 					if (levelVO.hasSector(x, y)) {
 						var sectorVO = levelVO.getSector(x, y);
 						var defaultColor = sectorVO.stage == WorldConstants.CAMP_STAGE_EARLY ? "#111" : "#abc";

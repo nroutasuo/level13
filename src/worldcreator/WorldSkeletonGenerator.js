@@ -26,9 +26,9 @@ define([
 			worldVO.levelCenterPositions = this.generateLevelCenterPositions(seed);
 			worldVO.features = this.generateWorldFeatures(seed, worldTemplateVO, worldVO.levelCenterPositions);
 			worldVO.stages = this.generateStages(seed);
-			worldVO.requiredPositions = this.generateRequiredPositions(seed, worldVO.levelCenterPositions, worldVO.features);
-			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO.features, worldVO.levelCenterPositions, worldVO.requiredPositions);
-			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO.features, worldVO.campPositions, worldVO.levelCenterPositions, worldVO.requiredPositions);
+			worldVO.requiredPositions = this.generateRequiredPositions(seed, worldVO, worldVO.levelCenterPositions, worldVO.features);
+			worldVO.campPositions = worldTemplateVO.campPositions || this.generateCampPositions(seed, worldVO, worldVO.levelCenterPositions, worldVO.requiredPositions);
+			worldVO.passagePositions = worldTemplateVO.passagePositions || this.generatePassagePositions(seed, worldVO, worldVO.campPositions, worldVO.levelCenterPositions, worldVO.requiredPositions);
 			worldVO.passageTypes = worldTemplateVO.passageTypes || this.generatePassageTypes(seed, worldVO);
 		},
 
@@ -231,14 +231,14 @@ define([
 			return stages;
 		},
 
-		generateRequiredPositions: function (seed, levelCenterPositions, features) {
+		generateRequiredPositions: function (seed, worldVO, levelCenterPositions, features) {
 			let result = {};
 
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);	
 
 			let addRequiredPositionNearFeature = function (l, featureType, distance) {
-				let positionVO = WorldSkeletonGenerator.generateRequiredPositionNearFeature(seed, l, levelCenterPositions[l], features, featureType, distance);
+				let positionVO = WorldSkeletonGenerator.generateRequiredPositionNearFeature(seed, worldVO, l, levelCenterPositions[l], features, featureType, distance);
 				if (!positionVO) return;
 				log.i("required position: " + positionVO + " near feature " + featureType);
 				result[l].push(positionVO);
@@ -260,7 +260,7 @@ define([
 			return result;
 		},
 
-		generateRequiredPositionNearFeature: function (seed, level, levelCenterPosition, features, featureType, distance) {
+		generateRequiredPositionNearFeature: function (seed, worldVO, level, levelCenterPosition, features, featureType, distance) {
 			let validFeatures = features.filter(featureVO => featureVO.type == featureType && featureVO.spansLevel(level));
 			if (validFeatures.length == 0) {
 				log.w("could not generate required position near feature: no valid features found (level: " + level + ", feature: " + featureType + ")", "world");
@@ -281,12 +281,12 @@ define([
 				validPositions = validPositions.concat(WorldCreatorHelper.getPositionsAtDistance(featurePositions[i], distance));
 			}
 
-			validPositions = validPositions.filter(pos => !WorldCreatorHelper.containsBlockingFeature(pos, features));
+			validPositions = validPositions.filter(pos => !WorldCreatorHelper.containsBlockingFeature(worldVO, pos));
 
 			return WorldCreatorHelper.getClosestPosition(validPositions, levelCenterPosition);
 		},
 		
-		generateCampPositions: function (seed, features, centers, requiredPositions) {
+		generateCampPositions: function (seed, worldVO, centers, requiredPositions) {
 			let positionsByLevel = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
@@ -306,7 +306,7 @@ define([
 					if (l == 13) {
 						position = new PositionVO(l, 0, 0);
 					} else {
-						let isValid = (pos) => WorldSkeletonGenerator.isValidCampPos(seed, pos, center, positionsByLevel, features, requiredPos);
+						let isValid = (pos) => WorldSkeletonGenerator.isValidCampPos(seed, worldVO, pos, center, positionsByLevel, requiredPos);
 						position = WorldCreatorRandom.randomSectorPositionWithCheck(seed % 10 + (l+10) * 55, "camp pos", l, center, maxDistToCenter, 0, isValid);
 					}
 				}
@@ -315,7 +315,7 @@ define([
 			return positionsByLevel;
 		},
 		
-		generatePassagePositions: function (seed, features, campPositions, levelCenterPositions, requiredPositions) {
+		generatePassagePositions: function (seed, worldVO, campPositions, levelCenterPositions, requiredPositions) {
 			let result = {};
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
 			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
@@ -328,7 +328,7 @@ define([
 				if (requiredPositions[l-1]) requiredPositionsForPassageDown = requiredPositionsForPassageDown.concat(requiredPositions[l-1]);
 
 				let up = previousDown ? new PositionVO(l, previousDown.sectorX, previousDown.sectorY) : null;
-				let down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, features, levelCenterPositions[l], up, campThisUp, campPosDown, requiredPositionsForPassageDown);
+				let down = l == bottomLevel ? null : this.getPassageDownPosition(seed, l, worldVO, levelCenterPositions[l], up, campThisUp, campPosDown, requiredPositionsForPassageDown);
 				
 				result[l] = { up: up, down: down };
 			}
@@ -347,7 +347,7 @@ define([
 			return result;
 		},
 		
-		getPassageDownPosition: function (seed, level, features, levelCenter, passageUp, campPos1, campPos2, requiredPositions) {
+		getPassageDownPosition: function (seed, level, worldVO, levelCenter, passageUp, campPos1, campPos2, requiredPositions) {
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
 			if (campPos1 == null) campPos1 = levelCenter;
 			if (campPos2 == null) campPos2 = levelCenter;
@@ -370,7 +370,7 @@ define([
 				let rseed = seed % (1000 - i * 99) + 7 + (level + 13) * 101;
 				let candidate = WorldCreatorRandom.randomSectorPositionWithCheck(
 					rseed, "passage down pos " + level, level, averagePos, maxDiff, minDiff,
-					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, features, passageUp, campPos1, campPos2, levelCenter, requiredPositions)
+					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, worldVO, passageUp, campPos1, campPos2, levelCenter, requiredPositions)
 				);
 				let score = PositionConstants.getDistanceTo(candidate, averagePos);
 				candidates.push({ result: candidate, score: score });
@@ -401,9 +401,9 @@ define([
 			return null;
 		},
 
-		isValidCampPos: function (seed, pos, center, positionsByLevel, features, requiredPositions) {
+		isValidCampPos: function (seed, worldVO, pos, center, positionsByLevel, requiredPositions) {
 			// blocked: positions in holes etc
-			if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
+			if (WorldCreatorHelper.containsBlockingFeature(worldVO, pos)) return { isValid: false, reason: "blocking feature" };
 			// blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
 			let min = 5;
 			for (let i = 2; i <= 3; i++) {
@@ -439,14 +439,14 @@ define([
 			return { isValid: true };
 		},
 		
-		isValidPassageDownPos: function (seed, pos, features, passageUp, campPos1, campPos2, levelCenter, requiredPositions) {
+		isValidPassageDownPos: function (seed, pos, worldVO, passageUp, campPos1, campPos2, levelCenter, requiredPositions) {
 			let campOrdinal = Math.min(WorldCreatorHelper.getCampOrdinal(seed, pos.level), WorldCreatorHelper.getCampOrdinal(seed, pos.level - 1));
 			let isCampableLevel = WorldCreatorHelper.isCampableLevel(seed, pos.level);
 			let maxPathLengthC2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
 			let level = pos.level;
 			
 			// check blocking features like holes
-			if (WorldCreatorHelper.containsBlockingFeature(pos, features)) return { isValid: false, reason: "blocking feature" };
+			if (WorldCreatorHelper.containsBlockingFeature(worldVO, pos)) return { isValid: false, reason: "blocking feature" };
 			
 			// check that not too close or not too far from camps on this level or the level below
 			let allCamps = [ campPos1, campPos2 ];

@@ -175,7 +175,6 @@ define([
 		},
 
 		generateLevels: function (levels, worldTemplateVO) {
-
 			let progessionConfig = this.getWorldProgressionConfig();
 
 			return new Promise((resolve, reject) => {

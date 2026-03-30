@@ -380,10 +380,10 @@ define([
 		
 		getFeaturesSurrounding: function (worldVO, levelVO, pos) {
 			let result = [];
-			var candidates = PositionConstants.getAllPositionsInArea(pos, 5);
+			let candidates = PositionConstants.getAllPositionsInArea(pos, 5);
 			for (let i = 0; i < candidates.length; i++) {
 				var position = candidates[i];
-				var features = worldVO.getFeaturesByPos(position);
+				var features = worldVO.getFeatureTypesByPos(position);
 				for (let j = 0; j < features.length; j++) {
 					var feature = features[j];
 					if (result.indexOf(feature) >= 0) {
@@ -1007,30 +1007,27 @@ define([
 			return result;
 		},
 		
-		containsBlockingFeature: function (pos, features) {
+		containsBlockingFeature: function (worldVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+
 			for (let i = 0; i < features.length; i++) {
-				let feature = features[i];
-				if (!WorldCreatorConstants.isFeatureBlockingSectors(feature.type)) continue;
-				if (feature.containsPosition(pos)) {
-					return true;
-				}
+				let featureType = features[i];
+				if (!WorldCreatorConstants.isFeatureBlockingSectors(featureType)) continue;
+				return true;
 			}
+
 			return false;
 		},
 		
-		containsSectorFeature: function (pos, features) {
+		containsSectorFeature: function (worldVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+			
 			for (let i = 0; i < features.length; i++) {
-				let feature = features[i];
-
-				if (WorldCreatorConstants.isFeaturePreferredForSectors(feature.type) && feature.containsPosition(pos)) {
-					return true;
-				}
-
-				let edgeFeature = WorldCreatorConstants.getEdgeFeature(feature.type);
-				if (edgeFeature && WorldCreatorConstants.isFeaturePreferredForSectors(edgeFeature) && feature.bordersPosition(pos)) {
-					return true;
-				}
+				let featureType = features[i];
+				if (!WorldCreatorConstants.isFeaturePreferredForSectors(featureType)) continue;
+				return true;
 			}
+
 			return false;
 		},
 		

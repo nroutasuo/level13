@@ -12,6 +12,7 @@ define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO', 'gam
 		
 		containsPosition: function (positionVO) {
 			for (let i = 0; i < this.areas.length; i++) {
+				if (this.areas[i].level !== positionVO.level) continue;
 				if (this.areas[i].containsPosition(positionVO)) return true;
 			}
 			return false;

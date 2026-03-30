@@ -18,7 +18,7 @@ define([
 	let LevelStructureGenerator = {
 		
 		generate: function (seed, worldVO, worldTemplateVO, levels) {
-			this.currentFeatures = worldVO.features;
+			this.currentWorldVO = worldVO;
 
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
@@ -36,7 +36,7 @@ define([
 				this.markRequiredPaths(seed, worldVO, levelVO);
 			}
 			
-			this.currentFeatures = null;
+			this.currentWorldVO = null;
 		},
 
 		// CREATE FROM TEMPLATE
@@ -2491,7 +2491,11 @@ define([
 					return score;
 				}
 				
-				validPaths.sort((a, b) => getPathScore(b) - getPathScore(a));
+				for (let i = 0; i < validPaths.length; i++) {
+					validPaths[i].score = getPathScore(validPaths[i]);
+				}
+				
+				validPaths.sort((a, b) => b.score - a.score);
 				
 				return { paths: validPaths[0].paths, isValid: true };
 			};
@@ -2969,7 +2973,7 @@ define([
 			if (options.criticalPath) return { isValid: true, isBlocked: false };
 			
 			// blocking features
-			if (WorldCreatorHelper.containsBlockingFeature(sectorPos, this.currentFeatures, true)) {
+			if (WorldCreatorHelper.containsBlockingFeature(this.currentWorldVO, sectorPos)) {
 				return { isValid: false, isBlocked: true, reason: "feature" };
 			}
 			
@@ -3562,10 +3566,10 @@ define([
 						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 						
 						// blocking features
-						score += WorldCreatorHelper.containsBlockingFeature(pos, LevelStructureGenerator.currentFeatures) ? -1 : 0;
+						score += WorldCreatorHelper.containsBlockingFeature(LevelStructureGenerator.currentWorldVO, pos) ? -1 : 0;
 
 						// other features
-						score += WorldCreatorHelper.containsSectorFeature(pos, LevelStructureGenerator.currentFeatures) ? 1 : 0;
+						score += WorldCreatorHelper.containsSectorFeature(LevelStructureGenerator.currentWorldVO, pos) ? 1 : 0;
 					}
 				}
 

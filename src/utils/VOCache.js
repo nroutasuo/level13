@@ -87,7 +87,7 @@ define(function () {
 		},
 		
 		getDefaultKey: function (...args) {
-			var res = "";
+			let res = "";
 			for (let i = 0; i < args.length; i++) {
 				if (typeof(args[i]) == undefined || args[i] == null) {
 					continue;
