@@ -18,12 +18,14 @@
     });
 
 	let deps = [
-		"game/GameGlobalsInitializer",
+        "game/GameGlobalsInitializer",
 		"test/WorldCreatorTests",
 	];
 	
 	require(deps, function(GameGlobalsInitializer) {
         GameGlobalsInitializer.init();
-        QUnit.start();
+        setTimeout(() => {
+            QUnit.start();
+        }, 500);
 	});
 }());

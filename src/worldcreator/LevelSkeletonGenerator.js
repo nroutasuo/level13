@@ -83,16 +83,16 @@ define([
 		
 		getStageCenterPositions: function (worldVO, levelVO) {
 			let result = {};
-			var level = levelVO.level;
-			var stages = worldVO.getStages(level);
+			let level = levelVO.level;
+			let stages = worldVO.getStages(level);
 			if (stages.length == 1) {
 				result[WorldConstants.CAMP_STAGE_EARLY] = [];
 				result[WorldConstants.CAMP_STAGE_LATE] = [];
 				result[stages[0].stage].push(levelVO.levelMapCenterPosition);
 			} else {
 				for (let i = 0; i < stages.length; i++) {
-					var stageVO = stages[i];
-					var positions = [];
+					let stageVO = stages[i];
+					let positions = [];
 					switch (stageVO.stage) {
 						case WorldConstants.CAMP_STAGE_EARLY:
 							positions.push(levelVO.campPosition);
@@ -101,14 +101,6 @@ define([
 							}
 							if (level > 13 && levelVO.passageDownPosition) {
 								positions.push(levelVO.passageDownPosition);
-							}
-							if (level == 13) {
-								let pd2c = PositionConstants.subtract(levelVO.campPosition, levelVO.passageDownPosition);
-								let pu2c = PositionConstants.subtract(levelVO.campPosition, levelVO.passageUpPosition);
-								let total = PositionConstants.add(pd2c, pu2c);
-								let unit = PositionConstants.getUnitPosition(total);
-								let secondaryCenter = PositionConstants.multiply(unit, 5, true);
-								positions.push(secondaryCenter);
 							}
 							break;
 						case WorldConstants.CAMP_STAGE_LATE:
@@ -129,7 +121,7 @@ define([
 		getDistricts: function (worldVO, levelVO) {
 			let result = [];
 
-			let getNumDistrictsFromNumSectors = (numSectors) => numSectors > 0 ? MathUtils.clamp(Math.round(numSectors / 40), 1, 4) : 0;
+			let getNumDistrictsFromNumSectors = (numSectors) => numSectors > 0 ? MathUtils.clamp(Math.round(numSectors / 45), 1, 4) : 0;
 			let numEarly = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_EARLY]);
 			let numLate = getNumDistrictsFromNumSectors(levelVO.numSectorsByStage[WorldConstants.CAMP_STAGE_LATE]);
 			if (numEarly + numLate < 2) numLate++;

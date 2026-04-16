@@ -1,6 +1,7 @@
 // generates level-wide features that require structure and/or SectorVOs to have been generated first
 define([
 	'ash',
+	'utils/MathUtils',
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 	'worldcreator/WorldCreatorConstants',
@@ -8,7 +9,7 @@ define([
 	'worldcreator/WorldCreatorLogger',
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/LevelVO',
-], function (Ash, PositionConstants, WorldConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO) {
+], function (Ash, MathUtils, PositionConstants, WorldConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorLogger, WorldCreatorRandom, LevelVO) {
 	
 	let LevelFeaturesGenerator = {
 
@@ -89,16 +90,41 @@ define([
 				}
 			};
 
-			// update centers based on sectors assigned to district
+			// update centers based on sectors assigned to districts
 			let updateCenters = function () {
 				for (let i = 0; i < levelVO.districts.length; i++) {
 					let districtVO = levelVO.districts[i];
 					let districtSectors = levelVO.sectors.filter(s => s.districtIndex == i);
 					let districtSectorPositions = districtSectors.map(s => s.position);
+					
+					if (districtSectorPositions.length == 0) {
+						let stageCenterPositions = levelVO.stageCenterPositions[districtVO.stage];
+						districtSectorPositions.push(WorldCreatorHelper.getClosestPosition(stageCenterPositions, districtVO.position));
+					}
+					districtSectorPositions.push(districtVO.position);
+
 					districtVO.adjustedPosition = PositionConstants.getMiddlePoint(districtSectorPositions, true);
 				}
 			};
 
+			// update weights based on sectors assigned to districts
+			let updateSizes = function () {
+				let districtSectorsPercentageThreshold = MathUtils.map(levelVO.districts.length, 2, 8, 0.75, 0.25);
+				for (let i = 0; i < levelVO.districts.length; i++) {
+					let districtVO = levelVO.districts[i];
+					let districtSectors = levelVO.sectors.filter(s => s.districtIndex == i);
+					let districtSectorsPercentage = districtSectors.length / levelVO.sectors.length;
+					if (districtSectorsPercentage > districtSectorsPercentageThreshold) districtVO.size -= 0.25;
+					if (districtSectors.length < 5) districtVO.size += 0.5;
+					districtVO.size = MathUtils.clamp(districtVO.size, 0.5, 2);
+				}
+			};
+
+			assignDistricts();
+			updateCenters();
+			updateSizes();
+			assignDistricts();
+			updateSizes();
 			assignDistricts();
 			updateCenters();
 			assignDistricts();
@@ -178,11 +204,11 @@ define([
 			
 			if (isCampableLevel) {
 				// camp:
-				var campSector = levelVO.getSectorByPos(levelVO.campPosition);
+				let campSector = levelVO.getSectorByPos(levelVO.campPosition);
 				// - path to camp ZONE_PASSAGE_TO_CAMP
 				if (level != 13) {
 					setAreaZone(campSector, WorldConstants.ZONE_PASSAGE_TO_CAMP, 2, 2);
-					var pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, campSector.position, false, true, WorldConstants.CAMP_STAGE_EARLY);
+					let pathToCamp = WorldCreatorRandom.findPath(worldVO, passage1.position, campSector.position, false, true, WorldConstants.CAMP_STAGE_EARLY);
 					setPathZone(pathToCamp, WorldConstants.ZONE_PASSAGE_TO_CAMP, 2, 2);
 				}
 				// - path to passage2 ZONE_CAMP_TO_PASSAGE

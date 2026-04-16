@@ -9,7 +9,7 @@ define([
 	'game/helpers/ItemsHelper',
 ], function (TestUtils, WorldCreator, WorldConstants, WorldCreatorDebug, WorldCreatorRandom, WorldValidator, WorldTemplateVO, ItemsHelper) {
 
-	let worldSeeds = [ 24, 7534, WorldCreatorRandom.getNewSeed() ];
+	let worldSeeds = [ 24, 7534, WorldCreatorRandom.getNewSeed(), WorldCreatorRandom.getNewSeed() ];
 
 	let getAllLevels = function (worldVO) {
 		let levels = [];
@@ -275,11 +275,18 @@ define([
 		// - typical ranges for random int are list indices, hazard values, item counts
 		let randomIntRanges = [ [0, 10], [1, 4], [0, 135], [53, 77] ];
 		let randomIntCases = [];
+		// - typical probabilities for random bool
+		let randomBoolProbabilities = [ 0.01, 0.1, 0.3, 0.5, 0.75, 0.98 ];
+		let randomBoolCases = [];
 
 		for (let s = 0; s < randomSeeds.length; s++) {
 			for (let r = 0; r < randomIntRanges.length; r++) {
 				let range = randomIntRanges[r];
 				randomIntCases.push({ randomSeed: randomSeeds[s], range: range, min: range[0], max: range[1] });
+			}
+
+			for (let p = 0; p < randomBoolProbabilities.length; p++) {
+				randomBoolCases.push({ randomSeed: randomSeeds[s], probability: randomBoolProbabilities[p] });
 			}
 		}
 
@@ -351,16 +358,17 @@ define([
 
 		QUnit.test("different seed results in different bool", function (assert) {
 			TestUtils.each(randomSeeds, (randomSeed) => {
+				let testRange = 300;
 				let hasReturnedTrue = false;
 				let hasReturnedFalse = false;
-				for (let i = 0; i < 300; i++) {
+				for (let i = 0; i < testRange; i++) {
 					let r = WorldCreatorRandom.randomBool(randomSeed + i);
 					if (r) hasReturnedTrue = true;
 					if (!r) hasReturnedFalse = true;
 				}
 
-				assert.true(hasReturnedTrue, "random bool from seed " + randomSeed + "+100 produced 'true' at least once");
-				assert.true(hasReturnedFalse, "random bool from seed " + randomSeed + "+100 produced 'false' at least once");
+				assert.true(hasReturnedTrue, "random bool from seed " + randomSeed + "+" + testRange + " produced 'true' at least once");
+				assert.true(hasReturnedFalse, "random bool from seed " + randomSeed + "+" + testRange + " produced 'false' at least once");
 			});
 		});
 
@@ -465,6 +473,25 @@ define([
 
 					assert.ok(diffPercent < diffPercentThreshold, "value " + value + " was produced " + count + " times for range [" + min + "," + max + "] (expected around " + expectedCount + ")");
 				};
+			});
+		});
+
+		QUnit.test("random bool has decent distribution", function (assert) {
+			TestUtils.each(randomBoolCases, (testCase) => {
+				let iterations = 50000;
+				let diffPercentThreshold = 35;
+
+				let numTrue = 0;
+				for (let i = 0; i < iterations; i++) {
+					let r = WorldCreatorRandom.randomBool(testCase.randomSeed + i, testCase.probability);
+					if (r) numTrue++;
+				}
+
+				let expectedCount = Math.round(iterations * testCase.probability);
+				let diff = numTrue - expectedCount;
+				let diffPercent = Math.abs((diff / expectedCount) * 100);
+
+				assert.ok(diffPercent < diffPercentThreshold, "value true was produced " + numTrue + " times for probability [" + testCase.probability + "] (expected around " + expectedCount + ")");
 			});
 		});
 

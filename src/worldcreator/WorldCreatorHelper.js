@@ -282,8 +282,6 @@ define([
 				}
 			}
 
-			log.i("getUnconncetedNeighbourCount " + sectorX + "." + sectorY + ": " + groups.length)
-
 			return groups.length;
 		},
 		
@@ -819,7 +817,7 @@ define([
 			if (!sectorVO) return false;
 			if (sectorVO.isCamp) return false;
 			if (sectorVO.zone == WorldConstants.ZONE_ENTRANCE) return false;
-			if (direction && sectorVO.movementBlockers[direction]) return false;
+			if (sectorVO.hasMovementBlockers()) return false;
 			if (levelVO.getNeighbourCount(sectorVO.position.sectorX, sectorVO.position.sectorY) <= 1) return false;			
 			if (this.getQuickMinDistanceToCamp(levelVO, sectorVO) < 3) return false;
 			return true;
@@ -856,6 +854,9 @@ define([
 				WorldCreatorHelper.getQuickMinDistanceToCamp(levelVO, sectorVO2)
 			);
 			if (distanceToCamp <= 1) return false;
+
+			if (sectorVO1.hasMovementBlockers()) return false;
+			if (sectorVO2.hasMovementBlockers()) return false;
 			
 			for (let i = 0; i < sectorVO1.criticalPathTypes.length; i++) {
 				var pathType = sectorVO1.criticalPathTypes[i];
@@ -880,6 +881,9 @@ define([
 		},
 
 		canPairHaveBlocker: function (levelVO, sectorVO1, sectorVO2) {
+			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO1)) return false;
+			if (!this.canSectorHaveMovementBlocker(levelVO, sectorVO2)) return false;
+
 			if (!this.hasOtherUnblockedPaths(levelVO, sectorVO1, sectorVO2, 2)) {
 				return false;
 			}
@@ -1013,6 +1017,19 @@ define([
 			for (let i = 0; i < features.length; i++) {
 				let featureType = features[i];
 				if (!WorldCreatorConstants.isFeatureBlockingSectors(featureType)) continue;
+				return true;
+			}
+
+			return false;
+		},
+
+		containsDeterringFeature: function (worldVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+
+			for (let i = 0; i < features.length; i++) {
+				let featureType = features[i];
+				if (WorldCreatorConstants.isFeatureBlockingSectors(featureType)) return true;
+				if (WorldCreatorConstants.isFeatureDeterringSectors(featureType)) return true;
 				return true;
 			}
 

@@ -279,7 +279,7 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			}
 			
 			// print some debug info about the failed sector and paths
-			WorldCreatorLogger.w("Failed to find random sector that fulfills requirements: central: " + isCentral + ", " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
+			WorldCreatorLogger.w("Failed to find random sector that fulfills requirements: " + (pathConstraints ? pathConstraints.length : 0) + " paths, " + sectors.length + " sectors (level: " + levelVO.level + ")");
 			var fails = [];
 			for (let j = 0; j < pathConstraints.length; j++) {
 				fails[j] = 0;
@@ -367,9 +367,8 @@ function (Ash, MathUtils, PathFinding, WorldCreatorLogger, PositionConstants, Po
 			}
 			
 			// no valid result found, print fail reasons and return something
-			WorldCreatorLogger.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
-			WorldCreatorLogger.i(failReasons);
-			//WorldCreatorLogger.i(failResults)
+			log.w("randomResultWithCheck [" + id + "] ran out of tries, returning invalid result");
+			log.i(failReasons);
 			
 			return result;
 		},

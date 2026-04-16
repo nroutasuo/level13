@@ -358,11 +358,11 @@ define([
 			averagePos.level = level;
 			
 			// find out how much we can afford to add to the max path length by moving the passage from the "optimal" position
-			var maxPathLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
-			var startPathLength = Math.ceil(Math.max(PositionConstants.getDistanceTo(averagePos, campPos1), PositionConstants.getDistanceTo(averagePos, campPos2)));
-			var maxDiff = Math.min(20, maxPathLength - startPathLength);
-			var minDiff = Math.min(3, Math.floor(maxDiff / 2));
-			 //WorldCreatorLogger.i("passage position " + level + " " + campPos1 + " - " + campPos2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
+			let maxPathLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_PASSAGE);
+			let startPathLength = Math.ceil(Math.max(PositionConstants.getDistanceTo(averagePos, campPos1), PositionConstants.getDistanceTo(averagePos, campPos2)));
+			let maxDiff = Math.max(6, Math.min(30, maxPathLength - startPathLength));
+			let minDiff = Math.min(1, Math.floor(maxDiff / 2));
+			log.i("passage position " + level + " " + campPos1 + " - " + campPos2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
 			
 			// select random sector around averagePos
 			let candidates = [];
@@ -404,6 +404,10 @@ define([
 		isValidCampPos: function (seed, worldVO, pos, center, positionsByLevel, requiredPositions) {
 			// blocked: positions in holes etc
 			if (WorldCreatorHelper.containsBlockingFeature(worldVO, pos)) return { isValid: false, reason: "blocking feature" };
+			if (WorldCreatorHelper.containsDeterringFeature(worldVO, pos)) return { isValid: false, reason: "deterring feature" };
+			// blocked: positions below holes
+			let positionAbove = new PositionVO(pos.level + 1, pos.sectorX, pos.sectorY);
+			if (WorldCreatorHelper.containsBlockingFeature(worldVO, positionAbove)) return { isValid: false, reason: "blocking feature" };
 			// blocked: positions too close to camp positions on previous few levels (so that on levels between them passages up/down don't end up too close)
 			let min = 5;
 			for (let i = 2; i <= 3; i++) {
@@ -447,27 +451,28 @@ define([
 			
 			// check blocking features like holes
 			if (WorldCreatorHelper.containsBlockingFeature(worldVO, pos)) return { isValid: false, reason: "blocking feature" };
+			if (WorldCreatorHelper.containsDeterringFeature(worldVO, pos)) return { isValid: false, reason: "deterring feature" };
 			
 			// check that not too close or not too far from camps on this level or the level below
 			let allCamps = [ campPos1, campPos2 ];
-			let minCampDist = 4;
-			let maxCampDist = Math.min(20, maxPathLengthC2P);
+			let maxCampDist = Math.min(25, maxPathLengthC2P);
 			for (let i = 0; i < allCamps.length; i++) {
-				var campPos = allCamps[i];
+				let campPos = allCamps[i];
+				let minCampDist = campPos.level == pos.level ? 5 : 8;
 				if (campPos.level == pos.level || campPos.level == pos.level - 1) {
-					var dist = Math.round(PositionConstants.getDistanceTo(pos, campPos));
-					var bdist = PositionConstants.getBlockDistanceTo(pos, campPos);
+					let dist = Math.round(PositionConstants.getDistanceTo(pos, campPos));
+					let bdist = PositionConstants.getBlockDistanceTo(pos, campPos);
 					if (dist < minCampDist) return { isValid: false, reason: "min distance to camp", details: "camp pos " + campPos + " " + dist + "/" + minCampDist };
 					if (bdist > maxCampDist) return { isValid: false, reason: "max distance to camp", details: "camp pos: " + campPos + " " + bdist + "/" + maxCampDist };
 				}
 			}
 			
 			// check that passages on same level are not too close and (on campless levels) not too far
-			var maxPathLengthP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
+			let maxPathLengthP2P = WorldCreatorConstants.getMaxPathLength(campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE);
 			if (passageUp) {
-				var minPassageDist = isCampableLevel ? 3 : 8;
-				var maxPassageDist = isCampableLevel ? 100 : Math.min(20, maxPathLengthP2P);
-				var dist = PositionConstants.getDistanceTo(pos, passageUp);
+				let minPassageDist = isCampableLevel ? 5 : 8;
+				let maxPassageDist = isCampableLevel ? 100 : Math.min(20, maxPathLengthP2P);
+				let dist = PositionConstants.getDistanceTo(pos, passageUp);
 				if (dist < minPassageDist) return { isValid: false, reason: "min distance to passage up " + passageUp, details: Math.round(dist) + "/" + minPassageDist };
 				if (dist > maxPassageDist) return { isValid: false, reason: "max distance to passage up " + passageUp, details: Math.round(dist) + "/" + maxPassageDist };
 			}

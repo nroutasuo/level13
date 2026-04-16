@@ -220,8 +220,16 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 
 		isFeatureBlockingSectors: function (featureType) {
 			switch (featureType) {
-				case WorldConstants.FEATURE_HOLE_COLLAPSE:
 				case WorldConstants.FEATURE_HOLE_MOUNTAIN:
+					return true;
+			}
+
+			return false;
+		},
+
+		isFeatureDeterringSectors: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE:
 				case WorldConstants.FEATURE_HOLE_WELL:
 					return true;
 			}
@@ -230,7 +238,7 @@ function (Ash, WorldCreatorLogger, PlayerStatConstants, WorldConstants, MathUtil
 		},
 
 		isFeaturePreferredForSectors: function (featureType) {
-			return !this.isFeatureBlockingSectors(featureType);
+			return !this.isFeatureBlockingSectors(featureType) && !this.isFeatureDeterringSectors(featureType);
 		},
 
 		getEdgeFeature: function (featureType) {

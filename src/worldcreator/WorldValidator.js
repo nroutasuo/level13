@@ -24,7 +24,7 @@ define([
 		SEVERITY_MAJOR: 1, // world is not well balanced
 		SEVERITY_MINOR: 2, // world is not consistent / doesn't support story
 		SEVERITY_COMPABILITY: 11, // world differs from template in a way that should not happen
-		SEVERITY_CONTINUITY: 12, // world differs from template in a way that might be acceptable if the template is from an older version but needs to be handled properly in game logic
+		SEVERITY_CONTINUITY: 12, // world differs from template in a way that might be acceptable if the template is from an older version
 		
 		// validates overall world skeleton, not levels or sectors
 		// checks that the world is valid in itself, and also that it follows the template if one given
@@ -50,6 +50,8 @@ define([
 			return { check: "validateWorld", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
+		// validates given levels, structure, sectors, features
+		// checks that the level is valid in itself, and also that it follows the template if one given
 		validateLevels: function (worldVO, worldTemplateVO, levels) {
 			let issues = [];
 
@@ -74,8 +76,8 @@ define([
 
 			let levelChecks = [ 
 				this.checkLevelSize,
-				this.checkLevelContinuous, 
 				this.checkLevelPosition,
+				this.checkLevelStructure, 
 				this.checkLevelDistricts,
 				this.checkLevelDensity,
 				this.checkLevelPathLengths, 
@@ -127,7 +129,8 @@ define([
 			// TODO clear more of this data after world gen is done
 			let notSavedKeysWorld = [ 
 				"examineSpotsPerLevel", 
-				"stages"
+				"featuresByPosition",
+				"stages",
 			];
 			let notSavedKeysLevel = [ 
 				// derived data (no need to save in template per sector but available in LevelVO for convenience)
@@ -426,12 +429,27 @@ define([
 			let issues = [];
 
 			let districts = levelVO.districts;
+			let numDistricts = levelVO.districts.length;
+
+			let requiredNumDistrictsWithSectors = !levelVO.isCampable && numDistricts <= 2 ? 1 : 2;
+			let numDistrictsWithSectors = 0;
+
+			let districtWithFewSectorsThreshold = 3;
+			let numDistrictsWithFewSectors = 0;
 
 			for (let i = 0; i < districts.length; i++) {
 				let districtSectors =  levelVO.sectors.filter(s => s.districtIndex == i);
-				if (districtSectors.length < 3) {
-					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sectors on district (" + i + ") on level " + levelVO.level });
+
+				if (districtSectors.length > 0) numDistrictsWithSectors++;
+				if (districtSectors.length < districtWithFewSectorsThreshold) numDistrictsWithFewSectors++;
+
+				if (districtSectors.length > 0 && districtSectors.length < districtWithFewSectorsThreshold) {
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too few sectors (" + districtSectors.length + ") on district (" + i + ") on level " + levelVO.level });
 				}
+			}
+
+			if (numDistrictsWithSectors < requiredNumDistrictsWithSectors) {
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too few (" + numDistrictsWithSectors + ") districts with any sectors on level " + levelVO.level });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -489,13 +507,13 @@ define([
 					continue;
 				} 
 
-				if (path.maxlen > 0 && sectorPath.length > path.maxlen) {
-					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path [" + path.type + "] on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ")" });
+				if (path.maxlen > 0 && sectorPath.length > path.maxlen + 2) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path [" + path.type + "] on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ") (from " + startPos + " to " + endPos + ")" });
 				}
 
 				if (!path.isValidationOnly) {
 					for (let s = 0; s < sectorPath.length; s++) {
-						let pathPosition = sectorPath[i];
+						let pathPosition = sectorPath[s];
 						let pathSectorVO = levelVO.getSectorByPos(pathPosition);
 						if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
 							issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
@@ -700,23 +718,28 @@ define([
 					let sectorsInBetween = getSectorsBetweenBlockers(movementBlocker, otherMovementBlocker);
 					let sectorsInBetweenWithUnblockedDirections = sectorsInBetween.filter(s => hasSectorUnblockedDirections(s, sectorsInBetween));
 
-					if (sectorsInBetweenWithUnblockedDirections.length == 0) {					
-						issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "two movement blockers too close with no alternative path: " + movementBlocker.id + " " + otherMovementBlocker.id });
+					if (sectorsInBetweenWithUnblockedDirections.length == 0) {
+						let interestingSectorsInBetween = sectorsInBetween.filter(s => s.locales.length > 0);
+						if (interestingSectorsInBetween.length == 0) {
+							issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "two movement blockers too close with no alternative path: " + movementBlocker.id + " " + otherMovementBlocker.id });
+						}
 					}
 				}
 			}
 
 			// - check there are some movement blockers
-			let minMovementBlockers = levelVO.isCampable ? 3 : 1;
-			if (movementBlockers.length < 1) {
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " doesn't have any movement blockers" });
-			} else if (movementBlockers.length < minMovementBlockers) {
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has very few movement blockers" });
+			if (levelVO.isCampable) {
+				let minMovementBlockers = levelVO.isCampable && levelVO.levelOrdinal > 1 ? 3 : 1;
+				if (movementBlockers.length < 1) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " doesn't have any movement blockers" });
+				} else if (movementBlockers.length < minMovementBlockers) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has very few movement blockers" });
+				}
 			}
 
 			// - check there are some variety 
-			if (levelVO.isCampable && blockerTypes.length < 2) {
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has has only " + blockerTypes.length + " type of movement blockers" });
+			if (levelVO.isCampable && levelVO.levelOrdinal > 1 && blockerTypes.length < 2) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level " + levelVO.level + " has has only " + blockerTypes.length + " type of movement blockers (" + blockerTypes.join(",") + ")" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -725,17 +748,26 @@ define([
 		checkLevelLight: function (worldVO, levelVO) {
 			let issues = [];
 
+			// percentage of sunlit sectors on level
+
 			let sunlitSectors = levelVO.sectors.filter(s => s.sunlit > 0);
 			let sunlitCount = sunlitSectors.length;
 			let sunlitPercentage = sunlitCount / levelVO.sectors.length;
 
-			let minSunlitPercentage = 0;
-			if (levelVO.level > 14) minSunlitPercentage = 10;
+			let firstSunlitCampOrdinal = 3;
 
-			let maxSunlitPercentage = 0;
-			if (levelVO.level > 14) maxSunlitPercentage = 20;
-			if (levelVO.level < 10) maxSunlitPercentage = 10;
-			if (levelVO.level > 20) maxSunlitPercentage = 100;
+			let minSunlitPercentage = 0;
+			if (levelVO.campOrdinal == firstSunlitCampOrdinal && levelVO.isCampable) minSunlitPercentage = 0.02;
+			if (levelVO.level == worldVO.topLevel) minSunlitPercentage = 0.9;
+
+			let maxSunlitPercentage = 0.2;
+			if (levelVO.level > worldVO.topLevel - 3) maxSunlitPercentage = 1;
+			if (levelVO.campOrdinal < firstSunlitCampOrdinal) maxSunlitPercentage = 0;
+
+			if (sunlitPercentage > 0 && maxSunlitPercentage === 0) {
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "sunlit sectors not allowed but present on level " + levelVO.level });
+				return;
+			}
 
 			if (sunlitPercentage < minSunlitPercentage)
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
@@ -743,29 +775,29 @@ define([
 			if (sunlitPercentage > maxSunlitPercentage)
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
 
+			// not too many lone sunlit sectors without or with only one sunlit neighbours
 
-			let numSunlitSectorsWithOnlyOneSunlitNeighbour = 0;
+			let numSunlitSectorsWithNoSunlitNeighbours = 0;
 			for (let i = 0; i < sunlitSectors.length; i++) {
 				let sectorVO = sunlitSectors[i];
 				let neighbours = levelVO.getNeighbourList(sectorVO.position.sectorX, sectorVO.position.sectorY);
 				if (!neighbours || neighbours.length <= 0) continue;
 				let sunlitNeighbours = neighbours.filter(s => s.sunlit > 0);
-				if (sunlitNeighbours.length == 0) {
-					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "sunlit sector without sunlit neighbours at " + sectorVO.position });
-				}
-				if (sunlitNeighbours.length == 1) {
-					numSunlitSectorsWithOnlyOneSunlitNeighbour++;
-				}
+				if (neighbours.length > 1 && sunlitNeighbours.length == 0) numSunlitSectorsWithNoSunlitNeighbours++;
 			}
 
-			if (numSunlitSectorsWithOnlyOneSunlitNeighbour / sunlitCount > 0.15)
-				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many sunlit sectors with only one sunlit neighbour on level " + levelVO.level });
+			if (numSunlitSectorsWithNoSunlitNeighbours > 1) {
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "several (" + numSunlitSectorsWithNoSunlitNeighbours + ") sunlit sectors without sunlit neighbours on level " + levelVO.level });
+			}
 
-
-			let beaconSpots = levelVO.sectors.filter(s => !s.sunlit && s.buildingDensity > 1 && s.buildingDensity < 10 && !s.hazards.hasHazards());
-			let minBeaconSpots = levelVO.habitability > 0 ? 5 : 3;
-			if (beaconSpots.length < minBeaconSpots)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "not enough valid beacon ("+ beaconSpots.length + "/" + minBeaconSpots + ") spots on level " + levelVO.level });
+			// beacon spots
+			let isSurface = levelVO.level == worldVO.topLevel;
+			if (!isSurface) {
+				let beaconSpots = levelVO.sectors.filter(s => !s.sunlit && s.buildingDensity > 1 && s.buildingDensity < 10 && !s.hazards.hasHazards());
+				let minBeaconSpots = levelVO.habitability > 0 ? 5 : 3;
+				if (beaconSpots.length < minBeaconSpots)
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "not enough valid beacon ("+ beaconSpots.length + "/" + minBeaconSpots + ") spots on level " + levelVO.level });
+			}
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
@@ -774,21 +806,22 @@ define([
 			let issues = [];
 			let isGround = levelVO.level == worldVO.bottomLevel;
 			let isSurface = levelVO.level == worldVO.topLevel;
+			let isL14 = levelVO.level == 14;
 			let isPolluted = levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_RADIATION || levelVO.notCampableReason == LevelConstants.UNCAMPABLE_LEVEL_TYPE_POLLUTION;
 
 			let thresholds = {};
-			thresholds[resourceNames.water] = { sca: { min: 0, max: 10 }, col: { min: 1, max: 15 } };
-			thresholds[resourceNames.food] = { sca: { min: (isPolluted ? 0 : 1), max: 50 }, col: { min: 3, max: 30 } };
-			thresholds[resourceNames.metal] = { sca: { min: 25, max: 99 } };
+			thresholds[resourceNames.water] = { sca: { min: 0, max: 20 }, col: { min: 1, max: isGround ? 40 : 20 } };
+			thresholds[resourceNames.food] = { sca: { min: (isPolluted ? 0 : 1), max: 55 }, col: { min: 1, max: isGround ? 70 : 40 } };
+			thresholds[resourceNames.metal] = { sca: { min: isSurface ? 5 : levelVO.level > 20 ? 10 : 20, max: 99 } };
 			thresholds[resourceNames.rope] = { sca: { min: 0, max: 15 } };
-			thresholds[resourceNames.herbs] = { sca: { min: (isGround || isSurface ? 5 : 0), max: (isGround || isSurface ? 50 : 10) } };
+			thresholds[resourceNames.herbs] = { sca: { min: (isGround || isSurface ? 1 : 0), max: (isGround || isSurface ? 50 : 10) } };
 			thresholds[resourceNames.fuel] = { sca: { min: 0, max: 10 } };
 			thresholds[resourceNames.rubber] = { sca: { min: 0, max: 10 } };
-			thresholds[resourceNames.tools] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.tools] = { sca: { min: 0, max: 30 } };
 			thresholds[resourceNames.medicine] = { sca: { min: 0, max: 10 } };
 			thresholds[resourceNames.concrete] = { sca: { min: 0, max: 10 } };
-			thresholds["any"] = { sca: { min: 30, max: 99 }, col: { min: 5, max: 45 } };
-			thresholds["rare"] = { sca: { min: 0, max: 10 } };
+			thresholds["any"] = { sca: { min: 20, max: 99 }, col: { min: levelVO.level > 20 ? 1 : 3, max: isGround ? 70 : 50 } };
+			thresholds["rare"] = { sca: { min: 0, max: isL14 ? 20 : 15 } };
 
 			let hasScavengeable = function (sectorVO, name) {
 				if (name == "any") return sectorVO.resourcesScavengable.getTotal() > 0;
@@ -837,8 +870,10 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
-		checkLevelContinuous: function (worldVO, levelVO) {
+		checkLevelStructure: function (worldVO, levelVO) {
 			let issues = [];
+
+			// continuous
 
 			let checkIsContinuous = function (startPosition, sectors, stage, context) {
 				for (let i = 0; i < sectors.length; i++) {
@@ -859,20 +894,72 @@ define([
 				checkIsContinuous(earlySectors[0].position, earlySectors, WorldConstants.CAMP_STAGE_EARLY, "early stage");
 			}
 
+			// required positions
+
+			let requiredPositions = worldVO.requiredPositions[levelVO.level];
+			for (let i = 0; i < requiredPositions.length; i++) {
+				let position = requiredPositions[i];
+				if (!levelVO.hasSector(position.sectorX, position.sectorY)) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: levelVO.level + " is missing sector at required position " + position });
+				}
+			}
+
+			// passage and camp positions
+			
+			let camp = levelVO.campPosition;
+			let passage1 = levelVO.getEntrancePassagePosition();
+			let passage2 = levelVO.getExitPassagePosition();
+
+			let checkDistance = function (p1, p2, minDistance, msg) {
+				if (!p1 || !p2) return;
+				let distance = PositionConstants.getDistanceTo(p1, p2);
+				if (distance < minDistance) {
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "distance between sectors [" + msg + "] too small (" + Math.round(distance*100)/100 + "/" + minDistance + ") on level  " + levelVO.level });
+				}
+			};
+
+			// stages
+
+			let checkSectorStages = function (positions, stage) {
+				for (let i = 0; i < positions.length; i++) {
+					let position = positions[i];
+					let sectorVO = levelVO.getSectorByPos(position);
+					if (!sectorVO) continue;
+					if (sectorVO.stage === stage) continue;
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "stage is wrong at position " + position.toString() + " expected: " + stage });
+				}
+			};
+
+			let requiredEarlyPositions = [];
+			if (levelVO.isCampable) {
+				requiredEarlyPositions = requiredEarlyPositions.concat(levelVO.sectors.filter(s => s.isCamp).map(s => s.position));
+				requiredEarlyPositions.push(levelVO.getEntrancePassagePosition());
+			}
+			let requiredLatePositions = [];
+			if (levelVO.levelOrdinal > 1) requiredLatePositions.push(levelVO.getExitPassagePosition());
+			checkSectorStages(requiredEarlyPositions, WorldConstants.CAMP_STAGE_EARLY);
+			checkSectorStages(requiredLatePositions, WorldConstants.CAMP_STAGE_LATE);
+
+			checkDistance(camp, passage1, 3, "entrance to camp");
+			checkDistance(camp, passage2, 5, "camp to exit");
+			checkDistance(passage1, passage2, 5, "passage to passage");
+
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
 		checkLevelPosition: function (worldVO, levelVO) {
 			let issues = [];
 
+			let isSurface = levelVO.level == worldVO.topLevel;
 			let middlePosition = PositionConstants.getMiddlePoint(levelVO.sectors.map(sectorVO => sectorVO.position));
 
 			let expectedMiddlePosition = { sectorX: 0, sectorY: 0 };
 			if (levelVO.level < 13) expectedMiddlePosition = { sectorX: Math.round((13 - levelVO.level) * -5), sectorY: 0 };
 
 			let distance = PositionConstants.getDistanceTo(middlePosition, expectedMiddlePosition);
+			let maxDistance = isSurface ? 30 : 20;
 
-			if (distance > 20) {
+			if (distance > maxDistance) {
 				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level average sector position too far (" + Math.round(distance) + ") from expected on level " + levelVO.level });
 			}
 
@@ -890,7 +977,7 @@ define([
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too low: " + Math.round(averageNumNeighbours*100)/100 });
 			}
 
-			if (averageNumNeighbours > 3.15) {
+			if (averageNumNeighbours > 3.25) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average num neighbours is too high: " + Math.round(averageNumNeighbours*100)/100 });
 			}
 
@@ -900,7 +987,7 @@ define([
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average 2-area density is too low: " + Math.round(averageDensity*100)/100 });
 			}
 
-			if (averageDensity > 0.38) {
+			if (averageDensity >= 0.42) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "level average 2-area density is too high: " + Math.round(averageDensity*100)/100 });
 			}
 
@@ -908,7 +995,7 @@ define([
 				let sectorVO = levelVO.sectors[s];
 				let localDensity = levelVO.getAreaDensity(sectorVO.position.sectorX, sectorVO.position.sectorY, 2);
 
-				if (localDensity > 0.73) {
+				if (localDensity > 0.76) {
 					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "sector local 2-area density is too high at " + sectorVO + " : " + Math.round(localDensity*100)/100 });
 				}
 

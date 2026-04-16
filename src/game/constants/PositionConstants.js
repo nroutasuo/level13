@@ -235,6 +235,47 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			let angleDeg = angleRad * 180 / Math.PI;
 			return (angleDeg + 360) % 360;
 		},
+
+		getPositionsBetweenPositions: function (p1, p2) {
+			let level = p1.level;
+
+			let x1 = p1.sectorX;
+			let y1 = p1.sectorY;
+			let x2 = p2.sectorX;
+			let y2 = p2.sectorY;
+
+  			let result = [];
+
+			let dx = Math.abs(x2 - x1);
+			let dy = Math.abs(y2 - y1);
+
+			let sx = x1 < x2 ? 1 : -1;
+			let sy = y1 < y2 ? 1 : -1;
+
+			let err = dx - dy;
+
+			let x = x1;
+			let y = y1;
+
+  			while (true) {
+				if (x === x2 && y === y2) break;	
+				if (!(x === x1 && y === y1)) result.push(new PositionVO(level, x, y));
+
+				let e2 = 2 * err;
+
+				if (e2 > -dy) {
+					err -= dy;
+					x += sx;
+				}
+
+				if (e2 < dx) {
+					err += dx;
+					y += sy;
+				}
+			}
+
+  			return result;
+		},
 		
 		getDistanceTo: function (sectorPosFrom, sectorPosTo) {
 			var xs = sectorPosFrom.sectorX - sectorPosTo.sectorX;
@@ -242,6 +283,26 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 			var ys = sectorPosFrom.sectorY - sectorPosTo.sectorY;
 			ys = ys * ys;
 			return Math.sqrt(xs + ys);
+		},
+		
+		getMinDistanceTo: function (sectorPosFrom, sectorPosTos) {
+			let min = 9999;
+			for (let i = 0; i < sectorPosTos.length; i++) min = Math.min(min, this.getDistanceTo(sectorPosFrom, sectorPosTos[i]));
+			return min;
+		},
+
+		getMaxDistanceBetween: function (positions) {
+			if (positions.length <= 1) return 0;
+			let max = -1;
+			for (let i = 0; i < positions.length; i++) {
+				for (let j = i + 1; j < positions.length; j++) {
+					let p1 = positions[i];
+					let p2 = positions[j];
+					let d = this.getDistanceTo(p1, p2);
+					if (max < 0 || d > max) max = d;
+				}
+			}
+			return max;
 		},
 		
 		getMagnitude: function (pos) {

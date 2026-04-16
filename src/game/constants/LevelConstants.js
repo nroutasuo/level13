@@ -1,5 +1,5 @@
-define(['ash', 'game/constants/PositionConstants'
-], function (Ash, PositionConstants ) {
+define(['ash', 'game/constants/PositionConstants', 'utils/MathUtils'
+], function (Ash, PositionConstants, MathUtils) {
 
 	let LevelConstants = {
 		
@@ -18,7 +18,8 @@ define(['ash', 'game/constants/PositionConstants'
 				if (stage && districtVO.stage != stage) continue;
 				let position = districtVO.adjustedPosition || districtVO.position;
 				let dist = PositionConstants.getDistanceTo(pos, position);
-				let adjustedDist = dist;
+
+				let adjustedDist = dist * MathUtils.map(districtVO.size, 0.5, 2, 1.25, 0.75);
 
 				if (adjustedDist > resultDistance) continue;
 

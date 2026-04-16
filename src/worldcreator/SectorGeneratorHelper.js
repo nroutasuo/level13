@@ -135,16 +135,20 @@ define([
 
 			// add blockers to adjacent paths too (if present) so player can't just walk around the blocker
 			if (options.addDiagonals) {
-				var diagonalsOptions = Object.assign({}, options);
+				let diagonalsOptions = Object.assign({}, options);
 				diagonalsOptions.addDiagonals = true;
 				diagonalsOptions.skipWarnings = true;
 				let nextNeighbours = levelVO.getNextNeighbours(sectorVO, direction);
 				for (let j = 0; j < nextNeighbours.length; j++) {
+					if (options.diagonalsFilter && !options.diagonalsFilter(sectorVO, nextNeighbours[j])) continue;
+					if (WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, nextNeighbours[j])) continue;
 					this.addMovementBlocker(worldVO, levelVO, sectorVO, nextNeighbours[j], blockerType, diagonalsOptions, sectorcb);
 				}
 				let nextNeighbours2 = levelVO.getNextNeighbours(neighbourVO, neighbourDirection);
 				for (let j = 0; j < nextNeighbours2.length; j++) {
 					if (nextNeighbours.indexOf(nextNeighbours2[j]) >= 0 && nextNeighbours2[j].hasMovementBlockers()) continue;
+					if (options.diagonalsFilter && !options.diagonalsFilter(sectorVO, nextNeighbours2[j])) continue;
+					if (WorldCreatorHelper.canSectorHaveMovementBlocker(levelVO, nextNeighbours2[j])) continue;
 					this.addMovementBlocker(worldVO, levelVO, neighbourVO, nextNeighbours2[j], blockerType, diagonalsOptions, sectorcb);
 				}
 			}
