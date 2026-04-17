@@ -457,6 +457,12 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.log.tutorial_found_silver_message",
 				conditions: { playerInventory: { silver: [1, -1] } }
 			},
+			TUTORIAL_FOUND_BLUEPRINT: {
+				triggers: [ "action_collect_rewards" ],
+				repeats: "NEVER",
+				logMessage: "ui.log.tutorial_found_blueprint_message",
+				conditions: { blueprintPieces: [ 1, -1 ], maxNumCamps: 1 }
+			},
 			TUTORIAL_WARNING_STORAGE_FULL: {
 				triggers: [ "update" ],
 				repeats: "COOLDOWN",

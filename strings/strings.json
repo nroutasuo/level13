@@ -2355,6 +2355,7 @@
 			"tutorial_found_rubber_message": "Found some rubber.",
 			"tutorial_found_silver_message": "Found some silver coins. some traders accept these.",
 			"tutorial_found_tools_message": "Found some useful tools.",
+			"tutorial_found_blueprint_message": "These blueprints can be studied in more detail in the camp.",
 			"tutorial_produced_robot_message": "Our first worker robot is ready. It will help workers with their tasks.",
 			"tutorial_used_hospital_message": "Healed all injuries.",
 			"tutorial_warning_first_camp_completed_message": "There is not much more we can build here now, with our current abilities. best to explore the city more.",

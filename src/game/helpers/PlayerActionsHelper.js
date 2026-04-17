@@ -780,16 +780,24 @@ define([
 					}
 				}
 
-				if (typeof requirements.blueprintpieces !== "undefined") {
-					let upgradeID = requirements.blueprintpieces;
-					let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
-					if (!blueprintVO || blueprintVO.completed) {
-						reason = "No such blueprint in progress.";
-						return { value: 0, reason: this.getDisabledReasonVO(null, null, null, reason) };
-					}
-					let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
-					if (requiredPieces - blueprintVO.currentPieces > 0) {
-						return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_missing_blueprint_pieces") };
+				if (typeof requirements.blueprintPieces !== "undefined") {
+					let upgradeID = requirements.blueprintPieces;
+
+					if (typeof upgradeID == "string") {
+						let blueprintVO = this.tribeUpgradesNodes.head.upgrades.getBlueprint(upgradeID);
+						if (!blueprintVO || blueprintVO.completed) {
+							reason = "No such blueprint in progress.";
+							return { value: 0, reason: this.getDisabledReasonVO(null, null, null, reason) };
+						}
+						let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
+						if (requiredPieces - blueprintVO.currentPieces > 0) {
+							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_missing_blueprint_pieces") };
+						}
+					} else if (typeof upgradeID == "object") {
+						let range = upgradeID;
+						let currentVal = this.tribeUpgradesNodes.head.upgrades.newBlueprints.length + this.tribeUpgradesNodes.head.upgrades.availableBlueprints.length;
+						let result = this.checkRequirementsRange(range, currentVal, "Not enough blueprints", "Too  many blueprints");
+						if (result) return result;
 					}
 				}
 				
@@ -2215,7 +2223,7 @@ define([
 					requirements = $.extend({}, PlayerActionConstants.requirements[baseActionID]);
 					let upgradeID = action.replace(baseActionID + "_", "");
 					let type = UpgradeConstants.getUpgradeType(upgradeID);
-					requirements.blueprintpieces = upgradeID;
+					requirements.blueprintPieces = upgradeID;
 					if (type == UpgradeConstants.UPGRADE_TYPE_HOPE) {
 						if (upgradeID != "unlock_building_greenhouse") {
 							requirements.workers = {};
