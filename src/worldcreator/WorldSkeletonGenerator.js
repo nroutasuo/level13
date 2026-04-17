@@ -117,11 +117,11 @@ define([
 			}
 
 			// sunwells (east, higher levels)
-			let wellXOffset = WorldCreatorRandom.randomInt(seed, -10, 10);
+			let wellXOffset = WorldCreatorRandom.randomInt(seed, -6, 6);
 			let wellYOffset = WorldCreatorRandom.randomInt(seed/2, 0, 5);
 			let wellCenters = [ 
-				new PositionVO(topLevel, -20 + wellXOffset, 6 + wellYOffset),
-				new PositionVO(topLevel, -20 + wellXOffset, -6 - wellYOffset),
+				new PositionVO(topLevel, -18 + wellXOffset, 6 + wellYOffset),
+				new PositionVO(topLevel, -18 + wellXOffset, -6 - wellYOffset),
 			];
 			for (let i = 0; i < wellCenters.length; i++) {
 				let wellCenter = wellCenters[i];
