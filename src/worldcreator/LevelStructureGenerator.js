@@ -1878,28 +1878,7 @@ define([
 			let sectorVO = levelVO.getSectorByPos(pos);
 			let hasPriority = sectorVO.features.length > 0;
 
-			// skip if neighbours have connection points
-			for (let i = 0; i < levelVO.allConnectionPoints.length; i++) {
-				let existingPoint = levelVO.allConnectionPoints[i];
-				let distance = PositionConstants.getDistanceTo(pos, existingPoint.position);
-				if (distance <= 1) return;
-				if (distance > 2) continue;
-				let direction = PositionConstants.getDirectionFrom(pos, existingPoint.position);
-				let bridgePosition = PositionConstants.getNeighbourPosition(pos, direction);
-				if (!hasPriority && levelVO.hasSector(bridgePosition.sectorX, bridgePosition.sectorY)) return;
-			}
-
-			let removeDirections = function (position, maxdist) {
-				let dist = PositionConstants.getDistanceTo(pos, position);
-				if (dist <= maxdist) return;
-				
-				let directionToStart = PositionConstants.getDirectionFrom(pos, position);
-				let allowedDirections = [ 
-					directionToStart, 
-					PositionConstants.getNextClockWise(directionToStart, true), 
-					PositionConstants.getNextCounterClockWise(directionToStart, true)
-				];
-				
+			let removeDirectionsOtherThan = function (allowedDirections) {
 				let directionArrays = [ point.dirs, point.dirs2 ];
 				for (let a = 0; a < directionArrays.length; a++) {
 					let array = directionArrays[a];
@@ -1914,10 +1893,47 @@ define([
 						array.splice(indicesToRemove[i], 1);
 					}
 				}
+			};
+
+			// remove directions leading towards other connection points that are too close
+			for (let i = 0; i < levelVO.allConnectionPoints.length; i++) {
+				let existingPoint = levelVO.allConnectionPoints[i];
+				let distance = PositionConstants.getDistanceTo(pos, existingPoint.position);
+				if (distance > 2) continue;
+				if (distance < 1) return;
+				let direction = PositionConstants.getDirectionFrom(pos, existingPoint.position);
+				let bridgePosition = PositionConstants.getNeighbourPosition(pos, direction);
+				let hasBridgePosition = levelVO.hasSector(bridgePosition.sectorX, bridgePosition.sectorY);
+				if (!hasBridgePosition) continue;
+
+				let directionAway = PositionConstants.getOppositeDirection(direction);
+				let allowedDirections = [
+					directionAway,
+					PositionConstants.getNextClockWise(directionAway, true), 
+					PositionConstants.getNextCounterClockWise(directionAway, true)
+				];
+				removeDirectionsOtherThan(allowedDirections);
 			}
 
-			removeDirections(levelVO.getExcursionStartPosition(), Math.min(this.getMaxExcursionDistance(levelVO) - 5, 30));
-			removeDirections(levelVO.levelMapCenterPosition, WorldConstants.MAX_DISTANCE_TO_MAP_CENTER - 5);
+			// remove directions leading too far away from level center
+			let removeDirectionsAwayFrom = function (position, maxdist) {
+				let dist = PositionConstants.getDistanceTo(pos, position);
+				if (dist <= maxdist) return;
+				
+				let directionToStart = PositionConstants.getDirectionFrom(pos, position);
+				let allowedDirections = [ 
+					directionToStart, 
+					PositionConstants.getNextClockWise(directionToStart, true), 
+					PositionConstants.getNextCounterClockWise(directionToStart, true)
+				];
+
+				removeDirectionsOtherThan(allowedDirections);
+			}
+
+			removeDirectionsAwayFrom(levelVO.getExcursionStartPosition(), Math.min(this.getMaxExcursionDistance(levelVO) - 5, 30));
+			removeDirectionsAwayFrom(levelVO.levelMapCenterPosition, WorldConstants.MAX_DISTANCE_TO_MAP_CENTER - 5);
+
+			if (point.dirs.length == 0 && point.dirs2.length == 0) return;
 
 			point.stage = levelVO.getSector(pos.sectorX, pos.sectorY).stage;
 			
