@@ -204,7 +204,6 @@ define([
 			this.updateLocales();
 			this.updateMovementRelatedActions();
 			this.updateLocationDetails();
-			this.updateSectorDescription();
 			this.updateLevelPageActions();
 			this.updateLevelPageActionsSlow();
 			this.updateUnlockedFeatures();
@@ -212,6 +211,10 @@ define([
 			this.updateOutImprovementsStatus();
 			this.updateMovementActions();
 			this.updateCharacters();
+
+			if (GameGlobals.gameState.uiStatus.currentTab !== GameGlobals.uiFunctions.elementIDs.tabs.out) return;
+
+			this.updateSectorDescription();
 			this.updateDespair();
 		},
 		
