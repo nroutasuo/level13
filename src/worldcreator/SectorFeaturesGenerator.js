@@ -1925,7 +1925,7 @@ define([
 				let result = 0;
 				if (isEarly) result += blueprintPiecesByCampOrdinal[campOrdinal][0];
 				if (!isEarly && levelIndex == 0) result += blueprintPiecesByCampOrdinal[campOrdinal][1];
-				if (!isEarly && levelIndex == maxLevelIndex) result += blueprintPiecesByCampOrdinal[campOrdinal][2];
+				if (!isEarly && (levelIndex == 1 || maxLevelIndex < 1)) result += blueprintPiecesByCampOrdinal[campOrdinal][2];
 				return result;				
 			};
 
