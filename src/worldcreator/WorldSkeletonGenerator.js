@@ -75,17 +75,15 @@ define([
 			collapseAreas.push(new AreaVO(topLevel - 1, -3, 3, -3, 3));
 			collapseAreas.push(new AreaVO(topLevel - 2, -1, 1, -1, 1));
 			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_COLLAPSE, collapseAreas));
-			log.i("collapse: " + collapseAreas.join(", "))
 			
-			// mountain (far northeast)
+			// mountain (northeast)
 			let mountainAreas = [];
-			let mountainCenter = new PositionVO(bottomLevel, 25, -25);
-			for (let l = bottomLevel; l <= topLevel; l++) {
+			let mountainCenter = new PositionVO(bottomLevel, 15, -20);
+			for (let l = bottomLevel; l < 20; l++) {
 				let height = l - bottomLevel;
 				let reductionPct = height/(height + 6);
 				let radiusPct = 1 - reductionPct;
 				let mountainRadius = Math.max(4, Math.round(25 * radiusPct));
-				if (l == 13 || l == 14) continue;
 				mountainAreas.push(new AreaVO(l, mountainCenter.sectorX - mountainRadius, mountainCenter.sectorX + mountainRadius, mountainCenter.sectorY - mountainRadius, mountainCenter.sectorY + mountainRadius));
 			}
 			result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_MOUNTAIN, mountainAreas));
@@ -118,62 +116,58 @@ define([
 				}
 			}
 
-			// sunwells (east, higher levels)
-			let wellXOffset = WorldCreatorRandom.randomInt(seed, -6, 6);
-			let wellYOffset = WorldCreatorRandom.randomInt(seed/2, 0, 5);
-			let wellCenters = [ 
-				new PositionVO(topLevel, -18 + wellXOffset, 6 + wellYOffset),
-				new PositionVO(topLevel, -18 + wellXOffset, -6 - wellYOffset),
-			];
+			// sunwells (west or south, higher levels)
+			let wellDirection = seed % 2 == 0 ? PositionConstants.DIRECTION_WEST : PositionConstants.DIRECTION_SOUTH;
+			let wellPaddingX = wellDirection == PositionConstants.DIRECTION_WEST ? 3 : 1;
+			let wellPaddingY = wellDirection == PositionConstants.DIRECTION_WEST ? 1 : 3;
+			let wellOrigoDistanceOffset = WorldCreatorRandom.randomInt(seed/3, 0, 8);
+			let wellWellDistanceOffset = WorldCreatorRandom.randomInt(seed/2, 0, 6);
+			let wellCenters = [];
+			if (wellDirection == PositionConstants.DIRECTION_WEST) {
+				wellCenters.push(new PositionVO(topLevel, -15 - wellOrigoDistanceOffset, 4 + wellWellDistanceOffset));
+				wellCenters.push(new PositionVO(topLevel, -15 - wellOrigoDistanceOffset, -4 - wellWellDistanceOffset));
+			} else {
+				wellCenters.push(new PositionVO(topLevel, 4 + wellWellDistanceOffset, 16 + wellOrigoDistanceOffset));
+				wellCenters.push(new PositionVO(topLevel, -4 - wellWellDistanceOffset, 16 + wellOrigoDistanceOffset));
+			}
 			for (let i = 0; i < wellCenters.length; i++) {
 				let wellCenter = wellCenters[i];
 				let wellAreas = [];
 				for (let l = 15; l <= topLevel; l++) {
-					wellAreas.push(new AreaVO(l, wellCenter.sectorX - 1, wellCenter.sectorX + 1, wellCenter.sectorY - 3, wellCenter.sectorY + 3));
+					wellAreas.push(new AreaVO(l, wellCenter.sectorX - wellPaddingX, wellCenter.sectorX + wellPaddingX, wellCenter.sectorY - wellPaddingY, wellCenter.sectorY + wellPaddingY));
 				}
 				result.push(new WorldFeatureVO(WorldConstants.FEATURE_HOLE_WELL, wellAreas));
-				log.i("sunwell: " + wellAreas.join(", "))
 			}
 
 			// train tracks and stations
-			let findFeaturePositions = function (level, featureType) {
-				let positions = [];
-				for (let i = 0; i < result.length; i++) {
-					let featureVO = result[i];
-					if (featureVO.type !== featureType) continue;
-					if (!featureVO.spansLevel(level)) continue;
-					positions = positions.concat(featureVO.getPositions(level));
-				}
-				return positions;
-			};
 			let getTrainTrackStartPosition = function (level, hasStations, i) {
 				let levelCenter = levelCenterPositions[level];
+
 				let sectorX = levelCenter.sectorX;
 				let sectorY = levelCenter.sectorY;
 
 				let sX = seed % 5 + level + i * 5;
 				let sY = seed % 3 + level * 2 + i * 2;
 
+				// by default random position around level center
+				sectorX += WorldCreatorRandom.randomInt(sX, -15, 16);
+				sectorY += WorldCreatorRandom.randomInt(sY, -15, 16);
+
+				// if using stations and if possible connect to an existing station on same level or level above (level below is not generated yet)
 				if (hasStations) {
 					let stationPositions = [];
-					let connectToAbove = WorldCreatorRandom.randomBool(level + i * 3, 0.75);
-					if (i > 0) {
-						stationPositions = stationPositions.concat(findFeaturePositions(level, WorldConstants.FEATURE_TRAIN_STATION));
-					} else if (connectToAbove) {
-						stationPositions = stationPositions.concat(findFeaturePositions(level + 1, WorldConstants.FEATURE_TRAIN_STATION));
-					}
-					if (stationPositions.length == 0) {
-						stationPositions.push(new PositionVO(level, WorldCreatorRandom.randomInt(sX, -4, 5) * 5, WorldCreatorRandom.randomInt(sY, -4, 5) * 5));
-					}
+					
+					stationPositions = stationPositions.concat(WorldSkeletonGenerator.findFeaturePositions(result, level, WorldConstants.FEATURE_TRAIN_STATION));
+					stationPositions = stationPositions.concat(WorldSkeletonGenerator.findFeaturePositions(result, level + 1, WorldConstants.FEATURE_TRAIN_STATION));
 
-					stationPositions = ArrayUtils.filterIfAny(stationPositions, (pos) => PositionConstants.getDistanceTo(levelCenter, pos) <= 20);
+					if (stationPositions.length > 0) {
+						stationPositions = ArrayUtils.filterIfAny(stationPositions, (pos) => PositionConstants.getDistanceTo(levelCenter, pos) <= 20);
+						stationPositions = ArrayUtils.filterIfAny(stationPositions, (pos) => PositionConstants.getDistanceTo(levelCenter, pos) <= 10);
 
-					let station = WorldCreatorRandom.randomItemFromArray(seed % 11 + level + i, stationPositions);
-					sectorX = station.sectorX;		
-					sectorY = station.sectorY;
-				} else {
-					sectorX += WorldCreatorRandom.randomInt(sX, -20, 20);
-					sectorY += WorldCreatorRandom.randomInt(sY, -20, 20);
+						let station = WorldCreatorRandom.randomItemFromArray(seed % 11 + level + i, stationPositions);
+						sectorX = station.sectorX;		
+						sectorY = station.sectorY;
+					}
 				}
 				
 				return new PositionVO(level, sectorX, sectorY);
@@ -183,7 +177,7 @@ define([
 				let distance = PositionConstants.getDistanceTo(startPosition, levelCenter);
 				let directions = isCentral ? PositionConstants.getDirectionsFrom(startPosition, levelCenter, false) : PositionConstants.getLevelDirections(true);
 				if (distance <= 0 || directions.length <= 0) return PositionConstants.DIRECTION_EAST;
-				return WorldCreatorRandom.randomItemFromArray(level, directions);
+				return WorldCreatorRandom.randomItemFromArray(level + Math.abs(startPosition.sectorX), directions);
 			}
 			let createLine = function (level, featureType, startPosition, direction, length, hasStations) {
 				let trackAreas = [];
@@ -216,10 +210,13 @@ define([
 			};
 			for (let l = topLevel - 1; l >= bottomLevel; l--) {
 				let isModern = l > 14;
-				let numNew = isModern ? 2 : 0;
+
+				let numNewCommuter = isModern ? 2 : 0;
+				let numNewIndustrial = isModern ? 0 : 1;
 				let numOld = isModern ? 0 : 1;
-				generateTrainTracks(l, WorldConstants.FEATURE_TRAIN_TRACKS_NEW, numNew, true);
-				generateTrainTracks(l, WorldConstants.FEATURE_TRAIN_TRACKS_OLD, numOld, false);
+				generateTrainTracks(l, WorldConstants.FEATURE_TRAIN_TRACKS_NEW, numNewCommuter, true);
+				generateTrainTracks(l, WorldConstants.FEATURE_TRAIN_TRACKS_NEW, numNewIndustrial, false);
+				generateTrainTracks(l, WorldConstants.FEATURE_TRAIN_TRACKS_OLD, numOld, true);
 			}
 			
 			return result;
@@ -239,36 +236,53 @@ define([
 			let result = {};
 
 			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);	
+			let bottomLevel = WorldCreatorHelper.getBottomLevel(seed);
 
-			let addRequiredPositionNearFeature = function (l, featureType, distance) {
-				let positionVO = WorldSkeletonGenerator.generateRequiredPositionNearFeature(seed, worldVO, l, levelCenterPositions[l], features, featureType, distance);
-				if (!positionVO) return;
-				log.i("required position: " + positionVO + " near feature " + featureType);
-				result[l].push(positionVO);
+			let addRequiredPositionNearFeature = function (l, featureTypes, num, distance) {
+				let positions = WorldSkeletonGenerator.generateRequiredPositionsNearFeature(seed, worldVO, l, levelCenterPositions[l], features, featureTypes, num, distance);
+				for (let i = 0; i < positions.length; i++) {
+					let positionVO = positions[i];
+					if (!positionVO) return;
+					log.i("required position: " + positionVO + " near feature " + featureTypes.join(","));
+					result[l].push(positionVO);
+				}
 			};
 			
 			for (let l = topLevel; l >= bottomLevel; l--) {
 				result[l] = [];
 
 				let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, l);
+				let isSmallLevel = WorldCreatorHelper.isSmallLevel(seed, l);
 
-				if (l == 12) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_PILLAR, 0);
-				if (l == 15) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_MOUNTAIN, 1);
-				if (campOrdinal == 11) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_WELL, 1);
-				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_1) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, 0);
-				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_2) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, 0);
-				if (l >= topLevel - 1) addRequiredPositionNearFeature(l, WorldConstants.FEATURE_HOLE_COLLAPSE, 1);
+				if (l >= topLevel - 1) addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_HOLE_COLLAPSE ], 1, 1);
+
+				if (l == topLevel) continue;
+
+				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_1) addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER ], 1, 0);
+				if (l == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_2) addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER ], 1, 0);
+
+				if (isSmallLevel) continue;
+				
+				addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_STRUCTURE_PILLAR ], 1, 0);
+
+				if (l == 13) continue;
+
+				addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_TRAIN_STATION ], 1, 0);
+
+				if (l >= topLevel - 2) continue;
+				
+				addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_TRAIN_TRACKS_NEW, WorldConstants.FEATURE_TRAIN_TRACKS_OLD ], 1, 0);
+				if (l > 14) addRequiredPositionNearFeature(l, [ WorldConstants.FEATURE_HOLE_WELL, WorldConstants.FEATURE_HOLE_MOUNTAIN ], 2, 1);
 			}
 
 			return result;
 		},
 
-		generateRequiredPositionNearFeature: function (seed, worldVO, level, levelCenterPosition, features, featureType, distance) {
-			let validFeatures = features.filter(featureVO => featureVO.type == featureType && featureVO.spansLevel(level));
+		generateRequiredPositionsNearFeature: function (seed, worldVO, level, levelCenterPosition, features, featureTypes, num, distance) {
+			let validFeatures = features.filter(featureVO => featureTypes.indexOf(featureVO.type) >= 0 && featureVO.spansLevel(level));
 			if (validFeatures.length == 0) {
-				log.w("could not generate required position near feature: no valid features found (level: " + level + ", feature: " + featureType + ")", "world");
-				return null;
+				log.w("could not generate required position near feature: no valid features found (level: " + level + ", featureTypes: " + featureTypes.join(",") + ")", "world");
+				return [];
 			}
 
 			let featurePositions = [];
@@ -281,13 +295,36 @@ define([
 			}
 
 			let validPositions = [];
-			for (let i = 0; i < featurePositions.length; i++) {
-				validPositions = validPositions.concat(WorldCreatorHelper.getPositionsAtDistance(featurePositions[i], distance));
+
+			if (distance == 0) {
+				validPositions = featurePositions;
+			} else {
+				for (let i = 0; i < featurePositions.length; i++) {
+					let positionsAround = WorldCreatorHelper.getPositionsAtDistance(featurePositions[i], distance);
+					for (let j = 0; j < positionsAround.length; j++) {
+						let pos = positionsAround[j];
+						if (featurePositions.find(p => p.sectorX === pos.sectorX && p.sectorY === pos.sectorY)) continue;
+						if (validPositions.find(p => p.sectorX === pos.sectorX && p.sectorY === pos.sectorY)) continue;
+						validPositions.push(pos);
+					}
+				}
 			}
 
 			validPositions = validPositions.filter(pos => !WorldCreatorHelper.containsBlockingFeature(worldVO, pos));
 
-			return WorldCreatorHelper.getClosestPosition(validPositions, levelCenterPosition);
+			let result = [];
+
+			let referencePoint = levelCenterPosition;
+
+			for (let i = 0; i < num; i++) {
+				let positionVO = WorldCreatorHelper.getClosestPosition(validPositions, referencePoint);
+				if (!positionVO) break;
+				result.push(positionVO);
+				validPositions.splice(validPositions.indexOf(positionVO), 1);
+				referencePoint = positionVO;
+			}
+
+			return result;
 		},
 		
 		generateCampPositions: function (seed, worldVO, centers, requiredPositions) {
@@ -368,19 +405,34 @@ define([
 			let minDiff = Math.min(1, Math.floor(maxDiff / 2));
 			log.i("passage position " + level + " " + campPos1 + " - " + campPos2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
 			
-			// select random sector around averagePos
+			// find candidates around averagePos (some random candidates and nearest valid pillar position)
 			let candidates = [];
-			for (let i = 0; i < 5; i++) {
+			let addCandidate = function (pos, additionalScore) {
+				additionalScore = additionalScore || 0;
+				let distance = PositionConstants.getDistanceTo(pos, averagePos);
+				let score = distance - additionalScore;
+				candidates.push({ result: pos, score: score });
+			};
+			for (let i = 0; i < 10; i++) {
 				let rseed = seed % (1000 - i * 99) + 7 + (level + 13) * 101;
 				let candidate = WorldCreatorRandom.randomSectorPositionWithCheck(
 					rseed, "passage down pos " + level, level, averagePos, maxDiff, minDiff,
 					(pos) => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, worldVO, passageUp, campPos1, campPos2, levelCenter, requiredPositions)
 				);
-				let score = PositionConstants.getDistanceTo(candidate, averagePos);
-				candidates.push({ result: candidate, score: score });
+				addCandidate(candidate);
 			}
+			
+			let pillarPositions = WorldSkeletonGenerator.findFeaturePositions(worldVO.features, level, WorldConstants.FEATURE_STRUCTURE_PILLAR);
+			pillarPositions = pillarPositions.filter(pos => WorldSkeletonGenerator.isValidPassageDownPos(seed, pos, worldVO, passageUp, campPos1, campPos2, levelCenter, requiredPositions).isValid);
+			if (pillarPositions.length > 0) {
+				pillarPositions = pillarPositions.sort(function (a, b) { return PositionConstants.getDistanceTo(a, averagePos) - PositionConstants.getDistanceTo(b, averagePos) });
+				addCandidate(pillarPositions[0], 1);
+			}
+
+			// select candidate with lowest score
 			candidates.sort(function (a, b) { return a.score - b.score; });
-			return candidates[0].result;
+			let result = candidates[0].result;
+			return result;
 		},
 		
 		getNextCampPosUp: function (seed, campPositions, from, inclusive) {
@@ -577,6 +629,17 @@ define([
 			}
 			
 			return result;
+		},
+
+		findFeaturePositions: function (features, level, featureType) {
+			let positions = [];
+			for (let i = 0; i < features.length; i++) {
+				let featureVO = features[i];
+				if (featureVO.type !== featureType) continue;
+				if (!featureVO.spansLevel(level)) continue;
+				positions = positions.concat(featureVO.getPositions(level));
+			}
+			return positions;
 		},
 
 		getGuaranteedReadyPassageLevel: function (seed, worldVO) {

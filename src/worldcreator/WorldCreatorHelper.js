@@ -140,12 +140,11 @@ define([
 			if (distance == 0) position;
 
 			for (let dx = -distance; dx <= distance; dx++) {
-				let dy = distance - Math.abs(dx);
-
-				result.push(new PositionVO(position.level, position.sectorX + dx, position.sectorY + dy));
-
-				if (dy !== 0) {
-					result.push(new PositionVO(position.level, position.sectorX + dx, position.sectorY - dy));
+				for (let dy = distance; dy <= distance; dy++) {
+					// include corners
+					let d = Math.max(Math.abs(dx), Math.abs(dy));
+					if (d != distance) continue;
+					result.push(new PositionVO(position.level, position.sectorX + dx, position.sectorY + dy));
 				}
 			}
 
