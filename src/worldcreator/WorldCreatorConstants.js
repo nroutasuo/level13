@@ -51,6 +51,8 @@ function (Ash, CampConstants, PlayerStatConstants, WorldConstants, MathUtils) {
 		CONNECTION_POINTS_RECT_DIAGONAL: "r-diagonal",
 		CONNECTION_POINTS_RECT_NONE: "r-none",
 
+		CONNECTION_POINTS_CUSTOM: "custom",
+
 		SHAPE_LINE_ANY: "line-any", // line starting from one connection point and going in any direction
 		SHAPE_LINE_CONNECTION: "line-connection", // line between two existing connection points
 		SHAPE_RECTANGLE_CORNER: "rectangle-corner", // rectangle attaching to connection point via a corner
@@ -493,6 +495,16 @@ function (Ash, CampConstants, PlayerStatConstants, WorldConstants, MathUtils) {
 
 		isFeaturePreferredForSectors: function (featureType) {
 			return !this.isFeatureBlockingSectors(featureType) && !this.isFeatureDeterringSectors(featureType);
+		},
+
+		isFeaturePrioritisedForSectors: function (featureType) {
+			// same as preferred except excluding train tracks to account for them being more common
+			switch (featureType) {
+				case WorldConstants.FEATURE_TRAIN_TRACKS_NEW:
+				case WorldConstants.FEATURE_TRAIN_TRACKS_OLD:
+					return false;
+			}
+			return this.isFeaturePreferredForSectors(featureType);
 		},
 
 		getEdgeFeature: function (featureType) {

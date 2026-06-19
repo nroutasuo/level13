@@ -391,12 +391,20 @@ define([
 				if (attempts > maxAttempts) {
 					break;
 				}
+
+				let sectorsBefore = levelVO.sectors.length;
 			
 				log.i("connecting disconnected parts of level " + levelVO.level + " stage " + stageName + ", division " + division.connected.length + "-" + division.disconnected.length + " " + ", skip: " + skip);
 				let pair = WorldCreatorHelper.getConnectionPair(levelVO, division.connected, division.disconnected, skip);
-				if (!pair) break;
+				if (!pair) {
+					log.w("could not find connection pair for connecting disconnected parts of level " + levelVO.level + " stage " + stageName);
+					break;
+				}
 				let result = this.createPathBetween(worldVO, levelVO, pair[0].position, pair[1].position, -1, options);
-				if (result.path && result.path.length > 0) {
+
+				let sectorsAfter = levelVO.sectors.length;
+
+				if (result.path && result.path.length > 0 && sectorsAfter > sectorsBefore) {
 					division = getConnectedSectors();
 					skip = 0;
 				} else {
@@ -1872,6 +1880,7 @@ define([
 			if (!point) return;
 			if (!levelVO.hasSector(pos.sectorX, pos.sectorY)) return;
 
+			// if (pos.sectorX == 7 && pos.sectorY == -13) debugger
 			if (point.dirs.length == 0 && point.dirs2.length == 0) return;
 
 			if (WorldCreatorHelper.containsDeterringFeature(this.currentWorldVO, pos)) return;
@@ -1879,14 +1888,14 @@ define([
 			let sectorVO = levelVO.getSectorByPos(pos);
 			let hasPriority = sectorVO.features.length > 0;
 
-			let removeDirectionsOtherThan = function (allowedDirections) {
+			let removeDirections = function (check) {
 				let directionArrays = [ point.dirs, point.dirs2 ];
 				for (let a = 0; a < directionArrays.length; a++) {
 					let array = directionArrays[a];
 					let indicesToRemove = [];
 					for (let i = 0; i < array.length; i++) {
 						let direction = array[i];
-						let isAllowed = allowedDirections.indexOf(direction) >= 0;
+						let isAllowed = check(direction);
 						if (!isAllowed) indicesToRemove.push(i);
 					}
 
@@ -1894,7 +1903,18 @@ define([
 						array.splice(indicesToRemove[i], 1);
 					}
 				}
+			}
+
+			let removeDirectionsOtherThan = function (allowedDirections) {
+				return removeDirections(direction => allowedDirections.indexOf(direction) >= 0);
 			};
+
+			let removeDirectionsWithNeighbour = function (check) {
+				return removeDirections(direction => {
+					let neighbourPosition = PositionConstants.getNeighbourPosition(pos, direction);
+					return check(neighbourPosition);
+				});
+			}
 
 			// remove directions leading towards other connection points that are too close
 			for (let i = 0; i < levelVO.allConnectionPoints.length; i++) {
@@ -1907,14 +1927,13 @@ define([
 				let hasBridgePosition = levelVO.hasSector(bridgePosition.sectorX, bridgePosition.sectorY);
 				if (!hasBridgePosition) continue;
 
-				let directionAway = PositionConstants.getOppositeDirection(direction);
-				let allowedDirections = [
-					directionAway,
-					PositionConstants.getNextClockWise(directionAway, true), 
-					PositionConstants.getNextCounterClockWise(directionAway, true)
-				];
+				let allowedDirections = PositionConstants.getDirectionsAwayFromDirection(direction, true);
 				removeDirectionsOtherThan(allowedDirections);
 			}
+
+			// remove directions leading towards blocking or deterred features
+			removeDirectionsWithNeighbour(p => !WorldCreatorHelper.containsBlockingFeature(this.currentWorldVO, p));
+			removeDirectionsWithNeighbour(p => !WorldCreatorHelper.containsDeterringFeature(this.currentWorldVO, p));
 
 			// remove directions leading too far away from level center
 			let removeDirectionsAwayFrom = function (position, maxdist) {
@@ -2132,26 +2151,37 @@ define([
 			return score;
 		},
 		
-		getConnectionPoint: function (type, pathi, pathlen, sectorPos, pathdir, isDerived) {
+		getConnectionPointForSectorOnPath: function (levelVO, type, pathi, pathlen, sectorPos, pathdir) {
+			return this.getConnectionPointFromPath(type, pathi, pathlen, sectorPos, pathdir, false)
+				|| this.getConnectionPointFromFeatures(levelVO, sectorPos);
+		},
+
+		getConnectionPointForSingleSector: function (levelVO, sectorPos) {
+			return this.getConnectionPointFromFeatures(levelVO, sectorPos)
+				|| this.getDefaultConnectionPoint(levelVO, sectorPos);
+		},
+
+		getConnectionPointFromPath: function (type, pathi, pathlen, sectorPos, pathdir, isDerived) {
 			if (!type) return null;
+
 			let dirs = [];
 			let dirs2 = [];
-			let oppositeDir = PositionConstants.getOppositeDirection(pathdir);
 
+			// adjustments to type
 			if (pathlen > 14 && type == WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL) type = WorldCreatorConstants.CONNECTION_POINTS_PATH_EXTRA;
-
+			
+			// round path position in in the same direction even when path direction is different to get matching connection points on opposite sides of even-sided rectangles
 			let isPositiveDirection = PositionConstants.isPositiveDirection(pathdir);
-
-			// round in in the same direction even when path direction is different to get matching connection points on opposite sides of even-sided rectangles
 			let roundMiddle = (i) => isPositiveDirection ? Math.floor(i) : Math.ceil(i);
 			let roundSecondaryMiddle = (i, isFirst) => isFirst ? Math.ceil(i) : Math.floor(i); 
 
+			// select by position and type
 			let maxIndex = pathlen - 1;
-
 			let isStart = pathi == 0;
 			let isEnd = pathi == maxIndex;
 			let isMiddle = pathi == roundMiddle(maxIndex / 2);
 
+			let oppositeDir = PositionConstants.getOppositeDirection(pathdir);
 			let isSecondaryMiddle = pathi == roundSecondaryMiddle(maxIndex / 4, true) || pathi == roundSecondaryMiddle(maxIndex / 4 * 3, false);
 
 			switch (type) {
@@ -2178,11 +2208,11 @@ define([
 					break;
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS:
-					return this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_END, pathi, pathlen, sectorPos, pathdir, true)
-						|| this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_START, pathi, pathlen, sectorPos, pathdir, true);
+					return this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_END, pathi, pathlen, sectorPos, pathdir, true)
+						|| this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_START, pathi, pathlen, sectorPos, pathdir, true);
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE:
-					if ((isMiddle && (!isDerived || pathlen >= 5))) {
+					if ((isMiddle && (!isDerived || pathlen >= 7))) {
 						dirs.push(PositionConstants.getNextClockWise(pathdir));
 						dirs.push(PositionConstants.getNextCounterClockWise(pathdir));
 						if (pathlen > 3) {
@@ -2205,13 +2235,13 @@ define([
 
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_ALL:
-					return this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true)
-						|| this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS, pathi, pathlen, sectorPos, pathdir, true);
+					return this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true)
+						|| this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS, pathi, pathlen, sectorPos, pathdir, true);
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_EXTRA:
-					return this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true)
-						|| this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE2, pathi, pathlen, sectorPos, pathdir, true)
-						|| this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS, pathi, pathlen, sectorPos, pathdir, true);
+					return this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true)
+						|| this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE2, pathi, pathlen, sectorPos, pathdir, true)
+						|| this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_ENDS, pathi, pathlen, sectorPos, pathdir, true);
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_CW:
 					var cw = PositionConstants.getNextClockWise(pathdir);
@@ -2286,7 +2316,7 @@ define([
 						dirs.push(PositionConstants.getNextCounterClockWise(oppositeDir, true));
 						return { position: sectorPos, dirs: dirs, dirs2: dirs2, type: type };
 					}
-					return this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true);
+					return this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true);
 
 				case WorldCreatorConstants.CONNECTION_POINTS_PATH_X:
 					if (isEnd) {
@@ -2303,12 +2333,73 @@ define([
 						dirs.push(PositionConstants.getOppositeDirection(PositionConstants.getNextCounterClockWise(oppositeDir, true)));
 						return { position: sectorPos, dirs: dirs, dirs2: dirs2, type: type };
 					}
-					return this.getConnectionPoint(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true);
+					return this.getConnectionPointFromPath(WorldCreatorConstants.CONNECTION_POINTS_PATH_MIDDLE, pathi, pathlen, sectorPos, pathdir, true);
 
 				default:
 					WorldCreatorLogger.w("unknown path connection point type: " + type);
 					return null;
 			}
+
+			return null;
+		},
+
+		getConnectionPointFromFeatures: function (levelVO, sectorPos) {
+			let neighbours = levelVO.getNeighbourList(sectorPos.sectorX, sectorPos.sectorY);
+			if (neighbours.length > 2) return null;
+
+			let dirs = [];
+			let dirs2 = [];
+
+			let allowDiagonals = levelVO.structureSettings.diagonalRateLine > 0 || levelVO.structureSettings.diagonalRateRect > 0;
+			let directions = PositionConstants.getLevelDirections(!allowDiagonals);
+
+			for (let i = 0; i < directions.length; i++) {
+				let direction = directions[i];
+				let position = PositionConstants.getNeighbourPosition(sectorPos, direction);
+				if (levelVO.hasSector(position.sectorX, position.sectorY)) continue;
+				if (WorldCreatorHelper.containsPrioritisedFeature(LevelStructureGenerator.currentWorldVO, position)) {
+					dirs.push(direction);
+				}
+			}
+
+			if (dirs.length == 0 && dirs2.length == 0) return null;
+			
+			return { position: sectorPos, dirs: dirs, dirs2: dirs2, type: WorldCreatorConstants.CONNECTION_POINTS_CUSTOM };
+		},
+
+		getDefaultConnectionPoint: function (levelVO, sectorPos) {
+			let neighbours = levelVO.getNeighbourList(sectorPos.sectorX, sectorPos.sectorY);
+
+			let dirs = [];
+			let dirs2 = [];
+
+			if (neighbours.length == 0) {
+				if (levelVO.structureSettings.diagonalRateLine < 0.5) {
+					dirs = PositionConstants.getLevelDirections(true);
+					dirs2 = PositionConstants.getDiagonalDirections();
+				} else {
+					dirs = PositionConstants.getDiagonalDirections();
+					dirs2 = PositionConstants.getLevelDirections(true);
+				}
+			} else if (neighbours.length == 1) {
+				let neighbourDirection = PositionConstants.getDirectionFrom(sectorPos, neighbours[0].position);
+				dirs = PositionConstants.getDirectionsAwayFromDirection(neighbourDirection);
+			} else {
+				let allDirections = PositionConstants.getLevelDirections();
+				for (let i = 0; i < allDirections.length; i++) {
+					let direction = allDirections[i];
+					let position = PositionConstants.getNeighbourPosition(sectorPos, direction);
+					if (levelVO.hasSector(position.sectorX, position.sectorY)) continue;
+					let directionNeighbours = levelVO.getNeighbourList(position.sectorX, position.sectorY);
+					if (directionNeighbours.length == 0) {
+						dirs.push(direction);
+					}
+				}
+			}
+
+			if (dirs.length == 0 && dirs2.length == 0) return null;
+			
+			return { position: sectorPos, dirs: dirs, dirs2: dirs2, type: WorldCreatorConstants.CONNECTION_POINTS_CUSTOM };
 		},
 		
 		getPathConnectionPointType: function (rectConnectionPointType) {
@@ -2390,6 +2481,13 @@ define([
 			let numNeighbours2 = WorldCreatorHelper.getNeighbourCount(levelVO, point2.position);
 			if (numNeighbours1 + numNeighbours2 > 5) return false;
 
+			let positions = PositionConstants.getPositionsOnPath(point1.position, direction, distance);
+
+			for (let i = 0; i < positions.length; i++) {
+				let pathPosition = positions[i];
+				if (WorldCreatorHelper.containsDeterringFeature(this.currentWorldVO, pathPosition)) return false;
+			}
+
 			return true;
 		},
 
@@ -2467,8 +2565,8 @@ define([
 			}
 
 			if (dist < 2) {
-				this.createAddSector(result.path, levelVO, startPos, options);
-				this.createAddSector(result.path, levelVO, endPos, options);
+				this.createAddSectorWithConnectionPoint(result.path, levelVO, startPos, options);
+				this.createAddSectorWithConnectionPoint(result.path, levelVO, endPos, options);
 				return result;
 			}
 			
@@ -2657,13 +2755,13 @@ define([
 
 			// if it's enough to just create end/start pos do that and try again
 			if (!startPosExists && startPosData.closestExisting && PositionConstants.getDistanceTo(startPos, startPosData.closestExisting.position) < 2) {
-				this.createAddSector(result.path, levelVO, startPos, options);
+				this.createAddSectorWithConnectionPoint(result.path, levelVO, startPos, options);
 				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
 			}
 
 			if (!endPosExists && endPosData.closestExisting && PositionConstants.getDistanceTo(endPos, endPosData.closestExisting.position) < 2) {
 				options.stage = endPosData.closestExisting.stage;
-				this.createAddSector(result.path, levelVO, endPos, options);
+				this.createAddSectorWithConnectionPoint(result.path, levelVO, endPos, options);
 				return this.createPathBetween(worldVO, levelVO, startPos, endPos, maxlen, options, connectionPointType);
 			}
 			
@@ -2918,7 +3016,7 @@ define([
 				for (var si = 0; si < path.path.length; si++) {
 					let sectorPos = PositionConstants.getPositionOnPath(startPos, direction, si);
 					sectorPos.level = levelVO.level;
-					let connectionPoint = this.getConnectionPoint(connectionPointType, si, len, sectorPos, direction);
+					let connectionPoint = this.getConnectionPointForSectorOnPath(levelVO, connectionPointType, si, len, sectorPos, direction);
 					this.addConnectionPoint(levelVO, sectorPos, connectionPoint);
 				}
 			}
@@ -2945,11 +3043,20 @@ define([
 				}
 			}
 		},
+
+		createAddSectorWithConnectionPoint: function (arr, levelVO, sectorPos, options) {
+			let success = this.createAddSector(arr, levelVO, sectorPos, options);
+			if (success) {
+				let connectionPoint = this.getConnectionPointForSingleSector(levelVO, sectorPos);
+				this.addConnectionPoint(levelVO, sectorPos, connectionPoint);
+			}
+		},
 		
 		createAddSector: function (arr, levelVO, sectorPos, options) {
-			var sectorResult = this.createSector(levelVO, sectorPos, options);
+			let sectorResult = this.createSector(levelVO, sectorPos, options);
 			if (sectorResult.vo) {
 				arr.push(sectorResult.vo);
+				return true;
 			}
 		},
 		
@@ -2981,6 +3088,8 @@ define([
 		createSector: function (levelVO, sectorPos, options) {
 			// sectorPos might not be a proper VO but SectorVO.position should be
 			let pos = new PositionVO(levelVO.level, Math.round(sectorPos.sectorX), Math.round(sectorPos.sectorY));
+
+			// if (pos.sectorX == -12 && pos.sectorY == -2) debugger
 			
 			options = options || this.getDefaultOptions();
 			let stage = options.stage || this.getDefaultStage(levelVO, pos);
@@ -3003,7 +3112,7 @@ define([
 
 		makeSector: function (levelVO, sectorPos, stage) {
 			let vo = new SectorVO(sectorPos);
-			// if (sectorPos.sectorX == 4 && sectorPos.sectorY == 0) debugger
+			// if (sectorPos.sectorX == 7 && sectorPos.sectorY == -8) debugger
 			vo.stage = stage;
 			vo.isCamp = levelVO.isCampPosition(sectorPos);
 			vo.isPassageUp = levelVO.isPassageUpPosition(sectorPos);
@@ -3653,11 +3762,7 @@ define([
 					for (let j = 0; j < path.len; j++) {
 						let pos = PositionConstants.getPositionOnPath(path.startPos, path.dir, j);
 
-						// deterring or blocking features
-						score += WorldCreatorHelper.containsDeterringFeature(LevelStructureGenerator.currentWorldVO, pos) ? -2 : 0;
-
-						// other features
-						score += WorldCreatorHelper.containsSectorFeature(LevelStructureGenerator.currentWorldVO, pos) ? 1 : 0;
+						score += LevelStructureGenerator.getPositionFeatureScoreNormalized(LevelStructureGenerator.currentWorldVO, levelVO, pos) * 2;
 					}
 				}
 
@@ -3964,6 +4069,9 @@ define([
 					// preferred position
 					if (LevelStructureGenerator.isPreferredSectorPosition(levelVO, pos)) pathScore += 2;
 
+					// features
+					pathScore += LevelStructureGenerator.getPositionFeatureScoreNormalized(LevelStructureGenerator.currentWorldVO, levelVO, pos) * 5;
+
 					// stage 
 					pathScore += LevelStructureGenerator.getPositionStageSuitabilityScore(levelVO, pos, plannedStage);
 
@@ -4110,6 +4218,40 @@ define([
 			if (distanceToMatchingStage < 10) score += 1;
 
 			return score;
+		},
+
+		getPositionFeatureScoreNormalized: function (worldVO, levelVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+
+			let levelOrdinal = levelVO.levelOrdinal;
+
+			let hasBlocking = false;
+			let hasDeterring = false;
+			let hasPreferred = false;
+			let hasPrioritized = false;
+
+			for (let i = 0; i < features.length; i++) {
+				let featureType = features[i];
+				if (WorldCreatorConstants.isFeatureBlockingSectors(featureType)) {
+					hasBlocking = true;
+				}
+				if (WorldCreatorConstants.isFeatureDeterringSectors(featureType)) {
+					hasDeterring = true;
+				}
+				if (WorldCreatorConstants.isFeaturePreferredForSectors(featureType)) {
+					hasPreferred = true;
+				}
+				if (WorldCreatorConstants.isFeaturePrioritisedForSectors(featureType)) {
+					hasPrioritized = true;
+				}
+			}
+
+			if (hasBlocking) return -2;
+			if (hasDeterring) return -1;
+			if (hasPrioritized && levelOrdinal > 2) return 1;
+			if (hasPreferred && levelOrdinal > 2) return 0.5;
+
+			return 0;
 		},
 		
 		createPaths: function (levelVO, paths, forceComplete, options, connectionPointType) {

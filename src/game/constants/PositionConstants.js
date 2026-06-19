@@ -27,6 +27,14 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		getNeighbourPosition: function (sectorPos, direction) {
 			return this.getPositionOnPath(sectorPos, direction, 1);
 		},
+
+		getPositionsOnPath: function (pathStartPos, direction, length, round, optimise) {
+			let result = [];
+			for (let i = 0; i < length; i++) {
+				result.push(this.getPositionOnPath(pathStartPos, direction, i, round, optimise))
+			}
+			return result;
+		},
 		
 		getPositionOnPath: function (pathStartPos, direction, pathStep, round, optimise) {
 			if (pathStep == 0) return pathStartPos;
@@ -216,6 +224,17 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				if (dx > 0 && dy < 0) result.push(this.DIRECTION_SW);
 				if (dx < 0 && dy < 0) result.push(this.DIRECTION_SE);
 			}
+			return result;
+		},
+
+		getDirectionsAwayFromDirection: function (direction) {
+			let directionAway = PositionConstants.getOppositeDirection(direction);
+			let result = [
+				directionAway,
+				PositionConstants.getNextClockWise(directionAway, true), 
+				PositionConstants.getNextCounterClockWise(directionAway, true)
+			];
+
 			return result;
 		},
 
@@ -510,6 +529,10 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 				return [this.DIRECTION_NORTH, this.DIRECTION_NE, this.DIRECTION_EAST, this.DIRECTION_SE, this.DIRECTION_SOUTH, this.DIRECTION_SW, this.DIRECTION_WEST, this.DIRECTION_NW ];
 			else
 				return [this.DIRECTION_NORTH, this.DIRECTION_EAST, this.DIRECTION_SOUTH, this.DIRECTION_WEST];
+		},
+
+		getDiagonalDirections: function () {
+				return [ this.DIRECTION_SE, this.DIRECTION_SOUTH, this.DIRECTION_SW, this.DIRECTION_WEST, this.DIRECTION_NW ];
 		},
 		
 		getMovementDirections: function () {

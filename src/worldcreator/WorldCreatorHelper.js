@@ -689,6 +689,7 @@ define([
 				requiredPaths.push({ start: passageUpPosition, end: passageDownPosition, maxlen: maxPathLenP2P, type: WorldCreatorConstants.CRITICAL_PATH_TYPE_PASSAGE_TO_PASSAGE, stage: WorldConstants.CAMP_STAGE_LATE });
 			}
 
+			// required positions
 			if (levelVO.requiredPositions) {
 				for (let i = 0; i < levelVO.requiredPositions.length; i++) {
 					let requiredPosition = levelVO.requiredPositions[i];
@@ -925,8 +926,7 @@ define([
 
 			for (let i = 0; i < features.length; i++) {
 				let featureType = features[i];
-				if (!WorldCreatorConstants.isFeatureBlockingSectors(featureType)) continue;
-				return true;
+				if (WorldCreatorConstants.isFeatureBlockingSectors(featureType)) return true;
 			}
 
 			return false;
@@ -939,18 +939,41 @@ define([
 				let featureType = features[i];
 				if (WorldCreatorConstants.isFeatureBlockingSectors(featureType)) return true;
 				if (WorldCreatorConstants.isFeatureDeterringSectors(featureType)) return true;
+			}
+
+			return false;
+		},
+
+		containsPreferredFeature: function (worldVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+			
+			for (let i = 0; i < features.length; i++) {
+				let featureType = features[i];
+				if (!WorldCreatorConstants.isFeaturePreferredForSectors(featureType)) continue;
+				return true;
+			}
+
+			return false;
+		},
+
+		containsPrioritisedFeature: function (worldVO, pos) {
+			let features = worldVO.getFeatureTypesByPos(pos);
+			
+			for (let i = 0; i < features.length; i++) {
+				let featureType = features[i];
+				if (!WorldCreatorConstants.isFeaturePrioritisedForSectors(featureType)) continue;
 				return true;
 			}
 
 			return false;
 		},
 		
-		containsSectorFeature: function (worldVO, pos) {
+		containsSectorFeature: function (worldVO, pos, requiredFeatureType) {
 			let features = worldVO.getFeatureTypesByPos(pos);
 			
 			for (let i = 0; i < features.length; i++) {
 				let featureType = features[i];
-				if (!WorldCreatorConstants.isFeaturePreferredForSectors(featureType)) continue;
+				if (requiredFeatureType && featureType !== requiredFeatureType) continue;
 				return true;
 			}
 
