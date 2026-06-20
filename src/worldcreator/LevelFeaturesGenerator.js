@@ -53,6 +53,7 @@ define([
 				let isValidAdditionalCampPosition = function (sectorVO) {
 					if (sectorVO.isCamp) return false;
 					if (sectorVO.isPassageUp || sectorVO.isPassageDown) return false;
+					if (sectorVO.features.length > 0) return false;
 					if (sectorVO.stage != WorldConstants.CAMP_STAGE_EARLY) return false;
 					if (sectorVO.sunlit && !isSurfaceLevel) return false;
 					if (WorldCreatorHelper.getDistanceToCamp(worldVO, levelVO, sectorVO, WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) > WorldCreatorConstants.MAX_CAMP_POS_DISTANCE) return false;

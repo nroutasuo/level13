@@ -461,6 +461,7 @@ define([
 			// blocked: positions in holes etc
 			if (WorldCreatorHelper.containsBlockingFeature(worldVO, pos)) return { isValid: false, reason: "blocking feature" };
 			if (WorldCreatorHelper.containsDeterringFeature(worldVO, pos)) return { isValid: false, reason: "deterring feature" };
+			if (WorldCreatorHelper.containsFeature(worldVO, pos, WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return { isValid: false, reason: "deterring feature" };
 			// blocked: positions below holes
 			let positionAbove = new PositionVO(pos.level + 1, pos.sectorX, pos.sectorY);
 			if (WorldCreatorHelper.containsBlockingFeature(worldVO, positionAbove)) return { isValid: false, reason: "blocking feature" };
