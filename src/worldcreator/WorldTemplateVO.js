@@ -46,9 +46,12 @@ function (Ash, SaveUtils, LevelTemplateVO, PositionVO, WorldFeatureVO) {
 				copy.levels[l] = this.levels[l].getCustomSaveObject();
 			}
 
-			copy.features = [];
-			for (let i = 0; i < this.features.length; i++) {
-				copy.features[i] = this.features[i].getCustomSaveObject();
+			copy.features = {};
+			for (let type in this.features) {
+				copy.features[type] = [];
+				for (let i = 0; i < this.features[type].length; i++) {
+					copy.features[type][i] = this.features[type][i].getCustomSaveObject();
+				}
 			}
 
 			return copy;
@@ -107,7 +110,7 @@ function (Ash, SaveUtils, LevelTemplateVO, PositionVO, WorldFeatureVO) {
 			}
 			
 			this.levels = SaveUtils.loadDictionary(saveObject.levels, LevelTemplateVO);
-			this.features = SaveUtils.loadList(saveObject.features, WorldFeatureVO);
+			this.features = SaveUtils.loadListDictionary(saveObject.features, WorldFeatureVO);
 		},
 		
 	});

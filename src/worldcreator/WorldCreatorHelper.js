@@ -968,7 +968,7 @@ define([
 			return false;
 		},
 		
-		containsSectorFeature: function (worldVO, pos, requiredFeatureType) {
+		containsFeature: function (worldVO, pos, requiredFeatureType) {
 			let features = worldVO.getFeatureTypesByPos(pos);
 			
 			for (let i = 0; i < features.length; i++) {

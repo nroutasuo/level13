@@ -26,6 +26,21 @@ define([], function () {
 			}
 			return result;
 		},
+
+		loadListDictionary: function (saveDictionary, type) {
+			let result = {};
+
+			if (Array.isArray(saveDictionary)) {
+				// data type changed, do not attempt to load
+				return result;
+			}
+
+			for (let key in saveDictionary) {
+				result[key] = this.loadList(saveDictionary[key], type)
+			}
+
+			return result;
+		},
 		
 	};
 

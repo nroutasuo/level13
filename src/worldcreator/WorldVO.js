@@ -11,7 +11,7 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
 			
 			this.campPositions = {}; // level -> position
 			this.examineSpotsPerLevel = {}; // level -> list of ids
-			this.features = []; // list of WorldFeatureVO
+			this.features = {}; // type -> list of WorldFeatureVO
 			this.levelCenterPositions = {}; // level -> PositionVO
 			this.passagePositions = {}; // level -> { up: PositionVO, down: PositionVO }
 			this.passageTypes = {}; // level -> { up: string, down: string }
@@ -68,9 +68,11 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
 		
 		getFeaturesByLevel: function (level) {
 			let result = [];
-			for (let i = 0; i < this.features.length; i++) {
-				if (this.features[i].spansLevel(level)) {
-					result.push(this.features[i]);
+			for (let type in this.features) {
+				for (let i = 0; i < this.features[type].length; i++) {
+					if (this.features[type][i].spansLevel(level)) {
+						result.push(this.features[type][i]);
+					}
 				}
 			}
 			return result;
@@ -83,14 +85,16 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
 
 			let result = [];
 
-			for (let i = 0; i < this.features.length; i++) {
-				let featureVO = this.features[i];
-				if (featureVO.containsPosition(pos)) {
-					result.push(featureVO.type);
-				} else if (featureVO.bordersPosition(pos)) {
-					let edgeFeature = WorldCreatorConstants.getEdgeFeature(featureVO.type);
-					if (edgeFeature) {
-						result.push(edgeFeature);
+			for (let type in this.features) {
+				for (let i = 0; i < this.features[type].length; i++) {
+					let featureVO = this.features[type][i];
+					if (featureVO.containsPosition(pos)) {
+						result.push(featureVO.type);
+					} else if (featureVO.bordersPosition(pos)) {
+						let edgeFeature = WorldCreatorConstants.getEdgeFeature(featureVO.type);
+						if (edgeFeature) {
+							result.push(edgeFeature);
+						}
 					}
 				}
 			}
@@ -103,13 +107,7 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
 		},
 		
 		getFeaturesByType: function (type) {
-			let result = [];
-			for (let i = 0; i < this.features.length; i++) {
-				if (this.features[i].type == type) {
-					result.push(this.features[i]);
-				}
-			}
-			return result;
+			return this.features[type] || [];
 		},
 		
 		getPathStart: function (pos1, pos2) {
@@ -143,10 +141,12 @@ define(['ash', 'worldcreator/WorldCreatorConstants'], function (Ash, WorldCreato
 		getFeature: function (level, sectorX, sectorY) {
 			let pos = { level: level, sectorX: sectorX, sectorY: sectorY };
 
-			for (let i = 0; i < this.features.length; i++) {
-				let feature = this.features[i];
-				if (feature.containsPosition(pos)) {
-					return feature;
+			for (let type in this.features) {
+				for (let i = 0; i < this.features[type].length; i++) {
+					let featureVO = this.features[type][i];
+					if (featureVO.containsPosition(pos)) {
+						return featureVO;
+					}
 				}
 			}
 			
