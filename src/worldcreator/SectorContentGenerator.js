@@ -38,6 +38,7 @@ define([
 
 				this.generateLocalesForExplorers(seed, worldVO, levelVO);
 				this.generateLocalesForStory(seed, worldVO, levelVO);
+				this.generateDistrictsEnemies(seed, worldVO, levelTemplateVO, levelVO, enemyCreator)
 				this.generateEnemies(seed, worldVO, levelVO, enemyCreator);
 				this.generateWaymarks(seed, worldVO, levelVO);
 				this.generateSectorExamineSpots(seed, worldVO, levelVO);
@@ -137,6 +138,79 @@ define([
 				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
 				SectorGeneratorHelper.addLocale(levelVO, sector, localeVO);
 			}
+		},			
+
+		generateDistrictsEnemies: function (seed, worldVO, levelTemplateVO, levelVO, enemyCreator) {
+			let campOrdinal = levelVO.campOrdinal;
+
+			let tagsByDistrict = {};
+
+			for (let i = 0; i < levelVO.districts.length; i++) {
+				let districtVO = levelVO.districts[i];
+				let tags = SectorContentGenerator.getDistrictEnvironmentTags(worldVO, levelVO, districtVO);
+				tagsByDistrict[i] = tags;
+			}
+
+			let distinctTagsByDistrict = {};
+
+			for (let i = 0; i < levelVO.districts.length; i++) {
+				let tags = tagsByDistrict[i];
+				distinctTagsByDistrict[i] = tags.filter(tag => {
+					for (let j = 0; j < levelVO.districts.length; j++) {
+						if (i == j) continue;
+						let otherTags = tagsByDistrict[j];
+						if (otherTags.indexOf(tag) >= 0) return false;
+					}
+					return true;
+				});
+			}
+
+			let campStepByDistrict = {};
+
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sectorVO = levelVO.sectors[i];
+				let step = WorldConstants.getCampStep(sectorVO.zone);
+
+				let currentValue = campStepByDistrict[sectorVO.districtIndex] || WorldConstants.CAMP_STEP_END;
+				campStepByDistrict[sectorVO.districtIndex] = Math.min(currentValue, step);
+			}
+
+			let minEnemiesPerDistrict = 1;
+			let reservedEnemies = [];
+
+			for (let i = levelVO.districts.length - 1; i >= 0; i--) {
+				let districtVO = levelVO.districts[i];
+				let tags = tagsByDistrict[i];
+				let distinctTags = distinctTagsByDistrict[i];
+				let step = campStepByDistrict[i];
+
+				let difficulty = enemyCreator.getDifficulty(campOrdinal, step);
+				let numEnemies = 1 + reservedEnemies.length;
+
+				let enemySettings = { minRarity: 1, maxRarity: 30, preferredEnvironmentTags: distinctTags }
+				let enemies = this.getPossibleEnemies(seed + i, enemyCreator, difficulty, tags, numEnemies, numEnemies, enemySettings);
+
+				for (let i = 0; i < enemies.candidates.length; i++) {
+					enemyCreator.registerEnemyAsCandidateForDistrict(enemies.candidates[i].id, levelVO.level, i);
+				}
+				
+				let possibleEnemies = enemies.selected;
+				let selectedEnemies = possibleEnemies.filter(enemyVO => reservedEnemies.indexOf(enemyVO.id) < 0);
+
+				let selectedEnemy = selectedEnemies.length > 0 ? selectedEnemies[0] : possibleEnemies[0];
+
+				if (selectedEnemies.length == 0) {
+					log.w("could not select unique district enemy on level " + levelVO.level, "world");
+				}
+					
+				enemyCreator.registerEnemyAsSelectedForDistrict(selectedEnemy.id, levelVO.level, i);
+
+				districtVO.typicalEnemies = [ selectedEnemy.id ];
+
+				reservedEnemies.push(selectedEnemy.id);
+
+				log.i("level " + levelVO.level + " district " + i + ", step: " + step + ", difficulty: " + difficulty + ", distinct tags: " + distinctTagsByDistrict[i].join(",") + ", enemy: " + selectedEnemy.id + " difficulty: " + enemyCreator.getEnemyDifficultyLevel(selectedEnemy));
+			}
 		},
 
 		generateEnemies: function (seed, worldVO, levelVO, enemyCreator) {
@@ -147,7 +221,7 @@ define([
 			
 			let selectEnemyIDsForGang = function (s1, s2) {
 				let allEnemies = s1.possibleEnemies.concat(s2.possibleEnemies);
-				let allEnemiesWithTags = allEnemies.filter(e => e.environment.indexOf("nogang") < 0);
+				let allEnemiesWithTags = allEnemies.filter(e => e.environment.indexOf("0nogang") < 0);
 
 				let possibleEnemies = allEnemiesWithTags;
 				if (possibleEnemies.length == 0) possibleEnemies = allEnemies;
@@ -230,7 +304,7 @@ define([
 				sectorVO.hasRegularEnemies = 0;
 
 				// possible enemy definitions
-				sectorVO.possibleEnemies = this.getPossibleEnemies(seed, worldVO, levelVO, sectorVO, enemyCreator);
+				sectorVO.possibleEnemies = this.selectPossibleEnemiesForSector(seed, worldVO, levelVO, sectorVO, enemyCreator);
 
 				// regular enemies (random encounters not tied to locales / gangs)
 				if (distanceToCamp < 3) {
@@ -255,7 +329,7 @@ define([
 				
 			// gangs: on zone borders
 			// - ZONE_PASSAGE_TO_CAMP: all except too close to camp
-			var borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
+			let borderSectors = WorldCreatorHelper.getBorderSectorsForZone(levelVO, WorldConstants.ZONE_PASSAGE_TO_CAMP, true);
 			for (let i = 0; i < borderSectors.length; i++) {
 				var pair = borderSectors[i];
 				var direction = PositionConstants.getDirectionFrom(pair.sector.position, pair.neighbour.position);
@@ -667,69 +741,143 @@ define([
 			}
 		},
 
-		getPossibleEnemies: function (seed, worldVO, levelVO, sectorVO, enemyCreator) {
-			let l = sectorVO.position.level;
-			let x = sectorVO.position.sectorX;
-			let y = sectorVO.position.sectorY;
+		selectPossibleEnemiesForSector: function (seed, worldVO, levelVO, sectorVO, enemyCreator) {
 			let campOrdinal = levelVO.campOrdinal;
 			let step = WorldConstants.getCampStep(sectorVO.zone);
 
+			let difficulty = enemyCreator.getDifficulty(campOrdinal, step);
+			if (sectorVO.isOnEarlyCriticalPath()) difficulty -= 2;
+
+			let districtVO = levelVO.districts[sectorVO.districtIndex];
+
 			let environmentTags = this.getSectorEnvironmentTags(worldVO, levelVO, sectorVO);
-			
-			let enemyDifficulty = enemyCreator.getDifficulty(campOrdinal, step);
-			if (sectorVO.isOnEarlyCriticalPath()) enemyDifficulty -= 2;
-			enemyDifficulty = Math.max(enemyDifficulty, 1);
+
+			let avoidedEnemyIds = [];
+			for (let i = 0; i < levelVO.districts.length; i++) {
+				if (i == sectorVO.districtIndex) continue;
+				avoidedEnemyIds = avoidedEnemyIds.concat(levelVO.districts[i].typicalEnemies);
+			}
+
+			let s = sectorVO.position.toInt();
+			let enemySettings = { preferredEnemyIDs: districtVO.typicalEnemies, avoidedEnemyIds: avoidedEnemyIds };
+			let result = this.getPossibleEnemies(s, enemyCreator, difficulty, environmentTags, 1, 3, enemySettings);
+
+			for (let i = 0; i < result.candidates.length; i++) {
+				enemyCreator.registerEnemyAsCandidateForSector(result.candidates[i].id, levelVO.level);
+			}
+
+			for (let i = 0; i < result.selected.length; i++) {
+				enemyCreator.registerEnemyAsPresentForSector(result.selected[i].id, levelVO.level);
+			}
+
+			return result.selected;
+		},
+
+		getPossibleEnemies: function (seed, enemyCreator, difficulty, environmentTags, min, max, settings) {
+			difficulty = Math.max(difficulty, 1);
+			environmentTags = environmentTags || null;
+			min = min || 1;
+			max = max || -1;
+			settings = settings || {};
+			let minRarity = settings.minRarity || 0;
+			let maxRarity = settings.maxRarity || -1;
+			let preferredEnvironmentTags = settings.preferredEnvironmentTags || [];
+			let preferredEnemyIDs = settings.preferredEnemyIDs || [];
+			let avoidedEnemyIds = settings.avoidedEnemyIds || [];
 
 			let enemies = [];
-			
-			// collect all valid enemies for this sector (candidates)
 			let candidates = [];
-			let candidateDifficulties = [];
-
-			let allEnemies = enemyCreator.getEnemies(enemyDifficulty, environmentTags, 2);
-			for (let e in allEnemies) {
-				let enemy = allEnemies[e];
-				candidates.push(enemy);
-				candidateDifficulties.push(enemyCreator.getEnemyDifficultyLevel(enemy));
-				enemyCreator.registerEnemyAsCandidateForSector(enemy.id, l, campOrdinal);
-			}
 			
+			// get all valid enemies for this difficulty and enviroment tags (candidates)
+			candidates = enemyCreator.getEnemies(difficulty, environmentTags, min, minRarity, maxRarity, settings.avoidedEnemyIds);
+
+			// regardless of difficulty, if tags allow, prefrred enemies are candidates
+			for (let i = 0; i < preferredEnemyIDs.length; i++) {
+				let preferredEnemyVO = EnemyConstants.getEnemy(preferredEnemyIDs[i]);
+				if (!EnemyConstants.matchesRequiredTags(environmentTags, preferredEnemyVO)) continue;
+				if (candidates.find(candidateVO => candidateVO.id == preferredEnemyVO.id)) continue;
+				candidates.push(preferredEnemyVO);
+			}
+
 			// check that we found some candidates
 			if (candidates.length < 1) {
-				WorldCreatorLogger.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + enemyDifficulty);
-				return enemies;
+				WorldCreatorLogger.w("No valid enemies defined for sector " + sectorVO.position + " difficulty " + difficulty);
+				return { candidates: candidates, selected: enemies };
 			}
-			
-			// select enemies from candidates by (sector adjusted) rarity and difficulty
-			let getAdjustedRarity = function (enemyVO) {
-				let result = enemyVO.rarity;
-				if (!levelVO.isCampable && enemyVO.enemyClass == "bandit") {
-					result += 50;
-				}
-				result = MathUtils.clamp(result, 1, 100);
-				return result;
-			};
+
+			// sort enemies by how well they fit the requirements (difficulty and tags) and settings
+			let getEnemyScore = function (enemyVO) {
+				let score = 0;
+				let enemyDifficulty = enemyCreator.getEnemyDifficultyLevel(enemyVO);
+				if (enemyDifficulty == difficulty) score += 100;
+				score += EnemyConstants.getNumMatchingTags(environmentTags, enemyVO);
+				score += EnemyConstants.getNumMatchingTags(preferredEnvironmentTags, enemyVO);
+				if (preferredEnemyIDs.indexOf(enemyVO.id) >= 0) score += 200;
+				if (avoidedEnemyIds.indexOf(enemyVO.id) >= 0) score -= 200;
+				enemyVO.score = score;
+				return score;
+			}
 			candidates = candidates.sort(function (a,b) {
-				return getAdjustedRarity(a) - getAdjustedRarity(b);
-			});
-			candidateDifficulties = candidateDifficulties.sort(function (a,b) {
-				return a - b;
+				return getEnemyScore(b) - getEnemyScore(a);
 			});
 			
-			let minDifficulty = levelVO.isHard ? candidateDifficulties[Math.floor(candidateDifficulties.length/2)] : candidateDifficulties[0];
-			for (let i = 0; i < candidates.length; i++) {
-				let enemy = candidates[i];
-				let rarity = getAdjustedRarity(enemy);
-				if (enemyCreator.getEnemyDifficultyLevel(enemy) < minDifficulty) continue;
-				let threshold = MathUtils.map(rarity, 1, 100, 0.01, 0.99);
-				let r = WorldCreatorRandom.random(9999 + l * seed + x * l * 80 + y * 10 + i * x *22 - y * i * x * 15);
-				if (i == 0 || r > threshold) {
-					enemies.push(enemy);
-					enemyCreator.registerEnemyAsPresentForSector(enemy.id, l, campOrdinal);
+			// select up to max enemies considering rarity (probability from rarity should be unaffected by other candidates' suitability score)
+			let guaranteedRarity = 0;
+			while (enemies.length < min) {
+				guaranteedRarity++;
+				for (let i = 0; i < candidates.length; i++) {
+					let enemyVO = candidates[i];
+					let rarity = enemyVO.rarity;
+					if (rarity > guaranteedRarity) {
+						let probability = MathUtils.map(rarity, guaranteedRarity, 100, 1, 0.01);
+						if (!WorldCreatorRandom.randomBool(seed + i, probability)) continue;
+					}
+					enemies.push(enemyVO);
+					if (max > 0 && enemies.length >= max) break;
 				}
 			}
 
-			return enemies;
+			return { candidates: candidates, selected: enemies };
+		},
+
+		getDistrictEnvironmentTags: function (worldVO, levelVO, districtVO) {
+			let districtIndex = levelVO.districts.indexOf(districtVO);
+
+			let counts = {};
+
+			let numSectors = 0;
+
+			for (let i = 0; i < levelVO.sectors.length; i++) {
+				let sectorVO = levelVO.sectors[i];
+
+				if (sectorVO.districtIndex !== districtIndex) continue;
+
+				numSectors++;
+
+				let sectorTags = this.getSectorEnvironmentTags(worldVO, levelVO, sectorVO);
+
+				for (let j = 0; j < sectorTags.length; j++) {
+					let tag = sectorTags[j];
+
+					if (!counts[tag]) counts[tag] = 0;
+					counts[tag]++;
+				}
+			}
+			
+			let result = [];
+			let minPct = 0.7;
+
+			for (let tag in counts) {
+				let count = counts[tag];
+				let percent = count / numSectors;
+
+				if (percent < minPct) continue;
+				if (result.indexOf(tag) >= 0) continue;
+
+				result.push(tag);
+			}
+
+			return result;
 		},
 
 		getSectorEnvironmentTags: function (worldVO, levelVO, sectorVO) {

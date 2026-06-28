@@ -166,7 +166,7 @@ define([
 				districtVO.wear = this.getDistrictWear(levelVO, type, i);
 				districtVO.wealth = this.getDistrictWealth(levelVO, type, position, positions, i);
 				districtVO.size = this.getDistrictSize(levelVO, type, districtVO.wealth, districtVO.wear, position);
-				districtVO.affiliation = this.getDistrictAffiliation(levelVO, type, i);
+				districtVO.affiliation = this.getDistrictAffiliation(levelVO, type, districtVO.wealth, i);
 				districtVO.style = this.getDistrictStyle(levelVO, stage, type, districtVO.wealth, districtVO.affiliation, i);
 				log.i("level " + levelVO.level + " " + stage + " district " + i + ": " + type + " (wealth: " + districtVO.wealth + ", style: " + districtVO.style + ", affiliation: " + districtVO.affiliation + ", size: " + districtVO.size +  ")");
 				result.push(districtVO);
@@ -277,6 +277,16 @@ define([
 				possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
 			}
 
+			// - positions near camp pos
+			if (levelVO.campPosition) {
+				if (this.isDistrictNearPosition(levelVO, position, positions, levelVO.campPosition)) {
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+					possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
+					possibleTypes = possibleTypes.filter(t => t != SectorConstants.SECTOR_TYPE_EMPTY && t != SectorConstants.SECTOR_TYPE_MAINTENANCE);
+				}
+			}
+
 			// - make previous one less likely to avoid repetition
 			if (previousType && possibleTypes.length > 1) {
 				let index = possibleTypes.indexOf(previousType);
@@ -290,18 +300,26 @@ define([
 		},
 
 		isDistrictNearFeature: function (featureType, levelVO, position, positions) {
-			// this is a bit of an educated guess since we don't know the size of the districts yet so what district the feature ends up being a part of is not guaranteed
-			let distance = levelVO.getDistanceToFeature(position, featureType); 
+			return this.isDistrictNear(levelVO, position, positions, (pos) => levelVO.getDistanceToFeature(pos, featureType));
+		},
+
+		isDistrictNearPosition: function (levelVO, districtPosition, districtPositions, position) {
+			return this.isDistrictNear(levelVO, districtPosition, districtPositions, (pos) => PositionConstants.getDistanceTo(pos, position));
+		},
+
+		isDistrictNear: function (levelVO, districtPosition, districtPositions, getDistanceFunc) {
+			// this is a bit of an educated guess since we don't know the size of the districts yet
+			let distance = getDistanceFunc(districtPosition);
 			if (distance < 5) return true;
 			if (distance > 30) return false;
 			
-			let closestPositions = positions.filter(pos => levelVO.getDistanceToFeature(pos, featureType) >= 0).sort(pos => levelVO.getDistanceToFeature(pos, featureType));
+			let closestPositions = districtPositions.filter(pos => getDistanceFunc(pos) >= 0).sort(pos => getDistanceFunc(pos));
 			if (closestPositions.length == 0) return false;
 
-			return closestPositions[0].equals(position);
+			return closestPositions[0].equals(districtPosition);
 		},
 
-		getDistrictAffiliation: function (levelVO, type, i) {
+		getDistrictAffiliation: function (levelVO, type, wealth, i) {
 			let topLevel = WorldCreatorHelper.getHighestLevel(levelVO.seed);
 
 			if (levelVO.level == this.CITY_STATE_LEVEL) return null;
@@ -311,13 +329,13 @@ define([
 			let possibleResults = [ null ];
 
 			if (type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
-				possibleResults.push(SectorConstants.SECTOR_AFFILIATION_AGRICORP);
-				if (levelVO.level < topLevel - 3) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_MINECORP);
+				if (wealth > 3) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_AGRICORP);
+				if (wealth > 2 && levelVO.level < topLevel - 3) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_MINECORP);
 			}
 
 			if (type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
 				if (levelVO.level > 15 && levelVO.level < topLevel - 2) {
-					possibleResults.push(SectorConstants.SECTOR_AFFILIATION_HANSA);
+					if (wealth < 8) possibleResults.push(SectorConstants.SECTOR_AFFILIATION_HANSA);
 				}
 
 				if (levelVO.level < topLevel - 3) {
@@ -450,7 +468,11 @@ define([
 				return WorldCreatorRandom.randomItemFromArray(levelVO.seed, possibleResults);
 			}
 
-			possibleResults.push(levelVO.levelStyle);
+			let removeCombinations = function (possibleType, possibleStyle) {
+				if (type !== possibleType) return;
+				possibleResults = possibleResults.filter(style => style != possibleStyle);
+			}
+
 			possibleResults.push(levelVO.levelStyle);
 
 			if (wealth < 4) possibleResults.push(SectorConstants.STYLE_SLUM_GENERAL);
@@ -465,7 +487,9 @@ define([
 			if (affiliation == SectorConstants.SECTOR_AFFILIATION_MINECORP) possibleResults.push(SectorConstants.STYLE_INDUSTRIAL);
 			if (levelVO.level > 1 && levelVO.level < 10) possibleResults.push(SectorConstants.STYLE_KARBOQUE);
 
-			// TODO figure out when to use STYLE_CITTADINIAN, STYLE_KIEVAN
+			removeCombinations(SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.STYLE_NEOWESTERN);
+			removeCombinations(SectorConstants.SECTOR_TYPE_PUBLIC, SectorConstants.STYLE_SLUM_GENERAL);
+			removeCombinations(SectorConstants.SECTOR_TYPE_PUBLIC, SectorConstants.STYLE_SLUM_HUN);
 
 			return WorldCreatorRandom.randomItemFromArray(levelVO.seed / 2 + levelVO.level * 3 + i, possibleResults);
 		},

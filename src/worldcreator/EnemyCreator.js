@@ -38,7 +38,8 @@ define([
 			
 			let templateSuffix = "__template";
 			
-			// TODO check nouns and verbs for orphans (only one/few enemies using)
+			// TODO check nouns and verbs and tags for orphans (only one/few enemies using)
+			// TODO check all environment tags have a priority
 			
 			let getTemplateID = function (enemyID) {
 				let parts = enemyID.split("__");
@@ -74,16 +75,21 @@ define([
 				def.causedInjuryTypes = (def.causedInjuryTypes || []).concat(causedInjuryTypes);
 				def.curseProbability = def.curseProbability || 0;
 				
-				let environment = def.environment || template.environment || [];
+				let environment = (def.environment || []).concat(template.environment || []);
+				let environmentUnique = environment.filter((item, i) => environment.indexOf(item) === i);
+
+				let rarity = def.rarity;
+				if (rarity === undefined) rarity = template.rarity;
+				if (rarity === undefined) rarity = 1;
 
 				let enemyVO = this.createEnemy(
 					enemyID,
 					def.name,
-					environment,
+					environmentUnique,
 					def.nouns, def.groupNouns, def.verbsActive, def.verbsDefeated,
 					def.campOrdinal || 0, def.difficulty || 5,
 					def.attackRatio || 0.5, def.shieldRatio || 0, def.healthFactor || 1, def.shieldFactor || 1, def.size || 1, def.speed || 1,
-					def.rarity || 1,
+					rarity,
 					def.droppedResources, def.droppedIngredients, def.causedInjuryTypes
 				);
 
@@ -95,7 +101,7 @@ define([
 				
 			 	EnemyConstants.enemyDefinitions.push(enemyVO.cloneWithIV(50));
 
-				EnemyConstants.enemyUsage[enemyID] = { numCandidateSectors: 0, numPresentSectors: 0, presentLevels: [], presentCampOrdinals: [] };
+				EnemyConstants.enemyUsage[enemyID] = { numCandidateSectors: 0, numPresentSectors: 0, candidateLevels: [], presentLevels: [], numCandidateDistricts: 0, numSelectedDistricts: 0, };
 			}
 		},
 
@@ -159,7 +165,7 @@ define([
 			
 			// normalize final values
 			size = MathUtils.clamp(size, 0.1, 2);
-			rarity = MathUtils.clamp(rarity, 1, 100);
+			rarity = MathUtils.clamp(rarity, 0, 100);
 			droppedResources = droppedResources || [];
 			droppedIngredients = droppedIngredients || [];
 			
@@ -260,42 +266,45 @@ define([
 			return attFactor * playerAtt + (1-attFactor) * playerHPShield;
 		},
 
-		// difficulty: derived from campOrdinal and step
-		// tags: tags describing the environment (sector) which need to match those on the enemy (ignored if null)
-		// min: minimum number of enemies to return (if not enough matching found, lower difficulties added)
-		getEnemies: function (difficulty, tags, min) {
+		// get valid enemies for a sector/area given difficulty level and optional environment tags
+		// - difficulty: derived from campOrdinal and step
+		// - tags: tags describing the environment (sector) which need to match those on the enemy (ignored if null)
+		// - min: minimum number of enemies to return (if not enough matching found, lower difficulties added)
+		getEnemies: function (difficulty, tags, min, minRarity, maxRarity, avoidedEnemyIds) {
+			min = min || 1;
+			minRarity = minRarity || 0;
+			maxRarity = maxRarity || -1;
+			avoidedEnemyIds = avoidedEnemyIds || [];
+
 			let result = [];
-			
+
 			if (difficulty <= 0) return result;
+
+			let maxDifficulty = difficulty;
+			let minDiffulty = Math.max(1, maxDifficulty - 2);
 			
-			let isMatchingTags = function (enemy) {
+			let isMatchingTags = function (enemyVO) {
 				if (!tags) return true;
-
-				if (enemy.environment.length > 0) {
-					if (tags.length < enemy.environment.length) return false;
-					for (let i = 0; i < enemy.environment.length; i++) {
-						if (tags.indexOf(enemy.environment[i]) < 0) {
-							return false;
-						}
-					}
-				}
-
-				return true;
+				return EnemyConstants.matchesRequiredTags(tags, enemyVO);
 			}
 			
 			let enemyList = EnemyConstants.enemyDefinitions;
 			for (let i = 0; i < enemyList.length; i++) {
 				let enemy = enemyList[i];
 
+				if (minRarity > 0 && enemy.rarity < minRarity) continue;
+				if (maxRarity > 0 && enemy.rarity > maxRarity) continue;
+
+				if (avoidedEnemyIds.indexOf(enemy.id) >= 0) continue;
+
 				if (!isMatchingTags(enemy)) continue;
 				
 				let enemyDifficulty = Math.max(EnemyConstants.enemyDifficulties[enemy.id], 1);
 
-				if (enemyDifficulty === difficulty)
-					result.push(enemy);
+				if (enemyDifficulty > maxDifficulty) continue;
+				if (enemyDifficulty < minDiffulty) continue;
 
-				if (enemyDifficulty === difficulty - 1 && difficulty > 1)
-					result.push(enemy);
+				result.push(enemy);
 			}
 
 			if (result.length < min) {
@@ -315,12 +324,14 @@ define([
 		},
 
 		// get the difficulty level (1-3*15, corresponding to camp ordinal and step) of a given enemy
-		getEnemyDifficultyLevel: function (enemy) {
-			if (!EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemy.id])  {
-				log.w("enemy difficulty not defined: " + enemy.id);
+		getEnemyDifficultyLevel: function (enemyVO) {
+			if (!EnemyConstants.enemyDifficulties && EnemyConstants.enemyDifficulties[enemyVO.id])  {
+				log.w("enemy difficulty not defined: " + enemyVO.id);
 				return 0;
 			}
-			return EnemyConstants.enemyDifficulties[enemy.id];
+			let result = EnemyConstants.enemyDifficulties[enemyVO.id];
+			enemyVO.difficulty = result;
+			return result;
 		},
 		
 		getCampOrdinalFromDifficulty: function (difficulty) {
@@ -404,53 +415,27 @@ define([
 			return typicalStamina;
 		},
 
-		registerEnemyAsCandidateForSector: function (enemyID, level, campOrdinal) {
-			EnemyConstants.enemyUsage[enemyID].numCandidateSectors++;
+		registerEnemyAsCandidateForSector: function (enemyID, level) {
+			let stats = EnemyConstants.enemyUsage;
+			stats[enemyID].numCandidateSectors++;
+			if (stats[enemyID].candidateLevels.indexOf(level) < 0) stats[enemyID].candidateLevels.push(level);
 		},
 
-		registerEnemyAsPresentForSector: function (enemyID, level, campOrdinal) {
+		registerEnemyAsPresentForSector: function (enemyID, level) {
 			let stats = EnemyConstants.enemyUsage;
 			stats[enemyID].numPresentSectors++;
 			if (stats[enemyID].presentLevels.indexOf(level) < 0) stats[enemyID].presentLevels.push(level);
-			if (stats[enemyID].presentCampOrdinals.indexOf(campOrdinal) < 0) stats[enemyID].presentCampOrdinals.push(campOrdinal);
 		},
 
-		printEnemyStatistics: function () {
+		registerEnemyAsCandidateForDistrict: function (enemyID, level, districtIndex) {
 			let stats = EnemyConstants.enemyUsage;
-
-			let entries = Object.keys(stats).map(function(key) {
-				return { 
-					id: key, 
-					numCandidateSectors: stats[key].numCandidateSectors,
-					numPresentSectors: stats[key].numPresentSectors,
-					presentLevels: stats[key].presentLevels, 
-					presentCampOrdinals: stats[key].presentCampOrdinals 
-				};
-			});
-
-			entries.sort(function(first, second) {
-				return second.numPresentSectors - first.numPresentSectors;
-			});
-
-			let printEntry = function (entry) {
-				let enemy = EnemyConstants.getEnemy(entry.id);
-				let row = entry.id + " = ";
-				row += "numCandidateSectors: " + entry.numCandidateSectors;
-				row += ", ";
-				row += "numPresentSectors: " + entry.numPresentSectors;
-				row += ", ";
-				row += "presentLevels: " + entry.presentLevels.join(",");
-				row += ", ";
-				row += "presentCampOrdinals: " + entry.presentCampOrdinals.join(",");
-				row += ", ";
-				row += "rarity: " + enemy.rarity;
-				row += ", ";
-				row += "environment: " + enemy.environment.join(",");
-				return row;
-			}
-
-			console.log(entries.map(entry => printEntry(entry)));
+			stats[enemyID].numCandidateDistricts++;
 		},
+
+		registerEnemyAsSelectedForDistrict: function (enemyID, level, districtIndex) {
+			let stats = EnemyConstants.enemyUsage;
+			stats[enemyID].numSelectedDistricts++;
+		}
 		
 	});
 

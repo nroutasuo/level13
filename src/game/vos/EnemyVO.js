@@ -1,17 +1,17 @@
 define(['ash'], function (Ash) {
 	
-	var EnemyVO = Ash.Class.extend({
+	let EnemyVO = Ash.Class.extend({
 	
 		id: "",
 		name: "",
-		environment: [], // determines what kind of sectors it can appear on
+		environment: [], // determines what kind of sectors it can appear on (can contain both required (0) or preferred (1) environment tags)
 		tags: [], // mostly empty but can trigger story flags or select for texts
 		att: 0,
 		def: 0,
 		speed: 0,
 		maxHP: 100,
 		maxShield: 100,
-		rarity: 0, // 0-100
+		rarity: 0, // 0-100 where 1 is normal, 0 not allowed to be restricted by district, and >1 increasingly rare
 		
 		nouns: [],
 		groupN: [],

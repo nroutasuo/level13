@@ -793,7 +793,7 @@ define([
 
 			let minDiff = 4;
 			let minSize = 3;
-			let maxSize = Math.min(levelVO.numSectors / 12, 21);
+			let maxSize = Math.min(levelVO.numSectors / 12, 19);
 			let outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
 			if (outerS % 2 == 0) outerS--;
 			if (levelVO.structureSettings.density >= 0.75) outerS += 2;
@@ -3190,8 +3190,8 @@ define([
 			if (dist > maxdist) return { isValid: false, isBlocked: true, reason: "excursion length " + dist + "/" + maxdist };
 			
 			// too many neighbours for this position or neighbouring position
-			var directions = PositionConstants.getLevelDirections();
-			var getNumSharedNeighbours = function (pos, neighbours) {
+			let directions = PositionConstants.getLevelDirections();
+			let getNumSharedNeighbours = function (pos, neighbours) {
 				var sum = 0;
 				for (var d in directions) {
 					var direction = directions[d];
@@ -3237,17 +3237,17 @@ define([
 				return { isValid: isValid, pos: pos, neighbours: posneighbours, numNeighbours: numNeighbours, numends: numends };
 			};
 
-			var ncheck = checkNeighbours(sectorPos);
+			let ncheck = checkNeighbours(sectorPos);
 			if (!ncheck.isValid) {
 				return { isValid: false, isBlocked: true, reason: "blocking neighbours " + ncheck.numNeighbours + " " + ncheck.numends };
 			}
 			
-			var neighbours = WorldCreatorHelper.getNeighbours(levelVO, sectorPos, pendingSectors);
+			let neighbours = WorldCreatorHelper.getNeighbours(levelVO, sectorPos, pendingSectors);
 			for (var d in directions) {
-				var direction = directions[d];
-				var neighbour = neighbours[direction];
+				let direction = directions[d];
+				let neighbour = neighbours[direction];
 				if (neighbour) {
-					var ncheck = checkNeighbours(neighbour.position);
+					let ncheck = checkNeighbours(neighbour.position);
 					if (!ncheck.isValid) {
 						return { isValid: false, isBlocked: true, reason: "neighbour has blocking neighbours " + neighbour.position.toString() + " " + ncheck.numNeighbours + " " + ncheck.numends };
 					}
@@ -4248,8 +4248,8 @@ define([
 
 			if (hasBlocking) return -2;
 			if (hasDeterring) return -1;
-			if (hasPrioritized && levelOrdinal > 2) return 1;
-			if (hasPreferred && levelOrdinal > 2) return 0.5;
+			if (hasPrioritized) return 1;
+			if (hasPreferred) return 0.5;
 
 			return 0;
 		},

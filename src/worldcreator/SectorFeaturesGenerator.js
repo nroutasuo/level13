@@ -1257,6 +1257,7 @@ define([
 			// wear
 			let wear = sectorTemplateVO.wear || districtVO.wear + WorldCreatorRandom.randomInt(seed + x + y, -3, 3);
 			if (sectorVO.isCamp) wear = Math.min(3, wear);
+			if (features.indexOf(WorldConstants.FEATURE_TRAIN_TRACKS_NEW) >= 0) wear = Math.max(wear, 7);
 			sectorVO.wear = MathUtils.clamp(Math.round(wear), 0, 10);
 
 			// damage
@@ -1264,6 +1265,7 @@ define([
 			let getFeatureDamage = function (featureType) {
 				switch (featureType) {
 					case WorldConstants.FEATURE_HOLE_COLLAPSE: return 8;
+					case WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE: return 4;
 					default: return 0;
 				}
 			}
@@ -1294,34 +1296,33 @@ define([
 			if (l == worldVO.bottomLevel) levelDensity = 3;
 			if (levelVO.diseaseFrequecyFactor > 1) levelDensity++;
 			
-			let minDensity = 0;
-			let maxDensity = 10;
-			switch (sectorVO.sectorType) {
-				case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
-					minDensity = 2;
-					maxDensity = 8;
-					break;
-				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
-					minDensity = 1;
-					maxDensity = 10;
-					break;
-				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
-					minDensity = 2;
-					maxDensity = 10;
-					break;
-				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
-					minDensity = 1;
-					maxDensity = 10;
-					break;
-				case SectorConstants.SECTOR_TYPE_PUBLIC:
-					minDensity = 0;
-					maxDensity = 7;
-					break;
-				case SectorConstants.SECTOR_TYPE_EMPTY:
-					minDensity = 0;
-					maxDensity = 1;
-					break;
+			let minDensity = 1;
+			let maxDensity = 9;
+
+			let limitDensityBySectorType = function (sectorType) {
+				switch(sectorType) {
+					case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
+						minDensity = Math.max(minDensity, 2);
+						maxDensity = Math.min(maxDensity, 8);
+						break;
+					case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+						maxDensity = 10;
+						break;
+					case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+						minDensity = Math.max(minDensity, 2);
+						maxDensity = 10;
+						break;
+					case SectorConstants.SECTOR_TYPE_PUBLIC:
+						maxDensity = Math.min(maxDensity, 7);
+						break;
+					case SectorConstants.SECTOR_TYPE_EMPTY:
+						minDensity = 0;
+						maxDensity = 1;
+						break;
+				}
 			}
+			limitDensityBySectorType(districtVO.type);
+			limitDensityBySectorType(sectorVO.sectorType);
 			
 			let isStartPosition = l == 13 && sectorVO.isCamp;
 			if (isStartPosition) {
@@ -1349,7 +1350,7 @@ define([
 			}
 
 			if (sectorVO.hasFeature(WorldConstants.FEATURE_HOLE_WELL)) {
-				minDensity = 1;
+				minDensity = 0;
 				maxDensity = 3;
 			}
 
@@ -1368,7 +1369,7 @@ define([
 			if (distanceToSurface == 1) maxActivity = 8;
 			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_PUBLIC) maxActivity--;
 			if (neighboursCount > 2) maxActivity++;
-			if (neighboursCount == 1) minActivity--;
+			if (neighboursCount == 1) maxActivity--;
 			if (distanceToSurface == 0) maxActivity = 1;
 			if (sectorVO.sectorType === SectorConstants.SECTOR_TYPE_MAINTENANCE) maxActivity = 1;
 			if (sectorVO.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_NEW)) minActivity = 2;
@@ -1718,6 +1719,10 @@ define([
 			if (sectorVO.hasLocaleOfType(localeTypes.butcher)) {
 				sca.food = 0;
 				col.food = 0;
+			}
+
+			if (sectorVO.hasLocaleOfType(localeTypes.grove)) {
+				sca.herbs = WorldConstants.resourcePrevalence.DEFAULT;
 			}
 			
 			// adjustments for required resources
@@ -2157,7 +2162,7 @@ define([
 				switch (districtType) {
 					case SectorConstants.SECTOR_TYPE_RESIDENTIAL:
 						if (districtCentrality > 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
-						possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
+						if (districtCentrality > 0.7) possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
 						break;
 					case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
@@ -2167,14 +2172,14 @@ define([
 						break;
 					case SectorConstants.SECTOR_TYPE_COMMERCIAL:
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
-						if (districtCentrality < 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
+						if (districtCentrality < 0.4) possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
 						if (districtCentrality < 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 						break;
 					case SectorConstants.SECTOR_TYPE_PUBLIC:
 						if (districtCentrality > 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
 						if (districtCentrality > 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
-						if (districtCentrality > 0.5) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
+						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 						break;
 					case SectorConstants.SECTOR_TYPE_EMPTY:
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_MAINTENANCE);
@@ -2187,6 +2192,7 @@ define([
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
 						break;
 					case SectorConstants.STYLE_HUMANIST:
+						possibleTypes.push(districtType);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_MAINTENANCE);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
 						if (districtVO.wealth < 5) possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
@@ -2199,7 +2205,6 @@ define([
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_PUBLIC);
 						break;
 					case SectorConstants.STYLE_MODERN:
-						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
 						break;
 					case SectorConstants.STYLE_NEOWESTERN:
@@ -2207,13 +2212,11 @@ define([
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
 						break;
 					case SectorConstants.STYLE_SLUM_GENERAL:
+					case SectorConstants.STYLE_SLUM_HUN:
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_MAINTENANCE);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_INDUSTRIAL);
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
-						break;
-					case SectorConstants.STYLE_SLUM_HUN:
-						possibleTypes.push(SectorConstants.SECTOR_TYPE_COMMERCIAL);
 						break;
 					case SectorConstants.STYLE_WESTERN:
 						possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
@@ -2226,8 +2229,9 @@ define([
 					if (districtVO.wealth < 4) possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);
 				}
 
-				if (levelVO.level > 10 && levelVO.level < 18 && districtVO.wealth < 7 && districtCentrality < 0.5 && possibleTypes.indexOf(SectorConstants.SECTOR_TYPE_EMPTY) < 0) 
+				if (levelVO.level > 10 && levelVO.level < 18 && districtVO.wealth < 7 && districtCentrality < 0.5 && possibleTypes.indexOf(SectorConstants.SECTOR_TYPE_EMPTY) < 0) {
 					possibleTypes.push(SectorConstants.SECTOR_TYPE_EMPTY);
+				}
 
 				if (levelVO.getDistanceToFeature(sectorVO.position, WorldConstants.FEATURE_HOLE_WELL) < 3) {
 					possibleTypes.push(SectorConstants.SECTOR_TYPE_RESIDENTIAL);

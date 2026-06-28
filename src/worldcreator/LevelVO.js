@@ -151,10 +151,12 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstant
 			let sector = this.sectorsByPos[sectorX]?.[sectorY];
 			if (!sector) return false;
 
-			let s = sector.stage;
+			if (stage || excludeStage) {
+				let s = sector.stage;
 
-			if (stage && s !== stage) return false;
-			if (excludeStage && s === excludeStage) return false;
+				if (stage && s !== stage) return false;
+				if (excludeStage && s === excludeStage) return false;
+			}
 
 			return true;
 		},

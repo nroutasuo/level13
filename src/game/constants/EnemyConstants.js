@@ -5,7 +5,7 @@ function (Ash, EnemyVO, PerkConstants) {
 		
 		enemyDefinitions: [],
 
-		enemyUsage: {}, // usage in current world, just for debug
+		enemyUsage: {}, // usage in current world, just for debug/tools
 		
 		enemyTexts: {
 			apparition: {
@@ -162,7 +162,38 @@ function (Ash, EnemyVO, PerkConstants) {
 				case "bandit": return true;
 				default: return false;
 			}
-		}
+		},
+
+		matchesRequiredTags: function (tags, enemyVO) {
+			if (enemyVO.environment.length == 0) return true;
+
+			for (let i = 0; i < enemyVO.environment.length; i++) {
+				let enemyTag = enemyVO.environment[i];
+				let priority = enemyTag[0];
+				if (priority > 0) continue;
+				let baseTag = enemyTag.substring(1);
+				if (tags.indexOf(baseTag) < 0) {
+					return false;
+				}
+			}
+
+			return true;
+		},
+
+		getNumMatchingTags: function (tags, enemyVO) {
+			let result = 0;
+			if (enemyVO.environment.length == 0) return result;
+
+			for (let i = 0; i < enemyVO.environment.length; i++) {
+				let enemyTag = enemyVO.environment[i];
+				let priority = enemyTag[0];
+				let baseTag = enemyTag.substring(1);
+				let matches = tags.indexOf(baseTag) >= 0;
+				if (matches) result++;
+			}
+
+			return result;
+		},
 		
 	};
 		

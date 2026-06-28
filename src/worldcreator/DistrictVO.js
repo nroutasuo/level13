@@ -13,6 +13,7 @@ define(['ash', 'game/vos/PositionVO'], function (Ash, PositionVO) {
 		wealth: 0, // 0-10
 
 		adjustedPosition: null, // PositionVO (not saved)
+		typicalEnemies: [], // list of ids (not saved)
 		
 		constructor: function (position, stage, type) {
 			this.position = position || new PositionVO();
