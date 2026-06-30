@@ -266,7 +266,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		getItemTags: function () {
 			switch (this.type) {
 				case localeTypes.bunker: 
-					return [ ItemConstants.itemTags.old, ItemConstants.itemTags.equipment ];
+					return [ ItemConstants.itemTags.old, ItemConstants.itemTags.equipment, ItemConstants.itemTags.household ];
 				case localeTypes.clinic: 
 					return [ ItemConstants.itemTags.medical, ItemConstants.itemTags.new ];
 				case localeTypes.factory:
@@ -284,7 +284,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.maintenance:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.indutrial, ItemConstants.itemTags.electric ];
 				case localeTypes.junkyard:
-					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.valuable ];
+					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.valuable, ItemConstants.itemTags.household ];
 				case localeTypes.warehouse:
 				case localeTypes.depot:
 					return [ ItemConstants.itemTags.perishable, ItemConstants.itemTags.clothing ];
@@ -309,11 +309,11 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.transport:
 					return [ ItemConstants.itemTags.maintenance, ItemConstants.itemTags.community ];
 				case localeTypes.house:
-					return [ ItemConstants.itemTags.valuable, ItemConstants.itemTags.keepsake ];
+					return [ ItemConstants.itemTags.valuable, ItemConstants.itemTags.keepsake, ItemConstants.itemTags.household ];
 				case localeTypes.market:
 					return [ ItemConstants.itemTags.clothing, ItemConstants.itemTags.community ];
 				case localeTypes.store:
-					return [ ItemConstants.itemTags.clothing, ItemConstants.itemTags.valuable ];
+					return [ ItemConstants.itemTags.clothing, ItemConstants.itemTags.valuable, ItemConstants.itemTags.household ];
 				case localeTypes.shortcut:
 					return [ ItemConstants.itemTags.equipment, ItemConstants.itemTags.weapon ];
 				default: return [];

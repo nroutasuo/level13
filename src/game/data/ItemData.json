@@ -192,6 +192,7 @@
         "rarityLocale": 4,
         "rarityScavenge": 7,
         "rarityTrade": 4,
+        "tags": [ "household" ],
         "type": "artefact"
     },
     "artefact_history_2": {
@@ -204,6 +205,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
+        "tags": [ "household" ],
         "type": "artefact"
     },
     "artefact_history_3": {
@@ -216,6 +218,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
+        "tags": [ "household" ],
         "type": "artefact"
     },
     "artefact_history_4": {
@@ -227,6 +230,7 @@
         "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "household" ],
         "type": "artefact"
     },
     "artefact_history_5": {
@@ -313,7 +317,7 @@
         "rarityInvestigate": 5,
         "rarityLocale": 5,
         "rarityScavenge": 8,
-        "tags": [ "book" ],
+        "tags": [ "book", "household" ],
         "type": "artefact"
     },
     "artefact_surface_6": {
@@ -325,7 +329,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 4,
         "rarityScavenge": 7,
-        "tags": [ "modern" ],
+        "tags": [ "modern", "household"],
         "type": "artefact"
     },
     "artefact_surface_7": {
@@ -336,6 +340,7 @@
         "isUseable": false,
         "rarityLocale": 5,
         "rarityScavenge": 8,
+        "tags": [ "household" ],
         "type": "artefact"
     },
     "artefact_surface_8": {
@@ -362,7 +367,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 2,
         "rarityTrade": 5,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "bag"
     },
     "bag_1": {
@@ -377,7 +382,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "bag"
     },
     "bag_2": {
@@ -392,7 +397,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "bag"
     },
     "bag_3": {
@@ -407,7 +411,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 3,
-        "source": "equipment",
         "type": "bag"
     },
     "bag_4": {
@@ -421,7 +424,6 @@
         "isUseable": false,
         "rarityScavenge": 8,
         "rarityTrade": 3,
-        "source": "equipment",
         "type": "bag"
     },
     "bag_5": {
@@ -436,7 +438,6 @@
         "rarityLocale": 6,
         "rarityScavenge": 10,
         "rarityTrade": 8,
-        "source": "equipment",
         "type": "bag"
     },
     "cache_evidence_11": {
@@ -749,7 +750,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
-        "tags": [ "industrial" ],
+        "tags": [ "industrial", "household" ],
         "type": "voucher"
     },
     "cache_metal_3": {
@@ -763,7 +764,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
-        "tags": [ "industrial" ],
+        "tags": [ "industrial", "household" ],
         "type": "voucher"
     },
     "cache_metal_4": {
@@ -777,7 +778,7 @@
         "isUseable": true,
         "rarityLocale": 3,
         "rarityScavenge": 6,
-        "tags": [ "industrial" ],
+        "tags": [ "industrial", "household" ],
         "type": "voucher"
     },
     "cache_robots_1": {
@@ -804,7 +805,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tags": [ "book", "new", "comunity" ],
+        "tags": [ "book", "new", "comunity", "household" ],
         "tradePrice": 2,
         "type": "voucher"
     },
@@ -819,7 +820,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tags": [ "book", "new", "comunity" ],
+        "tags": [ "book", "new", "comunity", "household" ],
         "tradePrice": 3,
         "type": "voucher"
     },
@@ -834,7 +835,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tags": [ "book", "new", "comunity" ],
+        "tags": [ "book", "new", "comunity", "household" ],
         "tradePrice": 3,
         "type": "voucher"
     },
@@ -849,7 +850,7 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "tags": [ "book", "new", "comunity" ],
+        "tags": [ "book", "new", "comunity", "household" ],
         "tradePrice": 4,
         "type": "voucher"
     },
@@ -866,7 +867,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 5,
-        "tags": [ "perishable" ],
+        "tags": [ "perishable", "household" ],
         "tradePrice": 2,
         "type": "voucher"
     },
@@ -898,7 +899,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_hands"
     },
     "clothing_hands_12": {
@@ -916,7 +917,7 @@
         "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_hands"
     },
     "clothing_hands_2": {
@@ -934,7 +935,6 @@
         "rarityLocale": 3,
         "rarityScavenge": 1,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_hands"
     },
     "clothing_hands_25": {
@@ -952,7 +952,6 @@
         "rarityLocale": 3,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_hands"
     },
     "clothing_hands_3": {
@@ -970,7 +969,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_hands"
     },
     "clothing_hands_4": {
@@ -988,7 +986,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_hands"
     },
     "clothing_hands_5": {
@@ -1006,7 +1003,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_hands"
     },
     "clothing_hands_l14": {
@@ -1024,7 +1020,6 @@
         "isUseable": false,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "source": "equipment",
         "tags": [ "industrial" ],
         "type": "clothing_hands"
     },
@@ -1040,7 +1035,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "tags": [ "old" ],
         "type": "clothing_head"
     },
@@ -1057,7 +1051,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_head"
     },
     "clothing_head_2": {
@@ -1072,7 +1066,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "tags": [ "medical" ],
         "type": "clothing_head"
     },
@@ -1088,7 +1081,7 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_head"
     },
     "clothing_head_27": {
@@ -1105,7 +1098,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_head_3": {
@@ -1125,7 +1117,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_head_4": {
@@ -1144,7 +1135,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_head_45": {
@@ -1165,7 +1155,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_head_5": {
@@ -1185,7 +1174,6 @@
         "isUseable": false,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_head_l14": {
@@ -1205,7 +1193,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 6,
-        "source": "equipment",
         "type": "clothing_head"
     },
     "clothing_lower_1": {
@@ -1222,7 +1209,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 1,
         "rarityTrade": -1,
-        "source": "equipment",
         "type": "clothing_lower"
     },
     "clothing_lower_15": {
@@ -1238,7 +1224,7 @@
         "rarityLocale": 1,
         "rarityScavenge": 3,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_lower"
     },
     "clothing_lower_2": {
@@ -1254,7 +1240,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "tags": [ "industrial" ],
         "type": "clothing_lower"
     },
@@ -1271,7 +1256,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_lower"
     },
     "clothing_lower_4": {
@@ -1288,7 +1272,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_lower"
     },
     "clothing_lower_45": {
@@ -1307,7 +1290,6 @@
         "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_lower"
     },
     "clothing_lower_5": {
@@ -1325,7 +1307,7 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_lower"
     },
     "clothing_over_1": {
@@ -1341,7 +1323,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 6,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_15": {
@@ -1359,7 +1340,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_1x": {
@@ -1376,7 +1356,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_2": {
@@ -1394,7 +1373,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_25": {
@@ -1413,7 +1391,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 3,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_25x": {
@@ -1432,7 +1409,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_3": {
@@ -1451,7 +1427,6 @@
         "rarityLocale": 3,
         "rarityScavenge": 5,
         "rarityTrade": 5,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_4": {
@@ -1469,7 +1444,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 4,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_45": {
@@ -1488,7 +1462,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 4,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_5": {
@@ -1507,7 +1480,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "tags": [ "old" ],
         "type": "clothing_over"
     },
@@ -1528,7 +1500,6 @@
         "rarityLocale": 3,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_l14": {
@@ -1549,7 +1520,6 @@
         "isUseable": false,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_over_w": {
@@ -1565,7 +1535,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 3,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_over"
     },
     "clothing_upper_1": {
@@ -1582,7 +1551,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 2,
         "rarityTrade": -1,
-        "source": "equipment",
         "type": "clothing_upper"
     },
     "clothing_upper_15": {
@@ -1600,7 +1568,7 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "clothing_upper"
     },
     "clothing_upper_2": {
@@ -1618,7 +1586,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "tags": [ "industrial" ],
         "type": "clothing_upper"
     },
@@ -1637,7 +1604,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "clothing_upper"
     },
     "clothing_upper_35": {
@@ -1655,7 +1621,6 @@
         "rarityLocale": 1,
         "rarityScavenge": 2,
         "rarityTrade": 1,
-        "source": "equipment",
         "tags": [ "old" ],
         "type": "clothing_upper"
     },
@@ -1674,7 +1639,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_upper"
     },
     "clothing_upper_45": {
@@ -1692,7 +1656,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_upper"
     },
     "clothing_upper_5": {
@@ -1710,7 +1673,6 @@
         "rarityLocale": 2,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "clothing_upper"
     },
     "consumable_graffiti_01": {
@@ -2109,7 +2071,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "light"
     },
     "light2": {
@@ -2124,7 +2085,7 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
+        "tags": [ "household" ],
         "type": "light"
     },
     "light3": {
@@ -2139,7 +2100,6 @@
         "rarityLocale": 8,
         "rarityScavenge": -1,
         "rarityTrade": 8,
-        "source": "equipment",
         "type": "light"
     },
     "res_bands": {
@@ -2149,6 +2109,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "old", "maintenance" ],
         "type": "ingredient"
     },
     "res_bottle": {
@@ -2158,6 +2119,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "old", "household" ],
         "type": "ingredient"
     },
     "res_glowbug": {
@@ -2167,6 +2129,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 3,
+        "tags": [ "nature" ],
         "type": "ingredient"
     },
     "res_hairpin": {
@@ -2176,6 +2139,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "old", "household" ],
         "type": "ingredient"
     },
     "res_leather": {
@@ -2185,6 +2149,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "nature", "clothing" ],
         "type": "ingredient"
     },
     "res_silk": {
@@ -2194,6 +2159,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "nature", "new" ],
         "type": "ingredient"
     },
     "res_tape": {
@@ -2203,6 +2169,7 @@
         "isEquippable": false,
         "isUseable": false,
         "rarityTrade": 2,
+        "tags": [ "maintenance", "old", "household" ],
         "type": "ingredient"
     },
     "robot_1": {
@@ -2229,7 +2196,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 3,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "shoes"
     },
     "shoe_2": {
@@ -2244,7 +2210,6 @@
         "rarityLocale": 3,
         "rarityScavenge": -1,
         "rarityTrade": 3,
-        "source": "equipment",
         "type": "shoes"
     },
     "shoe_3": {
@@ -2260,7 +2225,6 @@
         "rarityLocale": 3,
         "rarityScavenge": -1,
         "rarityTrade": 3,
-        "source": "equipment",
         "type": "shoes"
     },
     "shoe_4": {
@@ -2275,7 +2239,6 @@
         "rarityLocale": 5,
         "rarityScavenge": -1,
         "rarityTrade": 5,
-        "source": "equipment",
         "type": "shoes"
     },
     "shoe_l14": {
@@ -2295,7 +2258,6 @@
         "rarityLocale": 3,
         "rarityScavenge": -1,
         "rarityTrade": 3,
-        "source": "equipment",
         "type": "shoes"
     },
     "stamina_potion_1": {
@@ -2331,7 +2293,7 @@
         "rarityLocale": 7,
         "rarityScavenge": 9,
         "rarityTrade": -1,
-        "tags": [ "perishable" ],
+        "tags": [ "perishable", "household" ],
         "type": "trade"
     },
     "trade_3": {
@@ -2343,7 +2305,7 @@
         "rarityLocale": 6,
         "rarityScavenge": 9,
         "rarityTrade": -1,
-        "tags": [ "perishable" ],
+        "tags": [ "perishable", "household" ],
         "type": "trade"
     },
     "trade_4": {
@@ -2383,7 +2345,6 @@
         "rarityLocale": -1,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon12": {
@@ -2399,7 +2360,6 @@
         "rarityLocale": -1,
         "rarityScavenge": 5,
         "rarityTrade": 2,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon122": {
@@ -2415,7 +2375,6 @@
         "rarityLocale": 3,
         "rarityScavenge": 8,
         "rarityTrade": 3,
-        "source": "equipment",
         "tags": [ "new" ],
         "type": "weapon"
     },
@@ -2433,7 +2392,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 7,
-        "source": "equipment",
         "tags": [ "new" ],
         "type": "weapon"
     },
@@ -2450,7 +2408,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 5,
         "rarityTrade": 7,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon2": {
@@ -2466,7 +2423,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon25": {
@@ -2482,7 +2438,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon3": {
@@ -2498,7 +2453,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon35": {
@@ -2514,7 +2468,6 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon4": {
@@ -2530,7 +2483,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon5": {
@@ -2546,7 +2498,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon52": {
@@ -2562,7 +2513,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon58": {
@@ -2578,7 +2528,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon6": {
@@ -2594,7 +2543,6 @@
         "rarityLocale": -1,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     },
     "weapon7": {
@@ -2610,7 +2558,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "tags": [ "new" ],
         "type": "weapon"
     },
@@ -2627,7 +2574,6 @@
         "rarityLocale": 8,
         "rarityScavenge": 5,
         "rarityTrade": 1,
-        "source": "equipment",
         "type": "weapon"
     }
 }

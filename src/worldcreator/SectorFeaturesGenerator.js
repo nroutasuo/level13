@@ -2,6 +2,7 @@
 define([
 	'ash',
 	'utils/MathUtils',
+	'utils/ArrayUtils',
 	'game/constants/CampConstants',
 	'game/constants/ExplorerConstants',
 	'game/constants/ItemConstants',
@@ -27,7 +28,7 @@ define([
 	'worldcreator/SectorGeneratorHelper',
 	'worldcreator/CriticalPathVO',
 ], function (
-	Ash, MathUtils,
+	Ash, MathUtils, ArrayUtils,
 	CampConstants, ExplorerConstants, ItemConstants, LevelConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, TradeConstants, TribeConstants, UpgradeConstants, WorldConstants,
 	LocaleVO, PathConstraintVO, PositionVO, ResourcesVO, StashVO,
 	WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldCreatorDebug, WorldCreatorLogger, SectorGeneratorHelper, CriticalPathVO
@@ -911,6 +912,7 @@ define([
 		generateWorkshops: function (seed, worldVO, levelTemplateVO, levelVO) {
 			let campOrdinal = levelVO.campOrdinal;
 			let l = levelVO.level;
+			let centerPos = levelVO.levelMapCenterPosition;
 			
 			let workshopResource = levelVO.workshopResource;
 			if (!workshopResource) return;
@@ -918,29 +920,36 @@ define([
 			let existingPositions = levelTemplateVO.workshopPositions || [];
 
 			let validSectors = levelVO.sectors.filter(s => SectorGeneratorHelper.isValidSectorForLocale(s));
-			let preferredSectors = validSectors.filter(s => levelVO.districts[s.districtIndex].type == SectorConstants.SECTOR_TYPE_INDUSTRIAL);
-			if (preferredSectors.length > 0) validSectors = preferredSectors;
+
+			let getSectorWorkshopScore = function (sectorVO) {
+				let districtVO = levelVO.districts[sectorVO.districtIndex];
+
+				let score = 1;
+
+				if (workshopResource == "herbs") {
+					score += PositionConstants.getDistanceTo(centerPos, sectorVO.position);
+					if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_AGRICORP) score *= 5;
+				}
+
+				if (districtVO.type == SectorConstants.SECTOR_TYPE_PUBLIC) score *= 0.5;
+				if (districtVO.type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) score *= 0.5;
+				if (districtVO.type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) score *= 2;
+				if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) score *= 2;
+				return score;
+			};
 
 			// pick sectors
 			let workshopSectors = [];
 			let pathConstraints = [];
 			switch (workshopResource) {
 				case "herbs":
-					let centerPos = levelVO.levelMapCenterPosition;
-					let getSectorHerbsScore = function (sectorVO) {  
-						let score = PositionConstants.getDistanceTo(centerPos, sectorVO.position);
-						let districtVO = levelVO.districts[sectorVO.districtIndex];
-						if (districtVO.type == SectorConstants.SECTOR_TYPE_INDUSTRIAL) score *= 2;
-						if (districtVO.type == SectorConstants.SECTOR_TYPE_RESIDENTIAL) score *= 0.5;
-						if (districtVO.type == SectorConstants.SECTOR_TYPE_PUBLIC) score *= 0.5;
-						if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_AGRICORP) score *= 5;
-						return score;
-					};
-					let sectorsByScore = validSectors.slice(0).sort((a, b) => getSectorHerbsScore(b) - getSectorHerbsScore(a));
+					let sectorsByScore = validSectors.slice(0).sort((a, b) => getSectorWorkshopScore(b) - getSectorWorkshopScore(a));
 					let sector = sectorsByScore[0];
 					workshopSectors.push(sector);
 					break;
 				default:
+					validsectors = ArrayUtils.filterIfAny(validSectors, s => levelVO.districts[s.districtIndex].type == SectorConstants.SECTOR_TYPE_INDUSTRIAL, 5);
+					validsectors = ArrayUtils.filterIfAny(validSectors, s => s.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL, 5);
 					if (levelVO.campPosition) {
 						let startPos = levelVO.campPosition;
 						let maxLength = WorldCreatorConstants.getMaxPathLength(levelVO.campOrdinal, WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_1);
@@ -948,7 +957,7 @@ define([
 					}
 					let isValidSectorForWorkshop = (s) => validSectors.indexOf(s) >= 0;
 					let options = { pathConstraints: pathConstraints, excludedZones: [ WorldConstants.ZONE_ENTRANCE, WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_EXTRA_CAMPABLE ], filter: isValidSectorForWorkshop };
-					workshopSectors = WorldCreatorRandom.randomSectors(seed * l * 2 / 7 * l, worldVO, levelVO, 1, 2, options);
+					workshopSectors = WorldCreatorRandom.randomSectorsScored(seed * l * 2 / 7 * l, worldVO, levelVO, 1, 2, options, getSectorWorkshopScore);
 					break;
 			}
 
@@ -975,7 +984,6 @@ define([
 				let locale = new LocaleVO(localeTypes.greenhouse, true, false);
 				SectorGeneratorHelper.addLocale(levelVO, workshopSectors[0], locale);
 			}
-			
 		},
 
 		generateLocalesForShortcuts: function (seed, worldVO, levelTemplateVO, levelVO) {
@@ -1906,7 +1914,16 @@ define([
 				if (!sectorVO) {
 					let filter = sectorVO => this.filterSectorForLuxuryLocationType(sectorVO, locationType);
 					let options = { excludingFeature: excludedFeatures, excludedZones: lateZones, excludedZones: [ WorldConstants.ZONE_PASSAGE_TO_CAMP ], filter: filter };
-					sectorVO = WorldCreatorRandom.randomSectors(seed  + 773 + levelVO.level * 24 + i * 992, worldVO, levelVO, 1, 2, options)[0];
+					let getScore = function (sectorVO) {
+						let score = 0;
+						if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) score++;
+						if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) score++;
+						if (sectorVO.wealth > 5) score++;
+						if (sectorVO.activity < 5) score++;
+						if (sectorVO.wear < 5) score++;
+						return score;
+					};
+					sectorVO = WorldCreatorRandom.randomSectorScored(seed / 5 + i, worldVO, levelVO, options, getScore);
 					if (!sectorVO) continue;
 				}
 
