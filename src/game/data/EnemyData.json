@@ -1697,7 +1697,7 @@
 		"size": 0.7,
 		"speed": 0.9
 	},
-	"pulse_fungus_giant": {
+	"pulse_fungus__giant": {
 		"campOrdinal": 5,
 		"name": "giant pulse fungus"
 	},
@@ -2365,7 +2365,7 @@
 		"rarity": 30,
 		"speed": 0.9
 	},
-	"swam__template": {
+	"swarm__template": {
 		"attackRatio": 1.25,
 		"difficulty": 3,
 		"enemyType": "robot",
