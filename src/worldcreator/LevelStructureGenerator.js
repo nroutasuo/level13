@@ -793,7 +793,7 @@ define([
 
 			let minDiff = 4;
 			let minSize = 3;
-			let maxSize = Math.min(levelVO.numSectors / 12, 19);
+			let maxSize = Math.round(Math.min(levelVO.numSectors / 13, 19));
 			let outerS = WorldCreatorRandom.randomInt(s2, minSize + minDiff, maxSize + 1);
 			if (outerS % 2 == 0) outerS--;
 			if (levelVO.structureSettings.density >= 0.75) outerS += 2;

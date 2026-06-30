@@ -516,7 +516,7 @@ define([
 			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, level);
 			if (campPos1 == null) campPos1 = levelCenter;
 			if (campPos2 == null) campPos2 = levelCenter;
-			
+
 			// find average of the max positions = position that adds 0 to the max path length
 			let allPos = [ campPos1, campPos2, levelCenter ];
 			let averagePos = PositionConstants.getMiddlePoint(allPos);
@@ -527,7 +527,7 @@ define([
 			let startPathLength = Math.ceil(Math.max(PositionConstants.getDistanceTo(averagePos, campPos1), PositionConstants.getDistanceTo(averagePos, campPos2)));
 			let maxDiff = Math.max(6, Math.min(30, maxPathLength - startPathLength));
 			let minDiff = Math.min(1, Math.floor(maxDiff / 2));
-			log.i("passage position " + level + " " + campPos1 + " - " + campPos2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
+			// log.i("passage position " + level + " " + campPos1 + " - " + campPos2 + " -> middle: " + averagePos + " -> maxPathLength: " + maxPathLength + ", startPathLength: " + startPathLength + ", maxDiff: " + maxDiff + ", minDiff: " + minDiff);
 			
 			// find candidates around averagePos (some random candidates + nearest valid positions from some level features)
 			let candidates = [];
@@ -663,18 +663,18 @@ define([
 			
 			// check that late passage isn't between early passage and camps on this level (similar direction and shorter distance)
 			if (passageUp) {
-				var posE = level <= 13 ? passageUp : pos;
-				var posL = level <= 13 ? pos : passageUp;
+				let posE = level <= 13 ? passageUp : pos;
+				let posL = level <= 13 ? pos : passageUp;
 				for (let i = 0; i < allCamps.length; i++) {
-					var campPos = allCamps[i];
+					let campPos = allCamps[i];
 					if (campPos.level == pos.level) {
-						var dirE = PositionConstants.getDirectionFrom(campPos, posE);
-						var dirL = PositionConstants.getDirectionFrom(campPos, posL);
-						var isSame = dirE == dirL;
-						var isNeighbouring = PositionConstants.isNeighbouringDirection(dirE, dirL, true);
+						let dirE = PositionConstants.getDirectionFrom(campPos, posE);
+						let dirL = PositionConstants.getDirectionFrom(campPos, posL);
+						let isSame = dirE == dirL;
+						let isNeighbouring = PositionConstants.isNeighbouringDirection(dirE, dirL, true);
 						if (isSame || isNeighbouring) {
-							var distE = PositionConstants.getDistanceTo(campPos, posE);
-							var distL = PositionConstants.getDistanceTo(campPos, posL);
+							let distE = PositionConstants.getDistanceTo(campPos, posE);
+							let distL = PositionConstants.getDistanceTo(campPos, posL);
 							if (distL < distE) {
 								return { isValid: false, reason: "late passage closer to camp", details: "level " + level };
 							}
@@ -686,9 +686,9 @@ define([
 			// check passage isn't too far from required positions
 			if (requiredPositions.length > 0) {
 				let requiredPositionsCenter = PositionConstants.getMiddlePoint(requiredPositions);
-				let maxDistToRequiredPositions = Math.max(10, PositionConstants.getDistanceTo(levelCenter, requiredPositionsCenter));
+				let maxDistToRequiredPositions = Math.max(12, PositionConstants.getDistanceTo(levelCenter, requiredPositionsCenter));
 				let distanceToRequiredPositions = PositionConstants.getDistanceTo(pos, requiredPositionsCenter);
-				if (distanceToRequiredPositions > maxDistToRequiredPositions) return { isValid: false, reason: "distance to required positions too long" };
+				if (distanceToRequiredPositions > maxDistToRequiredPositions) return { isValid: false, reason: "distance to required positions too long", details: "requiredPositionsCenter:" + requiredPositionsCenter };
 			}
 			
 			return { isValid: true };
