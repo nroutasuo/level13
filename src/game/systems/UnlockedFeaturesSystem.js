@@ -73,8 +73,11 @@ define([
 				GameGlobals.gameState.numCamps = numCamps;
 			}
 
-			if (numCamps > 1 && !GameGlobals.gameState.isFeatureUnlocked("housing")) {
-				GameGlobals.playerActionFunctions.unlockFeature("housing");
+			if (!GameGlobals.gameState.isFeatureUnlocked("housing")) {
+				let population = GameGlobals.tribeHelper.getTotalPopulation();
+				if (numCamps > 1 || population >= 1) {
+					GameGlobals.playerActionFunctions.unlockFeature("housing");
+				}
 			}
 			
 			if (!GameGlobals.gameState.unlockedFeatures.projects) {
