@@ -86,6 +86,7 @@ define([
 				this.checkLevelNumberOfLocales,
 				this.checkLevelMovementBlockers,
 				this.checkLevelLight,
+				this.checkLevelFeatures,
 				this.checkLevelResources,
 				this.checkLevelMatchesTemplate,
 			];
@@ -583,11 +584,11 @@ define([
 			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
 			let numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
 			if (numEarlyLocales < numEarlyBlueprints) {
-				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numEarlyLocales + "/" + numEarlyBlueprints });
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + ", " + numEarlyLocales + "/" + numEarlyBlueprints });
 			}
 			let numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
 			if (numLateLocales < numLateBlueprints) {
-				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + " " + numLateLocales + "/" + numLateBlueprints });
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + ", " + numLateLocales + "/" + numLateBlueprints });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
@@ -760,19 +761,20 @@ define([
 			if (levelVO.level == worldVO.topLevel) minSunlitPercentage = 0.9;
 
 			let maxSunlitPercentage = 0.2;
+			if (levelVO.level > 14) maxSunlitPercentage = 0.3;
 			if (levelVO.level > worldVO.topLevel - 3) maxSunlitPercentage = 1;
 			if (levelVO.campOrdinal < firstSunlitCampOrdinal) maxSunlitPercentage = 0;
 
 			if (sunlitPercentage > 0 && maxSunlitPercentage === 0) {
 				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "sunlit sectors not allowed but present on level " + levelVO.level });
-				return;
+				return { isValid: false, issues: issues };
 			}
 
 			if (sunlitPercentage < minSunlitPercentage)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too few sunlit sectors on level " + levelVO.level + " (" + sunlitCount + ")" });
 
 			if (sunlitPercentage > maxSunlitPercentage)
-				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sunlit sectors on level " + levelVO.level + "(" + sunlitCount + ")" });
+				issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "too many sunlit sectors on level " + levelVO.level + " (" + sunlitCount + ")" });
 
 			// not too many lone sunlit sectors without or with only one sunlit neighbours
 
@@ -800,6 +802,87 @@ define([
 
 			return { isValid: issues.length === 0, issues: issues };
 		},
+
+		checkLevelFeatures: function (worldVO, levelVO) {
+			let issues = [];
+			let requiredFeatures = [];
+
+			let level = levelVO.level;
+			let isSmallLevel = levelVO.sectors.length < 100;
+			let defaultMinSectors = isSmallLevel ? -1 : 1;
+
+			// TODO somehow check sectors for sunwells and mountain (edge) (not required on any specific level but required at least some sectors somewhere in the world)
+
+			if (level == worldVO.topLevel || level == worldVO.topLevel - 1) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_COLLAPSE });
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE, isDefinedOnLevel: false, minSectors: defaultMinSectors });
+			}
+
+			if (levelVO < worldVO.topLevel) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_STRUCTURE_PILLAR, minSectors: defaultMinSectors });
+				requiredFeatures.push({ type: WorldConstants.FEATURE_TRAIN_STATION, minSectors: defaultMinSectors });
+			}
+
+			if (level == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_LOWER || level == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_UPPER) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER, minSectors: 1 });
+			}
+
+			if (level > 14 && level < worldVO.topLevel) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_WELL });
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_WELL_EDGE, isDefinedOnLevel: false });
+				requiredFeatures.push({ type: WorldConstants.FEATURE_TRAIN_TRACKS_NEW, minSectors: defaultMinSectors });
+			}
+
+			if (level < 13) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_TRAIN_TRACKS_OLD, minSectors: defaultMinSectors });
+			}
+
+			if (level < 12) {
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_MOUNTAIN });
+				requiredFeatures.push({ type: WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE, isDefinedOnLevel: false });
+			}
+
+			for (let i = 0; i < requiredFeatures.length; i++) {
+				let requiredFeature = requiredFeatures[i];
+
+				if (requiredFeature.isDefinedOnLevel !== false) {
+					let hasFeature = levelVO.features.find(featureVO => featureVO.type == requiredFeature.type) != null;
+					
+					if (!hasFeature) {
+						issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level " + levelVO.level + " is missing required feature " + requiredFeature.type });
+						continue;
+					}
+				}
+
+				if (requiredFeature.minSectors || requiredFeature.maxSectors) {
+					let numSectors = (levelVO.sectors.find(sectorVO => sectorVO.hasFeature(requiredFeature.type)) || []).length;
+
+					if (requiredFeature.minSectors > 0 && numSectors < requiredFeature.minSectors) {
+						issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level " + levelVO.level + " has too few (" + numSectors + ") sectors with feature " + requiredFeature.type });
+					}
+
+					if (requiredFeature.maxSectors > 0 && numSectors > requiredFeature.maxSectors) {
+						issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level " + levelVO.level + " has too many (" + numSectors + ") sectors with feature " + requiredFeature.type });
+					}
+				}
+			}
+
+			if (levelVO.level == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_LOWER) {
+				let passageUpPosition = levelVO.passageUpPosition;
+				if (!levelVO.getSector(passageUpPosition.sectorX, passageUpPosition.sectorY).hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) {
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level passage not in giga center on level " + levelVO.level });
+				}
+			}
+
+			if (levelVO.level == WorldConstants.LEVEL_NUMBER_GIGA_CENTER_UPPER) {
+				let passageDownPosition = levelVO.passageDownPosition;
+				if (!levelVO.getSector(passageDownPosition.sectorX, passageDownPosition.sectorY).hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) {
+					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level passage not in giga center on level " + levelVO.level });
+				}
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
 		
 		checkLevelResources: function (worldVO, levelVO) {
 			let issues = [];
@@ -814,7 +897,7 @@ define([
 			thresholds[resourceNames.metal] = { sca: { min: isSurface ? 5 : levelVO.level > 20 ? 10 : 20, max: 99 } };
 			thresholds[resourceNames.rope] = { sca: { min: 0, max: 15 } };
 			thresholds[resourceNames.herbs] = { sca: { min: (isGround || isSurface ? 1 : 0), max: (isGround || isSurface ? 50 : 10) } };
-			thresholds[resourceNames.fuel] = { sca: { min: 0, max: 10 } };
+			thresholds[resourceNames.fuel] = { sca: { min: 0, max: 15 } };
 			thresholds[resourceNames.rubber] = { sca: { min: 0, max: 10 } };
 			thresholds[resourceNames.tools] = { sca: { min: 0, max: 30 } };
 			thresholds[resourceNames.medicine] = { sca: { min: 0, max: 10 } };
