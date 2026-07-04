@@ -709,8 +709,8 @@
 		updateImprovements: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
-			var isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
-			var campCount = GameGlobals.gameState.numCamps;
+			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.in;
+			let campCount = GameGlobals.gameState.numCamps;
 
 			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			let hasTradePost = improvements.getCount(improvementNames.tradepost) > 0;
@@ -749,18 +749,20 @@
 				var useActionAvailable = GameGlobals.playerActionsHelper.isRequirementsMet(useAction, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
 				var useAction2Available = hasUseActionExtra && GameGlobals.playerActionsHelper.isRequirementsMet(useActionExtra, null, [ PlayerActionConstants.DISABLED_REASON_BUSY ]);
 				
-				var improvementLevel = improvements.getLevel(improvementName);
-				var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
-				var majorImprovementLevel = GameGlobals.campHelper.getCurrentMajorImprovementLevel(improvements, improvementName);
-				var isNextLevelMajor = GameGlobals.campHelper.getNextMajorImprovementLevel(improvements, improvementName) > majorImprovementLevel;
-				
-				elem.count.text(existingImprovements);
-				elem.count.toggleClass("badge-disabled", existingImprovements < 1);
-				elem.level.text(improvementLevel);
-				elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
-				
-				elem.btnBuild.find(".btn-label").text(Text.t(ImprovementConstants.getImprovementDisplayNameKey(improvementID, improvementLevel)));
-				elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
+				if (isActive) {
+					var improvementLevel = improvements.getLevel(improvementName);
+					var maxImprovementLevel = GameGlobals.campHelper.getCurrentMaxImprovementLevel(improvementName);
+					var majorImprovementLevel = GameGlobals.campHelper.getCurrentMajorImprovementLevel(improvements, improvementName);
+					var isNextLevelMajor = GameGlobals.campHelper.getNextMajorImprovementLevel(improvements, improvementName) > majorImprovementLevel;
+					
+					elem.count.text(existingImprovements);
+					elem.count.toggleClass("badge-disabled", existingImprovements < 1);
+					elem.level.text(improvementLevel);
+					elem.level.toggleClass("badge-disabled", existingImprovements < 1 || !improveAction || maxImprovementLevel <= 1);
+					
+					elem.btnBuild.find(".btn-label").text(Text.t(ImprovementConstants.getImprovementDisplayNameKey(improvementID, improvementLevel)));
+					elem.btnImprove.find(".btn-label").text(isNextLevelMajor ? "▲" : "△")
+				}
 
 				var commonVisibilityRule = (buildActionEnabled || existingImprovements > 0 || showActionDisabledReason);
 				var specialVisibilityRule = true;

@@ -129,6 +129,7 @@ define([
 		initListeners: function () {
 			var sys = this;
 			GlobalSignals.playerPositionChangedSignal.add(function () {
+				sys.scheduleMapUpdate();
 				if (GameGlobals.gameState.uiStatus.isHidden) return;
 				sys.updateAll();
 			});
@@ -149,6 +150,7 @@ define([
 				sys.updateMovementRelatedActions();
 			});
 			GlobalSignals.sectorScoutedSignal.add(function () {
+				sys.scheduleMapUpdate();
 				sys.updateAll();
 			});
 			GlobalSignals.actionCompletedSignal.add(function () {
@@ -159,6 +161,7 @@ define([
 				sys.updateAll();
 			});
 			GlobalSignals.gameShownSignal.add(function () {
+				sys.scheduleMapUpdate();
 				sys.updateAll();
 			});
 			GlobalSignals.add(this, GlobalSignals.playerLeftCampSignal, this.updateAll);
@@ -185,8 +188,7 @@ define([
 			if (!this.playerLocationNodes.head) return;
 
 			if (!posComponent.inCamp) {
-				if (this.pendingUpdateMap)
-					this.rebuildVis();
+				if (this.pendingUpdateMap) this.rebuildVis();
 			}
 		},
 		
@@ -200,7 +202,7 @@ define([
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 
-			this.rebuildVis();
+			if (this.pendingUpdateMap) this.rebuildVis();
 			this.updateLocales();
 			this.updateMovementRelatedActions();
 			this.updateLocationDetails();
