@@ -1175,6 +1175,35 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 			return Text.t(key);
 		},
 
+		getDistrictTypeText: function (districtVO) {
+			let districtType = districtVO.type;
+			let key = "empty";
+			switch (districtVO.type) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL: 
+					key = "residential";
+					if (districtVO.wealth <= 3) key = "slum";
+					break;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL:
+					key = "industrial";
+					break;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE:
+					key = "maintenance";
+					break;
+				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
+					key = "commercial";
+					if (districtVO.wealth <= 3) key = "slum";
+					if (districtVO.wealth >= 8) key = "financial";
+					break;
+				case SectorConstants.SECTOR_TYPE_PUBLIC:
+					key = "public";
+					break;
+				case SectorConstants.SECTOR_TYPE_EMPTY:
+					key = "empty";
+					break;
+			}
+			return Text.t("ui.exploration.district_" + key + "_label");
+		},
+
 		getUpgradeDisplayName: function (id) {
 			let key = UpgradeConstants.getDisplayNameTextKey(id);
 			if (Text.hasKey(key)) {

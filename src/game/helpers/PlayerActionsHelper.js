@@ -2863,6 +2863,12 @@ define([
 				entries.push("Remaining: " + (100 - heapScavengedPercent + "%"));
 			}
 
+			if (action == "move_camp_level") {
+				let pathToCamp = GameGlobals.playerHelper.getPathToCamp();
+				let pathToCampLen = pathToCamp ? pathToCamp.length : "?";
+				entries.push("Distance: " + pathToCampLen + " sectors");
+			}
+
 			return entries.length > 0 ? entries.map(e => "<span class='action-effect-description-entry'>" + e + "</span>") : null;
 		},
 		

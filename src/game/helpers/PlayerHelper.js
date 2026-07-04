@@ -109,6 +109,11 @@ define([
 			return playerActionComponent.isBusy();
 		},
 
+		hasVision: function () {
+			let vision = this.playerStatsNodes.head.vision.value;
+			return vision > PlayerStatConstants.VISION_BASE;
+		},
+
 		isAwake: function () {
 			return this.playerStatsNodes.head.vision.isAwake;
 		},

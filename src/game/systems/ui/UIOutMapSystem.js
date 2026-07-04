@@ -297,11 +297,12 @@ define([
 
 			if (hasSector) {
 				let statusComponent = this.selectedSector.get(SectorStatusComponent);
-				var isScouted = statusComponent.scouted;
-				var isVisited = GameGlobals.sectorHelper.isVisited(this.selectedSector);
-				var sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
-				var features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
-				var header = isVisited ? TextConstants.getSectorName(isScouted, features) : "Sector";
+				let isScouted = statusComponent.scouted;
+				let isVisited = GameGlobals.sectorHelper.isVisited(this.selectedSector);
+				let sectorFeatures = this.selectedSector.get(SectorFeaturesComponent);
+				let hasVision = GameGlobals.playerHelper.hasVision();
+				let features = GameGlobals.sectorHelper.getTextFeatures(this.selectedSector);
+				let header = isVisited ? TextConstants.getSectorName(isScouted, features, hasVision) : "Sector";
 				$("#mainmap-sector-details-name").text(header);
 				$("#mainmap-sector-details-pos").text(position.getInGameFormat(false));
 				$("#mainmap-sector-details-district").text(this.getDistrictText(position.level, this.selectedSector));
@@ -585,7 +586,10 @@ define([
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let districtVO = levelComponent.districts[sectorFeatures.districtIndex];
 			let districtType = districtVO.type;
-			return (sectorFeatures.isEarlyZone() ? "central" : "outer") + " (" + sectorFeatures.districtIndex + " " + districtType + ")";
+			let districtTypeText = TextConstants.getDistrictTypeText(districtVO);
+			let text = districtTypeText;
+			if (GameConstants.isDebugVersion) text = sectorFeatures.districtIndex + " " + text;
+			return text;
 		},
 		
 		getPOIText: function (sector, isScouted) {

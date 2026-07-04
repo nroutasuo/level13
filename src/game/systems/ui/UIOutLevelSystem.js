@@ -268,7 +268,6 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-move-up", (isScouted && passagesComponent.passageUp != null) || passageUpBuilt);
 			GameGlobals.uiFunctions.toggle("#out-action-move-down", (isScouted && passagesComponent.passageDown != null) || passageDownBuilt);
 			GameGlobals.uiFunctions.toggle("#out-action-move-camp", hasCamp && !hasCampHere);
-			GameGlobals.uiFunctions.toggle("#out-action-move-camp-details", hasCamp && !hasCampHere);
 
 			GameGlobals.uiFunctions.toggle("#out-action-get-up", !isAwake);
 			GameGlobals.uiFunctions.toggle("#out-action-enter", isAwake && hasCampHere);
@@ -1048,8 +1047,7 @@ define([
 			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 
 			var sector = this.playerLocationNodes.head.entity;
-			var vision = this.playerPosNodes.head.entity.get(VisionComponent).value;
-			var hasVision = vision > PlayerStatConstants.VISION_BASE;
+			var hasVision = GameGlobals.playerHelper.hasVision();
 			var hasCampOnLevel = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
 			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
 			var isScouted = sectorStatus.scouted;
@@ -1074,8 +1072,6 @@ define([
 			let pathToCamp = GameGlobals.playerHelper.getPathToCamp();
 			let pathToCampLen = pathToCamp ? pathToCamp.length : "?";
 			let canMove = GameGlobals.gameState.isFeatureUnlocked("move");
-			
-			$("#out-action-move-camp-details").text("(" + pathToCampLen + " blocks)");
 			
 			let showDistanceIndicator = hasFirstCamp && canMove;
 			GameGlobals.uiFunctions.toggle($("#out-distance-indicator"), showDistanceIndicator);

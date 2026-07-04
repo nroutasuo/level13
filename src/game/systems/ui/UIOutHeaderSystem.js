@@ -14,6 +14,7 @@ define([
 	'game/constants/ItemConstants',
 	'game/constants/FightConstants',
 	'game/constants/PerkConstants',
+	'game/constants/TextConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/PlayerStatConstants',
 	'game/systems/SaveSystem',
@@ -38,7 +39,7 @@ define([
 	MathUtils,
 	UIList, 
 	GameGlobals, GlobalSignals, 
-	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, ExplorerConstants, ItemConstants, FightConstants, PerkConstants, UpgradeConstants, PlayerStatConstants,
+	ColorConstants, GameConstants, CampConstants, LevelConstants, UIConstants, ExplorerConstants, ItemConstants, FightConstants, PerkConstants, TextConstants, UpgradeConstants, PlayerStatConstants,
 	SaveSystem,
 	PlayerStatsNode, PlayerLocationNode, TribeUpgradesNode, DeityNode,
 	BagComponent,
@@ -1115,6 +1116,9 @@ define([
 			let playerPosition = this.playerStatsNodes.head.entity.get(PositionComponent);
 			let inCamp = playerPosition.inCamp;
 
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(playerPosition.level);
+			let levelComponent = levelEntity.get(LevelComponent);
+
 			this.elements.body.toggleClass("location-inside", inCamp);
 			this.elements.body.toggleClass("location-outside", !inCamp);
 
@@ -1126,7 +1130,11 @@ define([
 				let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
 				positionText = this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(showLevel, true);
 			}
+
 			$("#out-position-indicator").text("Position: " + positionText);
+
+			let districtVO = levelComponent.districts[featuresComponent.districtIndex];
+			$("#out-district-indicator").text(TextConstants.getDistrictTypeText(districtVO));
 			
 			this.updateLevelIcon();
 		},
