@@ -1,6 +1,6 @@
 define(function () {
 
-	var VOCache = {
+	let VOCache = {
 
 		caches: {},
 

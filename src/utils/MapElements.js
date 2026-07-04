@@ -1,4 +1,5 @@
 define([
+	'utils/VOCache',
 	'utils/MapUtils',
 	'utils/CanvasUtils',
 	'game/constants/ColorConstants',
@@ -7,12 +8,17 @@ define([
 	'game/constants/PositionConstants',
 	'game/constants/WorldConstants',
 ], function (
-	MapUtils, CanvasUtils, ColorConstants, MovementConstants, SectorConstants, PositionConstants, WorldConstants
+	VOCache, MapUtils, CanvasUtils, ColorConstants, MovementConstants, SectorConstants, PositionConstants, WorldConstants
 ) {
 	
 	let MapElements = {
 		
 		icons: [],
+
+		init: function () {
+			this.initIcons();
+			VOCache.create("MapElements-PolygonPointsByDistrict", 3);
+		},
 
 		initIcons: function () {
 			this.initIcon("beacon", "map-beacon");
@@ -304,10 +310,16 @@ define([
 			}
 		},
 
-		getPolygonPointsByDistrict: function (levelDimensions, levelHelper, districts, allSectors, gridSize) {
+		getPolygonPointsByDistrict: function (level, levelDimensions, levelHelper, districts, allSectors, gridSize) {
 			gridSize = gridSize || 1;
 			let betweenGridStep = gridSize / 2;
 			let padding = 4;
+
+			let cacheKey = level + "-" + gridSize;
+
+			let cachedMap = VOCache.getVO("MapElements-PolygonPointsByDistrict", cacheKey);
+
+			if (cachedMap) return cachedMap;
 
 			let pointsByDistrict = {}; // districtIndex -> shapes
 			let pointsByPosition = []; // array of arrays, each array has points belonging to the same position
@@ -571,6 +583,8 @@ define([
 				}
 			}
 
+			VOCache.addVO("MapElements-PolygonPointsByDistrict", cacheKey, shapesByDistrict);
+
 			return shapesByDistrict;
 		},
 
@@ -596,9 +610,17 @@ define([
 
 				if (hasSector) {
 					return levelHelper.getSector(sectorX, sectorY).districtIndex;
-				} else {
-					return levelHelper.getDistrictIndexByPosition({ sectorX: sectorX, sectorY: sectorY });
 				}
+				
+				let neighbours = levelHelper.getNeighbours(sectorX, sectorY);
+				if (neighbours.length == 1) {
+					return neighbours[0].districtIndex;
+				}
+
+				let nearestSector = levelHelper.getNearestSector(x, y, 3);
+				let stage = nearestSector ? nearestSector.stage : null;
+
+				return levelHelper.getDistrictIndexByPosition({ sectorX: sectorX, sectorY: sectorY }, stage);
 			};
 			let districtsByPosition = MapUtils.getGridPositionMap(settings, getDistrictByPosition);
 
@@ -659,7 +681,7 @@ define([
 					}
 				}
 			};
-			roundDistricts(3);
+			roundDistricts(2);
 
 			// reset positions too far from sectors
 			for (let x = levelDimensions.minX - padding; x <= levelDimensions.maxX + padding; x += gridSize) {
@@ -685,7 +707,7 @@ define([
 		
 	};
 
-	MapElements.initIcons();
+	MapElements.init();
 
 	return MapElements;
 });
