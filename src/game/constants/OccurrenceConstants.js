@@ -62,8 +62,14 @@ define(['ash', 'utils/MathUtils', 'game/constants/CampConstants', 'game/constant
 			let maximumTime = this.getMaximumTimeToNext(occurrenceType, isNew, numCamps);
 			
 			let randomFactor = Math.random();
-            let upgradeFactor = 1 - (upgradeLevel - 1) * 0.075;
+			let upgradeFactor = 1 - (upgradeLevel - 1) * 0.075;
 			let reputationFactor = 1 - MathUtils.map(reputation, 1, CampConstants.MAX_REPUTATION, 0, 1);
+
+			// event upgradeLevel is supposed to "improve" them so for negative ones should make them less frequent instead of more
+			let isNegative = OccurrenceConstants.isNegative(occurrenceType);
+			if (isNegative) {
+				upgradeFactor = 1 + (upgradeLevel - 1) * 0.075;
+			}
 			
 			let variationFactor = MathUtils.clamp(randomFactor * upgradeFactor * reputationFactor * campFactor, 0, 1);
 			let diff = maximumTime - minimumTime;

@@ -129,6 +129,10 @@
             "resource_metal": 2000,
             "resource_rope": 1200
         },
+        "build_in_shelter": {
+            "resource_metal": 500,
+            "resource_rope": 500
+        },
         "build_in_researchcenter": {
             "resource_metal": 3000,
             "resource_rubber": 300,
@@ -655,7 +659,7 @@
             "rumours": 37
         },
         "improve_building_campfire_2": {
-            "rumours": 1284
+            "rumours": 963
         },
         "improve_building_cementmill": {
             "evidence": 278
@@ -677,8 +681,8 @@
             "rumours": 1571
         },
         "improve_building_inn": {
-            "hope": 80,
-            "rumours": 1427
+            "hope": 60,
+            "rumours": 1070
         },
         "improve_building_inn_2": {
             "evidence": 578,
@@ -697,7 +701,7 @@
         },
         "improve_building_market2": {
             "evidence": 209,
-            "hope": 128
+            "hope": 96
         },
         "improve_building_market3": {
             "hope": 197,
@@ -958,7 +962,7 @@
             "hope": 202
         },
         "improve_worker_cleric_2": {
-            "rumours": 1213
+            "rumours": 910
         },
         "improve_worker_cleric_3": {
             "hope": 158,
@@ -1010,7 +1014,7 @@
         },
         "improve_worker_trapper_2": {
             "evidence": 292,
-            "hope": 107
+            "hope": 80
         },
         "improve_worker_trapper_3": {
             "hope": 134
@@ -1221,6 +1225,10 @@
         "unlock_building_stable": {
             "rumours": 242
         },
+        "unlock_building_shelter": {
+            "hope": 72,
+            "rumours": 535
+        },
         "unlock_building_tradingpost": {
             "evidence": 73
         },
@@ -1345,7 +1353,7 @@
             "evidence": 220
         },
         "unlock_worker_rope": {
-            "rumours": 8
+            "rumours": 7
         },
         "use_in_hospital": {
             "resource_food": 50,
@@ -1842,6 +1850,17 @@
             },
             "upgrades": {
                 "unlock_building_radio": true
+            }
+        },
+        "build_in_shelter": {
+            "improvements": {
+                "shelter": [
+                    -1,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_shelter": true
             }
         },
         "build_in_researchcenter": {
@@ -3500,6 +3519,13 @@
         "unlock_building_stable": {
             "upgrades": {
                 "unlock_building_market": true
+            }
+        },
+        "unlock_building_shelter": {
+            "deity": true,
+            "milestone": 4,
+            "upgrades": {
+                "improve_worker_cleric_2": true
             }
         },
         "unlock_building_tradingpost": {

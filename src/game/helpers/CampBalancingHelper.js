@@ -309,7 +309,9 @@ define([
 			let populationFullPeople = Math.floor(population);
 			let noHousing = populationFullPeople > housingCap;
 			if (noHousing) {
+				let hasShelter = improvementsComponent.getCount(improvementNames.shelter);
 				let overflowRatio = (populationFullPeople - housingCap) / populationFullPeople;
+				if (hasShelter) overflowRatio /= 2;
 				let housingPenaltyRatio = Math.round(overflowRatio * 20) / 20 / 2;
 				let housingPenalty = Math.ceil(result * housingPenaltyRatio * 100) / 100;
 				addValue(-housingPenalty, "Overcrowding", false, true, housingPenaltyRatio * 100);

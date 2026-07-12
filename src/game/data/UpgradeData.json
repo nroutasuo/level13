@@ -499,7 +499,9 @@
         "blueprintIsEarly": false,
         "blueprintPieces": 4,
         "campOrdinal": "10",
-        "effects": {},
+        "effects": {
+            "improvesOccurrence": "disease"
+        },
         "id": "unlock_building_aqueduct",
         "name": "Aqueducts"
     },
@@ -726,6 +728,7 @@
         "blueprintPieces": 3,
         "campOrdinal": "7",
         "effects": {
+            "improvesOccurrence": "accident",
             "unlocksWorker": "smith"
         },
         "id": "unlock_building_smithy",
@@ -760,6 +763,14 @@
         "effects": {},
         "id": "unlock_building_stable",
         "name": "Caravans"
+    },
+    "unlock_building_shelter": {
+        "campOrdinal": "9",
+        "effects": {
+            "improvesOccurrence": "refugee"
+        },
+        "id": "unlock_building_shelter",
+        "name": "Temporary Housing"
     },
     "unlock_building_tradingpost": {
         "blueprintCampOrdinal": 2,

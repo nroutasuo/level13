@@ -95,7 +95,10 @@
         "isUseable": false,
         "rarityLocale": 9,
         "rarityScavenge": 7,
-        "tags": [ "history", "community" ],
+        "tags": [
+            "history",
+            "community"
+        ],
         "type": "artefact"
     },
     "artefact_fall_1": {
@@ -108,7 +111,11 @@
         "rarityLocale": 9,
         "rarityScavenge": 3,
         "rarityTrade": -1,
-        "tags": [ "community", "new", "perishable" ],
+        "tags": [
+            "community",
+            "new",
+            "perishable"
+        ],
         "tradePrice": 0,
         "type": "artefact"
     },
@@ -122,7 +129,10 @@
         "rarityLocale": 7,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "tags": [ "maintenance", "electric" ],
+        "tags": [
+            "maintenance",
+            "electric"
+        ],
         "tradePrice": 0,
         "type": "artefact"
     },
@@ -137,7 +147,9 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
-        "tags": [ "history" ],
+        "tags": [
+            "history"
+        ],
         "type": "artefact"
     },
     "artefact_ground_2": {
@@ -151,7 +163,9 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
-        "tags": [ "nature" ],
+        "tags": [
+            "nature"
+        ],
         "type": "artefact"
     },
     "artefact_ground_3": {
@@ -165,7 +179,9 @@
         "rarityLocale": 5,
         "rarityScavenge": 8,
         "rarityTrade": 7,
-        "tags": [ "nature" ],
+        "tags": [
+            "nature"
+        ],
         "type": "artefact"
     },
     "artefact_ground_4": {

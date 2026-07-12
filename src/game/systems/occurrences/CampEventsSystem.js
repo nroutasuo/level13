@@ -847,14 +847,11 @@ define([
 			let upgradeLevel = GameGlobals.campHelper.getEventUpgradeLevel(event);
 			let campFactor = 1;
 
-			// event upgrades are supposed to "improve" them so for negative ones they should not make them more frequent
 			switch (event) {
 				case OccurrenceConstants.campOccurrenceTypes.disaster:
-					upgradeLevel = 1;
 					if (levelComponent.signatureDisaster) campFactor = 0.5;
 					break;
 				case OccurrenceConstants.campOccurrenceTypes.disease:
-					upgradeLevel = 1;
 					campFactor = 1 / levelComponent.diseaseFrequecyFactor;
 					break;
 				case OccurrenceConstants.campOccurrenceTypes.recruit:

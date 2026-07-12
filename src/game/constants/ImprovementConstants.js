@@ -137,6 +137,9 @@ define(['text/Text', 'game/constants/CampConstants'], function (Text, CampConsta
 			lights: {
 				canBeDismantled: true,
 			},
+			shelter: {
+				canBeDismantled: true
+			},
 			square: {
 				canBeDismantled: true,
 				improvementLevelsPerTechLevel: 1,

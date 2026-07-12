@@ -198,6 +198,8 @@
 			"researchcenter_name_default": "Research Center",
 			"robotFactory_description_default": "Enables production and storage of worker robots.",
 			"robotFactory_name_default": "Robot Factory",
+			"shelter_description_default": "Reduces reputation penalty from overcrowding",
+			"shelter_name_default": "Shelter",
 			"shrine_description_default": "A place to connect to the strange spirits.",
 			"shrine_name_default": "Shrine",
 			"smithy_description_default": "Workspace for toolsmiths.",

@@ -240,19 +240,20 @@ define(['ash',
 				case "build_in_inn": this.buildInn(param); break;
 				case "build_in_tradepost": this.buildTradingPost(param); break;
 				case "build_in_library": this.buildLibrary(param); break;
-				case "build_in_market": this.buildMarket(param); break;
-				case "build_in_fortification": this.buildFortification(param); break;
-				case "build_in_aqueduct": this.buildAqueduct(param); break;
-				case "build_in_stable": this.buildStable(param); break;
-				case "build_in_barracks": this.buildBarracks(param); break;
 				case "build_in_apothecary": this.buildApothecary(param); break;
-				case "build_in_smithy": this.buildSmithy(param); break;
+				case "build_in_aqueduct": this.buildAqueduct(param); break;
+				case "build_in_barracks": this.buildBarracks(param); break;
 				case "build_in_cementmill": this.buildCementMill(param); break;
-				case "build_in_robotFactory": this.buildRobotFactory(param); break;
-				case "build_in_radiotower": this.buildRadioTower(param); break;
-				case "build_in_lights": this.buildLights(param); break;
-				case "build_in_square": this.buildSquare(param); break;
+				case "build_in_fortification": this.buildFortification(param); break;
 				case "build_in_garden": this.buildGarden(param); break;
+				case "build_in_lights": this.buildLights(param); break;
+				case "build_in_market": this.buildMarket(param); break;
+				case "build_in_radiotower": this.buildRadioTower(param); break;
+				case "build_in_robotFactory": this.buildRobotFactory(param); break;
+				case "build_in_shelter": this.buildShelter(param); break;
+				case "build_in_smithy": this.buildSmithy(param); break;
+				case "build_in_square": this.buildSquare(param); break;
+				case "build_in_stable": this.buildStable(param); break;
 				case "build_in_shrine": this.buildShrine(param); break;
 				case "build_in_temple": this.buildTemple(param); break;
 				case "build_in_researchcenter": this.buildResearchCenter(param); break;
@@ -2269,6 +2270,11 @@ define(['ash',
 		buildBarracks: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
 			this.buildImprovement("build_in_barracks", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_barracks"), sector);
+		},
+
+		buildShelter: function (sectorPos) {
+			let sector = this.getActionSectorOrCurrent(sectorPos);
+			this.buildImprovement("build_in_shelter", GameGlobals.playerActionsHelper.getImprovementNameForAction("build_in_shelter"), sector);
 		},
 
 		buildSmithy: function (sectorPos) {
