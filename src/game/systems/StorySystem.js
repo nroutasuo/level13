@@ -43,8 +43,27 @@ define([
 			for (let i = 0; i < activeSegments.length; i++) {
 				let segmentVO = activeSegments[i];
 				let storyVO = StoryConstants.getStory(segmentVO.storyID);
-				if (storyVO) this.triggerEffects(storyVO.onStart, true);
+				this.initStoryState(storyVO, segmentVO);
+			}
+		},
+
+		initStoryState: function (storyVO, currentSegmentVO) {
+			if (!storyVO) return;
+
+			log.i("init story state: " + storyVO.storyID + ", current segment: " + currentSegmentVO.segmentID, this);
+
+			this.triggerEffects(storyVO.onStart, true);
+			
+			for (let i = 0; i < storyVO.segments.length; i++) {
+				let segmentVO = storyVO.segments[i];
+
 				this.triggerEffects(segmentVO.onStart, true);
+				
+				if (segmentVO.segmentID === currentSegmentVO.segmentID) {
+					break;
+				}
+
+				this.triggerEffects(segmentVO.onComplete, true);
 			}
 		},
 
