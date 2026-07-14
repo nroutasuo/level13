@@ -567,6 +567,9 @@ define(['ash',
 		enterCamp: function (isFainted) {
 			let playerPos = this.playerPositionNodes.head.position;
 			GameGlobals.playerHelper.moveTo(playerPos.level, playerPos.sectorX, playerPos.sectorY, true, "enter_camp", false);
+			
+			this.handlePerksOnEnterCamp();
+			
 			if (!isFainted) {
 				this.recordExcursionSurvived();
 			}
@@ -2503,21 +2506,8 @@ define(['ash',
 		},
 
 		handlePerksOnStartRest: function () {
-			let perksComponent = this.playerStatsNodes.head.perks;
-
-			// remove stamina bonus and queue hangover
-			let hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
-			if (hasStaminaPerk) {
-				perksComponent.removePerkById(PerkConstants.perkIds.staminaBonus);
-				this.playerStatsNodes.head.stamina.isPendingPenalty = true;
-			}
-
-			// clear other perks removed by resting
-			let perkIDs = [ PerkConstants.perkIds.cursed, PerkConstants.perkIds.stressed, PerkConstants.perkIds.accomplished, PerkConstants.perkIds.blessedShort ];
-			for (let i = 0; i < perkIDs.length; i++) {
-				let perkID = perkIDs[i];
-				if (perksComponent.hasPerk(perkID)) perksComponent.removePerkById(perkID);
-			}
+			this.clearTemporaryItemPerks();
+			this.clearTemporaryExplorationPerks();
 		},
 
 		handlePerksOnFinishRest: function () {
@@ -2525,6 +2515,28 @@ define(['ash',
 			if (this.playerStatsNodes.head.stamina.isPendingPenalty) {
 				GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.staminaBonusPenalty, PerkConstants.TIMER_DISABLED, 300);
 				this.playerStatsNodes.head.stamina.isPendingPenalty = false;
+			}
+		},
+
+		handlePerksOnEnterCamp: function () {
+			this.clearTemporaryExplorationPerks();
+		},
+
+		clearTemporaryItemPerks: function () {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
+			if (hasStaminaPerk) {
+				perksComponent.removePerkById(PerkConstants.perkIds.staminaBonus);
+				this.playerStatsNodes.head.stamina.isPendingPenalty = true;
+			}
+		},
+
+		clearTemporaryExplorationPerks: function () {
+			let perksComponent = this.playerStatsNodes.head.perks;
+			let perkIDs = [ PerkConstants.perkIds.cursed, PerkConstants.perkIds.stressed, PerkConstants.perkIds.accomplished, PerkConstants.perkIds.blessedShort ];
+			for (let i = 0; i < perkIDs.length; i++) {
+				let perkID = perkIDs[i];
+				if (perksComponent.hasPerk(perkID)) perksComponent.removePerkById(perkID);
 			}
 		},
 

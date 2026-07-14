@@ -95,25 +95,30 @@ define([
 			
 			if (!staminaComponent.stamina) staminaComponent.stamina = 0;
 			
-			var maxVal = staminaComponent.maxStamina;
-			var staminaPerSec = 0;
+			let perksComponent = node.perks;
+			let hasStaminaPerk = perksComponent.hasPerk(PerkConstants.perkIds.staminaBonus);
+			let maxVal = staminaComponent.maxStamina;
+			let staminaPerSec = 0;
 			staminaComponent.accSources = [];
-			var addAccumulation = function (sourceName, value) {
-				var staminaPerSecSource = Math.floor(value * GameConstants.gameSpeedCamp * 100) / 100;
+
+			let addAccumulation = function (sourceName, value) {
+				let staminaPerSecSource = Math.floor(value * GameConstants.gameSpeedCamp * 100) / 100;
 				staminaPerSec += staminaPerSecSource;
 				staminaComponent.accSources.push({ source: sourceName, amount: staminaPerSecSource });
 			};
-			if (node.position.inCamp) {
-				addAccumulation("Base", 2 * staminaComponent.health / 10 / 60);
-			}
-			if (isResting) {
-				var timeLeft = busyComponent.getBusyTimeLeft();
-				addAccumulation("Resting", Math.floor((maxVal - staminaComponent.stamina) / timeLeft * 4) / 4);
-			}
+			
 			if (isHealing) {
-				var timeLeft = busyComponent.getBusyTimeLeft();
-				addAccumulation("Treatment", Math.floor((maxVal - staminaComponent.stamina) / timeLeft * 4) / 4);
+				let timeLeft = busyComponent.getBusyTimeLeft();
+				addAccumulation("Treatment", (maxVal - staminaComponent.stamina) / timeLeft);
+			} else if (isResting) {
+				let timeLeft = busyComponent.getBusyTimeLeft();
+				addAccumulation("Resting", (maxVal - staminaComponent.stamina) / timeLeft);
+			} else if (hasStaminaPerk) {
+				addAccumulation("Base", 0);
+			} else if (node.position.inCamp) {
+				addAccumulation("Base", 0.1);
 			}
+			
 			staminaComponent.stamina += time * staminaPerSec;
 			staminaComponent.accumulation = staminaPerSec;
 			
