@@ -350,22 +350,25 @@ define([
 			return this.getSectorNeighboursList(sector).length == 1;
 		},
 
-		// todo use neighboursmap so we benefit from the same cache
-		getSectorNeighboursList: function (sector) {
-			if (!sector)
-				return null;
+		getSectorNeighboursListByPosition: function (level, sectorX, sectorY) {
 			let result = [];
-			var sectorPos = sector.get(PositionComponent);
-			var startingPos = sectorPos.getPosition();
+			let startingPos = new PositionVO(level, sectorX, sectorY);
 			for (let i in PositionConstants.getLevelDirections()) {
-				var direction = PositionConstants.getLevelDirections()[i];
-				var neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
-				var neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+				let direction = PositionConstants.getLevelDirections()[i];
+				let neighbourPos = PositionConstants.getPositionOnPath(startingPos, direction, 1);
+				let neighbour = this.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
 				if (neighbour) {
 					result.push(neighbour);
 				}
 			}
 			return result;
+		},
+
+		// todo use neighboursmap so we benefit from the same cache
+		getSectorNeighboursList: function (sector) {
+			if (!sector) return null;
+			let sectorPos = sector.get(PositionComponent);
+			return this.getSectorNeighboursListByPosition(sectorPos.level, sectorPos.sectorX, sectorPos.sectorY);
 		},
 
 		getSectorNeighboursMap: function (sector, neighbourWrapFunc) {

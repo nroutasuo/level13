@@ -285,7 +285,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			var sectorPos;
 			var sectorPadding = this.getSectorPadding(options.centered);
 			
-			this.drawGridOnCanvas(ctx, sectorSize, dimensions, options.centered);
+			// this.drawGridOnCanvas(ctx, sectorSize, dimensions, options.centered);
 
 			ctx.save();
 
@@ -735,18 +735,25 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 			let padding = sectorSize * paddingFactor;
 
 			let gridSize = 0.5;
+			
+			let getSectorData = function (sector) {
+				if (!sector) return null;
+				let features = sector.get(SectorFeaturesComponent);
+				let position = sector.get(PositionComponent).getPosition();
+				return { districtIndex: features.districtIndex, stage: WorldConstants.getStage(features.zone), position: position };
+			}
 
 			let allSectorsArray = [];
 			let visibleSectorsArray = [];
 			for (let key in allSectors) {
 				let s = allSectors[key];
 				if (!s) continue;
-				allSectorsArray.push({ position: s.get(PositionComponent).getPosition() });
+				allSectorsArray.push(getSectorData(s));
 			}
 			for (let key in visibleSectors) {
 				let s = visibleSectors[key];
 				if (!s) continue;
-				visibleSectorsArray.push({ position: s.get(PositionComponent).getPosition() });
+				visibleSectorsArray.push(getSectorData(s));
 			}
 
 			let levelDimensions = {
@@ -755,15 +762,10 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				minY: dimensions.mapMinY,
 				maxY: dimensions.mapMaxY,
 			};
-			let getSectorData = function (sector) {
-				if (!sector) return null;
-				let features = sector.get(SectorFeaturesComponent);
-				let position = sector.get(PositionComponent).getPosition();
-				return { districtIndex: features.districtIndex, stage: WorldConstants.getStage(features.zone), position: position };
-			}
 			let levelHelper = {
-				hasSector: (x, y) =>GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y) != null,
+				hasSector: (x, y) => GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y) != null,
 				getSector:(x, y) => getSectorData(GameGlobals.levelHelper.getSectorByPosition(mapPosition.level, x, y)),
+				getNeighbours: (x, y) => GameGlobals.levelHelper.getSectorNeighboursListByPosition(mapPosition.level, x, y),
 				getNearestSector: (x, y, maxDist, filter) => {
 					let innerFilter = s => (filter ? filter(getSectorData(s)) : true);
 					return getSectorData(GameGlobals.levelHelper.findNearestSector(mapPosition.level, x, y, maxDist, innerFilter));
@@ -772,18 +774,21 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				isPositionSurroundedBySectors: (x, y) => LevelConstants.isPositionSurroundedBySectors(visibleSectorsArray, x, y),
 			};
 
-			let pointsByDistrict = MapElements.getPolygonPointsByDistrict(levelDimensions, levelHelper, districts, allSectorsArray, gridSize);
+			let pointsByDistrict = MapElements.getPolygonPointsByDistrict(mapPosition.level, levelDimensions, levelHelper, districts, allSectorsArray, gridSize);
 
 			let lines = [];
 			lines.push({ fillStyle: ColorConstants.getColor(sunlit, "map_background_district") });
-			lines.push({ lineWidth: padding - 2, strokeStyle: ColorConstants.getColor(sunlit, "map_background_default") });
+			lines.push({ lineWidth: padding + 2, strokeStyle: ColorConstants.getColor(sunlit, "map_background_default") });
 			//lines.push({ lineWidth: 2, strokeStyle: ColorConstants.getColor(sunlit, "map_background_district") });
 
 			// polygons
 			for (let l = 0; l < lines.length; l++) {
 				for (let i = 0; i < districts.length; i++) {
-					let getSectorPos = (sectorX, sectorY) => this.getSectorPixelPos(dimensions, centered, sectorSize, sectorX, sectorY);
-					MapElements.drawDistrict(ctx, pointsByDistrict[i], lines[l], getSectorPos);
+					let isVisible = visibleSectorsArray.filter(s => s.districtIndex == i).length > 0;
+					if (isVisible) {
+						let getSectorPos = (sectorX, sectorY) => this.getSectorPixelPos(dimensions, centered, sectorSize, sectorX, sectorY);
+						MapElements.drawDistrict(ctx, pointsByDistrict[i], lines[l], getSectorPos);
+					}
 				}
 			}
 			
