@@ -96,6 +96,7 @@ define([
 		},
 		
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
 			let newBubbleNumber = Math.max(0,
 				(this.tabCounts.current.available.regular - this.tabCounts.lastShown.available.regular) +
 				(this.tabCounts.current.visible.regular - this.tabCounts.lastShown.visible.regular) +

@@ -188,6 +188,8 @@
 		},
 
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+			
 			let sector =  this.playerLocationNodes.head.entity;
 			let campComponent = sector.get(CampComponent);
 			if (!campComponent) return;

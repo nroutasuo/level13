@@ -106,6 +106,8 @@ define([
 		},
 		
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+			
 			let inCamp = GameGlobals.playerHelper.isInCamp();
 			let hasSeenTab = GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.explorers);
 

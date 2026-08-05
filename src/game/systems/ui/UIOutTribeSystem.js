@@ -142,6 +142,8 @@ define([
 		},
 
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+			
 			let bubbleNumber = this.campsWithAlert;
 			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.world)) bubbleNumber = "!";
 			GameGlobals.uiFunctions.updateBubble("#switch-world .bubble", this.bubbleNumber, bubbleNumber);

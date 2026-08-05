@@ -71,6 +71,8 @@ define([
 		},
 
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+			
 			var completedBlueprintsNum = Math.max(0, this.getCurrentCompletableCount());
 			var newBlueprintsNum = this.numCurrentNewBlueprints;
 			var upgradesNum = Math.max(0, this.numCurrentResearchableUpgrades - this.numShownResearchableUpgrades);

@@ -101,7 +101,9 @@ define([
 			this.updateBubble();
 		},
 
-		updateBubble: function () {
+		updateBubble: function () {			
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+			
 			let bubbleNumber = 0;
 			
 			let numUnseenWorldChanges = GameGlobals.worldHelper.getUnseenChangesLevels().length;

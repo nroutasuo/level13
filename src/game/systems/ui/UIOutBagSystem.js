@@ -174,6 +174,7 @@ define([
 
 		slowUpdate: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
 			let isActive = GameGlobals.gameState.uiStatus.currentTab === GameGlobals.uiFunctions.elementIDs.tabs.bag;
 			this.updateCrafting();
 			this.updateSeenItems(isActive);
@@ -210,6 +211,8 @@ define([
 		},
 
 		updateBubble: function () {
+			if (GameGlobals.uiFunctions.popupManager.hasOpenPopup()) return;
+
 			let isStatIncreaseAvailable = this.isStatIncreaseAvailable();
 			
 			let numCraftableUnlockedUnseen = this.getMatchingUnseenItemCount(this.getCraftableItemDefinitionsList(), this.isCraftableUnlocked, GameGlobals.gameState.uiBagStatus.itemsCraftableUnlockedSeen);
