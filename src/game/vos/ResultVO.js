@@ -43,6 +43,7 @@ define(['ash', 'game/constants/PerkConstants', 'game/vos/ResourcesVO'], function
 		foundStashVO: null,
 		gainedResourcesFromExplorers: null, // subset of gainedResources
 		gainedItemsFromExplorers: [], // subset of gainedItems
+		progressbar: {}, // current, max, label
 		
 		// inventory management selection
 		// gained resources and items must be manually picked up; status saved here; this is the final change to the player bag

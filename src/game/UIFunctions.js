@@ -1536,6 +1536,59 @@ define(['ash',
 				GameGlobals.uiFunctions.toggle($element, bubbleNumber !== 0);
 			},
 
+			updateProgressBar: function (element) {
+				let $progressbar = typeof (element) === "string" ? $(element) : element;
+				
+				let id = $progressbar.attr("id");
+			
+				// bar
+				let isAnimated = $progressbar.data("animated") === true;
+				let percent = ($progressbar.data('progress-percent') / 100);
+
+				let progressWrapWidth = $progressbar.width();
+				let progressWidth = percent * progressWrapWidth;
+
+				let animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
+
+				if (!isAnimated) {
+					let percentShown = $progressbar.data("progress-percent-shown");
+					if (!percentShown && percentShown !== 0) percentShown = -1;
+
+					let widthShown = $progressbar.data("progress-width-shown");
+					if (!widthShown && widthShown !== 0) widthShown = -1;
+
+					if (Math.abs(percent - percentShown) > 0.0005 || Math.abs(progressWrapWidth - widthShown) > 5) {
+						$progressbar.data("animated", true);
+						$progressbar.children(".progress-bar").stop().animate({
+							left: progressWidth
+						}, animationLength, function () {
+							$(this).parent().data("animated", false);
+							$(this).parent().data("progress-percent-shown", percent);
+							$(this).parent().data("progress-width-shown", progressWrapWidth);
+							$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
+						});
+					}
+				} else {
+					$progressbar.data("animation-counter", 0);
+				}
+				
+				// change indicator
+				var now = new Date().getTime();
+				var changeTime = $progressbar.data('change-time');
+				var changeAnimTime = $progressbar.data('change-anim-time');
+				if (!changeAnimTime || changeTime > changeAnimTime) {
+					var changePercent = $progressbar.data('change-percent');
+					$progressbar.children(".progress-bar-change").finish().animate({
+						width: changePercent + "%",
+						left: progressWidth,
+						opacity: 1,
+					}, animationLength).delay(100).animate({
+						opacity: 0
+					}, 300);
+					$progressbar.data('change-anim-time', now);
+				}
+			},
+
 			registerLongTap: function (element, callback) {
 				var $element = typeof (element) === "string" ? $(element) : element;
 				var minTime = 1000;

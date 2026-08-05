@@ -499,6 +499,7 @@ define([
 				let itemTags = this.getSectorItemTags();
 				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion, tags: itemTags };
 	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
+				rewards.progressbar = { current: progressAfter, max: 100, label: "investigate progress" };
 				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
 			}
 			
@@ -1224,6 +1225,14 @@ define([
 				baghtml += "</ul>";
 				baghtml += "</div>"
 				div += baghtml;
+			}
+
+			if (resultVO.progressbar && (resultVO.progressbar.label || resultVO.progressbar.current)) {
+				let label = "";
+				if (resultVO.progressbar.label) 
+					label = "<span class='progress-label progress'>" + Text.t(resultVO.progressbar.label, { current: resultVO.progressbar.current, max: resultVO.progressbar.max }) + "</span>";
+				div += "<div id='result-popup-bar' data-progress-percent='" + resultVO.progressbar.current + "' class='progress-wrap progress centered'><div class='progress-bar progress'></div>" + label + "</div>";
+				hasGainedStuff = true;
 			}
 
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedExplorers.length > 0;

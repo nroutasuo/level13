@@ -264,48 +264,12 @@ define([
 
 		updateProgressbars: function () {
 			for (let i = 0; i < this.elementsVisibleProgressbars.length; i++) {
-				var $progressbar = $(this.elementsVisibleProgressbars[i]);
-				var id = $progressbar.attr("id");
-				
-				// bar
-				var isAnimated = $progressbar.data("animated") === true;
-				if (!isAnimated) {
-					var percent = ($progressbar.data('progress-percent') / 100);
-					var percentShown = $progressbar.data("progress-percent-shown");
-					if (!percentShown && percentShown !== 0) percentShown = -1;
-					if (Math.abs(percent - percentShown) > 0.0005) {
-						$progressbar.data("animated", true);
-						var animationLength = $progressbar.data("animation-counter") > 0 ? ($progressbar.data('animation-length')) : 0;
-						var progressWrapWidth = $progressbar.width();
-						var progressWidth = percent * progressWrapWidth;
-						$progressbar.children(".progress-bar").stop().animate({
-							left: progressWidth
-						}, animationLength, function () {
-							$(this).parent().data("animated", false);
-							$(this).parent().data("progress-percent-shown", percent);
-							$(this).parent().data("animation-counter", $progressbar.parent().data("animation-counter") + 1);
-						});
-					}
-				} else {
-					$progressbar.data("animation-counter", 0);
-				}
-				
-				// change indicator
-				var now = new Date().getTime();
-				var changeTime = $progressbar.data('change-time');
-				var changeAnimTime = $progressbar.data('change-anim-time');
-				if (!changeAnimTime || changeTime > changeAnimTime) {
-					var changePercent = $progressbar.data('change-percent');
-					$progressbar.children(".progress-bar-change").finish().animate({
-						width: changePercent + "%",
-						left: progressWidth,
-						opacity: 1,
-					}, animationLength).delay(100).animate({
-						opacity: 0
-					}, 300);
-					$progressbar.data('change-anim-time', now);
-				}
+				this.updateProgressBar(this.elementsVisibleProgressbars[i]);
 			}
+		},
+
+		updateProgressBar: function ($progressbar) {
+			GameGlobals.uiFunctions.updateProgressBar($progressbar);
 		},
 
 		updateInfoCallouts: function () {
