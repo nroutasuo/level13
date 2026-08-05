@@ -476,12 +476,12 @@ define([
 			switch (baseActionID) {
 				case "scavenge":
 					return "surprised by " + Text.addArticle(enemyNoun) + " while scavenging";
-				case "investigate":
-					return "surprised by " + Text.addArticle(enemyNoun) + " while investigating";
 				case "scout_locale_u":
 					return "surprised by " + Text.addArticle(enemyNoun) + " while scouting";
 				case "scout_locale_i":
 					return "attacked while scouting";
+				case "investigate_locale":
+					return "surprised by " + Text.addArticle(enemyNoun) + " while investigating";
 				case "clear_workshop":
 					 var enemyActiveV = TextConstants.getEnemyActiveVerb([ enemy ]);
 					return "workshop " + enemyActiveV + " " + Text.pluralify(enemyNoun);
@@ -522,7 +522,7 @@ define([
 			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(context);
 			switch (baseActionID) {
 				case "scavenge":
-				case "investigate":
+				case "investigate_locale":
 				case "scout":
 				case "use_spring":
 					return "Intruder defeated.";

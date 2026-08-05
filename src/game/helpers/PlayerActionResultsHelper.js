@@ -122,9 +122,10 @@ define([
 		},
 
 		getResultVOByAction: function (action, hasCustomReward) {
-			var baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
+			let localeVO = GameGlobals.playerActionsHelper.getLocaleForScoutAction(this.playerLocationNodes.head.entity, action);
 
-			var resultVO;
+			let resultVO;
 			switch (baseActionID) {
 				case "scavenge":
 					resultVO = this.getScavengeRewards();
@@ -137,11 +138,10 @@ define([
 					break;
 				case "scout_locale_i":
 				case "scout_locale_u":
-					var localeVO = GameGlobals.playerActionsHelper.getLocaleForScoutAction(this.playerLocationNodes.head.entity, action);
 					resultVO = this.getScoutLocaleRewards(localeVO);
 					break;
-				case "investigate":
-					resultVO = this.getInvestigateRewards();
+				case "investigate_locale":
+					resultVO = this.getInvestigateLocaleRewards(localeVO);
 					break;
 				case "examine":
 					resultVO = this.getExamineRewards();
@@ -209,8 +209,6 @@ define([
 
 		getDisassembleItemRewards: function (itemID) {
 			let rewards = new ResultVO("dissassemble_item");
-
-			debugger
 
 			let craftAction = "craft_" + itemID;
 			let craftCosts = GameGlobals.playerActionsHelper.getCosts(craftAction);
@@ -339,34 +337,6 @@ define([
 			return rewards;
 		},
 
-		getInvestigateRewards: function () {
-			let rewards = new ResultVO("investigate");
-
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			
-			let efficiency = this.getCurrentScavengeEfficiency();
-			let weightedInvestigateAdded = Math.min(1, efficiency);
-			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
-			let isCompletion = investigatePercentAfter >= 100;
-			
-			let playerPos = this.playerLocationNodes.head.position;
-			let campOrdinal = GameGlobals.worldState.getCampOrdinal(playerPos.level);
-			
-			log.i("getInvestigateRewards | isCompletion: " + isCompletion, this);
-			
-			if (isCompletion) {
-				let possibleCompletionRewards = ItemConstants.getAvailableInsightCaches(campOrdinal);
-	 			rewards.gainedItems = [ this.getSpecificRewardItem(1, possibleCompletionRewards) ];
-			} else {
-				let itemTags = this.getSectorItemTags();
-				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion, tags: itemTags };
-	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
-				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
-			}
-			
-			return rewards;
-		},
-
 		getExamineRewards: function () {
 			let rewards = new ResultVO("examine");
 			
@@ -423,7 +393,7 @@ define([
 				rewards.gainedHope = 2;
 			} else if (localeVO.type == localeTypes.tradingpartner) {
 				rewards.gainedHope = 1;
-			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spacefactory) {
+			} else if (localeVO.type == localeTypes.depot || localeVO.type == localeTypes.spaceFactory) {
 				rewards.gainedEvidence = evidenceAmount;
 			} else if (localeVO.type == localeTypes.shortcut) {
 				// (none)
@@ -452,7 +422,8 @@ define([
 				case localeTypes.shortcut:
 					hasMaterialRewards = false;
 				case localeTypes.depot:
-				case localeTypes.spacefactory:
+				case localeTypes.spaceFactory:
+				case localeTypes.isolationCenter:
 					hasMiscRewards = false;
 					break;
 			}
@@ -505,6 +476,32 @@ define([
 			// stashes (always) (make sure this is last / after gainedItems is set by anything else)
 			this.addStashes(rewards, sectorFeatures.stashes, sectorStatus.stashesFound, localeVO.type);
 
+			return rewards;
+		},
+
+		getInvestigateLocaleRewards: function (localeVO) {
+			let rewards = new ResultVO("investigate_locale");
+
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
+			
+			let progressAdded = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
+			let progressAfter = sectorStatus.getInvestigatedPercent(localeVO.index, progressAdded);
+			let isCompletion = progressAfter >= 100;
+			
+			let playerPos = this.playerLocationNodes.head.position;
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(playerPos.level);
+			
+			if (isCompletion) {
+				let tags = localeVO.getItemTags();
+				let possibleCompletionRewards = ItemConstants.getAvailableInsightCaches(campOrdinal, tags);
+	 			rewards.gainedItems = [ this.getSpecificRewardItem(1, possibleCompletionRewards) ];
+			} else {
+				let itemTags = this.getSectorItemTags();
+				let itemOptions = { rarityKey: "investigateRarity", allowNextCampOrdinal: isCompletion, tags: itemTags };
+	 			rewards.gainedItems = this.getRewardItems(0.25, 0, [], itemOptions);
+				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
+			}
+			
 			return rewards;
 		},
 
@@ -1526,6 +1523,11 @@ define([
             let scavengedPercent = sectorStatus.getScavengedPercent();
             let scavengedFactor = MathUtils.map(scavengedPercent, 0, 100, 0, 1);
             return MathUtils.clamp(scavengedFactor, 0, 1);
+		},
+
+		getCurrentExplorationActionWeightedProgress: function () {
+			// progress for weighted actions that are affected by scavenge efficiency, never more than 1 per action
+			return MathUtils.clamp(this.getCurrentScavengeEfficiency(), 0, 1);
 		},
 
 		// probabilityFactor (action-specific): base chance to get any resources at all (0-1)

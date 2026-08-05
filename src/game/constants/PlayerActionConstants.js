@@ -201,10 +201,10 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		isExplorationAction: function (action) {
 			switch (action) {
 				case 'scavenge':
-				case 'investigate':
 				case 'use_spring':
 				case 'scout_locale_i':
 				case 'scout_locale_u':
+				case 'investigate_locale':
 				case 'clear_workshop':
 				case 'clear_waste_t':
 				case 'clear_waste_r':
@@ -226,6 +226,7 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (action.indexOf("improve_out") >= 0) return "improve_out";
 			if (action.indexOf("scout_locale_i") >= 0) return "scout_locale_i";
 			if (action.indexOf("scout_locale_u") >= 0) return "scout_locale_u";
+			if (action.indexOf("investigate_locale") >= 0) return "investigate_locale";
 			if (action.indexOf("craft_") >= 0) return "craft";
 			if (action.indexOf("discard_") >= 0) return "discard";
 			if (action.indexOf("unequip_") >= 0) return "unequip";

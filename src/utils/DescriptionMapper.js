@@ -84,6 +84,9 @@ define(function () {
 				// test for simple value
 				if (propsValue === value) continue;
 
+				// if not defined in props, match false
+				if (propsValue === undefined && value === false) continue;
+
 				// test for wildcard
 				if (value == this.WILDCARD) continue;
 

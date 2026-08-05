@@ -1,5 +1,5 @@
-define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'utils/MathUtils', 'game/constants/PlayerActionConstants', 'game/constants/SectorConstants', 'game/vos/ItemVO'],
-function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants, ItemVO) {
+define(['ash', 'json!game/data/ItemData.json', 'text/Text', 'utils/ArrayUtils', 'utils/MathUtils', 'game/constants/PlayerActionConstants', 'game/constants/SectorConstants', 'game/vos/ItemVO'],
+function (Ash, ItemData, Text, ArrayUtils, MathUtils, PlayerActionConstants, SectorConstants, ItemVO) {
 
 	let ItemConstants = {
 		
@@ -454,7 +454,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants
 			if (item.id.startsWith("cache_metal")) return "Disassemble";
 			if (item.id.startsWith("cache_evidence")) return "Read";
 			if (item.id.startsWith("cache_rumours")) return "Read";
-			if (item.id.startsWith("cache_insight")) return "Read";
+			if (item.id.startsWith("cache_insight")) return "Inspect";
 			if (item.id.startsWith("cache_hope")) return "Donate";
 			if (item.id.startsWith("cache_robots")) return "Repair";
 			if (item.id.startsWith("robot")) return "Repair";
@@ -523,6 +523,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants
 		
 		getBaseItemID: function (itemID) {
 			if (itemID.startsWith("document_")) return "document";
+			if (itemID.startsWith("cache_insight")) return "cache_insight";
 
 			let id = itemID.replaceAll("_exodus", "").replaceAll("_official", "");
 			let parts = id.split("_");
@@ -900,15 +901,15 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants
 			return this.itemDefinitions.shoes[Math.floor(3 * Math.random())];
 		},
 		
-		getAvailableMetalCaches: function (campOrdinal) {
-			return this.getAvailableCaches("cache_metal", campOrdinal);
+		getAvailableMetalCaches: function (campOrdinal, tags) {
+			return this.getAvailableCaches("cache_metal", campOrdinal, tags);
 		},
 		
-		getAvailableInsightCaches: function (campOrdinal) {
-			return this.getAvailableCaches("cache_insight", campOrdinal);
+		getAvailableInsightCaches: function (campOrdinal, tags) {
+			return this.getAvailableCaches("cache_insight", campOrdinal, tags);
 		},
 		
-		getAvailableCaches: function (cacheType, campOrdinal) {
+		getAvailableCaches: function (cacheType, campOrdinal, tags) {
 			let result = [];
 			for (let type in this.itemDefinitions ) {
 				for (let i in this.itemDefinitions[type]) {
@@ -916,6 +917,7 @@ function (Ash, ItemData, Text, MathUtils, PlayerActionConstants, SectorConstants
 					if (item.id.indexOf(cacheType) == 0) {
 						if (item.requiredCampOrdinal && item.requiredCampOrdinal > campOrdinal) continue;
 						if (item.maximumCampOrdinal && item.maximumCampOrdinal < campOrdinal) continue;
+						if (tags && !ArrayUtils.containsAny(tags, item.tags)) continue;
 						result.push(item.id);
 					}
 				}

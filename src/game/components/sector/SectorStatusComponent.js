@@ -5,26 +5,24 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		
 		NUM_SCAVENGES_PER_SECTOR: 30,
 		NUM_HEAP_SCAVENGES_PER_SECTOR: 5,
-		NUM_INVESTIGATES_PER_SECTOR: 3,
+		NUM_INVESTIGATES_PER_LOCALE: 3,
 
 		discoveredResources: [],
 		discoveredItems: [],
 		visited: false,
 		scavenged: false,
-		investigated: false,
 		scouted: false,
 		revealedByMap: false,
 		pendingRevealByMap: false,
-		localesScouted: [],
+		localesScouted: [], // locale index -> true
+		localesInvestigated: [], // locale index -> float (weighted times investigated)
 		wasteClearedDirections: [],
 		blockerClearedDirections: [], // debris, explosives
 		gapBridgedDirections: [],
 		weightedNumScavenges: 0,
 		weightedNumHeapScavenges: 0,
-		weightedNumInvestigates: 0,
 		stashesFound: [], // list of indices
 		graffiti: null,
-		isFallbackInvestigateSector: false,
 		
 		scoutedTimestamp: 0, // seconds (DEPRECATED - See LevelStatusSystem)
 
@@ -38,20 +36,18 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.discoveredItems = [];
 			this.visited = false;
 			this.scavenged = false;
-			this.investigated = false;
 			this.scouted = false;
 			this.revealedByMap = false;
 			this.pendingRevealByMap = false;
 			this.localesScouted = [];
+			this.localesInvestigated = [];
 			this.wasteClearedDirections = [];
 			this.blockerClearedDirections = [];
 			this.gapBridgedDirections = [];
 			this.weightedNumScavenges = 0;
 			this.weightedNumHeapScavenges = 0;
-			this.weightedNumInvestigates = 0;
 			this.stashesFound = [];
 			this.graffiti = null;
-			this.isFallbackInvestigateSector = false;
 
 			this.currentCharacters = [];
 			
@@ -92,10 +88,15 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			addition = addition || 0;
 			return Math.min((this.weightedNumScavenges + addition) / this.NUM_SCAVENGES_PER_SECTOR, 1) * 100;
 		},
-		
-		getInvestigatedPercent: function (addition) {
+
+		getInvestigatedPercent: function (localei, addition) {
 			addition = addition || 0;
-			return Math.min((this.weightedNumInvestigates + addition) / this.NUM_INVESTIGATES_PER_SECTOR, 1) * 100;
+			let value = this.localesInvestigated[localei] || 0;
+			return Math.min((value + addition) / this.NUM_INVESTIGATES_PER_LOCALE, 1) * 100;
+		},
+
+		isLocaleInvestigated: function (localei, addition) {
+			return this.getInvestigatedPercent(localei, addition) >= 100;
 		},
 		
 		getHeapScavengedPercent: function (addition) {
@@ -175,8 +176,6 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.v = this.visited ? 1 : 0;
 			if (this.scavenged && !this.weightedNumScavenges)
 				copy.sc = this.scavenged ? 1 : 0;
-			if (this.investigated)
-				copy.i = this.investigated ? 1 : 0;
 			if (this.scouted) {
 				copy.s = this.scouted ? 1 : 0;
 				copy.st = this.scoutedTimestamp ? Math.round(this.scoutedTimestamp) : 1;
@@ -189,6 +188,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			}
 			if (this.localesScouted.length > 0)
 				copy.lS = this.localesScouted;
+			if (this.localesInvestigated.length > 0)
+				copy.lI = this.localesInvestigated;
 			if (this.wasteClearedDirections && this.wasteClearedDirections.length > 0)
 				copy.wd = this.wasteClearedDirections;
 			if (this.blockerClearedDirections && this.blockerClearedDirections.length > 0)
@@ -199,14 +200,10 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.sw = Math.round(this.weightedNumScavenges * 100)/100;
 			if (this.weightedNumHeapScavenges)
 				copy.shw = Math.round(this.weightedNumHeapScavenges * 1000)/1000;
-			if (this.weightedNumInvestigates)
-				copy.iw = Math.round(this.weightedNumInvestigates * 1000)/1000;
 			if (this.stashesFound && this.stashesFound.length > 0)
 				copy.sf = this.stashesFound;
 			if (this.graffiti)
 				copy.g = this.graffiti;
-			if (this.isFallbackInvestigateSector)
-				copy.fis = true;
 			if (this.currentCharacters.length > 0)
 				copy.char = this.currentCharacters;
 			
@@ -218,24 +215,30 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.discoveredItems = componentValues.dI ? componentValues.dI : [];
 			this.visited = typeof componentValues.v !== "undefined" ? componentValues.v : false;
 			this.scavenged = typeof componentValues.sc !== "undefined" ? componentValues.sc : false;
-			this.investigated = typeof componentValues.i !== "undefined" ? componentValues.i : false;
 			this.scouted = typeof componentValues.s !== "undefined" ? componentValues.s : false;
 			this.revealedByMap = typeof componentValues.rm !== "undefined" ? componentValues.rm : false;
 			this.pendingRevealByMap = typeof componentValues.prm !== "undefined" ? componentValues.prm : false;
 			this.scoutedTimestamp = typeof componentValues.st !== "undefined" ? componentValues.st : this.scouted ? 1 : null;
-			if (componentValues.lS && componentValues.lS.length > 0)
+			
+			if (componentValues.lS && componentValues.lS.length > 0) {
 				this.localesScouted = componentValues.lS;
-			else
+			} else {
 				this.localesScouted = [];
+			}
+
+			if (componentValues.lI && componentValues.lI.length > 0) {
+				this.localesInvestigated = componentValues.lI;
+			} else {
+				this.localesInvestigated = [];
+			}
+
 			this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
 			this.blockerClearedDirections = componentValues.dd ? componentValues.dd : [];
 			this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
 			this.weightedNumHeapScavenges = componentValues.shw ? componentValues.shw : 0;
-			this.weightedNumInvestigates = componentValues.iw ? componentValues.iw : 0;
 			this.stashesFound = componentValues.sf ? componentValues.sf : [];
 			this.graffiti = componentValues.g ? componentValues.g : null;
-			this.isFallbackInvestigateSector = componentValues.fis ? true : false;
 			this.currentCharacters = componentValues.char ? componentValues.char : [];
 
 			if (this.scouted) {

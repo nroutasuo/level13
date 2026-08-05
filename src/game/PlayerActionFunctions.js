@@ -288,11 +288,11 @@ define(['ash',
 				case "enter_camp": this.enterCamp(false); break;
 				case "scavenge": this.scavenge(param); break;
 				case "scavenge_heap": this.scavengeHeap(param); break;
-				case "investigate": this.investigate(param); break;
 				case "examine": this.examine(param); break;
 				case "scout": this.scout(param); break;
 				case "scout_locale_i": this.scoutLocale(param); break;
 				case "scout_locale_u": this.scoutLocale(param); break;
+				case "investigate_locale": this.investigateLocale(param); break;
 				case "bridge_gap": this.bridgeGap(param); break;
 				case "clear_debris": this.clearDebris(param); break;
 				case "clear_explosives": this.clearExplosives(param); break;
@@ -587,7 +587,6 @@ define(['ash',
 
 		scavenge: function () {
 			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			let isFirst = !GameGlobals.gameState.unlockedFeatures.scavenge;
 			
 			GameGlobals.playerActionFunctions.unlockFeature("scavenge");
@@ -607,7 +606,7 @@ define(['ash',
 				GameGlobals.gameState.stats.numTimesScavenged++;
 				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
 				sectorStatus.scavenged = true;
-				sectorStatus.weightedNumScavenges += Math.min(1, efficiency);
+				sectorStatus.weightedNumScavenges += GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
 				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
 				let warningThresholdHighScavengedPercent = 75;
 				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
@@ -635,9 +634,8 @@ define(['ash',
 			let sector = this.playerLocationNodes.head.entity;
 			let sectorStatus = sector.get(SectorStatusComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
 			
-			let weightedProgress = Math.min(1, efficiency);
+			let weightedProgress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
 			let scavengedPercentBefore = sectorStatus.getHeapScavengedPercent();
 			let scavengedPercentAfter = sectorStatus.getHeapScavengedPercent(weightedProgress);
 
@@ -688,54 +686,6 @@ define(['ash',
 				logMsg = "Went scavenging. ";
 			}
 			return logMsg;
-		},
-
-		investigate: function () {
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			let efficiency = GameGlobals.playerActionResultsHelper.getCurrentScavengeEfficiency();
-			
-			let isFirst = false;
-			if (!GameGlobals.gameState.usedFeatures.investigate) {
-				GameGlobals.playerActionFunctions.useFeature("investigate");
-				isFirst = true;
-			}
-			
-			let investigatedPercentBefore = sectorStatus.getInvestigatedPercent();
-			
-			if (investigatedPercentBefore >= 100) return;
-			
-			let weightedInvestigateAdded = Math.min(1, efficiency);
-			let investigatePercentAfter = sectorStatus.getInvestigatedPercent(weightedInvestigateAdded);
-			let isCompletion = investigatePercentAfter >= 100;
-
-			let logMsg = "Investigated the sector. ";
-
-			let logMsgSuccess = logMsg;
-			let logMsgFlee = logMsg + "Fled empty-handed.";
-			let logMsgDefeat = logMsg + "Got into a fight and was defeated.";
-			let sys = this;
-			
-			if (isCompletion) {
-				logMsgSuccess += " Investigation completed. ";
-			} else {
-				logMsgSuccess += " Investigation progress: " + Math.round(investigatePercentAfter) + "%";
-			}
-			
-			let successCallback = function () {
-				sectorStatus.investigated = true;
-				sectorStatus.weightedNumInvestigates += weightedInvestigateAdded;
-				let investigatedPercentAfter = sectorStatus.getInvestigatedPercent();
-			};
-			
-			let messages = {
-				id: LogConstants.MSG_ID_INVESTIGATE,
-				msgSuccess: logMsgSuccess,
-				msgFlee: logMsgFlee,
-				msgDefeat: logMsgDefeat,
-				addToLog: isFirst,
-			};
-			
-			this.handleOutActionResults("investigate", messages, true, false, successCallback);
 		},
 
 		examine: function (sectorPos) {
@@ -877,10 +827,10 @@ define(['ash',
 				popupMsg += "<br/>There is " + Text.addArticle(heapDisplayName) + " which can be scavenged for " + featuresComponent.heapResource + ".";
 			}
 			
-			if (GameGlobals.sectorHelper.canBeInvestigated(sector, true)) {
+			if (GameGlobals.sectorHelper.hasInvestigateableLocale(sector, true)) {
 				showResultPopup = true;
-				popupMsg += "<br/>Something happened here just before the Fall. This sector can be <span class='hl-functionality'>investigated</span>.";
-				logMsg += "Found a sector that can be investigated.";
+				popupMsg += "<br/>Something happened here just before the Fall. There is a locale here that can be <span class='hl-functionality'>investigated</span>.";
+				logMsg += "Found a locale that can be investigated.";
 			}
 			
 			let successCallback = function () {
@@ -919,7 +869,7 @@ define(['ash',
 			let localeVO = sectorLocalesComponent.locales[i];
 
 			if (!localeVO) {
-				log.w("no such locale " + i + "/" + sectorLocalesComponent.locales.length);
+				log.e("scoutLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length);
 				return;
 			}
 			
@@ -928,7 +878,7 @@ define(['ash',
 			let localeType = localeVO.type;
 
 			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
-			let localeNameShort = localeName.split(" ")[localeName.split(" ").length - 1];;
+			let localeNameShort = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent, true);
 
 			let customRewardTexts = [];
 			
@@ -970,35 +920,117 @@ define(['ash',
 			}
 
 			let hasCustomReward = customRewardTexts.length > 0;
-
-			let introDialogueID = this.getLocaleIntroDialogueID(localeVO);
-			let obstacleDialogueID = this.getScoutLocaleObstacleDialogueID(localeVO);
-			let fightChance = GameGlobals.fightHelper.getRandomEncounterProbability(action);
 			let rewardVO = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
 
-			let rewardTextKey = this.getLocaleRewardTextKey(localeVO, rewardVO);
-			let outroDialogueID = this.getLocaleOutroDialogueID(localeVO);
-			let outroLogKey = this.getLocaleLogKey(localeVO, localeName, isScouted);
+			let sequenceOptions = {
+				introDialogueID: this.getLocaleIntroDialogueID(localeVO),
+				obstacleDialogueID: this.getScoutLocaleObstacleDialogueID(localeVO),
+				fightChance: GameGlobals.fightHelper.getRandomEncounterProbability(action),
+				rewardTextKey: this.getLocaleRewardTextKey(localeVO, rewardVO),
+				customRewardTexts: customRewardTexts,
+				rewardVO: rewardVO,
+				outroDialogueID: this.getLocaleOutroDialogueID(localeVO),
+				outroLogKey: this.getLocaleLogKey(localeVO, localeName, isScouted),
+				successCallback: successCallback
+			};
 
-			let sequenceSteps = [];
+			let sequenceSteps = this.buildLocaleSequence(sector, localeVO, action, sequenceOptions);
+
+			this.startSequence(sequenceSteps, localeName);
+		},
+
+		investigateLocale: function (i) {
+			if (!this.playerLocationNodes.head) return;
+			
+			let sector = this.playerLocationNodes.head.entity;
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
+			let sectorFeaturesComponent = sector.get(SectorFeaturesComponent);
+			
+			let localeVO = sectorLocalesComponent.locales[i];
+
+			if (!localeVO) {
+				log.e("investigateLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length);
+				return;
+			}
+
+			let action = "investigate_locale_" + i;
+			let hasCustomReward = false;
+			
+			let rewardVO = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
+
+			let progress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
+			let isFirst = sectorStatus.getInvestigatedPercent(i) <= 0;
+			let isCompletion = sectorStatus.isLocaleInvestigated(i, progress);
+
+			let customRewardTexts = [];
+			if (isCompletion) customRewardTexts.push("Investigation complete.");
+
+			let successCallback = function (cb) {
+				GameGlobals.playerActionFunctions.useFeature("investigate");
+				GameGlobals.playerActionFunctions.setLocaleInvestigated(sector, i);	
+				GameGlobals.playerActionFunctions.save();
+				cb();
+				GlobalSignals.localeInvestigatedSignal.dispatch(localeVO.type);
+			};
+
+			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
+
+			let introDialogueID = isFirst ? "investigate_locale_intro_generic_first_01" : "investigate_locale_intro_generic_01";
+
+			let rewardTextKey = isCompletion ? 
+				"ui.exploration.action_rewards_message_investigate_locale_complete_generic_01" : 
+				"ui.exploration.action_rewards_message_investigate_locale_progress_generic_01";
+
+			let sequenceOptions = {
+				introDialogueID: introDialogueID,
+				fightChance: 0,
+				rewardTextKey: rewardTextKey,
+				customRewardTexts: customRewardTexts,
+				rewardVO: rewardVO,
+				outroLogKey: isCompletion ? "ui.log.investigate_locale_complete_message" : null,
+				successCallback: successCallback
+			};
+
+			let sequenceSteps = this.buildLocaleSequence(sector, localeVO, action, sequenceOptions);
+
+			this.startSequence(sequenceSteps, localeName);
+		},
+
+		// options: introDialogueID, obstacleDialogueID, fightChance, rewardTextKey, customRewardTexts, rewardVO, outroDialogueID, outroLogKey, successCallback
+		buildLocaleSequence: function (sector, localeVO, action, options) {
+			let sectorFeaturesComponent = sector.get(SectorFeaturesComponent);
+
+			let localeName = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent);
+			let localeNameShort = TextConstants.getLocaleName(localeVO, sectorFeaturesComponent, true);
 
 			let explorers = this.playerStatsNodes.head.explorers.getParty();
 			let explorerName = explorers.length > 0 ? MathUtils.randomElement(explorers).name : "";
 
-			sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: introDialogueID, textParams: { name: localeNameShort } });
-			if (obstacleDialogueID) 
-				sequenceSteps.push({ id: "obstacle", type: "dialogue", dialogueID: obstacleDialogueID, textParams: { explorerName: explorerName }, localeName: localeNameShort });
-			if (fightChance > 0) 
-				sequenceSteps.push({ id: "fight", type: "fight", chance: fightChance, numEnemies: 1, action: action, branches: { "WIN": "NEXT", "LOSE": "END", "FLEE": "END" } });
-			if (rewardTextKey) 
-				sequenceSteps.push({ id: "rewards", type: "result", result: rewardVO, textKey: rewardTextKey, customRewardTexts: customRewardTexts });
-			if (outroDialogueID)
-				sequenceSteps.push({ id: "outro", type: "dialogue", dialogueID: outroDialogueID, textParams: { explorerName: explorerName }, localeName: localeNameShort });
-			sequenceSteps.push({ id: "result", type: "custom", f: successCallback });
-			if (outroLogKey) 
-				sequenceSteps.push({ id: "log", type: "log", textKey: outroLogKey });
+			let sequenceSteps = [];
 
-			this.startSequence(sequenceSteps, localeName);
+			if (options.introDialogueID)
+				sequenceSteps.push({ id: "intro", type: "dialogue", dialogueID: options.introDialogueID, textParams: { name: localeNameShort } });
+
+			if (options.obstacleDialogueID) 
+				sequenceSteps.push({ id: "obstacle", type: "dialogue", dialogueID: options.obstacleDialogueID, textParams: { explorerName: explorerName }, localeName: localeNameShort });
+			
+			if (options.fightChance > 0) 
+				sequenceSteps.push({ id: "fight", type: "fight", chance: options.fightChance, numEnemies: 1, action: action, branches: { "WIN": "NEXT", "LOSE": "END", "FLEE": "END" } });
+			
+			if (options.rewardTextKey && options.rewardVO) 
+				sequenceSteps.push({ id: "rewards", type: "result", result: options.rewardVO, textKey: options.rewardTextKey, customRewardTexts: options.customRewardTexts });
+			
+			if (options.outroDialogueID)
+				sequenceSteps.push({ id: "outro", type: "dialogue", dialogueID: options.outroDialogueID, textParams: { explorerName: explorerName }, localeName: localeNameShort });
+			
+			if (options.successCallback)
+				sequenceSteps.push({ id: "result", type: "custom", f: options.successCallback });
+			
+			if (options.outroLogKey) 
+				sequenceSteps.push({ id: "log", type: "log", textKey: options.outroLogKey, textParams: { name: localeNameShort } });
+
+			return sequenceSteps;
 		},
 
 		getScoutLocaleCustomSequence: function (localeType, action, successCallback) {
@@ -1042,9 +1074,9 @@ define(['ash',
 				];
 			}
 
-			if (localeType == localeTypes.spacefactory) {
+			if (localeType == localeTypes.spaceFactory) {
 				return[
-					{ type: "dialogue", dialogueID: "locale_story_spacefactory" },
+					{ type: "dialogue", dialogueID: "locale_story_spaceFactory" },
 					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_SPACEFACTORY, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted a manufacturing plant." }
@@ -2885,7 +2917,7 @@ define(['ash',
 				
 				case "cache_insight":
 					let insight = ItemConstants.getInsightForCache(itemConfig);
-					message = TextConstants.getReadResearchPaperMessage(item);
+					message = TextConstants.getReadInsightCacheMessage(item, GameGlobals.gameState.storyFlags);
 					resultVO.gainedInsight = insight;
 					GameGlobals.uiFunctions.showInfoPopup(
 						itemName,
@@ -3270,6 +3302,21 @@ define(['ash',
 
 			sectorStatus.localesScouted[i] = true;
 			log.i("set locale scouted: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent));
+		},
+
+		setLocaleInvestigated: function (sector, i) {
+			if (!sector) return;
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
+
+			let localeVO = sectorLocalesComponent.locales[i]; 
+			if (!localeVO) return;
+
+			if (!sectorStatus.localesInvestigated[i]) sectorStatus.localesInvestigated[i] = 0;
+			let progress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
+			sectorStatus.localesInvestigated[i] += progress;
+
+			log.i("set locale investigated: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent));
 		},
 		
 		unlockFeatures: function (featureIDs) {

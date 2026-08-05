@@ -32,7 +32,6 @@ define(
 		campable: false,
 		hasSpring: false,
 		hasTradeConnectorSpot: false,
-		isInvestigatable: false,
 		stashes: [],
 		waymarks: [],
 		examineSpots: [],
@@ -66,7 +65,6 @@ define(
 			this.itemsScavengeable = features.itemsScavengeable || [];
 			this.hasSpring = features.hasSpring || false;
 			this.hasTradeConnectorSpot = features.hasTradeConnectorSpot || false;
-			this.isInvestigatable = features.isInvestigatable || false;
 			this.isOnCriticalPath = features.isOnCriticalPath || false;
 			this.stashes = features.stashes || [];
 			this.waymarks = features.waymarks || [];

@@ -123,7 +123,7 @@ define([
 				result += "Workers cannot clear toxic waste. You must go to the sector yourself. ";
 			}
 			
-			if (unlockedActions.indexOf("investigate") >= 0) {
+			if (unlockedActions.indexOf("investigate_locale") >= 0) {
 				result += "Investigation is now available on certain sectors. Use the map to find them. ";
 			}
 			

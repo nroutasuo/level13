@@ -345,7 +345,7 @@
         "rarityInvestigate": 4,
         "rarityLocale": 4,
         "rarityScavenge": 7,
-        "tags": [ "modern", "household"],
+        "tags": [ "household"],
         "type": "artefact"
     },
     "artefact_surface_7": {
@@ -711,32 +711,59 @@
         "tradePrice": 3,
         "type": "voucher"
     },
-    "cache_insight_11": {
-        "campOrdinalMaximum": 14,
-        "campOrdinalRequired": 14,
+    "cache_insight_plans_1": {
         "icon": "img/items/clipboard.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "level": 1,
         "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "tags": [ "book", "modern" ],
+        "tags": [ "old", "industrial", "exodus" ],
         "type": "voucher"
     },
-    "cache_insight_21": {
-        "campOrdinalRequired": 15,
+    "cache_insight_material_1": {
         "icon": "img/items/clipboard.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "level": 2,
-        "rarityInvestigate": -1,
         "rarityLocale": -1,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "tags": [ "book", "modern" ],
+        "tags": [ "old", "exodus", "industrial" ],
+        "type": "voucher"
+    },
+    "cache_insight_passengers_1": {
+        "icon": "img/items/clipboard.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "old", "medical", "exodus" ],
+        "type": "voucher"
+    },
+    "cache_insight_research_1": {
+        "icon": "img/items/clipboard.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "old", "book", "science", "exodus" ],
+        "type": "voucher"
+    },
+    "cache_insight_report_1": {
+        "icon": "img/items/clipboard.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": -1,
+        "rarityScavenge": -1,
+        "rarityTrade": -1,
+        "tags": [ "old", "book", "exodus" ],
         "type": "voucher"
     },
     "cache_metal_1": {

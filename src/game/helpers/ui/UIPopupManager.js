@@ -77,6 +77,7 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			if (showInventoryManagement) {
 				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, { forceShowInventoryManagement: forceShowInventoryManagement });
 				$("#info-results").append(rewardDiv);
+				GameGlobals.uiFunctions.updateProgressBar("#result-popup-bar");
 				GameGlobals.uiFunctions.generateInfoCallouts("#reward-div");
 			}
 			

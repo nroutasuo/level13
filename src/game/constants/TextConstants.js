@@ -3,6 +3,7 @@
 define(['ash',
 	'json!game/data/TextData.json',
 	'utils/ArrayUtils',
+	'utils/MathUtils',
 	'utils/ObjectUtils',
 	'utils/DescriptionMapper',
 	'text/Text',
@@ -12,13 +13,14 @@ define(['ash',
 	'game/constants/EnemyConstants',
 	'game/constants/ItemConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TradeConstants',
 	'game/constants/WorldConstants',
 ],
-function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextBuilder, GameConstants, CampConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, UpgradeConstants, TradeConstants, WorldConstants) {
+function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, Text, TextBuilder, GameConstants, CampConstants, EnemyConstants, ItemConstants, SectorConstants, StoryConstants, PositionConstants, MovementConstants, UpgradeConstants, TradeConstants, WorldConstants) {
 	
 	let TextConstants = {
 
@@ -26,6 +28,7 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 
 		loadData: function (data) {
 			this.loadDescriptionData("sector-description", data["sector-description"]);
+			this.loadDescriptionData("cache-insight-message", data["cache-insight-message"]);
 		},
 
 		loadDescriptionData: function (type, data) {
@@ -157,15 +160,19 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 			return featureType;
 		},
 		
-		getSectorName: function (isScouted, features) {
-			var template = "{a-sectortype} {n-street}";
-			var params = this.getSectorTextParams(features);
-			var phrase = TextBuilder.build(template, params);
+		getSectorName: function (isScouted, features, hasVision) {
+			features.hasVision = hasVision;
+
+			let template = "{a-sectortype} {n-street}";
+			let params = this.getSectorTextParams(features, hasVision);
+			let phrase = TextBuilder.build(template, params);
 			return Text.capitalize(phrase);
 		},
 		
 		getSectorHeader: function (hasVision, features) {
-			var template = "{a-street} {a-sectortype} {n-street}";
+			features.hasVision = hasVision;
+			
+			let template = "{a-street} {a-sectortype} {n-street}";
 			if (features.hasCamp) {
 				template = "{n-street} with camp";
 			}
@@ -179,46 +186,30 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 					template = "dark {n-street}";
 				}
 			}
-			var params = this.getSectorTextParams(features);
-			var phrase = TextBuilder.build(template, params);
+			let params = this.getSectorTextParams(features, hasVision);
+			let phrase = TextBuilder.build(template, params);
 			return Text.capitalize(phrase);
 		},
 		
 		getSectorDescription: function (hasVision, features) {
 			features.hasVision = hasVision;
+			
 			let template = DescriptionMapper.get("sector-description", features);
+			
 			let params = this.getSectorTextParams(features, hasVision);
 			let phrase = TextBuilder.build(template, params);
 			return Text.capitalize(phrase);
 		},
 		
 		getSectorTextParams: function (features, hasVision) {
-			// 1) Collect options for each param based on several features
+			// 1) Collect options for each param based on several features (key -> [])
 			let options = this.getPossibleSectorTextParams(features, hasVision);
 			
 			// 2) Build final result by selecting "randomly" from options
 			let rand = Math.abs(Math.floor((features.buildingDensity + features.wear + features.damage) / 2) + features.sectorX + features.sectorY);
 
-			let pickRandom = function (options, excluded) {
-				if (!options || options.length <= 0) return "";
-				let validOptions = options.filter(option => !excluded.includes(option));
-				if (validOptions.length == 0) return "";
-				let i = rand % validOptions.length;
-				return validOptions[i];
-			};
-
 			let selectFromOptions = function (key, num, optional) {
-				let selection = [];
-				for (let i = 0; i < num; i++) {
-					let sel = pickRandom(options[key], selection);
-					if (sel) {
-						selection.push(sel);
-					} else if (!optional) {
-						log.w("could not select valid [" + key + "] " + (i+1) + "/" + num)
-						log.w(options);
-					}
-				}
-				return selection;
+				return TextConstants.selectTextParam(rand, key, num, options[key], optional);
 			};
 
 			let result = {};
@@ -523,6 +514,8 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 					topics.push("plate tetonics");
 					topics.push("batteries");
 					topics.push("fossils");
+					topics.push("the possibility of controlling the weather through singing");
+					topics.push("the effect of flowering plants on dice rolls");
 					topics.push("earthquakes");
 					topics.push("fermentation");
 					topics.push("viruses");
@@ -651,6 +644,9 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 					topics.push("robot design");
 					topics.push("elevators in the city");
 					topics.push("statistics");
+					topics.push("improving the City's ability to withstand extreme weather such as hurricanes");
+					topics.push("flooding in the Dark Levels");
+					topics.push("air quality");
 					topics.push("space flight");
 					topics.push("electronics");
 					topics.push("bridges");
@@ -748,6 +744,8 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 					facts.push("spider silk is the strongest known natural material");
 					facts.push("bananas are radioactive");
 					facts.push("you can't taste food without saliva");
+					facts.push("the City was built on marshland and is slowly sinking in it");
+					facts.push("the Ocean currents were changing direction before the Fall");
 					break;
 				case ItemConstants.bookTypes.history:
 					facts.push("a few powerful mining corporations held great power before the Fall");
@@ -895,56 +893,67 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 			return "Donated the seeds to the temple. The clerics will cherish them and perhaps something will grow.";
 		},
 		
-		getReadResearchPaperMessage: function (itemVO) {
-			let features = {};
+		getReadInsightCacheMessage: function (itemVO, storyFlags) {
 			let itemName = ItemConstants.getItemDisplayName(itemVO);
-			features.itemName = itemName;
-			features.itemLevel = itemVO.level || 1;
-			features.randomSeed = itemVO.itemID;
-			let params = this.getResearchPaperTextParams(features);
+
+			let features = {};
+			for (let key in storyFlags) {
+				features[key] = storyFlags[key];
+			}
+			features.type = itemVO.id.replace("cache_insight_", "").replace(/_\d*/, "");
+
+			let params = this.getInsightMessageParams(features);
+
+			let template = DescriptionMapper.get("cache-insight-message", features);
+			let message = TextBuilder.build(template, params);
 			
-			let template = "You read the paper. " + DescriptionMapper.get("researchpaper-description", features);
-			let phrase = TextBuilder.build(template, params);
-			
-			return phrase;
+			let textFragments = [];
+			textFragments.push({ textKey: "ui.actions.use_cache_insight_message", textParams: { name: itemName } });
+			textFragments.push({ rawText: message });
+			let textVO = { textFragments: textFragments, delimiter: "ui.common.sentence_separator" }
+			return Text.compose(textVO) ;
 		},
 		
-		getResearchPaperTextParams: function (features) {
+		getInsightMessageParams: function (features) {
+			// 1) Collect possible options for each param (param (string) -> list of string)
+			let options = this.getPossibleInsightMessageParams(features);
+
+			// 2) Select randomly
+			let rand = MathUtils.randomIntBetween(0, 100);
+			
+			let selectFromOptions = function (key, num, optional) {
+				return TextConstants.selectTextParam(rand, key, num, options[key]);
+			};
+
 			let result = {};
-			
-			let facts = [];
-			facts.push("the City is disintegrating faster than its current population can possibly maintain it");
-			facts.push("the City was built on marshland and is slowly sinking in it");
-			facts.push("the Ocean currents were changing direction before the Fall");
-			facts.push("some researchers were worried about volcanic activity years before the Fall");
-			facts.push("there was a research group investigating returning to live on the Surface before the Fall");
-			facts.push("the air outside the City is dangerous to breathe");
-			facts.push("there was a top secret research group just before the Fall");
-			facts.push("the Government before the Fall was investing heavily in space research");
-			facts.push("prisoners were used in secret experiments related to space travel");
-			facts.push("the Government was compiling a classified list of priority individuals that would be evacuated in case of emergency");
-			facts.push("there was a top secret gene bank that was being prepared for something just before the Fall");
-			facts.push("the City Government wanted to conceal the stockpiling of large amounts of fuel and building materials");
-			result["c-fact"] = DescriptionMapper.pickRandom(facts, features);
-			
-			let topics = [];
-			topics.push("the possible consequences on the City of a failed space rocket launch");
-			topics.push("the number of people that can live on a spacecraft");
-			topics.push("the possibility of long-distance space travel");
-			topics.push("the habitability of nearby planets and star systems");
-			topics.push("fuel calculations for a very large spacecraft");
-			topics.push("the number of people that are required for a sustainable settlement");
-			topics.push("a supervolcano");
-			topics.push("air quality in the City");
-			topics.push("the possibility of controlling the weather through singing");
-			topics.push("the effect of flowering plants on dice rolls");
-			topics.push("flooding in the Dark Levels");
-			topics.push("expected duration of emergency power in the City in different scenarios");
-			topics.push("improving the City's ability to withstand extreme weather such as hurricanes");
-			
-			result["n-topic"] = DescriptionMapper.pickRandom(topics, features);
+			result["n-topic"] = selectFromOptions("n-topic", 1);
+			result["a-area"] = selectFromOptions("a-area", 1);
 			
 			return result;
+		},
+
+		getPossibleInsightMessageParams: function (features) {
+			let options = {};
+			
+			let addOptions = function (param, condition, values) {
+				if (!condition) return;
+				if (!options[param]) options[param] = [];
+				for (let i = 0; i < values.length; i++) {
+					options[param].push(values[i]);
+				}
+			};
+
+			let params = this.params["cache-insight-message"];
+
+			for (let paramID in params) {
+				let options = params[paramID];
+				for (let i = 0; i < options.length; i++) {
+					let param = options[i];
+					addOptions(paramID, DescriptionMapper.matches(features, param), [ param.text ]);
+				}
+			}
+
+			return options;
 		},
 		
 		getFoundStashMessage: function (stashVO) {
@@ -1439,7 +1448,30 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 			}
 
 			return { textFragments: fragments };
-		}
+		},
+
+		selectTextParam: function (rand, key, num, options, isOptional) {
+			let selection = [];
+
+			for (let i = 0; i < num; i++) {
+				let sel = TextConstants.pickRandomParam(rand, options, selection);
+				if (sel) {
+					selection.push(sel);
+				} else if (!isOptional) {
+					log.w("could not select valid [" + key + "] " + (i+1) + "/" + num);
+					log.w(options);
+				}
+			}
+			return selection;
+		},
+
+		pickRandomParam: function (rand, options, excluded) {
+			if (!options || options.length <= 0) return "";
+			let validOptions = options.filter(option => !excluded.includes(option));
+			if (validOptions.length == 0) return "";
+			let i = rand % validOptions.length;
+			return validOptions[i];
+		},
 	};
 	
 	function initWaymarkTexts() {
@@ -1649,29 +1681,12 @@ function (Ash, TextData, ArrayUtils, ObjectUtils, DescriptionMapper, Text, TextB
 		DescriptionMapper.add("newspaper-description", { itemLevel: l_2 }, "It contains supposed stories of survivors who saw the Fall, all very different.");
 		DescriptionMapper.add("newspaper-description", { itemLevel: l_3 }, "There is an investigative story about {n-topic}.");
 	}
-	
-	function initResearchPaperTexts() {
-		var wildcard = DescriptionMapper.WILDCARD;
-		
-		let l_1 = 1;
-		let l_2 = 2;
-		let l_3 = 3;
-		
-		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "It is about {n-topic}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "You learn that {c-fact}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "You deduce that {c-fact}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: wildcard }, "It seems that {c-fact}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: l_1 }, "It is a basic overview of {n-topic}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: l_2 }, "It is an outline of {n-topic}.");
-		DescriptionMapper.add("researchpaper-description", { itemLevel: l_3 }, "It is a detailed analysis of {n-topic}.");
-	}
 
     TextConstants.loadData(TextData);
 	
 	initWaymarkTexts();
 	initBookTexts();
 	initNewspaperTexts();
-	initResearchPaperTexts();
 	
 	return TextConstants;
 	

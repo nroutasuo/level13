@@ -1,4 +1,97 @@
 {
+	"cache-insight-message": {
+		"params": {
+			"n-topic": [
+				{ "text": [ "launch calculations", "travel time estimates", "hull materials requirements", "fuel consumption", "water recycling" ], "filters": { }},
+				{ "text": [ "earthquake frequency" ], "filters": { }},
+				{ "text": [ "the possible consequences on the City of a failed space rocket launch" ], "filters": { }},
+				{ "text": [ "the number of people that can live on a spacecraft" ], "filters": { }},
+				{ "text": [ "the habitability of nearby planets and star systems" ], "filters": { }},
+				{ "text": [ "the number of people that are required for a sustainable settlement" ], "filters": { }},
+				{ "text": [ "expected duration of emergency power in the City in different scenarios" ], "filters": { }}
+			],
+			"a-area": [
+				{ "text": [ "material", "budget", "passenger", "crew", "timeline", "propaganda", "housing", "human resources", "fuel", "infrastructure", "logistical", "long distance space travel" ], "filters": { }}
+			],
+			"c-fact": [
+				{ "text": [ "the City is disintegrating faster than its current population can possibly maintain it" ], "filters": { }},
+				{ "text": [ "the City is disintegrating faster than its current population can possibly maintain it" ], "filters": { }},
+				{ "text": [ "there was a research group investigating returning to live on the Ground before the Fall, but they concluded it is likely unsustainable" ], "filters": { }},
+				{ "text": [ "the air outside the City is dangerous to breathe" ], "filters": { }},
+				{ "text": [ "the Government before the Fall was investing heavily in space research" ], "filters": { }},
+				{ "text": [ "prisoners were used in secret experiments related to space travel" ], "filters": { }},
+				{ "text": [ "the Government was compiling a classified list of priority individuals that would be evacuated in case of emergency" ], "filters": { }},
+				{ "text": [ "there was a top secret gene bank that was being prepared for something just before the Fall" ], "filters": { }},
+				{ "text": [ "the City Government wanted to conceal the stockpiling of large amounts of fuel and building materials" ], "filters": { }}
+			]
+		},
+		"descriptions": {
+			"production plans": {
+				"filters": { "type": "plans" },
+				"descriptions": [
+					{
+						"text": "They plans help you understand a part of the spacecraft production process."
+					},
+					{
+						"text": "They will be invaluable for our own space program.",
+						"filters": { "APOCALYPSE_PLAN_READY": true }
+					}
+				]
+			},
+			"material sample": {
+				"filters": { "type": "material" },
+				"descriptions": [
+					{
+						"text": "It helps our engineers to perfect our own spacecraft.",
+						"filters": { "APOCALYPSE_PLAN_READY": true }
+					},
+					{
+						"text": "It helps our engineers understand materials used in the spacecraft.",
+						"filters": { "APOCALYPSE_PLAN_READY": false }
+					}
+				]
+			},
+			"passenger list": {
+				"filters": { "type": "passengers" },
+				"descriptions": [
+					{
+						"text": "It gives insight on both who was included in the Exodus project, but also on the physilogical and phychologial demands of space travel."
+					}
+				]
+			},
+			"research paper": {
+				"filters": { "type": "research" },
+				"descriptions": [
+					{
+						"text": "It details {n-topic} and will provide invaluable insight for our plans."
+					},
+					{
+						"text": "It's about {n-topic} and will provide invaluable insight for our plans."
+					},
+					{
+						"text": "It seems that {c-fact}."
+					},
+					{
+						"text": "You learn that {c-fact}."
+					},
+					{
+						"text": "It is a detailed analysis of {n-topic}."
+					}
+				]
+			},
+			"government report": {
+				"filters": { "type": "report" },
+				"descriptions": [
+					{
+						"text": "It's a summary of {a-area} requirements for the Exodus project."
+					},
+					{
+						"text": "You learn that {c-fact}."
+					}
+				]
+			}
+		}
+	},
 	"sector-description": {
 		"macros": {
 			"[sector_style_cozy]": [ "cittadinian", "kievan", "neo-western", "western" ],
@@ -146,7 +239,7 @@
 				{ "text": [ "inhabited" ], "filters": { "localeTypes": [ "butcher", "camp", "clinic", "tradingpartner", "repairshop" ] } },
 				{ "text": [ "hidden" ], "filters": { "localeTypes": "compound" } },
 				{ "text": [ "forgotten" ], "filters": { "localeTypes": "depot" } },
-				{ "text": [ "hidden" ], "filters": { "localeTypes": [ "seedDepot", "spacefactory" ] } },
+				{ "text": [ "hidden" ], "filters": { "localeTypes": [ "seedDepot", "spaceFactory", "isolationCenter" ] } },
 				{ "text": [ "desolate", "eerily quiet", "bleak", "dirty", "nondescript" ], "filters": { "hasVision": "*", "wear": [5, -1], "campable": false } },
 				{ "text": [ "well-preserved" ], "filters": { "wear": [0, 6], "damage": 0 } },
 				{ "text": [ "humming" ], "filters": { "hasVision": "*", "wear": [0, 6], "damage": 0 } },
@@ -201,7 +294,7 @@
 				{ "text": [ "brown", "green", "distinct", "single", "windowed", "decoratively roofed", "historical", "ornate" ], "filters": { "sectorStyle": "western" } },
 				{ "text": [ "closely leaning", "poor" ], "filters": { "sectorStyle": "slum-hun" } },
 				{ "text": [ "well-preserved", "comfortable looking", "glass-walled" ], "filters": { "wear": [0, 6] } },
-				{ "text": [ "decaying", "desolate", "slowly decomposing", "crumbling", "long-abandoned", "dull" ], "filters": { "wear": [5, -1] } },
+				{ "text": [ "decaying", "desolate", "slowly decomposing", "crumbling", "long-abandoned", "dull", "dilapidated" ], "filters": { "wear": [5, -1] } },
 				{ "text": [ "abandoned", "bleak", "colorful", "nondescript" ], "filters": { "wear": [5, -1] } },
 				{ "text": [ "sketchy", "bleak", "dishevelled", "grey", "graffiti-covered", "haphazardly built", "decrepit", "tilted" ], "filters": { "wealth": [0, 4] } },
 				{ "text": [ "standard", "regular" ], "filters": { "wealth": [4, 8] } },

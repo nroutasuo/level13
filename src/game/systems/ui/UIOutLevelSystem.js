@@ -171,6 +171,7 @@ define([
 			GlobalSignals.add(this, GlobalSignals.popupClosedSignal, this.onPopupClosed);
 			GlobalSignals.add(this, GlobalSignals.buttonStateChangedSignal, this.onButtonStateChanged);
 			GlobalSignals.add(this, GlobalSignals.localeScoutedSignal, this.scheduleMapUpdate);
+			GlobalSignals.add(this, GlobalSignals.localeInvestigatedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.inventoryChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.equipmentChangedSignal, this.scheduleMapUpdate);
 			GlobalSignals.add(this, GlobalSignals.sectorRevealedSignal, this.scheduleMapUpdate);
@@ -274,7 +275,6 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-sca", isAwake);
 			GameGlobals.uiFunctions.toggle("#out-action-scout", isAwake && GameGlobals.gameState.unlockedFeatures.vision);
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isAwake && isScouted && featuresComponent.hasSpring);
-			GameGlobals.uiFunctions.toggle("#out-action-investigate", isAwake && this.showInvestigate());
 
 			// examine spots
 			let showExamine = featuresComponent.examineSpots.length > 0 && isScouted;
@@ -506,7 +506,8 @@ define([
 				case WorldConstants.FEATURE_TRAIN_TRACKS_NEW:
 				case WorldConstants.FEATURE_TRAIN_TRACKS_OLD:
 					return "The area is crossed by train tracks."
-
+				default:
+					return "";
 			}
 		},
 
@@ -636,17 +637,6 @@ define([
 			if (isScouted && GameGlobals.gameState.unlockedFeatures.scavenge) {
 				description += Text.t("ui.exploration.sector_status_scavenged_percent_field", UIConstants.roundValue(Math.floor(statusComponent.getScavengedPercent())));
 				description += "<br />";
-			}
-
-			if (this.showInvestigate()) {
-				let investigatedPercent = statusComponent.getInvestigatedPercent();
-				let investigationComplete = investigatedPercent >= 100;
-				if (investigationComplete) {
-					description += Text.t("ui.exploration.sector_status_investigated_percent_field_completed", Math.floor(investigatedPercent));
-				} else {
-					description += Text.t("ui.exploration.sector_status_investigated_percent_field_default", Math.floor(investigatedPercent));
-				}
-				description += "<br/>";
 			}
 			
 			let scavengedPercent = statusComponent.getScavengedPercent();
@@ -904,6 +894,8 @@ define([
 				result.index = index;
 				result.locale = locale;
 				result.isScouted = isScouted;
+				result.isInvestigatable = locale.isInvestigatable(),
+				result.investigatedPercent = sectorStatusComponent.getInvestigatedPercent(index),
 				result.sectorFeaturesComponent = sectorFeaturesComponent;
 				return result;
 			});
@@ -919,30 +911,46 @@ define([
 		
 		createLocaleListItem: function () {
 			let li = {};
-			let button = "<button class='action multiline'></button>";
+			let button = "<button class='action multiline btn-main'></button>";
+			let investigateButton = "<button class='action multiline btn-secondary'>Investigate</button>";
 			let info = "<span class='p-meta'></span";
-			li.$root = $("<tr><td>" + button + "</td><td>" + info + "</td></tr>");
-			li.$button = li.$root.find("button");
+			li.$root = $("<tr><td>" + button + investigateButton + "</td><td>" + info + "</td></tr>");
+			li.$button = li.$root.find("button.btn-main");
+			li.$investigateButton = li.$root.find("button.btn-secondary");
 			li.$info = li.$root.find("span");
 			return li;
 		},
 		
 		isLocaleListItemDataSame: function (d1, d2) {
-			return d1.index == d2.index && d1.position.equals(d2.position) && d1.isScouted == d2.isScouted;
+			return d1.index == d2.index && d1.position.equals(d2.position) && d1.isScouted == d2.isScouted && d1.investigatedPercent == d2.investigatedPercent;
 		},
 		
 		updateLocaleListItem: function (li, data) {
 			let locale = data.locale;
 			
 			li.$button.attr("action", "scout_locale_" + locale.getCategory() + "_" + data.index);
+			li.$investigateButton.attr("action", "investigate_locale_" + data.index);
 			li.$button.find(".btn-label").html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
+			li.$investigateButton.find(".btn-label").html(TextConstants.getLocaleName(locale, data.sectorFeaturesComponent));
 
 			let isScouted = data.isScouted;
 			let canBeScouted = !isScouted || LocaleConstants.canBeScoutedAgain(locale.type);
+			let canBeInvestigated = data.isInvestigatable;
+			let showInvestigate = isScouted && canBeInvestigated;
+
+			GameGlobals.uiFunctions.toggle(li.$button, !showInvestigate);
+			GameGlobals.uiFunctions.toggle(li.$investigateButton, showInvestigate);
 			
 			let info = "";
 			if (!canBeScouted) {
-				if (locale.type == localeTypes.tradingpartner) {
+				if (canBeInvestigated) {
+					let investigatedPercent = data.investigatedPercent;
+					if (investigatedPercent >= 100) {
+						info += "Fully investigated";
+					} else {
+						info += UIConstants.roundValue(investigatedPercent) + "% investigated";
+					}
+				} else if (locale.type == localeTypes.tradingpartner) {
 					let partner = TradeConstants.getTradePartner(data.campOrdinal);
 					if (partner) {
 						info += "Already scouted (" + partner.name + ")";
@@ -955,6 +963,7 @@ define([
 					info += "Already scouted";
 				}
 			}
+
 			li.$info.html(info);
 		},
 
@@ -1096,10 +1105,6 @@ define([
 			let mapPosition = this.playerLocationNodes.head.position.getPosition();
 			GameGlobals.uiMapHelper.rebuildMapHints("minimap-background", "minimap", mapPosition);
 			GameGlobals.uiMapHelper.rebuildMap("minimap", null, mapPosition, UIConstants.MAP_MINIMAP_SIZE, true, MapUtils.MAP_MODE_DEFAULT);
-		},
-		
-		showInvestigate: function () {
-			return GameGlobals.playerActionsHelper.isVisible("investigate");
 		},
 		
 		getResourceCurrentlyAvailableToCollect: function (resourceName) {

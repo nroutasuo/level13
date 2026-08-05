@@ -3,8 +3,9 @@ define([
 	'text/Text',
 	'game/GameGlobals',
 	'game/GlobalSignals',
+	'game/constants/DialogueConstants',
 	'game/constants/LogConstants'
-], function (Ash, Text, GameGlobals, GlobalSignals, LogConstants) {
+], function (Ash, Text, GameGlobals, GlobalSignals, DialogueConstants, LogConstants) {
 		
 	let SequenceHelper = Ash.Class.extend({
 
@@ -109,6 +110,11 @@ define([
 					break;
 				case "dialogue":
 					let dialogueID = step.dialogueID;
+					let hasDialogue = DialogueConstants.hasDialogue(dialogueID);
+					if (!hasDialogue) {
+						this.skipSequenceStep("dialogue not found", cb);
+						return;
+					}
 					GameGlobals.playerActionFunctions.startDialogue(dialogueID, null, null, textParams);
 					GlobalSignals.dialogueCompletedSignal.addOnce(() => { cb(); });
 					break;
@@ -139,10 +145,14 @@ define([
 					cb();
 					break;
 				default: 
-					log.w("unknown sequence step type: " + type);
-					cb();
+					this.skipSequenceStep("unknown sequence step type: " + type, cb);
 					break;
 			}
+		},
+
+		skipSequenceStep: function (msg, cb) {
+			log.w("sequence step skipped: "  + msg, this);
+			cb();
 		},
 		
 	});

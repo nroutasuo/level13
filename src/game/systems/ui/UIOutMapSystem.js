@@ -103,10 +103,14 @@ define([
 
 		updateBubble: function () {
 			let bubbleNumber = 0;
+			
 			let numUnseenWorldChanges = GameGlobals.worldHelper.getUnseenChangesLevels().length;
 			bubbleNumber += numUnseenWorldChanges;
+
 			if (!GameGlobals.gameState.hasSeenTab(GameGlobals.uiFunctions.elementIDs.tabs.map)) bubbleNumber = "!";
+			
 			GameGlobals.uiFunctions.updateBubble("#switch-map .bubble", this.bubbleNumber, bubbleNumber);
+			
 			this.bubbleNumber = bubbleNumber;
 
 			$("#select-map-level-bubble").toggle(numUnseenWorldChanges > 0);
@@ -169,19 +173,19 @@ define([
 		},
 
 		getLevelSelectorOptionLabel: function (level, isCleared, hasUnseenChanges) {
-				let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
-				let groundLevel = GameGlobals.worldState.getGroundLevel();
+			let surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
+			let groundLevel = GameGlobals.worldState.getGroundLevel();
 
-				let result = "Level " + level;
-				
-				if (level == surfaceLevel) result = "Surface";
-				if (level == groundLevel) result = "Ground";
+			let result = "Level " + level;
+			
+			if (level == surfaceLevel) result = "Surface";
+			if (level == groundLevel) result = "Ground";
 
-				if (hasUnseenChanges) result += "(!)";
-				else if (isCleared) result += " (x)";
-				else result += " (-)";
+			if (hasUnseenChanges) result += "(!)";
+			else if (isCleared) result += " (x)";
+			else result += " (-)";
 
-				return result;
+			return result;
 		},
 
 		selectLevel: function (level) {
@@ -413,7 +417,7 @@ define([
 		selectInvestigateSector: function () {
 			let newSector = this.getNextSelectableSector(1, (sector) => {
 				let sectorFeatures = sector.get(SectorFeaturesComponent);
-				return GameGlobals.sectorHelper.canBeInvestigated(sector);
+				return GameGlobals.sectorHelper.hasInvestigateableLocale(sector);
 			});
 			if (!newSector) return null;
 			GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.buttonClicked);
@@ -803,8 +807,8 @@ define([
 				let statusComponent = this.selectedSector.get(SectorStatusComponent);
 				let featuresComponent = sector.get(SectorFeaturesComponent);
 
-				if (GameGlobals.sectorHelper.canBeInvestigated(sector)) {
-					result.push("can be investigated");
+				if (GameGlobals.sectorHelper.hasInvestigateableLocale(sector)) {
+					result.push("has locale that can be investigated");
 				}
 				
 				if (statusComponent.graffiti) {

@@ -13,7 +13,7 @@ define([], function () {
 		},
 
 		containsAny: function (arr, options) {
-			if (!arr || arr.length <= 0 || !options || !options.length <= 0) return false;
+			if (!arr || arr.length <= 0 || !options || options.length <= 0) return false;
 
 			for (let i = 0; i < options.length; i++) {
 				if (arr.indexOf(options[i]) >= 0) return true;

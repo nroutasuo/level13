@@ -272,6 +272,11 @@ define([
 			return result;
 		},
 
+		hasDialogue: function (dialogueID) {
+			let dialogueVO = this.getDialogue(dialogueID);
+			return dialogueVO && dialogueVO.dialogueID;	
+		},
+
 		getDialogueSource: function (sourceID) {
 			let result = this.dialogueSources[sourceID]
 			if (!result) {

@@ -17,7 +17,7 @@ define(['ash', 'game/vos/LocaleVO'], function (Ash, LocaleVO) {
 				case localeTypes.depot:
 					return defaultValue * 2;
 
-				case localeTypes.spacefactory:
+				case localeTypes.spaceFactory:
 					return defaultValue * 4;
 				
 				default:

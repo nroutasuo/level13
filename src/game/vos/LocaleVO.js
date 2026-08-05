@@ -32,16 +32,17 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		tradingpartner: "tradingpartner",
 		repairshop: "repairshop",
 
-		// unique
+		// unique / story
 		compound: "compound",
 		depot: "depot", // x2
 		expedition: "expedition",
 		greenhouse: "greenhouse", // x2
 		grove: "grove",
-		isolationCenter: "isolationCenter",
+		healthCenter: "healthCenter",
+		isolationCenter: "isolationCenter", // x2
 		seedDepot: "seedDepot",
 		shelter: "shelter",
-		spacefactory: "spacefactory",
+		spaceFactory: "spaceFactory", // x3 
 	};
 	
 	let LocaleVO = Ash.Class.extend({
@@ -121,7 +122,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.seedDepot: difficulty = 0.6; break;
 				case localeTypes.shelter: difficulty = 0.15; break;
 				case localeTypes.shortcut: difficulty = 0.25; break;
-				case localeTypes.spacefactory: difficulty = 1; break;
+				case localeTypes.spaceFactory: difficulty = 1; break;
 				case localeTypes.store: difficulty = 0.3; break;
 				case localeTypes.tradingpartner: difficulty = 0.15; break;
 				case localeTypes.train: difficulty = 0.6; break;
@@ -148,7 +149,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 					if (unlockedResources.medicine) res.addResource(resourceNames.medicine, defaultAmount);
 					break;
 				case localeTypes.factory:
-				case localeTypes.spacefactory:
+				case localeTypes.spaceFactory:
 					res.addResource(resourceNames.metal, abundant);
 					if (unlockedResources.concrete) res.addResource(resourceNames.concrete, abundant);
 					//if (unlockedResources.robots) res.addResource(resourceNames.robots, defaultAmount);
@@ -236,7 +237,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.maintenance:
 				case localeTypes.seedDepot:
 				case localeTypes.shortcut:
-				case localeTypes.spacefactory:
+				case localeTypes.spaceFactory:
 				case localeTypes.train:
 				case localeTypes.warehouse:
 					return 0;
@@ -297,10 +298,11 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				case localeTypes.office:
 					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.valuable, ItemConstants.itemTags.community, ItemConstants.itemTags.electric ];
 				case localeTypes.lab:
-				case localeTypes.spacefactory:
+				case localeTypes.spaceFactory:
 					return [ ItemConstants.itemTags.science, ItemConstants.itemTags.industrial, ItemConstants.itemTags.electric ];
 				case localeTypes.hospital:
 				case localeTypes.pharmacy:
+				case localeTypes.healthCenter:
 					return [ ItemConstants.itemTags.medical, ItemConstants.itemTags.science ];
 				case localeTypes.restaurant:
 					return [ ItemConstants.itemTags.perishabl, ItemConstants.itemTags.community ];
@@ -328,6 +330,18 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 				
 				default:
 					return "u";
+			}
+		},
+
+		isInvestigatable: function () {
+			switch (this.type) {
+				case localeTypes.spaceFactory:
+				case localeTypes.depot:
+				case localeTypes.isolationCenter:
+				case localeTypes.healthCenter:
+					return true;
+				default: 
+					return false;
 			}
 		},
 

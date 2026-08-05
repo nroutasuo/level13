@@ -2,7 +2,7 @@
 // and purely aesthetic (description)
 define(['ash'], function (Ash) {
 
-	var SectorLocalesComponent = Ash.Class.extend({
+	let SectorLocalesComponent = Ash.Class.extend({
 		
 		locales: [],
 		

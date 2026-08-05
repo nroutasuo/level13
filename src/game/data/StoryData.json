@@ -371,13 +371,13 @@
                 {
                     "id": "FALL_SEEN_SPACEFACTORY",
                     "onStart": {
-                        "log": "story.stories.fall_found_spacefactory_message",
+                        "log": "story.stories.fall_found_spaceFactory_message",
                         "storyFlags": {
                             "FALL_SEEN_SPACEFACTORY": true
                         }
                     },
                     "startConditions": {
-                        "localeType": "spacefactory"
+                        "localeType": "spaceFactory"
                     },
                     "startFromAny": true,
                     "startTrigger": "locale_scouted"

@@ -3,7 +3,7 @@
         "clear_workshop": 60,
         "despair": 10,
         "fight_gang": 60,
-        "investigate": 1,
+        "investigate_locale": 1,
         "launch": 600,
         "scavenge": 9,
         "scavenge_heap": 3,
@@ -129,10 +129,6 @@
             "resource_metal": 2000,
             "resource_rope": 1200
         },
-        "build_in_shelter": {
-            "resource_metal": 500,
-            "resource_rope": 500
-        },
         "build_in_researchcenter": {
             "resource_metal": 3000,
             "resource_rubber": 300,
@@ -142,6 +138,10 @@
             "resource_concrete": 600,
             "resource_fuel": 800,
             "resource_tools": 500
+        },
+        "build_in_shelter": {
+            "resource_metal": 500,
+            "resource_rope": 500
         },
         "build_in_shrine": {
             "resource_food": 200,
@@ -736,16 +736,16 @@
             "evidence": 204,
             "rumours": 2019
         },
+        "improve_building_temple_4": {
+            "evidence": 636,
+            "rumours": 8322
+        },
         "improve_building_temple2": {
             "hope": 61,
             "rumours": 960
         },
         "improve_building_temple3": {
             "hope": 197
-        },
-        "improve_building_temple_4": {
-            "evidence": 636,
-            "rumours": 8322
         },
         "improve_event_disaster_1": {
             "evidence": 272
@@ -998,7 +998,7 @@
             "rumours": 8938
         },
         "improve_worker_scientist": {
-            "evidence": {},
+            "evidence": { },
             "hope": 135,
             "rumours": 2802
         },
@@ -1026,7 +1026,7 @@
             "evidence": 215,
             "rumours": 1720
         },
-        "investigate": {
+        "investigate_locale": {
             "stamina": 100
         },
         "launch": {
@@ -1052,7 +1052,7 @@
             "resource_water": 1,
             "stamina": 12
         },
-        "move_sector_east": {},
+        "move_sector_east": { },
         "move_sector_grit_east": {
             "resource_food": 0,
             "resource_water": 0,
@@ -1093,13 +1093,13 @@
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_ne": {},
-        "move_sector_north": {},
-        "move_sector_nw": {},
-        "move_sector_se": {},
-        "move_sector_south": {},
-        "move_sector_sw": {},
-        "move_sector_west": {},
+        "move_sector_ne": { },
+        "move_sector_north": { },
+        "move_sector_nw": { },
+        "move_sector_se": { },
+        "move_sector_south": { },
+        "move_sector_sw": { },
+        "move_sector_west": { },
         "nap": {
             "resource_food": 1,
             "resource_water": 1
@@ -1201,6 +1201,10 @@
             "evidence": 603,
             "rumours": 2782
         },
+        "unlock_building_shelter": {
+            "hope": 72,
+            "rumours": 535
+        },
         "unlock_building_smithy": {
             "evidence": 199
         },
@@ -1225,10 +1229,6 @@
         "unlock_building_stable": {
             "rumours": 242
         },
-        "unlock_building_shelter": {
-            "hope": 72,
-            "rumours": 535
-        },
         "unlock_building_tradingpost": {
             "evidence": 73
         },
@@ -1249,6 +1249,26 @@
         },
         "unlock_item_bag_4": {
             "hope": 189
+        },
+        "unlock_item_clothing_body_13": {
+            "hope": 166,
+            "rumours": 2397
+        },
+        "unlock_item_clothing_body_15": {
+            "hope": 189,
+            "rumours": 3035
+        },
+        "unlock_item_clothing_hands_25": {
+            "rumours": 248
+        },
+        "unlock_item_clothing_head_27": {
+            "rumours": 220
+        },
+        "unlock_item_clothing_head_5": {
+            "hope": 125
+        },
+        "unlock_item_clothing_over_15": {
+            "rumours": 3503
         },
         "unlock_item_clothing2": {
             "rumours": 9
@@ -1276,26 +1296,6 @@
         },
         "unlock_item_clothing6": {
             "rumours": 919
-        },
-        "unlock_item_clothing_body_13": {
-            "hope": 166,
-            "rumours": 2397
-        },
-        "unlock_item_clothing_body_15": {
-            "hope": 189,
-            "rumours": 3035
-        },
-        "unlock_item_clothing_hands_25": {
-            "rumours": 248
-        },
-        "unlock_item_clothing_head_27": {
-            "rumours": 220
-        },
-        "unlock_item_clothing_head_5": {
-            "hope": 125
-        },
-        "unlock_item_clothing_over_15": {
-            "rumours": 3503
         },
         "unlock_item_clothingl14": {
             "hope": 55,
@@ -1393,7 +1393,6 @@
         "craft_glowstick_1": 1,
         "get_up": 1,
         "improve_in__": 3,
-        "investigate": 3,
         "launch": 3,
         "send_caravan": 600,
         "use_in_campfire": 5,
@@ -1415,7 +1414,7 @@
             0.05,
             0.05
         ],
-        "investigate": [
+        "investigate_locale": [
             0.0005,
             0.005
         ],
@@ -1437,10 +1436,12 @@
         "despair": true,
         "examine": true,
         "fight_gang": true,
-        "investigate": true,
+        "investigate_locale": true,
         "scavenge": true,
         "scavenge_heap": true,
         "scout": true,
+        "scout_local_u": true,
+        "scout_locale_i": true,
         "use_in_home": false,
         "use_in_hospital": false,
         "use_in_hospital_2": false,
@@ -1459,7 +1460,7 @@
             0.05,
             0.05
         ],
-        "investigate": [
+        "investigate_locale": [
             0,
             0.03
         ],
@@ -1485,7 +1486,7 @@
             1,
             0
         ],
-        "investigate": [
+        "investigate_locale": [
             0.1,
             0.1
         ],
@@ -1852,17 +1853,6 @@
                 "unlock_building_radio": true
             }
         },
-        "build_in_shelter": {
-            "improvements": {
-                "shelter": [
-                    -1,
-                    1
-                ]
-            },
-            "upgrades": {
-                "unlock_building_shelter": true
-            }
-        },
         "build_in_researchcenter": {
             "improvements": {
                 "library": [
@@ -1901,6 +1891,17 @@
             ],
             "upgrades": {
                 "unlock_building_robots": true
+            }
+        },
+        "build_in_shelter": {
+            "improvements": {
+                "shelter": [
+                    -1,
+                    1
+                ]
+            },
+            "upgrades": {
+                "unlock_building_shelter": true
             }
         },
         "build_in_shrine": {
@@ -2902,7 +2903,7 @@
             }
         },
         "improve_building_stable": {
-            "upgrades": {}
+            "upgrades": { }
         },
         "improve_building_stable_2": {
             "upgrades": {
@@ -2926,6 +2927,11 @@
                 "improve_building_storage1": true
             }
         },
+        "improve_building_temple_4": {
+            "upgrades": {
+                "improve_building_temple3": true
+            }
+        },
         "improve_building_temple2": {
             "deity": true,
             "upgrades": {
@@ -2937,11 +2943,6 @@
             "milestone": 6,
             "upgrades": {
                 "improve_building_temple2": true
-            }
-        },
-        "improve_building_temple_4": {
-            "upgrades": {
-                "improve_building_temple3": true
             }
         },
         "improve_event_disaster_1": {
@@ -3094,24 +3095,16 @@
                 "unlock_building_aqueduct": true
             }
         },
-        "investigate": {
+        "investigate_locale": {
             "busy": false,
+            "featureUnlocked": {
+                "investigate": true
+            },
             "inCamp": false,
             "sector": {
-                "investigatable": true,
-                "investigatedPercent": [
-                    -1,
-                    1
-                ],
                 "scouted": true
             },
-            "upgrades": {
-                "unlock_building_researchcenter": true
-            },
-            "vision": [
-                60,
-                -1
-            ]
+            "vision": [ 60, -1 ]
         },
         "launch": {
             "busy": false,
@@ -3442,7 +3435,7 @@
                 "unlock_action_clear_waste_t": true
             }
         },
-        "unlock_building_hospital": {},
+        "unlock_building_hospital": { },
         "unlock_building_house2": {
             "blueprint": 7,
             "upgrades": {
@@ -3500,6 +3493,13 @@
                 "improve_worker_smith_3": true
             }
         },
+        "unlock_building_shelter": {
+            "deity": true,
+            "milestone": 4,
+            "upgrades": {
+                "improve_worker_cleric_2": true
+            }
+        },
         "unlock_building_smithy": {
             "blueprint": 7,
             "upgrades": {
@@ -3515,17 +3515,10 @@
         "unlock_building_spaceship3": {
             "milestone": 7
         },
-        "unlock_building_square": {},
+        "unlock_building_square": { },
         "unlock_building_stable": {
             "upgrades": {
                 "unlock_building_market": true
-            }
-        },
-        "unlock_building_shelter": {
-            "deity": true,
-            "milestone": 4,
-            "upgrades": {
-                "improve_worker_cleric_2": true
             }
         },
         "unlock_building_tradingpost": {
@@ -3563,6 +3556,38 @@
             "blueprint": 14,
             "upgrades": {
                 "unlock_item_bag_3": true
+            }
+        },
+        "unlock_item_clothing_body_13": {
+            "blueprint": 13,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
+            }
+        },
+        "unlock_item_clothing_body_15": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_hands_25": {
+            "upgrades": {
+                "unlock_item_bag_2": true
+            }
+        },
+        "unlock_item_clothing_head_27": {
+            "upgrades": {
+                "unlock_item_bag_1": true
+            }
+        },
+        "unlock_item_clothing_head_5": {
+            "upgrades": {
+                "unlock_item_clothing_body_13": true
+            }
+        },
+        "unlock_item_clothing_over_15": {
+            "blueprint": 15,
+            "upgrades": {
+                "unlock_item_scavenger_gear": true
             }
         },
         "unlock_item_clothing2": {
@@ -3609,38 +3634,6 @@
             "blueprint": 11,
             "upgrades": {
                 "unlock_item_clothing4h": true
-            }
-        },
-        "unlock_item_clothing_body_13": {
-            "blueprint": 13,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
-            }
-        },
-        "unlock_item_clothing_body_15": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_hands_25": {
-            "upgrades": {
-                "unlock_item_bag_2": true
-            }
-        },
-        "unlock_item_clothing_head_27": {
-            "upgrades": {
-                "unlock_item_bag_1": true
-            }
-        },
-        "unlock_item_clothing_head_5": {
-            "upgrades": {
-                "unlock_item_clothing_body_13": true
-            }
-        },
-        "unlock_item_clothing_over_15": {
-            "blueprint": 15,
-            "upgrades": {
-                "unlock_item_scavenger_gear": true
             }
         },
         "unlock_item_clothingl14": {
@@ -3730,7 +3723,7 @@
                 "unlock_building_passage_elevator": true
             }
         },
-        "unlock_worker_rope": {},
+        "unlock_worker_rope": { },
         "use_in_campfire": {
             "busy": false,
             "camp": {

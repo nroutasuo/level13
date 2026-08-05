@@ -1180,15 +1180,6 @@ define([
 						if (result) return result;
 					}
 
-					if (typeof requirements.sector.investigatable != "undefined") {
-						var requiredValue = requirements.sector.investigatable;
-						var currentValue = featuresComponent.isInvestigatable || statusComponent.isFallbackInvestigateSector;
-						if (currentValue !== requiredValue) {
-							reason = requiredValue ? "There is nothing to investigate." : "This sector can be investigated";
-							return { value: 0, reason: this.getDisabledReasonVO(reason) };
-						}
-					}
-
 					if (typeof requirements.sector.examinable != "undefined") {
 						var requiredValue = requirements.sector.examinable;
 						var currentValue = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector) > 0;
@@ -1196,13 +1187,6 @@ define([
 							reason = requiredValue ? "There is nothing to examine." : "This sector can be examined";
 							return { value: 0, reason: this.getDisabledReasonVO(reason) };
 						}
-					}
-
-					if (typeof requirements.sector.investigatedPercent != "undefined") {
-						var range = requirements.sector.investigatedPercent;
-						var currentVal = statusComponent.getInvestigatedPercent() / 100;
-						let result = this.checkRequirementsRange(range, currentVal, "", "This sector has been fully investigated.");
-						if (result) return result;
 					}
 
 					if (typeof requirements.sector.spring != "undefined") {
@@ -1220,6 +1204,18 @@ define([
 							if (requiredStatus !== currentStatus) {
 								if (requiredStatus) reason = "Locale must be scouted.";
 								if (!requiredStatus) reason = "Locale already scouted.";
+								return { value: 0, reason: this.getDisabledReasonVO(reason) };
+							}
+						}
+					}
+
+					if (typeof requirements.sector.investigatedLocales !== "undefined") {
+						for (let localei in requirements.sector.investigatedLocales) {
+							let requiredStatus = requirements.sector.investigatedLocales[localei];
+							let currentStatus = statusComponent.isLocaleInvestigated(localei);
+							if (requiredStatus !== currentStatus) {
+								if (requiredStatus) reason = "Locale must be investigated.";
+								if (!requiredStatus) reason = "Locale already investigated.";
 								return { value: 0, reason: this.getDisabledReasonVO(reason) };
 							}
 						}
@@ -2217,24 +2213,33 @@ define([
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
+				case "investigate_locale":
 					let localeVO = this.getLocaleForScoutAction(sector, action);
 					let localei = GameGlobals.playerActionsHelper.getActionIDParam(action);
 					requirements = localeVO == null ? {} : localeVO.requirements;
 					requirements.sector = {};
 					requirements.sector.scouted = true;
 
+					let isScout = baseActionID.indexOf("scout_") >= 0;
+
 					if (localeVO) {
 						let localeType = localeVO.type;
 
-						if (LocaleConstants.isLocaleScoutActionMovement(localeType)) {
-							delete requirements.sector.scouted;
-						}
+						if (isScout) {
+							if (LocaleConstants.isLocaleScoutActionMovement(localeType)) {
+								delete requirements.sector.scouted;
+							}
 
-						if (!LocaleConstants.canBeScoutedAgain(localeType)) {
-							requirements.sector.scoutedLocales = {};
-							requirements.sector.scoutedLocales[localei] = false;
+							if (!LocaleConstants.canBeScoutedAgain(localeType)) {
+								requirements.sector.scoutedLocales = {};
+								requirements.sector.scoutedLocales[localei] = false;
+							}
+						} else {
+							requirements.sector.investigatedLocales = {};
+							requirements.sector.investigatedLocales[localei] = false;
 						}
 					}
+					
 					return requirements;
 				
 				case "clear_workshop":
@@ -2975,7 +2980,9 @@ define([
 		},
 
 		getLocaleForScoutAction: function (sector, action) {
+			if (!sector) return null;
 			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
+			if (!sectorLocalesComponent) return null;
 			let i = GameGlobals.playerActionsHelper.getActionIDParam(action);
 			return sectorLocalesComponent.locales[i];
 		},
@@ -2985,6 +2992,7 @@ define([
 			switch (baseActionID) {
 				case "scout_locale_i":
 				case "scout_locale_u":
+				case "investigate_locale":
 					// depending on locale
 					let sector = this.playerLocationNodes.head.entity;
 					let sectorStatusComponent = sector.get(SectorStatusComponent);
@@ -2997,7 +3005,8 @@ define([
 						case localeTypes.grove:
 						case localeTypes.greenhouse:
 						case localeTypes.depot:
-						case localeTypes.spacefactory:
+						case localeTypes.spaceFactory:
+						case localeTypes.isolationCenter:
 						case localeTypes.shelter:
 						case localeTypes.seedDepot:
 						case localeTypes.compound:

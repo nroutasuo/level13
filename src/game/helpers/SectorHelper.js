@@ -474,7 +474,7 @@ define([
 				var unScoutedLocales = this.getNumUnscoutedLocales(sector);
 				var sectorControlComponent = sector.get(SectorControlComponent);
 				var hasUnclearedWorkshop = workshopComponent != null && workshopComponent.isClearable && !sectorControlComponent.hasControlOfLocale(LocaleConstants.LOCALE_ID_WORKSHOP);
-				let canBeInvestigated = this.canBeInvestigated(sector);
+				let canBeInvestigated = this.hasInvestigateableLocale(sector);
 				let isCleared = unScoutedLocales <= 0 && !hasUnclearedWorkshop && !canBeInvestigated;
 				
 				if (isCleared) {
@@ -500,11 +500,22 @@ define([
 			return SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 		},
 		
-		canBeInvestigated: function (sector, ignoreScoutedStatus) {
+		hasInvestigateableLocale: function (sector, ignoreScoutedStatus) {
 			if (!GameGlobals.gameState.isFeatureUnlocked("investigate")) return false;
 			let statusComponent = sector.get(SectorStatusComponent);
 			let featuresComponent = sector.get(SectorFeaturesComponent);
-			return (ignoreScoutedStatus || statusComponent.scouted) && (featuresComponent.isInvestigatable || statusComponent.isFallbackInvestigateSector) && statusComponent.getInvestigatedPercent() < 100;
+			let localesComponent = sector.get(SectorLocalesComponent);
+
+			if (!ignoreScoutedStatus && !statusComponent.scouted) return false;
+
+			for (let i = 0; i < localesComponent.locales.length; i++) {
+				let localeVO = localesComponent.locales[i];
+				if (!localeVO.isInvestigatable()) continue;
+				if (statusComponent.isLocaleInvestigated(i)) continue;
+				return true;
+			}
+
+			return false;
 		},
 
 		getNumUnexaminedSpots: function (sector) {

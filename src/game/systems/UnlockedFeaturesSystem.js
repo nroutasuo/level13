@@ -33,7 +33,6 @@ define([
 			this.itemNodes = engine.getNodeList(ItemsNode);
 			
 			GlobalSignals.add(this, GlobalSignals.gameStartedSignal, this.onGameStarted);
-			GlobalSignals.add(this, GlobalSignals.slowUpdateSignal, this.slowUpdate);
 		},
 
 		removeFromEngine: function (engine) {
@@ -47,10 +46,6 @@ define([
 
 		update: function (time) {
 			this.updateUnlockedFeaturesDynamic();
-		},
-		
-		slowUpdate: function (time) {
-			this.updateDeadlocks();
 		},
 		
 		updateUnlockedFeaturesDynamic: function () {
@@ -88,33 +83,7 @@ define([
 			}
 		},
 		
-		updateDeadlocks: function () {
-			if (GameGlobals.gameState.isFeatureUnlocked("investigate") && !GameGlobals.playerHelper.hasItemBaseID("cache_insight") && GameGlobals.playerHelper.playerStatsNodes.head.insight.maxValue > 0) {
-				let insightUpgradeIDs = UpgradeConstants.getAllUpgradesRequiringInsight();
-				let lockedInsightUpgradeIDs = insightUpgradeIDs.filter(upgradeID => !GameGlobals.tribeHelper.hasUpgrade(upgradeID));
-				let totalCost = GameGlobals.playerActionsHelper.getTotalCosts(lockedInsightUpgradeIDs);
-				let totalCostInsight = totalCost.insight || 0;
-				let currentInsight = GameGlobals.playerHelper.playerStatsNodes.head.insight.value;
-				if (totalCostInsight > currentInsight && GameGlobals.levelHelper.getAllInvestigateableSectors().length == 0) {
-					let sectors = GameGlobals.levelHelper.addFallbackInvestigateSectors();
-					let positions = sectors.map(sector => sector.get(PositionComponent).getPosition());
-					log.w("insight missing! adding fallback investigate sectors: " + positions.join(","));
-					GameGlobals.playerHelper.addLogMessage("We have discovered new locations to investigate");
-					return;
-				}
-			}
-		},
-		
 		updateUnlockedFeaturesSanityChecks: function () {
-			let upgradeID = GameGlobals.upgradeEffectsHelper.getUpgradeIdForAction("investigate");
-			if (upgradeID) {
-				if (!GameGlobals.tribeHelper.hasUpgrade(upgradeID)) {
-					GameGlobals.playerActionFunctions.lockFeature("investigate")
-				} else {
-					GameGlobals.playerActionFunctions.unlockFeature("investigate")
-				}
-			}
-
 			if (!GameGlobals.gameState.unlockedFeatures.explorers) {
 				if (GameGlobals.playerHelper.getExplorers().length > 0) {
 					GameGlobals.playerActionFunctions.unlockFeature("explorers");

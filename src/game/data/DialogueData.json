@@ -8605,6 +8605,16 @@
 				"explorer_unique_prospector_story_seen_storehouse_01_p1"
 			]
 		},
+		"investigate_locale_intro_generic_01": {
+			"pages": [
+				"investigate_locale_intro_generic_01_p1"
+			]
+		},
+		"investigate_locale_intro_generic_first_01": {
+			"pages": [
+				"investigate_locale_intro_generic_first_01_p1"
+			]
+		},
 		"item_story_expedition_diary": {
 			"pages": [
 				"story.stories.expedition_diary_p1",
@@ -9430,15 +9440,15 @@
 				}
 			]
 		},
-		"locale_story_spacefactory": {
+		"locale_story_spaceFactory": {
 			"pages": [
 				{
 					"id": "intro",
-					"key": "story.stories.fall_locale_spacefactory_p1"
+					"key": "story.stories.fall_locale_spaceFactory_p1"
 				},
 				{
 					"id": "description",
-					"key": "story.stories.fall_locale_spacefactory_p2"
+					"key": "story.stories.fall_locale_spaceFactory_p2"
 				},
 				{
 					"id": "result",
