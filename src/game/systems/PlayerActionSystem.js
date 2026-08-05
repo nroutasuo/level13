@@ -7,6 +7,8 @@ define([
 	var PlayerActionSystem = Ash.System.extend({
 	
 		playerActionNodes: null,
+
+		context: "PlayerActionSystem",
 		
 		gameState: null,
 
@@ -63,8 +65,12 @@ define([
 			for (let i = 0; i < actionsToPerform.length; i++) {
 				let actionVO = actionsToPerform[i];
 				if (actionVO.action) {
-					let sector = GameGlobals.levelHelper.getSectorByPositionVO(actionVO.position);
-					this.playerActionFunctions.performAction(actionVO.action, actionVO.param, sector, actionVO.deductedCosts, actionVO.cb);
+					try {
+						let sector = GameGlobals.levelHelper.getSectorByPositionVO(actionVO.position);
+						this.playerActionFunctions.performAction(actionVO.action, actionVO.param, sector, actionVO.deductedCosts, actionVO.cb);
+					} catch (e) {
+						log.w("error performing action " + actionVO.action + ": "+ e, this);
+					}
 				}
 			}
 		},
