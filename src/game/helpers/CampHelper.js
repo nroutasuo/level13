@@ -153,7 +153,7 @@ define([
 
 		getCampWorkerProductionMultiplier: function (workerFactors, workerType) {
 			if (!workerType || !workerFactors) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				return 1;
 			}
 			return workerFactors[workerType] || 1;

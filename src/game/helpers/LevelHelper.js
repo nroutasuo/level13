@@ -121,7 +121,7 @@ define([
 				if (levelPosition.level === level) return node.entity;
 			}
 
-			debugger
+			if (GameConstants.isDebugVersion) debugger
 
 			log.w("getLevelEntityForPosition: could not find level entity for position: [" + level + "]")
 			return null;
@@ -173,7 +173,7 @@ define([
 			let isGenerated = GameGlobals.worldHelper.isLevelGenerated(level);
 
 			if (!isGenerated) {
-				debugger
+				if (GameConstants.isDebugVersion) debugger
 				return null;
 			}
 

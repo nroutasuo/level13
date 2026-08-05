@@ -1938,8 +1938,6 @@ define([
 				return result;
 			};
 
-			debugger
-
 			for (let i = 0; i < storyLocales.length; i++) {
 				let def = storyLocales[i];
 				if (levelVO.level != def.level) continue;
