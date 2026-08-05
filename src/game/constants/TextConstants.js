@@ -1145,7 +1145,9 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			if (localeType == localeTypes.shelter) localeType = localeTypes.house;
 			if (localeType == localeTypes.tradingpartner) localeType = localeTypes.camp;
 
-			let textKey = this.getTextKey("game.locales." + localeType + "_name", modifiers);
+			let localeTypeKey = localeType;
+			if (locale.textKey) localeTypeKey += "_" + locale.textKey;
+			let textKey = this.getTextKey("game.locales." + localeTypeKey + "_name", modifiers);
 
 			let defaultModifier = "game.locales.condition_" + condition + "_modifier";
 			

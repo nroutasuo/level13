@@ -9440,21 +9440,40 @@
 				}
 			]
 		},
-		"locale_story_spaceFactory": {
+
+		"locale_story_spaceFactory_fuel": {
 			"pages": [
 				{
 					"id": "intro",
-					"key": "story.stories.fall_locale_spaceFactory_p1"
+					"key": "story.stories.fall_locale_spaceFactory_fuel_p1"
 				},
 				{
 					"id": "description",
-					"key": "story.stories.fall_locale_spaceFactory_p2"
+					"key": "story.stories.fall_locale_spaceFactory_fuel_p2"
+				}
+			]
+				},
+		"locale_story_spaceFactory_material": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.fall_locale_spaceFactory_material_p1"
 				},
 				{
-					"id": "result",
-					"result": {
-						"action": "scout_locale_u"
+					"id": "description",
+					"key": "story.stories.fall_locale_spaceFactory_material_p2"
 					}
+			]
+		},
+		"locale_story_spaceFactory_assembly": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.fall_locale_spaceFactory_assembly_p1"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.fall_locale_spaceFactory_assembly_p2"
 				}
 			]
 		},

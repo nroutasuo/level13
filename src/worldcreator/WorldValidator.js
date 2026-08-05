@@ -50,19 +50,52 @@ define([
 			return { check: "validateWorld", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
-		// validates given levels, structure, sectors, features
-		// checks that the level is valid in itself, and also that it follows the template if one given
+		// validates given levels one by one and (if all generated) all together for world wide features
 		validateLevels: function (worldVO, worldTemplateVO, levels) {
 			let issues = [];
 
+			let individualLevelsResult = this.validateLevelsOneByOne(worldVO, worldTemplateVO, levels);
+			if (!individualLevelsResult.isValid) issues = issues.concat(individualLevelsResult.issues);
+
+			let allLevelsResult = this.validateLevelsAll(worldVO, worldTemplateVO, levels);
+			if (!allLevelsResult.isValid) issues = issues.concat(allLevelsResult.issues);
+			
+			return { check: "validateLevels", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+		},
+
+		// validates given levels, structure, sectors, features (calls validateLevel for all)
+		// checks that the level is valid in itself, and also that it follows the template if one given
+		validateLevelsOneByOne: function (worldVO, worldTemplateVO, levels) {
+			let issues = [];
+			
 			for (let i = 0; i < levels.length; i++) {
 				let l = levels[i];
 				let levelVO = worldVO.levels[l];
 				let validationResult = this.validateLevel(worldVO, worldTemplateVO, levelVO);
 				if (!validationResult.isValid) issues = issues.concat(validationResult.issues);
 			}
-			
-			return { check: "validateLevels", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+
+			return { check: "validateLevelsOneByOne", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
+		},
+
+		// validates given levels all together IF they are all levels for the world
+		// checks that a complete world is balanced across levels
+		validateLevelsAll: function (worldVO, worldTemplateVO, levels) {
+			let issues = [];
+
+			let isAllLevels = levels.indexOf(worldVO.topLevel) >= 0 && levels.indexOf(worldVO.bottomLevel) >= 0 && levels.length == worldVO.topLevel - worldVO.bottomLevel + 1;
+
+			if (isAllLevels) {
+				let allLevelsChecks = [
+					this.checkWorldLevelsLocales
+				];
+
+				for (let i = 0; i < allLevelsChecks.length; i++) {
+					let checkResult = allLevelsChecks[i](worldVO, worldTemplateVO);
+					if (!checkResult.isValid) issues = issues.concat(checkResult.issues);
+				}
+			}
+			return { check: "validateLevelsOneByOne", target: "worldVO", seed: worldVO.seed, isValid: issues.length === 0, issues: issues };
 		},
 
 		// validates a given level, structure, sectors, features
@@ -425,6 +458,32 @@ define([
 			return { isValid: issues.length === 0, issues: issues };
 		},
 
+		checkWorldLevelsLocales: function (worldVO, worldTemplateVO) {
+			let issues = [];
+
+			let minInvestigateLocales = 8;
+			let foundInvestigateLocales = [];
+
+			for (let l = worldVO.topLevel; l >= worldVO.bottomLevel; l--) {
+				let levelVO = worldVO.levels[l];
+				for (let s = 0; s < levelVO.sectors.length; s++) {
+					let sectorVO = levelVO.sectors[s];
+					for (let i = 0; i < sectorVO.locales.length; i++) {
+						let localeVO = sectorVO.locales[i];
+						if (localeVO.isInvestigatable()) {
+							foundInvestigateLocales.push(localeVO.type);
+						}
+					}
+				}
+			}
+
+			if (foundInvestigateLocales.length < minInvestigateLocales) {
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "world does not contain enough investigatable locales (" + foundInvestigateLocales.length + "/" + minInvestigateLocales + ") (" + foundInvestigateLocales.join(",") + ")" });
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
 		checkLevelDistricts: function (worldVO, levelVO) {
 			let issues = [];
 
@@ -494,6 +553,8 @@ define([
 				requiredPaths.push({ start: excursionStartPosition, end: sectorVO.position, maxlen: maxlen, isValidationOnly: true, type: pathType });
 			}
 
+			let getPathDesc = (path) => path.type + " from " + path.start + " to " + path.end;
+
 			// check lengths
 			for (let i = 0; i < requiredPaths.length; i++) {
 				let path = requiredPaths[i];
@@ -503,12 +564,12 @@ define([
 				let sectorPath = WorldCreatorRandom.findPath(worldVO, startPos, endPos, false, true, path.stage);
 
 				if (!sectorPath || sectorPath.length < 1) {
-					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path [" + path.type + "] on level " + levelVO.level + " is missing" });
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "required path [" + getPathDesc(path) + "] on level " + levelVO.level + " is missing" });
 					continue;
 				} 
 
 				if (path.maxlen > 0 && sectorPath.length > path.maxlen + 2) {
-					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path [" + path.type + "] on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ") (from " + startPos + " to " + endPos + ")" });
+					issues.push({ severity: WorldValidator.SEVERITY_MAJOR, desc: "required path [" + getPathDesc(path) + "] on level " + levelVO.level + " is too long (" + sectorPath.length + "/" + path.maxlen + ") (from " + startPos + " to " + endPos + ")" });
 				}
 
 				if (!path.isValidationOnly) {
@@ -516,7 +577,7 @@ define([
 						let pathPosition = sectorPath[s];
 						let pathSectorVO = levelVO.getSectorByPos(pathPosition);
 						if (pathSectorVO.criticalPathTypes.indexOf(path.type) < 0) {
-							issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "critical path " + path.type + " not marked on sector " + pathSectorVO.position });
+							issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "critical path " + getPathDesc(path) + " not marked on sector " + pathSectorVO.position });
 						}
 					}
 				}

@@ -1,4 +1,4 @@
-// generates basic features of sectors, stuff that should change less between versions, depend less on balancing / story content
+// generates basic features of sectors, stuff that should change less between versions
 define([
 	'ash',
 	'utils/MathUtils',
@@ -101,6 +101,7 @@ define([
 			this.generateStashes(seed, worldVO, levelTemplateVO, levelVO);
 			levelVO.predefinedExplorers = this.getPredefinedExplorers(seed, levelVO.level);
 			this.generateInvestigateSectors(seed, worldVO, levelVO);
+			this.generateLocalesForStory(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateLocalesForTradingPartners(seed, worldVO, levelTemplateVO, levelVO);	
 			this.generateLocalesForLuxuryResources(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateLocalesForBlueprints(seed, worldVO, levelTemplateVO, levelVO);
@@ -736,9 +737,21 @@ define([
 			let earlyZonesEntrance = [ WorldConstants.ZONE_ENTRANCE ];
 			let earlyZonesOnCampableLevels = [ WorldConstants.ZONE_PASSAGE_TO_CAMP, WorldConstants.ZONE_POI_1 ];
 
-			// TODO use template
 			let templateStasheDatas = WorldCreatorHelper.getStashDataFromTemplate(levelTemplateVO, levelVO);
 			
+			let getMatchingSectorsFromTemplate = function (source, stashType, itemIDs, localeType) {
+				let result = [];
+				for (let i = 0; i < templateStasheDatas.length; i++) {
+					let templateStashVO = templateStasheDatas[i].stashVO;
+					if (templateStashVO.source != source) continue;
+					if (templateStashVO.stashType != stashType) continue;
+					if (itemIDs.length && itemIDs.indexOf(templateStashVO.itemID) < 0) continue;
+					if (templateStashVO.localeType != localeType) continue;
+					result.push(templateStasheDatas[i].sectorVO);
+				}
+				return result;
+			};
+
 			let getStashSectorScore = function (sectorVO, stashType, itemIDs) {
 				let result = 0;
 				let isEasyToFind = stashType == "guaranteed-early" || stashType == "guaranteed-campable-early";
@@ -769,35 +782,45 @@ define([
 				return result;
 			};
 
-			let addStash = function (sectorVO, reason, stashType, numItems, itemID, localeType) {
+			let addStash = function (sectorVO, source, stashType, numItems, itemID, localeType) {
 				if (!sectorVO) return;
 				numItems = numItems || 1;
 				let stash = new StashVO(stashType, numItems, itemID, localeType);
+				stash.source = source;
 				sectorVO.stashes.push(stash);
 				if (stash.localeType) {
 					let locale = new LocaleVO(localeType, false, false);
 					SectorGeneratorHelper.addLocale(levelVO, sectorVO, locale);
 				}
-				// WorldCreatorLogger.i("add stash level " + l + " [" + reason + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
+				// WorldCreatorLogger.i("add stash level " + l + " [" + source + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
 			};
 			
-			let addStashes = function (sectorSeed, reason, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
+			let addStashes = function (sectorSeed, source, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
 				numStashes = WorldCreatorRandom.randomIntFromRange(sectorSeed, numStashes);
-				
-				let options = { excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
-				let numCandidates = numStashes * 3;
-				let stashSectorCandidates = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
-				let num = Math.min(numStashes, stashSectorCandidates.length);
-				
-				stashSectorCandidates = stashSectorCandidates.sort((a, b) => getStashSectorScore(b, stashType, itemIDs) - getStashSectorScore(a, stashType, itemIDs));
-				let stashSectors = stashSectorCandidates.slice(0, num);
+
+				let sectorsFromTemplate = getMatchingSectorsFromTemplate(source, stashType, itemIDs, localeType);
+				let missingSectors = numStashes - sectorsFromTemplate.length;
+
+				let stashSectors = sectorsFromTemplate;
+
+				if (missingSectors > 0) {
+					let options = { excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
+					let numCandidates = numStashes * 3;
+					let stashSectorCandidates = WorldCreatorRandom.randomSectors(sectorSeed, worldVO, levelVO, numCandidates, numCandidates + 1, options);
+					let num = Math.min(numStashes, stashSectorCandidates.length);
+					
+					stashSectorCandidates = stashSectorCandidates.sort((a, b) => getStashSectorScore(b, stashType, itemIDs) - getStashSectorScore(a, stashType, itemIDs));
+					let newSectors = stashSectorCandidates.slice(0, num);
+
+					stashSectors = stashSectors.concat(newSectors);
+				}
 				
 				for (let i = 0; i < stashSectors.length; i++) {
 					let stashSeed = sectorSeed / 2 + i * 3121;
 					let item = WorldCreatorRandom.randomItemFromArray(stashSeed, itemIDs);
 					let itemID = item.id ? item.id : item;
 					let numItems = WorldCreatorRandom.randomIntFromRange(stashSeed, numItemsPerStash);
-					addStash(stashSectors[i], reason, stashType, numItems, itemID, localeType);
+					addStash(stashSectors[i], source, stashType, numItems, itemID, localeType);
 				}
 			};
 			
@@ -1876,6 +1899,61 @@ define([
 			WorldCreatorLogger.i("add investigate sectors on level " + l + ": " + sectors.length);
 			for (let i = 0; i < sectors.length; i++) {
 				addSector(sectors[i]);
+			}
+		},
+
+		generateLocalesForStory: function (seed, worldVO, levelTemplateVO, levelVO) {
+			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
+
+			// TODO define hard coded locales in story constants or as input rather than hard-coding here
+			// NOTE: keep texts referring to fall story facilities up to date if changing levels here
+
+			let storyLocales = [
+				{ type: localeTypes.repairshop, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 3), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 4 },
+				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 3 },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 7), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 0 },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+				{ type: localeTypes.spaceFactory, textKey: "material", level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.healthCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 5 },
+				{ type: localeTypes.butcher, level: WorldCreatorHelper.getLastLevelForCamp(seed, 11), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 4 },
+				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 8 },
+				{ type: localeTypes.spaceFactory, textKey: "fuel", level: WorldCreatorHelper.getFirstLevelForCamp(seed, 12), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.spaceFactory, textKey: "assembly", level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+				{ type: localeTypes.clinic, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+				{ type: localeTypes.isolationCenter, textKey: "crew", level: WorldCreatorHelper.getLastLevelForCamp(seed, 13), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
+				{ type: localeTypes.isolationCenter, textKey: "passenger", level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
+				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false, sectorTypes: [ ], activity: 5 },
+			];
+
+			let getSectorScore = (sectorVO, def) => {
+				let result = 0;
+				let districtVO = levelVO.districts[sectorVO.districtIndex];
+				if (def.sectorTypes.indexOf(sectorVO.sectorType) >= 0) result += 3;
+				if (def.sectorTypes.indexOf(districtVO.type) >= 0) result += 1;
+				let activityDiff = Math.abs(def.activity - sectorVO.activity);
+				result += (10 - activityDiff)/10;
+				return result;
+			};
+
+			debugger
+
+			for (let i = 0; i < storyLocales.length; i++) {
+				let def = storyLocales[i];
+				if (levelVO.level != def.level) continue;
+				let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
+				let sector = WorldCreatorRandom.randomSectorScored(seed, worldVO, levelVO, options, (s) => getSectorScore(s, def));
+				if (def.type == localeTypes.grove) sector.sunlit = 1;
+				if (def.type == localeTypes.grove) sector.sunlitReason = SectorConstants.SUNLIT_REASON_MIRROR;
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.food = Math.max(sector.resourcesScavengable.food, 3);
+				if (def.type == localeTypes.grove) sector.resourcesScavengable.water = Math.max(sector.resourcesScavengable.water, 3);
+				sector.hazards.radiation = 0;
+				sector.hazards.poison = 0;
+				let localeVO = new LocaleVO(def.type, def.isEarly, def.isEarly);
+				localeVO.textKey = def.textKey || null;
+				SectorGeneratorHelper.addLocale(levelVO, sector, localeVO);
 			}
 		},
 

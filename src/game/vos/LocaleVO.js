@@ -56,6 +56,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		hasBlueprints: false,
 		explorerID: null,
 		luxuryResource: null,
+		textKey: null, // optional addition to text key for texts like name to create superficial variations
 	
 		constructor: function (type, isEasy, isEarly) {
 			this.type = type;
@@ -376,6 +377,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			if (this.explorerID) copy.explorerID = this.explorerID;
 			copy.hasBlueprints = this.hasBlueprints ? 1 : 0;
 			if (this.luxuryResource) copy.luxuryResource = this.luxuryResource;
+			if (this.textKey) copy.textKey = this.textKey;
 			return copy;
 		},
 
@@ -387,6 +389,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 			this.explorerID = saveObject.explorerID || null;
 			this.hasBlueprints = saveObject.hasBlueprints ? true : false;
 			this.luxuryResource = saveObject.luxuryResource || null;
+			this.textKey = saveObject.textKey || null;
 
 			this.updateCostsAndRequirements();
 		},

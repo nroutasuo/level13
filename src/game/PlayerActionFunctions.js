@@ -913,7 +913,7 @@ define(['ash',
 				GlobalSignals.localeScoutedSignal.dispatch(localeVO.type);
 			};
 
-			let customSequence = this.getScoutLocaleCustomSequence(localeType, action, successCallback);
+			let customSequence = this.getScoutLocaleCustomSequence(localeVO, action, successCallback);
 			if (customSequence) {
 				this.startSequence(customSequence, localeName);
 				return;
@@ -1033,7 +1033,12 @@ define(['ash',
 			return sequenceSteps;
 		},
 
-		getScoutLocaleCustomSequence: function (localeType, action, successCallback) {
+		getScoutLocaleCustomSequence: function (localeVO, action, successCallback) {
+			let localeType = localeVO.type;
+			let textKeySuffix = localeVO.textKey;
+
+			let rewardVO = GameGlobals.playerActionResultsHelper.getResultVOByAction(action);
+			
 			if (localeType == localeTypes.grove) {
 				let groveSuccessCallback = function (cb) {
 					GameGlobals.playerHelper.addPerk(PerkConstants.perkIds.blessed);
@@ -1076,7 +1081,8 @@ define(['ash',
 
 			if (localeType == localeTypes.spaceFactory) {
 				return[
-					{ type: "dialogue", dialogueID: "locale_story_spaceFactory" },
+					{ type: "dialogue", dialogueID: "locale_story_spaceFactory" + "_" + textKeySuffix },
+					{ type: "result", result: rewardVO },
 					{ type: "storyFlag", flagID: StoryConstants.flags.FALL_SEEN_SPACEFACTORY, value: true },
 					{ type: "custom", f: successCallback },
 					{ type: "log", textKey: "Scouted a manufacturing plant." }
