@@ -1,4 +1,3 @@
-// Defines a path constraint used by the WorldBuilder
 define(['ash'], function (Ash) {
 
 	let StashVO = Ash.Class.extend({
@@ -7,6 +6,7 @@ define(['ash'], function (Ash) {
 		amount: 0,
 		itemID: null,
 		localeType: null, // optional
+		source: null, // world gen
 	
 		constructor: function (stashType, amount, itemID, localeType) {
 			this.stashType = stashType;

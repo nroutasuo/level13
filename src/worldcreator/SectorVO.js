@@ -31,7 +31,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.isPassageUp = false;
 			this.itemsScavengeable = [];
 			this.locales = [];
-			this.movementBlockers = {};
+			this.movementBlockers = {}; // direction -> type
 			this.numLocaleEnemies = {}; // localeID -> int
 			this.passageDownType = null;
 			this.passageUpType = null;

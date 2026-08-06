@@ -106,7 +106,7 @@ define([
 			this.generateLocalesForLuxuryResources(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateLocalesForBlueprints(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateLocalesForSectorFeatures(seed, worldVO, levelTemplateVO, levelVO);
-			this.generateMovementBlockers(seed, worldVO, levelVO);
+			this.generateMovementBlockers(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateHeaps(seed, worldVO, levelVO);
 			this.generateItems(seed, worldVO, levelVO);
 			
@@ -417,7 +417,7 @@ define([
 			}
 		},
 		
-		generateMovementBlockers: function (seed, worldVO, levelVO) {
+		generateMovementBlockers: function (seed, worldVO, levelTemplateVO, levelVO) {
 			// TODO use existing from template where applicable (for random ones)
 
 			let l = levelVO.level;
@@ -739,7 +739,7 @@ define([
 
 			let templateStasheDatas = WorldCreatorHelper.getStashDataFromTemplate(levelTemplateVO, levelVO);
 			
-			let getMatchingSectorsFromTemplate = function (source, stashType, itemIDs, localeType) {
+			let getMatchingStashesFromTemplate = function (source, stashType, itemIDs, localeType) {
 				let result = [];
 				for (let i = 0; i < templateStasheDatas.length; i++) {
 					let templateStashVO = templateStasheDatas[i].stashVO;
@@ -747,7 +747,7 @@ define([
 					if (templateStashVO.stashType != stashType) continue;
 					if (itemIDs.length && itemIDs.indexOf(templateStashVO.itemID) < 0) continue;
 					if (templateStashVO.localeType != localeType) continue;
-					result.push(templateStasheDatas[i].sectorVO);
+					result.push({ sectorVO: templateStasheDatas[i].sectorVO, itemID: templateStashVO.itemID });
 				}
 				return result;
 			};
@@ -792,16 +792,16 @@ define([
 					let locale = new LocaleVO(localeType, false, false);
 					SectorGeneratorHelper.addLocale(levelVO, sectorVO, locale);
 				}
-				// WorldCreatorLogger.i("add stash level " + l + " [" + source + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
+				// log.i("add stash level " + l + " [" + source + "]: " + itemID + " x" + numItems + " " + sectorVO.position + " " + sectorVO.zone);
 			};
 			
 			let addStashes = function (sectorSeed, source, stashType, itemIDs, numStashes, numItemsPerStash, excludedZones, localeType) {
 				numStashes = WorldCreatorRandom.randomIntFromRange(sectorSeed, numStashes);
 
-				let sectorsFromTemplate = getMatchingSectorsFromTemplate(source, stashType, itemIDs, localeType);
-				let missingSectors = numStashes - sectorsFromTemplate.length;
+				let stashesFromTemplate = getMatchingStashesFromTemplate(source, stashType, itemIDs, localeType);
+				let missingSectors = numStashes - stashesFromTemplate.length;
 
-				let stashSectors = sectorsFromTemplate;
+				let stashes = stashesFromTemplate;
 
 				if (missingSectors > 0) {
 					let options = { excludingFeature: "isCamp", excludedZones: excludedZones, filter: SectorGeneratorHelper.isValidSectorForLocale };
@@ -812,15 +812,21 @@ define([
 					stashSectorCandidates = stashSectorCandidates.sort((a, b) => getStashSectorScore(b, stashType, itemIDs) - getStashSectorScore(a, stashType, itemIDs));
 					let newSectors = stashSectorCandidates.slice(0, num);
 
-					stashSectors = stashSectors.concat(newSectors);
+					for (let i = 0; i < num; i++) {
+						stashes.push({ sectorVO: newSectors[i], itemID: null });
+					}
 				}
 				
-				for (let i = 0; i < stashSectors.length; i++) {
+				for (let i = 0; i < stashes.length; i++) {
+					let sectorVO = stashes[i].sectorVO;
 					let stashSeed = sectorSeed / 2 + i * 3121;
+
+					// pick item id from template if defined, otherwise from randomised one, which can be a raw id or an item def
 					let item = WorldCreatorRandom.randomItemFromArray(stashSeed, itemIDs);
-					let itemID = item.id ? item.id : item;
+					let itemID = stashes[i].itemID ? stashes[i].itemID : item.id ? item.id : item;
+
 					let numItems = WorldCreatorRandom.randomIntFromRange(stashSeed, numItemsPerStash);
-					addStash(stashSectors[i], source, stashType, numItems, itemID, localeType);
+					addStash(sectorVO, source, stashType, numItems, itemID, localeType);
 				}
 			};
 			
