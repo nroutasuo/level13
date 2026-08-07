@@ -3097,8 +3097,8 @@
         },
         "investigate_locale": {
             "busy": false,
-            "featureUnlocked": {
-                "investigate": true
+            "upgrades": {
+                "unlock_building_researchcenter": true
             },
             "inCamp": false,
             "sector": {

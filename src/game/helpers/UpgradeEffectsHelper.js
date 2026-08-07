@@ -270,6 +270,12 @@ define([
 			}
 			return events;
 		},
+
+		getUnlockedFeatures: function (upgradeID) {
+			let features = this.getUnlockedGeneralActions(upgradeID);
+			if (features.indexOf("investigate_locale") >= 0) features.push("investigate");
+			return features;
+		},
 		
 		getUnlockedGeneralActions: function (upgradeID) {
 			return this.getUnlockedActions(upgradeID, function (action) {

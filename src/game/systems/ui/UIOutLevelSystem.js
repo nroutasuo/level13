@@ -936,14 +936,14 @@ define([
 			let isScouted = data.isScouted;
 			let canBeScouted = !isScouted || LocaleConstants.canBeScoutedAgain(locale.type);
 			let canBeInvestigated = data.isInvestigatable;
-			let showInvestigate = isScouted && canBeInvestigated;
+			let showInvestigate = isScouted && canBeInvestigated && GameGlobals.gameState.isFeatureUnlocked("investigate");
 
 			GameGlobals.uiFunctions.toggle(li.$button, !showInvestigate);
 			GameGlobals.uiFunctions.toggle(li.$investigateButton, showInvestigate);
 			
 			let info = "";
 			if (!canBeScouted) {
-				if (canBeInvestigated) {
+				if (showInvestigate) {
 					let investigatedPercent = data.investigatedPercent;
 					if (investigatedPercent >= 100) {
 						info += "Fully investigated";

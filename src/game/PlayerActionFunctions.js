@@ -3114,7 +3114,7 @@ define(['ash',
 			
 			GameGlobals.uiFunctions.showInfoPopup(title, message, "Continue", null, null, true, false);
 			
-			let unlockedGeneralActions = GameGlobals.upgradeEffectsHelper.getUnlockedGeneralActions(upgradeID);
+			let unlockedGeneralActions = GameGlobals.upgradeEffectsHelper.getUnlockedFeatures(upgradeID);
 			this.unlockFeatures(unlockedGeneralActions);
 		},
 
