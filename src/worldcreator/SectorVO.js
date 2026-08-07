@@ -13,7 +13,7 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.criticalPathTypes = [];
 			this.damage = 0; // 0-10
 			this.districtIndex = 0;
-			this.examineSpots = [];
+			this.examineSpots = []; // list of id
 			this.features = []; // list of type
 			this.graffiti = 0;
 			this.hasBuildableWorkshop = false;
@@ -26,7 +26,6 @@ function (Ash, WorldConstants, WorldCreatorConstants, WorldCreatorLogger, Resour
 			this.hazards = new EnvironmentalHazardsVO();
 			this.heapResource = null;
 			this.isCamp = false;
-			this.isInvestigatable = false;
 			this.isPassageDown = false;
 			this.isPassageUp = false;
 			this.itemsScavengeable = [];

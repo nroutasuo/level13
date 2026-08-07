@@ -399,7 +399,6 @@ define([
 			let getExamineSpotSectorScore = function (sectorVO, spot) {
 				let score = 0;
 				score -= sectorVO.locales.length * 10;
-				if (sectorVO.isInvestigatable) score -= 10;
 
 				if (spot.positionParams.environmentTags) {
 					score += getNumMatchingEnvironmentTags(sectorVO, spot);

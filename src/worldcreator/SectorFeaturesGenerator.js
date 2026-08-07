@@ -100,7 +100,6 @@ define([
 			// level-wide features 3
 			this.generateStashes(seed, worldVO, levelTemplateVO, levelVO);
 			levelVO.predefinedExplorers = this.getPredefinedExplorers(seed, levelVO.level);
-			this.generateInvestigateSectors(seed, worldVO, levelVO);
 			this.generateLocalesForStory(seed, worldVO, levelTemplateVO, levelVO);
 			this.generateLocalesForTradingPartners(seed, worldVO, levelTemplateVO, levelVO);	
 			this.generateLocalesForLuxuryResources(seed, worldVO, levelTemplateVO, levelVO);
@@ -1861,50 +1860,6 @@ define([
 					var ingredient = this.itemsHelper.getUsableIngredient(null, r1);
 					if (ingredient) addItemLocation(ingredient.id, stageVO.stage, "random");
 				}
-			}
-		},
-		
-		generateInvestigateSectors: function (seed, worldVO, levelVO) {
-			if (levelVO.numInvestigateSectors < 1) return;
-			
-			let addSector = function (sectorVO) {
-				sectorVO.isInvestigatable = true;
-			};
-			
-			let getInvestigateSectorScore = function (sectorVO) {
-				let score = 0;
-				score -= sectorVO.criticalPathTypes.length;
-				score -= sectorVO.locales.length;
-				score -= sectorVO.waymarks.length;
-				switch (sectorVO.sectorType) {
-					case SectorConstants.SECTOR_TYPE_RESIDENTIAL: score += 1; break;
-					case SectorConstants.SECTOR_TYPE_INDUSTRIAL: score += 3; break;
-					case SectorConstants.SECTOR_TYPE_MAINTENANCE: score += 0; break;
-					case SectorConstants.SECTOR_TYPE_COMMERCIAL: score += 1; break;
-					case SectorConstants.SECTOR_TYPE_PUBLIC: score += 3; break;
-					case SectorConstants.SECTOR_TYPE_EMPTY: score += 0; break;
-				}
-				return score;
-			};
-			
-			let l = levelVO.level;
-			let campOrdinal = WorldCreatorHelper.getCampOrdinal(seed, levelVO.level);
-			let startPos = levelVO.getExcursionStartPosition();
-			
-			let excludedZones = [ WorldConstants.ZONE_ENTRANCE ];
-			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
-			let pathConstraints = [];
-			
-			let pathType = WorldCreatorConstants.CRITICAL_PATH_TYPE_CAMP_TO_POI_2;
-			let maxLength = WorldCreatorConstants.getMaxPathLength(campOrdinal, pathType);
-			pathConstraints.push(new PathConstraintVO(startPos, maxLength, pathType));
-			
-			let options = { excludingFeature: excludedFeatures, pathConstraints: pathConstraints, excludedZones: excludedZones };
-			let count = levelVO.numInvestigateSectors;
-			let sectors = WorldCreatorRandom.randomSectorsScored(seed, worldVO, levelVO, count, count + 1, options, getInvestigateSectorScore);
-			WorldCreatorLogger.i("add investigate sectors on level " + l + ": " + sectors.length);
-			for (let i = 0; i < sectors.length; i++) {
-				addSector(sectors[i]);
 			}
 		},
 

@@ -25,7 +25,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.hazards = sectorVO.hazards;
 			this.heapResource = sectorVO.heapResource;
 			this.isCamp = sectorVO.isCamp;
-			this.isInvestigatable = sectorVO.isInvestigatable;
 			this.isPassageDown = sectorVO.isPassageDown;
 			this.isPassageUp = sectorVO.isPassageUp;
 			this.itemsScavengeable = sectorVO.itemsScavengeable;
@@ -66,7 +65,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			copy.hazards = this.hazards.getCustomSaveObject();
 			if (this.heapResource) copy.heapResource = this.heapResource;
 			if (this.isCamp) copy.isCamp = this.isCamp ? 1 : 0;
-			if (this.isInvestigatable) copy.isInvestigatable = this.isInvestigatable ? 1 : 0;
 			if (this.isPassageDown) copy.isPassageDown = this.isPassageDown ? 1 : 0;
 			if (this.isPassageUp) copy.isPassageUp = this.isPassageUp ? 1 : 0;
 			if (this.itemsScavengeable.length > 0) copy.itemsScavengeable = this.itemsScavengeable;
@@ -116,7 +114,6 @@ function (Ash, WorldConstants, ResourcesVO, EnvironmentalHazardsVO, LocaleVO, Po
 			this.hazards.customLoadFromSave(saveObject.hazards);
 			this.heapResource = saveObject.heapResource || null;
 			this.isCamp = saveObject.isCamp ? true : false;
-			this.isInvestigatable = saveObject.isInvestigatable ? true : false;
 			this.isPassageDown = saveObject.isPassageDown ? true : false;
 			this.isPassageUp = saveObject.isPassageUp ? true : false;
 			this.itemsScavengeable = saveObject.itemsScavengeable || [];

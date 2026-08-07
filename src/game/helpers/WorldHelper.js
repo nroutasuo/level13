@@ -427,7 +427,6 @@ define([
 			sectorFeatures.hasClearableWorkshop = sectorVO.hasClearableWorkshop;
 			sectorFeatures.hasBuildableWorkshop = sectorVO.hasBuildableWorkshop;
 			sectorFeatures.isCamp = sectorVO.isCamp;
-			sectorFeatures.isInvestigatable = sectorVO.isInvestigatable;
 			sectorFeatures.stashes = sectorVO.stashes || null;
 			sectorFeatures.waymarks = sectorVO.waymarks || [];
 			sectorFeatures.heapResource = sectorVO.heapResource || null;
