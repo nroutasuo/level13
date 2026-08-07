@@ -51,7 +51,7 @@ define(function () {
 				key = key.textKey;
 			}
 
-			fallbackKey || key.replace(/_\d*_/, "_");
+			fallbackKey = fallbackKey || key.replace(/_\d*_/, "_");
 
 			if (!this.hasKey(key) && this.hasKey(fallbackKey)) {
 				key = fallbackKey;
