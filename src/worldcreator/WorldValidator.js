@@ -1,12 +1,14 @@
 define([
 	'ash',
 	'utils/MathUtils',
+	'utils/ArrayUtils',
 	'utils/ObjectUtils',
 	'game/helpers/ItemsHelper',
 	'game/constants/LevelConstants',
 	'game/constants/MovementConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/WorldConstants',
 	'game/constants/UpgradeConstants',
 	'worldcreator/WorldCreatorConstants',
@@ -14,7 +16,7 @@ define([
 	'worldcreator/WorldCreatorRandom',
 	'worldcreator/WorldTemplateVO',
 ], function (
-	Ash, MathUtils, ObjectUtils, ItemsHelper, LevelConstants, MovementConstants, PositionConstants, SectorConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
+	Ash, MathUtils, ArrayUtils, ObjectUtils, ItemsHelper, LevelConstants, MovementConstants, PositionConstants, SectorConstants, StoryConstants, WorldConstants, UpgradeConstants, WorldCreatorConstants, WorldCreatorHelper, WorldCreatorRandom, WorldTemplateVO
 ) {
 	let context = "WorldValidator";
 
@@ -119,6 +121,7 @@ define([
 				this.checkLevelNumberOfLocales,
 				this.checkLevelMovementBlockers,
 				this.checkLevelLight,
+				this.checkLevelExamineSpots,
 				this.checkLevelFeatures,
 				this.checkLevelResources,
 				this.checkLevelMatchesTemplate,
@@ -940,6 +943,60 @@ define([
 				if (!levelVO.getSector(passageDownPosition.sectorX, passageDownPosition.sectorY).hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) {
 					issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "level passage not in giga center on level " + levelVO.level });
 				}
+			}
+
+			return { isValid: issues.length === 0, issues: issues };
+		},
+
+		checkLevelExamineSpots: function (worldVO, levelVO) {
+			let issues = [];
+
+			let expectedExamineSpots = [];
+			let optionalExamineSpots = [];
+
+			let definitions = StoryConstants.sectorExamineSpots;
+
+			for (let i = 0; i < definitions.length; i++) {
+				let def = definitions[i];
+				let campOrdinal = def.positionParams.campOrdinal;
+				let level = 13;
+
+				if (campOrdinal == "any_valid") {
+					optionalExamineSpots.push(def.id);
+					continue;
+				} else {
+					let levels = WorldCreatorHelper.getLevelsForCamp(worldVO.seed, campOrdinal);
+					let levelIndex = def.positionParams.levelIndex || 0;
+					level = levels[Math.min(levelIndex, levels.length - 1)];
+				}
+
+				if (level != levelVO.level) continue;
+				
+				expectedExamineSpots.push(def.id);
+			}
+
+			let foundExamineSpots = [];
+
+			for (let s = 0; s < levelVO.sectors.length; s++) {
+				let sectorVO = levelVO.sectors[s];
+
+				if (sectorVO.examineSpots.length < 1) continue;
+
+				if (sectorVO.examineSpots.length > 1) {
+					// more than one currently not supported by UI/action/reward code (always assumes [0])
+					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "sector at " + sectorVO.position + " has more than one examine spot" });
+				}
+
+				for (let i = 0; i < sectorVO.examineSpots.length; i++) {
+					let examineSpotID = sectorVO.examineSpots[i];
+					if (optionalExamineSpots.indexOf(examineSpotID) >= 0) continue;
+					foundExamineSpots.push(examineSpotID);
+				}
+			}
+
+			let arrayComparison = ArrayUtils.compare(foundExamineSpots, expectedExamineSpots);
+			if (!arrayComparison) {
+				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "level " + levelVO.level + " expected and found examine spots do not match ([" + expectedExamineSpots.concat(",") + "], [" + foundExamineSpots.join(",")  + "])" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };

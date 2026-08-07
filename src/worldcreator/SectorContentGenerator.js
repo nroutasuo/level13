@@ -370,10 +370,8 @@ define([
 					level = "any";
 				} else {
 					let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
-					let levelIndex = def.positionParams.levelIndex;
-					level = typeof levelIndex === "undefined" ?
-						WorldCreatorRandom.randomItemFromArray(seed, levels) :
-						levels[Math.min(levelIndex, levels.length - 1)];
+					let levelIndex = def.positionParams.levelIndex || 0;
+					level = levels[Math.min(levelIndex, levels.length - 1)];
 				}
 
 				if (!result[level]) result[level] = [];
@@ -406,6 +404,8 @@ define([
 				if (spot.positionParams.environmentTags) {
 					score += getNumMatchingEnvironmentTags(sectorVO, spot);
 				}
+				
+				if (spot.positionParams.sectorType && spot.positionParams.sectorType == sectorVO.sectorType) score++;
 
 				return score;
 			};
@@ -423,7 +423,6 @@ define([
 				let filter = function (sectorVO) {
 					if (sectorVO.examineSpots.length > 0) return false;
 					if (sectorVO.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return false;
-					if (spot.positionParams.sectorType && spot.positionParams.sectorType != sectorVO.sectorType) return false;
 					if (spot.positionParams.sunlit && !sectorVO.sunlit) return false;
 					if (isOptional && spot.positionParams.environmentTags && getNumMatchingEnvironmentTags(sectorVO, spot) <= 0) return false;
 					return true;
@@ -435,7 +434,7 @@ define([
 				let sectors = WorldCreatorRandom.randomSectorsScored(1000 + i * 66, worldVO, levelVO, 1, 2, options, (s) => getExamineSpotSectorScore(s, spot));
 
 				if (sectors.length == 0) {
-					if (!isOptional) WorldCreatorLogger.w("could not find sector for examine spot: " + spot.id);
+					if (!isOptional) WorldCreatorLogger.e("could not find sector for examine spot: " + spot.id);
 					continue;
 				}
 

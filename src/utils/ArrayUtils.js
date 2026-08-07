@@ -20,7 +20,26 @@ define([], function () {
 			}
 
 			return false;
-		}
+		},
+
+		compare: function (a1, a2) {
+			if (a1.length != a2.length) {
+				return false;
+			}
+
+			a1 = a1.slice();
+			a1.sort();
+			a2 = a2.slice();
+			a2.sort();
+
+			for (var i = 0; i < a1.length; i++) {
+				if (a1[i] != a2[i]) {
+					return false;
+				}
+			}
+
+			return true;
+		},
 
 	};
 
