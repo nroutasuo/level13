@@ -959,9 +959,24 @@
             }
         },
         {
+            "id": "story_fall_launchsite_ruins",
+            "positionParams": {
+                "campOrdinal": 14,
+                "levelIndex": 1,
+                "sectorType": "industrial",
+                "sunlit": true
+            },
+            "reward": {
+                "itemID": "cache_insight_material"
+            }
+        },
+        {
             "id": "story_fall_escape_pod",
             "positionParams": {
                 "campOrdinal": 15
+            },
+            "reward": {
+                "itemID": "cache_insight_material"
             },
             "storyTag": "spaceDebris"
         },
@@ -970,18 +985,27 @@
             "positionParams": {
                 "campOrdinal": 15
             },
+            "reward": {
+                "itemID": "cache_insight_material"
+            },
             "storyTag": "spaceDebris"
         },
         {
             "id": "story_fall_sundome_shards_01",
             "positionParams": {
                 "campOrdinal": 15
+            },
+            "reward": {
+                "itemID": "cache_insight_material"
             }
         },
         {
             "id": "story_fall_sundome_shards_02",
             "positionParams": {
                 "campOrdinal": 15
+            },
+            "reward": {
+                "itemID": "cache_insight_material"
             }
         },
         {

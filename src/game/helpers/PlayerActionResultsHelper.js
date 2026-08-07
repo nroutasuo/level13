@@ -13,6 +13,7 @@ define([
 	'game/constants/PlayerActionConstants',
 	'game/constants/LogConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/TextConstants',
 	'game/constants/ItemConstants',
 	'game/constants/PerkConstants',
@@ -55,6 +56,7 @@ define([
 	PlayerActionConstants,
 	LogConstants,
 	SectorConstants,
+	StoryConstants,
 	TextConstants,
 	ItemConstants,
 	PerkConstants,
@@ -338,15 +340,20 @@ define([
 		},
 
 		getExamineRewards: function () {
-			let rewards = new ResultVO("examine");
+			let resultVO = new ResultVO("examine");
+
+			let featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let spotID = featuresComponent.examineSpots[0];
+			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 			
-			if (GameGlobals.gameState.isFeatureUnlocked("insight")) {
-				rewards.gainedInsight = 1;
+			if (spotDef.reward) {
+				let itemID = spotDef.itemID;
+	 			resultVO.gainedItems = [ this.getSpecificRewardItem(1, [ itemID ]) ];
 			} else {
-				this.addCovertibleTribeStatRewards(rewards, "evidence", 1);
+				this.addCovertibleTribeStatRewards(resultVO, "evidence", 1);
 			}
 			
-			return rewards;
+			return resultVO;
 		},
 
 		getScoutRewards: function () {
@@ -593,7 +600,6 @@ define([
 				if (localesComponent.locales.length > 0) score += 20;
 				if (featuresComponent.itemsScavengeable.length > 0) score += 10;
 				if (featuresComponent.hasSpring) score += 10;
-				if (featuresComponent.isInvestigatable) score += 5;
 				if (featuresComponent.resourcesCollectable.getTotal() > 0) score += 5;
 				if (featuresComponent.resourcesCollectable.length > 0) score += 5;
 
@@ -1873,16 +1879,16 @@ define([
 			return ItemConstants.getSectorItemTags(sectorFeatures.sectorType, sectorFeatures.wear, sectorFeatures.hazards, sectorFeatures.ground, sectorFeatures.sunlit);
 		},
 
-		getSpecificRewardItem: function (itemProbability, possibleItemIds) {
-			if (!possibleItemIds || possibleItemIds.length === 0) {
+		getSpecificRewardItem: function (itemProbability, possibleItemIDs) {
+			if (!possibleItemIDs || possibleItemIDs.length === 0) {
 				log.w("No valid reward items for getSpecificRewardItem");
 				return null;
 			}
 
 			if (Math.random() > itemProbability) return null;
 			
-			let index = MathUtils.getWeightedRandom(0, possibleItemIds.length);
-			let itemID = possibleItemIds[index];
+			let index = MathUtils.getWeightedRandom(0, possibleItemIDs.length);
+			let itemID = possibleItemIDs[index];
 			let itemFilter = item => item.scavengeRarity > 0 || item.localeRarity > 0 || item.tradeRarity > 0; // filter out unique and super rare items like sunita's backpack
 			let item = ItemConstants.getItemDefinitionByID(itemID, true) || ItemConstants.getRandomItemDefinitionByPartialItemID(itemID, itemFilter);
 
