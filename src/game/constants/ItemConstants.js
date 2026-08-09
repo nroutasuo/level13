@@ -107,8 +107,9 @@ function (Ash, ItemData, Text, ArrayUtils, MathUtils, PlayerActionConstants, Sec
 			community: "community", // items related to news or propaganda or gossip, found in places where people lived and worked relatively recently
 			electric: "electric", // items that require electricity to function, found in high tech areas
 			equipment: "equipment", // equipment related to surviving in the City, found in industrial areas and areas inhabited since the Fall
-			household: "household", // items found in all kinds of homes and maybe also workplaces
+			government: "government", // related to the City Govenrmnet, found in public sectors
 			history: "history", // from before the Government, found in public sectors, museums, libraries 
+			household: "household", // items found in all kinds of homes and maybe also workplaces
 			industrial: "industrial", // related to industry, found in industrial sectors and factories
 			keepsake: "keepsake", // something with sentimental value, found in residential sectors and locales
 			maintenance: "maintenance", // related to the maintenance and infrastructure of the City, found in maintenance areas
@@ -254,8 +255,9 @@ function (Ash, ItemData, Text, ArrayUtils, MathUtils, PlayerActionConstants, Sec
 					tags.push(ItemConstants.itemTags.book);
 					tags.push(ItemConstants.itemTags.community);
 					tags.push(ItemConstants.itemTags.history);
-					tags.push(ItemConstants.itemTags.science);
 					tags.push(ItemConstants.itemTags.medical);
+					tags.push(ItemConstants.itemTags.science);
+					if (wear < 5) tags.push(ItemConstants.itemTags.government);
 					break;
 				case SectorConstants.SECTOR_TYPE_COMMERCIAL:
 					tags.push(ItemConstants.itemTags.clothing);

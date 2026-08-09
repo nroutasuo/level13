@@ -1770,7 +1770,7 @@ define([
 			
 			// choose rarity and camp ordinal thresholds
 			let maxPossibleRarity = Math.min(campOrdinal * 4, 10);
-			let maxRarity = MathUtils.clamp(maxPossibleRarity * Math.random(), 2, 10);
+			let maxRarity = MathUtils.clamp(Math.round(maxPossibleRarity * Math.random()), 2, 10);
 			
 			let maxCampOrdinalBonus = 0;
 			if (step == WorldConstants.CAMP_STEP_END) maxCampOrdinalBonus++;

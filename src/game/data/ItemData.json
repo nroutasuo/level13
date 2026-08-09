@@ -745,25 +745,27 @@
         "type": "voucher"
     },
     "cache_insight_research_1": {
+        "campOrdinalRequired": 9,
         "icon": "img/items/clipboard.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "rarityLocale": -1,
+        "rarityLocale": 10,
         "rarityScavenge": -1,
         "rarityTrade": -1,
         "tags": [ "old", "book", "science", "exodus" ],
         "type": "voucher"
     },
     "cache_insight_report_1": {
+        "campOrdinalRequired": 9,
         "icon": "img/items/clipboard.png",
         "isCraftable": false,
         "isEquippable": false,
         "isUseable": true,
-        "rarityLocale": -1,
+        "rarityLocale": 10,
         "rarityScavenge": -1,
         "rarityTrade": -1,
-        "tags": [ "old", "book", "exodus" ],
+        "tags": [ "old", "book", "government", "exodus" ],
         "type": "voucher"
     },
     "cache_metal_1": {
