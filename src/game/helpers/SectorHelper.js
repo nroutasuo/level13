@@ -510,12 +510,17 @@ define([
 
 			for (let i = 0; i < localesComponent.locales.length; i++) {
 				let localeVO = localesComponent.locales[i];
-				if (!localeVO.isInvestigatable()) continue;
-				if (statusComponent.isLocaleInvestigated(i)) continue;
-				return true;
+				if (this.isInvestigatableLocale(sector, localeVO, i)) return true;
 			}
 
 			return false;
+		},
+
+		isInvestigatableLocale: function (sector, localeVO, i) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (!localeVO.isInvestigatable()) return false;
+			if (statusComponent.isLocaleInvestigated(i)) return false;
+			return true;
 		},
 
 		getNumUnexaminedSpots: function (sector) {

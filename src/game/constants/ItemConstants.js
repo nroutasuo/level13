@@ -936,6 +936,12 @@ function (Ash, ItemData, Text, ArrayUtils, MathUtils, PlayerActionConstants, Sec
 			let level = itemConfig.level || 1;
 			return Math.pow(level, 2);
 		},
+
+		getMinInsightPerCache: function (itemIDs) {
+			let caches = itemIDs.map(cacheId => ItemConstants.getItemDefinitionByID(cacheId));
+			let cacheInsightValues = caches.map(cache => ItemConstants.getInsightForCache(cache));
+			return Math.min(...cacheInsightValues);
+		},
 		
 		getIngredient: function (i) {
 			let index = i || (this.itemDefinitions.ingredient.length) * Math.random();

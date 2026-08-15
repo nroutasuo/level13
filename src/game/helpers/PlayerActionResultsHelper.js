@@ -316,6 +316,10 @@ define([
 				}
 
 				rewards.gainedBlueprintPiece = this.getResultFallbackBlueprint(0.1);
+
+				if (rewards.gainedItems.length == 0 && !rewards.gainedBlueprintPiece) {
+					rewards.gainedItems = this.getFallbackRewardItems(0.1);
+				}
 			}
 
 			return rewards;
@@ -2591,9 +2595,45 @@ define([
 
 			let blueprintID = missedBlueprints[0];
 
-			log.w("adding a fallback blueprint piece to result: " + blueprintID);
+			log.w("adding a fallback blueprint piece to result: " + blueprintID, this);
 
 			return blueprintID;
+		},
+
+		getFallbackRewardItems: function (probability) {
+			if (Math.random() > probability) {
+				return [];
+			}
+
+			let playerPos = this.playerLocationNodes.head.position;
+			let locationCampOrdinal = GameGlobals.worldState.getCampOrdinal(playerPos.level);
+			let playerCampOrdinal = GameGlobals.gameState.numCamps;
+
+			let hasInsightCache = GameGlobals.playerHelper.hasItemBaseID("cache_insight");
+
+			// insight caches if somehow not enough insight to unlock final upgrades
+			if (!hasInsightCache && playerCampOrdinal == WorldConstants.CAMPS_TOTAL) {
+				let insightUpgradeIDs = UpgradeConstants.getAllUpgradesRequiringInsight();
+				let lockedInsightUpgradeIDs = insightUpgradeIDs.filter(upgradeID => !GameGlobals.tribeHelper.hasUpgrade(upgradeID));			
+				let investigatableLocales = this.getRemainingInvestigatableLocales();
+
+				let possibleCacheIDs = ItemConstants.getAvailableInsightCaches(locationCampOrdinal);
+				let insightPerCache = ItemConstants.getMinInsightPerCache(possibleCacheIDs);
+				
+				let currentInsight = this.playerStatsNodes.head.insight.value;
+				let availableInsight = investigatableLocales.length * insightPerCache;
+				let requiredInsight = GameGlobals.playerActionsHelper.getTotalCosts(lockedInsightUpgradeIDs).insight || 0;
+
+				if (currentInsight + availableInsight >= requiredInsight) return [];
+
+				let cache = this.getSpecificRewardItem(1, possibleCacheIDs);
+
+				if (cache) log.w("adding a fallback insight cache piece to result: " + cache.id, this);
+
+				return [ cache ];
+			}
+
+			return [];
 		},
 
 		getDefaultUpgradeTypeForSector: function () {
@@ -2694,6 +2734,23 @@ define([
 			}
 			
 			return missedBlueprints;
+		},
+
+		getRemainingInvestigatableLocales: function () {
+			let result = [];
+
+			let surfaceLevelOrdinal = GameGlobals.worldState.getSurfaceLevelOrdinal();
+
+			for (let i = 1; i <= surfaceLevelOrdinal; i++) {
+				let level = GameGlobals.worldState.getLevelForOrdinal(i);
+				let allLocales = GameGlobals.levelHelper.getInvestigatableLocales(level);
+				for (let j = 0; j < allLocales.length; j++) {
+					let localeVO = allLocales[j];
+					result.push(localeVO);
+				}
+			}
+			
+			return result;
 		},
 
 		getBaseResourceFindProbability: function (prevalence) {

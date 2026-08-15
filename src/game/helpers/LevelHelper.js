@@ -1277,6 +1277,23 @@ define([
 			let first = this.getFirstScoutedSectorWithFeatureOnLevel(level, feature);
 			return first == sector;
 		},
+
+		getInvestigatableLocales: function (level) {
+			let locales = [];
+			
+			this.saveSectorsForLevel(level);
+
+			for (let i = 0; i < this.sectorEntitiesByLevel[level].length; i++) {
+				let sector = this.sectorEntitiesByLevel[level][i];
+				let sectorLocales = this.getSectorLocales(sector, true, null, null, false);
+				for (let j = 0; j < sectorLocales.length; j++) {
+					if (GameGlobals.sectorHelper.isInvestigatableLocale(sector, sectorLocales[j], j)) {
+						locales.push(sectorLocales[j]);
+					}
+				}
+			}
+			return locales;
+		},
 		
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {
 			let locales = [];
