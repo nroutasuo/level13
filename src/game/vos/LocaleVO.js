@@ -335,15 +335,7 @@ function (Ash, WorldConstants, ItemConstants, ResourcesVO, LocaleConstants, Play
 		},
 
 		isInvestigatable: function () {
-			switch (this.type) {
-				case localeTypes.spaceFactory:
-				case localeTypes.depot:
-				case localeTypes.isolationCenter:
-				case localeTypes.healthCenter:
-					return true;
-				default: 
-					return false;
-			}
+			return LocaleConstants.isInvestigatable(this.type);
 		},
 
 		getStressedProbability: function () {

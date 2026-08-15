@@ -28,6 +28,18 @@ define(['ash'], function (Ash) {
 			}
 			return false;
 		},
+
+		isInvestigatable: function (localeType) {
+			switch (localeType) {
+				case localeTypes.spaceFactory:
+				case localeTypes.depot:
+				case localeTypes.isolationCenter:
+				case localeTypes.healthCenter:
+					return true;
+				default: 
+					return false;
+			}
+		},
 	
 	};
 	

@@ -448,6 +448,12 @@ define([
 			let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
 			return levels[levels.length - 1];
 		},
+
+		getLevelForCamp: function (seed, campOrdinal, levelIndex) {
+			let levels = WorldCreatorHelper.getLevelsForCamp(seed, campOrdinal);
+			let index = Math.min(levelIndex, levels.length - 1);
+			return levels[index];
+		},
 		
 		getLevelIndexForCamp: function (seed, campOrdinal, level) {
 			let levels = this.getLevelsForCamp(seed, campOrdinal);

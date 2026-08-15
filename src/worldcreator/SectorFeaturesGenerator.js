@@ -1866,28 +1866,15 @@ define([
 		generateLocalesForStory: function (seed, worldVO, levelTemplateVO, levelVO) {
 			let excludedFeatures = [ "isCamp", "isPassageUp", "isPassageDown", "workshopResource" ];
 
-			// TODO define hard coded locales in story constants or as input rather than hard-coding here
 			// NOTE: keep texts referring to fall story facilities up to date if changing levels here
 
-			let storyLocales = [
-				{ type: localeTypes.repairshop, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 3), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 4 },
-				{ type: localeTypes.compound, level: WorldCreatorHelper.getLastLevelForCamp(seed, 4), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 3 },
-				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 5), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
-				{ type: localeTypes.seedDepot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 6), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
-				{ type: localeTypes.depot, level: WorldCreatorHelper.getLastLevelForCamp(seed, 7), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
-				{ type: localeTypes.grove, level: worldVO.bottomLevel, isEasy: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 0 },
-				{ type: localeTypes.clinic, level: WorldCreatorHelper.getLastLevelForCamp(seed, 9), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
-				{ type: localeTypes.spaceFactory, textKey: "material", level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
-				{ type: localeTypes.healthCenter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 10), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 5 },
-				{ type: localeTypes.butcher, level: WorldCreatorHelper.getLastLevelForCamp(seed, 11), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 4 },
-				{ type: localeTypes.shelter, level: WorldCreatorHelper.getLastLevelForCamp(seed, 12), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 8 },
-				{ type: localeTypes.spaceFactory, textKey: "fuel", level: WorldCreatorHelper.getFirstLevelForCamp(seed, 12), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
-				{ type: localeTypes.spaceFactory, textKey: "assembly", level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
-				{ type: localeTypes.clinic, level: WorldCreatorHelper.getFirstLevelForCamp(seed, 13), isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
-				{ type: localeTypes.isolationCenter, textKey: "crew", level: WorldCreatorHelper.getLastLevelForCamp(seed, 13), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
-				{ type: localeTypes.isolationCenter, textKey: "passenger", level: WorldCreatorHelper.getLastLevelForCamp(seed, 14), isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
-				{ type: localeTypes.expedition, level: WorldCreatorHelper.getLastLevelForCamp(seed, 15), isEarly: false, sectorTypes: [ ], activity: 5 },
-			];
+			let storyLocales = StoryConstants.storyLocales;
+
+			let getStoryLocaleLevel = function (def) {
+				if (def.level == "ground") return worldVO.bottomLevel;
+				if (def.campOrdinal) return WorldCreatorHelper.getLevelForCamp(seed, def.campOrdinal, def.levelIndex || 0);
+				return null;
+			};
 
 			let getSectorScore = (sectorVO, def) => {
 				let result = 0;
@@ -1901,7 +1888,8 @@ define([
 
 			for (let i = 0; i < storyLocales.length; i++) {
 				let def = storyLocales[i];
-				if (levelVO.level != def.level) continue;
+				let localeLevel = getStoryLocaleLevel(def);
+				if (levelVO.level != localeLevel) continue;
 				let options = { excludingFeature: excludedFeatures, filter: SectorGeneratorHelper.isValidSectorForLocale };
 				let sector = WorldCreatorRandom.randomSectorScored(seed, worldVO, levelVO, options, (s) => getSectorScore(s, def));
 				if (def.type == localeTypes.grove) sector.sunlit = 1;

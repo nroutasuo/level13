@@ -5,8 +5,10 @@ define([
 	'game/vos/StoryVO',
 	'game/vos/StorySegmentVO',
 	'game/vos/StoryEffectVO',
+	'game/vos/LocaleVO',
+	'game/constants/SectorConstants'
 ], function (
-	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO
+	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO, LocaleVO, SectorConstants
 ) {
 	
 	let StoryConstants = {
@@ -71,6 +73,26 @@ define([
 				campOrdinal: 14,
 				itemID: "document_story_expedition_leaflet_01"
 			},
+		],
+
+		storyLocales: [
+			{ type: localeTypes.repairshop, campOrdinal: 3, levelIndex: 0, isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 4 },
+			{ type: localeTypes.compound, campOrdinal: 4, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 3 },
+			{ type: localeTypes.depot, campOrdinal: 5, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+			{ type: localeTypes.seedDepot, campOrdinal: 6, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+			{ type: localeTypes.depot, campOrdinal: 7, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 3 },
+			{ type: localeTypes.grove, level: "ground", isEasy: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 0 },
+			{ type: localeTypes.clinic, campOrdinal: 9, levelIndex: 1, isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+			{ type: localeTypes.spaceFactory, textKey: "material", campOrdinal: 10, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+			{ type: localeTypes.healthCenter, campOrdinal: 10, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 5 },
+			{ type: localeTypes.butcher, campOrdinal: 11, levelIndex: 1, isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 4 },
+			{ type: localeTypes.shelter, campOrdinal: 12, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL ], activity: 8 },
+			{ type: localeTypes.spaceFactory, textKey: "fuel", campOrdinal: 12, levelIndex: 0, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+			{ type: localeTypes.spaceFactory, textKey: "assembly", campOrdinal: 13, levelIndex: 0, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_INDUSTRIAL ], activity: 1 },
+			{ type: localeTypes.clinic, campOrdinal: 13, levelIndex: 0, isEarly: true, sectorTypes: [ SectorConstants.SECTOR_TYPE_RESIDENTIAL, SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 10 },
+			{ type: localeTypes.isolationCenter, textKey: "crew", campOrdinal: 13, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
+			{ type: localeTypes.isolationCenter, textKey: "passenger", campOrdinal: 14, levelIndex: 1, isEarly: false, sectorTypes: [ SectorConstants.SECTOR_TYPE_PUBLIC ], activity: 1 },
+			{ type: localeTypes.expedition, campOrdinal: 15, levelIndex: 1, isEarly: false, sectorTypes: [ ], activity: 5 },
 		],
 
 		storyStatuses: {
