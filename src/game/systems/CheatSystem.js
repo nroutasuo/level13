@@ -24,6 +24,7 @@ define(['ash',
     'game/components/sector/SectorControlComponent',
     'game/components/sector/SectorFeaturesComponent',
     'game/components/sector/SectorStatusComponent',
+	'game/components/sector/SectorLocalesComponent',
 	'game/components/sector/events/CampEventTimersComponent',
 	'game/nodes/player/PlayerStatsNode',
 	'game/nodes/tribe/TribeUpgradesNode',
@@ -55,6 +56,7 @@ define(['ash',
     SectorControlComponent,
     SectorFeaturesComponent,
     SectorStatusComponent,
+	SectorLocalesComponent,
 	CampEventTimersComponent,
 	PlayerStatsNode,
 	TribeUpgradesNode,
@@ -239,6 +241,9 @@ define(['ash',
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_TELEPORT_HOME, "Teleport home.", [], function (params) {
 				this.teleportHome();
+			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_TELEPORT_FILTER, "Teleport to a sector matching filter.", [ "filter" ], function (params) {
+				this.teleportFiltered(params);
 			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_TEST_DIALOGUE, "Trigger dialogue", ["id"], function (params) {
 				this.triggerDialogue(params[0]);
@@ -426,6 +431,7 @@ define(['ash',
 		},
 
 		setPlayerPosition: function (lvl, x, y, inCamp, isInstant) {
+			log.i("set player position: " + lvl + "." + x + "." + y);
 			GameGlobals.playerHelper.moveTo(lvl, x, y, inCamp || false, "cheat", isInstant);
 		},
 
@@ -697,6 +703,29 @@ define(['ash',
 			if (GameGlobals.playerHelper.isInCamp()) return;
 			let sector = GameGlobals.playerActionsHelper.getActionCampSector();
 			let targetPosition = sector.get(PositionComponent).getPosition();
+			this.setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
+		},
+
+		teleportFiltered: function (filter) {
+			let playerPos = this.playerPositionNodes.head.position;
+
+			let targetSector = null;
+
+			GameGlobals.levelHelper.forEverySectorFromLocation(playerPos, (sector) => {
+				let featuresComponent = sector.get(SectorFeaturesComponent);
+				let localesComponent = sector.get(SectorLocalesComponent);
+				let features = JSON.stringify(featuresComponent) + " " + JSON.stringify(localesComponent);
+				let result = features.indexOf(filter) >= 0;
+				if (result) targetSector = sector;
+				return result;
+			}, false, false);
+
+			if (!targetSector) {
+				log.w("could not find sector with filter: " + filter);
+				return;
+			}
+
+			let targetPosition = targetSector.get(PositionComponent).getPosition();
 			this.setPlayerPosition(targetPosition.level, targetPosition.sectorX, targetPosition.sectorY, false);
 		},
 

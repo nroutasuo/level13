@@ -46,6 +46,7 @@ define(function () {
 		CHEAT_NAME_TECH: "tech",
 		CHEAT_NAME_TECHS: "techs",
 		CHEAT_NAME_TELEPORT_HOME: "teleportHome",
+		CHEAT_NAME_TELEPORT_FILTER: "teleportFilter",
 		CHEAT_NAME_TEST_DIALOGUE: "dialogue",
 		CHEAT_NAME_TIME: "time",
 		CHEAT_NAME_TRADE_PARTNER: "tradepartner",
