@@ -27,7 +27,6 @@ function (Ash, SectorTemplateVO, PositionVO, DistrictVO) {
 			this.minX = levelVO.minX;
 			this.minY = levelVO.minY;
 			this.notCampableReason = levelVO.notCampableReason;
-			this.numInvestigateSectors = levelVO.numInvestigateSectors;
 			this.numSectors = levelVO.numSectors;
 			this.numSectorsByStage = levelVO.numSectorsByStage;
 			this.passageDownPosition = levelVO.passageDownPosition;
@@ -79,7 +78,6 @@ function (Ash, SectorTemplateVO, PositionVO, DistrictVO) {
 			copy.minX = this.minX;
 			copy.minY = this.minY;
 			copy.notCampableReason = this.notCampableReason;
-			copy.numInvestigateSectors = this.numInvestigateSectors;
 			copy.numSectors = this.numSectors;
 			copy.numSectorsByStage = this.numSectorsByStage;
 			if (this.passageDownPosition) copy.passageDownPosition = this.passageDownPosition.getCustomSaveObjectWithoutCamp();
@@ -137,7 +135,6 @@ function (Ash, SectorTemplateVO, PositionVO, DistrictVO) {
 			this.minX = saveObject.minX;
 			this.minY = saveObject.minY;
 			this.notCampableReason = saveObject.notCampableReason;
-			this.numInvestigateSectors = saveObject.numInvestigateSectors;
 			this.numSectors = saveObject.numSectors;
 			this.numSectorsByStage = saveObject.numSectorsByStage;
 

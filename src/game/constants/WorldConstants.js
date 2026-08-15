@@ -51,9 +51,6 @@ define(['ash'], function (Ash) {
 		LEVEL_NUMBER_GIGA_CENTER_LOWER: 16,
 		LEVEL_NUMBER_GIGA_CENTER_UPPER: 17,
 		
-		NUM_INVESTIGATE_SECTORS_TOTAL: 15,
-		NUM_INVESTIGATE_SECTORS_SURFACE: 10,
-		
 		// world features
 		FEATURE_HOLE_COLLAPSE: "collapse",
 		FEATURE_HOLE_COLLAPSE_EDGE: "collapse-edge",
@@ -152,13 +149,6 @@ define(['ash'], function (Ash) {
 				return "rubber";
 
 			return null;
-		},
-		
-		getNumInvestigateSectors: function (level, topLevel) {
-			if (level == topLevel) return WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
-			if (level == topLevel - 1) return WorldConstants.NUM_INVESTIGATE_SECTORS_TOTAL - WorldConstants.NUM_INVESTIGATE_SECTORS_SURFACE;
-			
-			return 0;
 		},
 		
 		getCampAndStep: function (campOrdinal, step, offset) {

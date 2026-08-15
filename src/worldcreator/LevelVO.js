@@ -5,7 +5,7 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstant
 	
 		constructor: function (level) {
 			this.level = level;
-			this.version = null;
+			this.version = null; // version this level's structure was created in
 			this.levelOrdinal = 1;
 			this.campOrdinal = 1;
 
@@ -28,7 +28,6 @@ function (Ash, VOCache, WorldCreatorConstants, WorldCreatorLogger, LevelConstant
 			this.minX = 0;
 			this.minY = 0;
 			this.notCampableReason = null;
-			this.numInvestigateSectors = 0;
 			this.numSectors = 0;
 			this.numSectorsByStage = {}; // e/l -> int
 			this.passageDownPosition = null;

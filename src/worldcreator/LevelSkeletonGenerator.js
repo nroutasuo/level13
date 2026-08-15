@@ -87,7 +87,6 @@ define([
 			levelVO.levelStyle = levelTemplateVO.levelStyle || this.getLevelArchitecturalStyle(seed, levelVO);
 			levelVO.features = worldVO.getFeaturesByLevel(l);
 			levelVO.districts = this.getDistricts(worldVO, levelVO);
-			levelVO.numInvestigateSectors = this.getNumInvestigateSectors(seed, l);
 			levelVO.luxuryResources = this.getLuxuryResources(seed, l, campOrdinal, worldVO.levels);
 		},
 
@@ -505,11 +504,6 @@ define([
 			}
 			let result = PositionConstants.getMiddlePoint(pois, true);
 			return result;
-		},
-		
-		getNumInvestigateSectors: function (seed, level) {
-			let topLevel = WorldCreatorHelper.getHighestLevel(seed);
-			return WorldConstants.getNumInvestigateSectors(level, topLevel);
 		},
 
 		getWorkshopResource: function (seed, worldVO, levelTemplateVO, levelVO) {
