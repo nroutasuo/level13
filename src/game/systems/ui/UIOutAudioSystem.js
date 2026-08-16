@@ -15,6 +15,8 @@ define([
 
 		previousSound: null,
 
+		volume: 0.8,
+
 		soundTimestamps: {}, // triggerID -> timestamp
 
 		constructor: function () {
@@ -50,7 +52,9 @@ define([
 			this.paths = {};
 
 			for (let key in this.elements) {
-				let path = this.elements[key].find("source").attr("src");
+				let $elem = this.elements[key];
+				let $source = $elem.find("source");
+				let path = $source.attr("src");
 				this.paths[key] = path;
 				this.audios[key] = new Audio(path);
 			}
@@ -92,6 +96,7 @@ define([
 				}
 
 				let audio = new Audio(this.paths[soundTriggerID]);
+				audio.volume = this.volume;
 
 				audio.play().catch(e => {
 					log.w("failed to play audio: " + soundTriggerID + " | " + e, this);
