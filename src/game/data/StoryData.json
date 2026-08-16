@@ -967,45 +967,49 @@
                 "sunlit": true
             },
             "reward": {
-                "itemID": "cache_insight_material"
+                "itemID": "cache_insight_material_1"
             }
         },
         {
             "id": "story_fall_escape_pod",
             "positionParams": {
-                "campOrdinal": 15
+                "campOrdinal": 15,
+                "levelIndex": 1
             },
             "reward": {
-                "itemID": "cache_insight_material"
+                "itemID": "cache_insight_material_1"
             },
             "storyTag": "spaceDebris"
         },
         {
             "id": "story_fall_hull_wreckage",
             "positionParams": {
-                "campOrdinal": 15
+                "campOrdinal": 15,
+                "levelIndex": 1
             },
             "reward": {
-                "itemID": "cache_insight_material"
+                "itemID": "cache_insight_material_1"
             },
             "storyTag": "spaceDebris"
         },
         {
             "id": "story_fall_sundome_shards_01",
             "positionParams": {
-                "campOrdinal": 15
+                "campOrdinal": 15,
+                "levelIndex": 1
             },
             "reward": {
-                "itemID": "cache_insight_material"
+                "itemID": "cache_insight_material_1"
             }
         },
         {
             "id": "story_fall_sundome_shards_02",
             "positionParams": {
-                "campOrdinal": 15
+                "campOrdinal": 15,
+                "levelIndex": 1
             },
             "reward": {
-                "itemID": "cache_insight_material"
+                "itemID": "cache_insight_material_1"
             }
         },
         {

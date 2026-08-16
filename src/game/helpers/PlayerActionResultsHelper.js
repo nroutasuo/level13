@@ -183,8 +183,29 @@ define([
 			resultVO.hasCustomReward = hasCustomReward;
 
 			resultVO.collected = false;
+
+			this.validateResultVO(resultVO);
 			
 			return resultVO;
+		},
+
+		validateResultVO: function (resultVO) {
+			let action = resultVO.action || "unknown";
+
+			let logIssue = function (msg) {
+				log.w("validateResultVO (" + action + "): " + msg, this);
+			}
+
+			if (!resultVO.gainedItems) {
+				logIssue("gainedItems is null");
+			} else {
+				for (let i = 0; i < resultVO.gainedItems.length; i++) {
+					let itemVO = resultVO.gainedItems[i];
+					if (!itemVO) {
+						logIssue("gainedItems contains null item");
+					}
+				}
+			}
 		},
 
 		getUseItemRewards: function (itemID) {
@@ -349,10 +370,13 @@ define([
 			let featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
 			let spotID = featuresComponent.examineSpots[0];
 			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
-			
+
 			if (spotDef.reward) {
-				let itemID = spotDef.itemID;
-	 			resultVO.gainedItems = [ this.getSpecificRewardItem(1, [ itemID ]) ];
+				let itemID = spotDef.reward.itemID;
+				let itemVO = this.getSpecificRewardItem(1, [ itemID ]);
+				if (itemVO) {
+	 				resultVO.gainedItems = [ itemVO ];
+				}
 			} else {
 				this.addCovertibleTribeStatRewards(resultVO, "evidence", 1);
 			}
@@ -660,6 +684,7 @@ define([
 			let sectorItems = sectorFeatures.itemsScavengeable;
 			for (let i = 0; i < rewards.gainedItems.length; i++) {
 				let item = rewards.gainedItems[i];
+				if (!item) continue;
 				if (item.type == ItemConstants.itemTypes.ingredient) {
 					if (sectorItems.indexOf(item.id) >= 0) {
 						if (!sectorStatus.hasDiscoveredItem(item.id)) {
