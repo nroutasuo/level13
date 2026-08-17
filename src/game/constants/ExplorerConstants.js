@@ -611,7 +611,7 @@ define(['ash',
 		},
 		
 		getAbilityTypeDisplayNameKey: function (abilityType) {
-			return "ui.characters.explorer_ability_type_" + abilityType + "_name";
+			return "ui.party.explorer_ability_type_" + abilityType + "_name";
 		},
 		
 		getExplorerTypeDisplayName: function (explorerType) {

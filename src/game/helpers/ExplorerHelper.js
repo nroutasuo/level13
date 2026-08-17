@@ -45,19 +45,19 @@ define([
 		},
 
 		getIsNotDismissableReason: function (explorerVO) {
-			if (!explorerVO) return "ui.actions.unavailable_reason_invalid_message";
+			if (!explorerVO) return "ui.action.unavailable_reason_invalid_message";
 
 			let quest = GameGlobals.storyHelper.getExplorerQuestStory(explorerVO);
-			if (quest) return "ui.actions.unavailable_reason_quest_message";
+			if (quest) return "ui.action.unavailable_reason_quest_message";
 
 			let forcedExplorerID = this.getForcedExplorerID();
-			if (forcedExplorerID && explorerVO.id == forcedExplorerID) return "ui.actions.unavailable_reason_quest_message";
+			if (forcedExplorerID && explorerVO.id == forcedExplorerID) return "ui.action.unavailable_reason_quest_message";
 
-			if (GameGlobals.dialogueHelper.hasValidPendingDialogue(explorerVO)) return "ui.actions.unavailable_reason_pending_dialogue_message";
+			if (GameGlobals.dialogueHelper.hasValidPendingDialogue(explorerVO)) return "ui.action.unavailable_reason_pending_dialogue_message";
 
 			let dialogueStatus = GameGlobals.dialogueHelper.getExplorerDialogueStatus(explorerVO);
-			if (dialogueStatus == DialogueConstants.STATUS_FORCED) return "ui.actions.unavailable_reason_pending_dialogue_message";
-			if (dialogueStatus == DialogueConstants.STATUS_URGENT) return "ui.actions.unavailable_reason_pending_dialogue_message";
+			if (dialogueStatus == DialogueConstants.STATUS_FORCED) return "ui.action.unavailable_reason_pending_dialogue_message";
+			if (dialogueStatus == DialogueConstants.STATUS_URGENT) return "ui.action.unavailable_reason_pending_dialogue_message";
 
 			return null;
 		},
@@ -67,7 +67,7 @@ define([
 		},
 
 		getIsNotSelectableReason: function (explorerVO) {
-			if (!explorerVO) return "ui.actions.unavailable_reason_invalid_message";
+			if (!explorerVO) return "ui.action.unavailable_reason_invalid_message";
 
 			if (explorerVO.injuredTimer >= 0) return "Explorer injured";
 

@@ -143,7 +143,7 @@ define([
             if (duration > 0) {
                 if (content.length > 0 || enabledContent.length) enabledContent += "<hr/>";
                 let time = Math.round(duration * 100) / 100 + "s";
-                let durationText = Text.t("ui.actions.action_duration_field", time);
+                let durationText = Text.t("ui.action.action_duration_field", time);
                 enabledContent += "<span class='action-duration'>" + durationText + "</span>";
                 hasContent = true;
             }

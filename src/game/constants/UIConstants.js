@@ -332,7 +332,7 @@ define(['ash',
 			div += "</span>";
 
 			// interaction options
-			let talkLabel = Text.t(isAnimal ? "ui.actions.start_dialogue_pet_label" : "ui.actions.start_dialogue_default_label");
+			let talkLabel = Text.t(isAnimal ? "ui.action.start_dialogue_pet_label" : "ui.action.start_dialogue_default_label");
 			let talkAction = "start_explorer_dialogue_" + explorerVO.id;
 			let switchLabel = "⇵";
 			let switchAction = explorerVO.inParty ? "deselect_explorer_" + explorerVO.id : "select_explorer_" + explorerVO.id;
@@ -470,7 +470,7 @@ define(['ash',
 					break;
 			}
 
-			return { textKey: "ui.characters.explorer_ability_type_" + explorer.abilityType + "_description", textParams: textParams };
+			return { textKey: "ui.party.explorer_ability_type_" + explorer.abilityType + "_description", textParams: textParams };
 		},
 
 		getExplorerPortrait: function (explorerVO) {
@@ -494,7 +494,7 @@ define(['ash',
 			div += this.createNPCPortrait();
 			div += "</div>";
 
-			let talkLabel = Text.t("ui.actions.start_dialogue_default_label");
+			let talkLabel = Text.t("ui.action.start_dialogue_default_label");
 			div += "<button class='action btn-compact' action=''>" + talkLabel + "</button>";
 			
 			div += "</div>"
@@ -1344,11 +1344,11 @@ define(['ash',
 			}
 
 			if (name == "explorer_animal") {
-				return Text.t("ui.actions.action_cost_explorer_animal_name");
+				return Text.t("ui.action.action_cost_explorer_animal_name");
 			}
 
 			if (name == "item_disassemblable") {
-				return Text.t("ui.actions.action_cost_item_disassemblable_name");
+				return Text.t("ui.action.action_cost_item_disassemblable_name");
 			}
 
 			log.w("no cost display name defined for cost [" + name + "]");

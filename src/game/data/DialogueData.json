@@ -4381,7 +4381,7 @@
 			"pages": [
 				{
 					"key": "explorer_generic_interact_injured_party_01_p1",
-					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+					"metaKey": "ui.party.explorer_injured_in_party_hint"
 				}
 			]
 		},
@@ -4397,7 +4397,7 @@
 			"pages": [
 				{
 					"key": "explorer_generic_interact_injured_party_02_p1",
-					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+					"metaKey": "ui.party.explorer_injured_in_party_hint"
 				}
 			]
 		},
@@ -4413,7 +4413,7 @@
 			"pages": [
 				{
 					"key": "explorer_generic_interact_injured_party_03_p1",
-					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+					"metaKey": "ui.party.explorer_injured_in_party_hint"
 				}
 			]
 		},
@@ -4429,7 +4429,7 @@
 			"pages": [
 				{
 					"key": "explorer_generic_interact_injured_party_04_p1",
-					"metaKey": "ui.characters.explorer_injured_in_party_hint"
+					"metaKey": "ui.party.explorer_injured_in_party_hint"
 				}
 			]
 		},

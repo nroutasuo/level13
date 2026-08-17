@@ -320,9 +320,9 @@ define([
 			
 			let movementOptionsComponent = sector.get(MovementOptionsComponent);
 			if (action === "move_level_up" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_UP])
-				return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP]) };
+				return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_UP]) };
 			if (action === "move_level_down" && !movementOptionsComponent.canMoveTo[PositionConstants.DIRECTION_DOWN])
-				return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN]) };
+				return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[PositionConstants.DIRECTION_DOWN]) };
 	
 			if (this.isImproveBuildingAction(baseActionID)) {
 				let improvementName = this.getImprovementNameForAction(action);
@@ -340,7 +340,7 @@ define([
 				
 			let statusComponent = sector.get(SectorStatusComponent);
 			if (action == "build_out_camp" && !statusComponent.canBuildCamp) {
-				return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_not_campable_sector") };
+				return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_not_campable_sector") };
 			}
 
 			if (baseActionID == "dismiss_explorer") {
@@ -372,7 +372,7 @@ define([
 					requirements.health = Math.ceil(costs.stamina / PlayerStatConstants.HEALTH_TO_STAMINA_FACTOR);
 				}
 				if (costs.hope && !GameGlobals.gameState.unlockedFeatures.hope) {
-					return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_requires_hope") };
+					return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_requires_hope") };
 				}
 				if ((costs.resource_fuel > 0 && !GameGlobals.gameState.unlockedFeatures["resource_fuel"]) ||
 					(costs.resource_rubber > 0 && !GameGlobals.gameState.unlockedFeatures["resource_rubber"]) ||
@@ -453,7 +453,7 @@ define([
 					let requiredActions = requirements.actionsAvailable;
 					for (let i = 0; i < requiredActions.length; i++) {
 						if (!this.checkAvailability(requiredActions[i], false, sector, true)) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_action_unavailable", requiredActions[i]) };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_action_unavailable", requiredActions[i]) };
 						}
 					}
 				}
@@ -515,9 +515,9 @@ define([
 					var requiredValue = requirements.maxStamina;
 					if (currentValue !== requiredValue) {
 						if (currentValue) {
-							reason = "ui.actions.disabled_reason_rested";
+							reason = "ui.action.disabled_reason_rested";
 						} else {
-							reason = "ui.actions.disabled_reason_generic";
+							reason = "ui.action.disabled_reason_generic";
 							reasonDebugInfo = "Must be fully rested.";
 						}
 						return { value: 0, reason: this.getDisabledReasonVO(reason, null, null, reasonDebugInfo)};
@@ -527,7 +527,7 @@ define([
 				if (requirements.health) {
 					var playerHealth = this.playerStatsNodes.head.stamina.health;
 					if (playerHealth < requirements.health) {
-						reason = "ui.actions.disabled_reason_low_health";
+						reason = "ui.action.disabled_reason_low_health";
 						reasonParams = requirements.health;
 						lowestFraction = Math.min(lowestFraction, playerHealth / requirements.health);
 					}
@@ -556,7 +556,7 @@ define([
 					if (campComponent) {
 						let requiredValue = requirements.rumourpoolchecked;
 						let currentValue = campComponent.rumourpoolchecked;
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "ui.actions.disabled_reason_no_new_rumours", "There are new rumours");
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "ui.action.disabled_reason_no_new_rumours", "There are new rumours");
 						if (result) return result;
 					}
 				}
@@ -566,7 +566,7 @@ define([
 					let result = this.checkRequirementsRange(
 						requirements.freeHousing, 
 						currentFreeHousing, 
-						"ui.actions.disabled_reason_housing_in_use", 
+						"ui.action.disabled_reason_housing_in_use", 
 						"Maximum {max} free housing");
 					if (result) return result;
 				}
@@ -635,10 +635,10 @@ define([
 						let result = this.checkRequirementsRange(
 							range,
 							amount,
-							this.getDisabledReasonVO("ui.actions.disabled_reason_min_camp_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_max_camp_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_min_1_camp_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_max_1_camp_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_min_camp_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_max_camp_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_min_1_camp_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_max_1_camp_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
 						);
 						
 						if (result) return result;
@@ -667,10 +667,10 @@ define([
 						var displayName = actionImprovementName === requiredImprovementDisplayName ? "" : requiredImprovementDisplayName;
 						var range = requirements.improvementsOnLevel[improvementID];
 						let result = this.checkRequirementsRange(range, amount,
-							this.getDisabledReasonVO("ui.actions.disabled_reason_min_level_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_max_level_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_min_1_level_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-							this.getDisabledReasonVO("ui.actions.disabled_reason_max_1_level_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_min_level_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_max_level_improvements", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_min_1_level_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+							this.getDisabledReasonVO("ui.action.disabled_reason_max_1_level_improvement", { name: displayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
 						);
 
 						if (result) return result;
@@ -722,7 +722,7 @@ define([
 							if (min > totalEffect) 
 								return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "Can't do this while: " + perkType) };
 							if (max <= totalEffect)
-								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_status_required", perkType) };
+								return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_status_required", perkType) };
 						}
 					}
 				}
@@ -750,7 +750,7 @@ define([
 						let currentValue = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(upgradeID);
 						let name = TextConstants.getUpgradeDisplayName(upgradeID);
 						let trueReason = this.getDisabledReasonVO(null, null, PlayerActionConstants.DISABLED_REASON_UPGRADE, "Upgrade already researched (" + name + ")");
-						let falseReason = this.getDisabledReasonVO("ui.actions.disabled_reason_upgrade_missing", name, PlayerActionConstants.DISABLED_REASON_UPGRADE);
+						let falseReason = this.getDisabledReasonVO("ui.action.disabled_reason_upgrade_missing", name, PlayerActionConstants.DISABLED_REASON_UPGRADE);
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue, trueReason, falseReason);
 						if (result) return result;
 					}
@@ -781,7 +781,7 @@ define([
 					let blueprintName = action;
 					let hasBlueprint = this.tribeUpgradesNodes.head.upgrades.hasAvailableBlueprint(blueprintName);
 					if (!hasBlueprint) {
-						return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_blueprint_missing") };
+						return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_blueprint_missing") };
 					}
 				}
 
@@ -796,7 +796,7 @@ define([
 						}
 						let requiredPieces = GameConstants.cheatModeBlueprints ? 1 : blueprintVO.maxPieces;
 						if (requiredPieces - blueprintVO.currentPieces > 0) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_missing_blueprint_pieces") };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_missing_blueprint_pieces") };
 						}
 					} else if (typeof upgradeID == "object") {
 						let range = upgradeID;
@@ -840,7 +840,7 @@ define([
 						let validStart = bagComponent.selectionStartCapacity === undefined || bagComponent.selectionStartCapacity <= bagComponent.totalCapacity;
 						let validNow = bagComponent.selectedCapacity <= bagComponent.totalCapacity;
 						if (validStart && !validNow) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_selection_over_bag_capacity") };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_selection_over_bag_capacity") };
 						}
 						
 						let resultNode = this.playerActionResultNodes.head;
@@ -851,7 +851,7 @@ define([
 								for (let i = 0; i < unselectedItems.length; i++) {
 									let unselectedItem = unselectedItems[i];
 									if (!ItemConstants.isUnselectable(unselectedItem)) {
-										return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_cant_leave_item", ItemConstants.getItemDisplayName(unselectedItem)) };
+										return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_cant_leave_item", ItemConstants.getItemDisplayName(unselectedItem)) };
 									}
 								}
 							}
@@ -859,13 +859,13 @@ define([
 					}
 					if (requirements.bag.validSelectionAll) {
 						if (bagComponent.selectableCapacity > bagComponent.totalCapacity) {
-							return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_selection_over_bag_capacity") };
+							return {value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_selection_over_bag_capacity") };
 						}
 					}
 					if (typeof requirements.bag.space !== "undefined") {
 						let range = requirements.bag.space;
 						let currentVal = bagComponent.totalCapacity - bagComponent.usedCapacity;
-						let result = this.checkRequirementsRange(range, currentVal, "ui.actions.disabled_reason_bag_full", "Bag has enough space");
+						let result = this.checkRequirementsRange(range, currentVal, "ui.action.disabled_reason_bag_full", "Bag has enough space");
 						if (result) return result;
 					}
 				}
@@ -954,7 +954,7 @@ define([
 						var busyCaravans = caravansComponent.outgoingCaravans.length;
 						var currentValue = totalCaravans - busyCaravans;
 						if (requiredValue > currentValue) {
-							return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_no_available_caravans") };
+							return {value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_no_available_caravans") };
 						}
 					}
 					if (typeof requirements.outgoingcaravan.validSelection !== "undefined") {
@@ -962,7 +962,7 @@ define([
 						var currentValue = $("button[action='" + action + "']").attr("data-isselectionvalid") == "true";
 						if (requiredValue != currentValue) {
 							if (requiredValue)
-								return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_invalid_trade_selection") };
+								return {value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_invalid_trade_selection") };
 							else
 								return {value: 0, reason: this.getDisabledReasonVO(null, null, null, "Valid selection.") };
 						}
@@ -984,7 +984,7 @@ define([
 							let currentValue = caravan.traderOfferValue > 0 && caravan.traderOfferValue <= caravan.campOfferValue;
 							if (requiredValue != currentValue) {
 								if (requiredValue) {
-									return {value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_invalid_trade_selection")};
+									return {value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_invalid_trade_selection")};
 								} else {
 									return {value: 0, reason: this.getDisabledReasonVO(null, null, null, "valid selection")};
 								}
@@ -996,7 +996,7 @@ define([
 								let amount = caravan.getCampSelectedItemCount(item.id) + caravan.getSellItemCount(item.id);
 								if (amount > TradeConstants.MAX_ITEMS_TO_TRADE_PER_CARAVAN) {
 									let itemName = ItemConstants.getItemDisplayName(item);
-									return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_selling_too_many_same_item", TextConstants.pluralify(itemName)) };
+									return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_selling_too_many_same_item", TextConstants.pluralify(itemName)) };
 								}
 							}
 						} else {
@@ -1056,7 +1056,7 @@ define([
 						let resources = campSector.get(ResourcesComponent);
 						let currentRobots = resources.resources.robots || 0;
 						if (currentRobotStorage - currentRobots <= 0) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_no_space_for_robots") };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_no_space_for_robots") };
 						}
 					}
 
@@ -1159,9 +1159,9 @@ define([
 					if (typeof requirements.sector.scouted != "undefined") {
 						if (statusComponent.scouted != requirements.sector.scouted) {
 							if (statusComponent.scouted) {
-								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_already_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED, "Area already scouted") };
+								return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_already_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED, "Area already scouted") };
 							} else {
-								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_not_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED) };
+								return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_not_scouted", null, PlayerActionConstants.DISABLED_REASON_SCOUTED) };
 							}
 						}
 					}
@@ -1228,7 +1228,7 @@ define([
 							let currentStatus = sectorControlComponent.hasControlOfLocale(localei);
 							if (requiredStatus !== currentStatus) {
 								if (requiredStatus) reason = "Must be scouted first.";
-								if (!requiredStatus) reason = "ui.actions.disabled_reason_locale_already_scouted";
+								if (!requiredStatus) reason = "ui.action.disabled_reason_locale_already_scouted";
 								return { value: 0, reason: this.getDisabledReasonVO(reason) };
 							}
 						}
@@ -1245,7 +1245,7 @@ define([
 
 							if (requiredValue !== currentValue) {
 								if (currentValue) {
-									return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[direction]) };
+									return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", movementOptionsComponent.cantMoveToReason[direction]) };
 								} else {
 									return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "Nothing blocking movement to " + directionName) };
 								}
@@ -1287,13 +1287,13 @@ define([
 
 					if (typeof requirements.sector.passageUp != 'undefined') {
 						if (!passagesComponent.passageUp) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", null, null, "no passage up") };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", null, null, "no passage up") };
 						} else {
 							var requiredType = parseInt(requirements.sector.passageUp);
 							if (requiredType > 0) {
 								var existingType = passagesComponent.passageUp.type;
 								if (existingType !== requiredType) {
-									return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", null, null, "wrong passage type") };
+									return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", null, null, "wrong passage type") };
 								}
 							}
 						}
@@ -1308,13 +1308,13 @@ define([
 
 					if (typeof requirements.sector.passageDown != 'undefined') {
 						if (!passagesComponent.passageDown) {
-							return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", null, null, "no passage down") };
+							return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", null, null, "no passage down") };
 						} else {
 							var requiredType = parseInt(requirements.sector.passageDown);
 							if (requiredType > 0) {
 								var existingType = passagesComponent.passageDown.type;
 								if (existingType != requiredType) {
-									return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_movement_blocked", null, null, "wrong passage type") };
+									return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_movement_blocked", null, null, "wrong passage type") };
 								}
 							}
 						}
@@ -1334,7 +1334,7 @@ define([
 						if (currentStorage < requiredStorage) {
 							if (lowestFraction > currentStorage / requiredStorage) {
 								lowestFraction = currentStorage / requiredStorage;
-								reason = "ui.actions.disabled_reason_collector_empty";
+								reason = "ui.action.disabled_reason_collector_empty";
 							}
 						}
 					}
@@ -1346,7 +1346,7 @@ define([
 						if (currentStorage < requiredStorage) {
 							if (lowestFraction > currentStorage / requiredStorage) {
 								lowestFraction = currentStorage / requiredStorage;
-								reason = "ui.actions.disabled_reason_collector_empty";
+								reason = "ui.action.disabled_reason_collector_empty";
 							}
 						}
 					}
@@ -1358,7 +1358,7 @@ define([
 						var currentValue = campCount >= campOrdinal;
 						if (currentValue != requiredValue) {
 							if (currentValue) return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "accessible to workers") };
-							else return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_not_accessible_to_workers") };
+							else return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_not_accessible_to_workers") };
 						}
 					}
 					
@@ -1466,10 +1466,10 @@ define([
 							let result = this.checkRequirementsRange(
 								range,
 								amount,
-								this.getDisabledReasonVO("ui.actions.disabled_reason_min_tribe_improvements", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-								this.getDisabledReasonVO("ui.actions.disabled_reason_max_tribe_improvements", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
-								this.getDisabledReasonVO("ui.actions.disabled_reason_min_1_tribe_improvement", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
-								this.getDisabledReasonVO("ui.actions.disabled_reason_max_1_tribe_improvement", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+								this.getDisabledReasonVO("ui.action.disabled_reason_min_tribe_improvements", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+								this.getDisabledReasonVO("ui.action.disabled_reason_max_tribe_improvements", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
+								this.getDisabledReasonVO("ui.action.disabled_reason_min_1_tribe_improvement", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MIN_IMPROVEMENTS),
+								this.getDisabledReasonVO("ui.action.disabled_reason_max_1_tribe_improvement", { name: requiredImprovementDisplayName }, PlayerActionConstants.DISABLED_REASON_MAX_IMPROVEMENTS),
 							);
 							
 							if (result) return result;
@@ -1493,7 +1493,7 @@ define([
 						let currentPopulation = GameGlobals.tribeHelper.getTotalPopulation();
 						let requiredPopulation = requirements.tribe.population;
 						if (currentPopulation < requiredPopulation) {
-							return { value: currentPopulation / requiredPopulation, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_tribe_population_too_low", requiredPopulation) };
+							return { value: currentPopulation / requiredPopulation, reason: this.getDisabledReasonVO("ui.action.disabled_reason_tribe_population_too_low", requiredPopulation) };
 						}
 					}
 					
@@ -1502,7 +1502,7 @@ define([
 						let currentValue = hopeComponent.hope >= hopeComponent.maxHope;
 						if (requiredValue !== currentValue) {
 							if (currentValue) {
-								return { value: 0, reason: this.getDisabledReasonVO("ui.actions.disabled_reason_hope_full") };
+								return { value: 0, reason: this.getDisabledReasonVO("ui.action.disabled_reason_hope_full") };
 							} else {
 								return { value: 0, reason: this.getDisabledReasonVO("Requires maximum hope") };
 							}
@@ -1587,7 +1587,7 @@ define([
 					if (typeof requirements.camp.exposed !== "undefined") {
 						let currentValue = featuresComponent.sunlit && improvementComponent.getCount(improvementNames.sundome) <= 0;
 						let requiredValue = requirements.camp.exposed;
-						let trueReason = this.getDisabledReasonVO("ui.actions.disabled_reason_camp_exposed", null, PlayerActionConstants.DISABLED_REASON_EXPOSED);
+						let trueReason = this.getDisabledReasonVO("ui.action.disabled_reason_camp_exposed", null, PlayerActionConstants.DISABLED_REASON_EXPOSED);
 						let falseReason = this.getDisabledReasonVO(null, null, PlayerActionConstants.DISABLED_REASON_EXPOSED, "Camp not exposed to direct sunlight");
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue, trueReason, falseReason);
 						if (result) return result;
@@ -1656,7 +1656,7 @@ define([
 						if (requiredValue != currentValue) {
 							let busyDescription = PlayerActionConstants.getActionBusyDescription(action);
 							if (requiredValue) reason = "Not " + busyDescription;
-							else reason = "ui.actions.disabled_reason_busy";
+							else reason = "ui.action.disabled_reason_busy";
 							return { value: 0, reason: this.getDisabledReasonVO(reason, busyDescription, PlayerActionConstants.DISABLED_REASON_UPGRADE) };
 						}
 					}
@@ -1768,7 +1768,7 @@ define([
 		},
 
 		getDisabledReasonVO: function (textKey, textParams, baseReason, debugInfo) {
-			if (!textKey) textKey = "ui.actions.disabled_reason_generic";
+			if (!textKey) textKey = "ui.action.disabled_reason_generic";
 			if (!baseReason) baseReason = textKey;
 			return { baseReason: baseReason, textKey: textKey, textParams: textParams, debugInfo: debugInfo };
 		},
@@ -2774,9 +2774,9 @@ define([
 				case "scout_locale_u":
 				case "scout_locale_i":
 					let localeVO = this.getLocaleForScoutAction(sector, action);
-					if (localeVO.type == localeTypes.shortcut) return Text.t("game.actions.scout_locale_shortcut_desctiption");
-					if (localeVO.type == localeTypes.butcher) return Text.t("game.actions.scout_locale_shop_desctiption");
-					if (localeVO.type == localeTypes.repairshop) return Text.t("game.actions.scout_locale_shop_desctiption");
+					if (localeVO.type == localeTypes.shortcut) return Text.t("game.actions.scout_locale_shortcut_description");
+					if (localeVO.type == localeTypes.butcher) return Text.t("game.actions.scout_locale_shop_description");
+					if (localeVO.type == localeTypes.repairshop) return Text.t("game.actions.scout_locale_shop_description");
 					break;
 			}
 			

@@ -1220,9 +1220,9 @@ define(['ash',
 
 			if (localeVO.type == localeTypes.shortcut) {
 				if (isScouted) {
-					result = "ui.exploration.action_result_used_shortcut_message";
+					result = "ui.action.result_used_shortcut_message";
 				} else {
-					result = "ui.exploration.action_result_scouted_shortcut_message";
+					result = "ui.action.result_scouted_shortcut_message";
 				}
 			}
 
@@ -1386,7 +1386,7 @@ define(['ash',
 
 			let introDialogueID = "locale_workshop_" + resourceName + "_intro";
 			let outroDialogueID = "locale_workshop_" + resourceName + "_outro";
-			let successLogMsgKey = "ui.actions.clear_workshop_" + resourceName + "_completed_message";
+			let successLogMsgKey = "game.actions.clear_workshop_" + resourceName + "_completed_message";
 			
 			this.startSequence([
 				{ id: "intro", type: "dialogue", dialogueID: introDialogueID },
@@ -1494,7 +1494,7 @@ define(['ash',
 			GameGlobals.uiFunctions.setGameElementsVisibility(false);
 			GameGlobals.uiFunctions.showInfoPopup(
 				Text.t("game.actions.nap_name"),
-				Text.t("ui.actions.nap_start_message"),
+				Text.t("game.actions.nap_start_message"),
 				Text.t("ui.common.continue_button_label"),
 				null,
 				() => {
@@ -1506,12 +1506,12 @@ define(['ash',
 							if (excursionComponent) excursionComponent.numNaps++;
 							GameGlobals.gameState.increaseGameStatSimple("numTimesRestedOutside");
 							sys.playerStatsNodes.head.vision.value = Math.min(sys.playerStatsNodes.head.vision.value, PlayerStatConstants.VISION_BASE);
-							let logMsgFail = Text.t("ui.actions.nap_fail_message");
+							let logMsgFail = Text.t("game.actions.nap_fail_message");
 							let messages = {
 								id: LogConstants.MSG_ID_NAP,
 								msgSuccess: hasSleepingBag ? 
-									Text.t("ui.actions.nap_success_message_equipment") :
-									Text.t("ui.actions.nap_success_message_default"),
+									Text.t("game.actions.nap_success_message_equipment") :
+									Text.t("game.actions.nap_success_message_default"),
 								msgFlee: logMsgFail,
 								msgDefeat: logMsgFail,
 								addToLog: true,
@@ -2589,10 +2589,10 @@ define(['ash',
 					campComponent.rumourpool--;
 					var campfireLevel = improvementsComponent.getLevel(improvementNames.campfire);
 					this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitCampfire(campfireLevel);
-					let msg = "ui.actions.use_campfire_message";
+					let msg = "game.actions.use_campfire_message";
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_SUCC, msg);
 				} else {
-					let msg = "ui.actions.use_campfire_failed_message";
+					let msg = "game.actions.use_campfire_failed_message";
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_CAMPFIRE_FAIL, msg);
 					campComponent.rumourpoolchecked = true;
 				}
@@ -2626,7 +2626,7 @@ define(['ash',
 			if (campSector) {
 				var marketLevel = improvementsComponent.getLevel(improvementNames.market);
 				this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitMarket(marketLevel);
-				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "ui.actions.use_in_market_completed_message");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "game.actions.use_in_market_completed_message");
 			} else {
 				log.w("No camp sector found.");
 			}
@@ -2855,7 +2855,7 @@ define(['ash',
 					let baseValue = itemConfig.configData.metalValue || 10;
 					let variation = Math.min(baseValue / 4, 5);
 					let value = baseValue + MathUtils.randomIntBetween(-variation, variation);
-					let logMsg = { textKey: "ui.actions.use_cache_metal_message", textParams: { name: Text.addArticle(itemShortName), value: value } };
+					let logMsg = { textKey: "game.actions.use_cache_metal_message", textParams: { name: Text.addArticle(itemShortName), value: value } };
 					currentStorage.resources.addResource(resourceNames.metal, value);
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_METAL_CACHE, logMsg);
 					break;
@@ -2992,9 +2992,9 @@ define(['ash',
 					}
 					
 					if (revealedSomething) {
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("ui.actions.use_consumable_map_message_default"));
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("game.actions.use_consumable_map_message_default"));
 					} else {
-						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("ui.actions.use_consumable_map_message_empty"));
+						GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MAP_PIECE, Text.t("game.actions.use_consumable_map_message_empty"));
 					}
 					
 					GlobalSignals.mapPieceUsedSignal.dispatch();

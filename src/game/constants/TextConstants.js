@@ -908,7 +908,7 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			let message = TextBuilder.build(template, params);
 			
 			let textFragments = [];
-			textFragments.push({ textKey: "ui.actions.use_cache_insight_message", textParams: { name: itemName } });
+			textFragments.push({ textKey: "game.actions.use_cache_insight_message", textParams: { name: itemName } });
 			textFragments.push({ rawText: message });
 			let textVO = { textFragments: textFragments, delimiter: "ui.common.sentence_separator" }
 			return Text.compose(textVO) ;
