@@ -282,7 +282,7 @@ define([
 		// districts
 
 		drawDistrict: function (ctx, shapes, shapeDef, getSectorPos) {
-			if (shapes.length == 0) return;
+			if (!shapes || shapes.length == 0) return;
 
 			let isStroke = shapeDef.strokeStyle;
 
