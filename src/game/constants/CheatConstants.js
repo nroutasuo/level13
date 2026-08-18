@@ -57,6 +57,7 @@ define(function () {
 		CHEAT_NAME_VISITOR: "visitor",
 		CHEAT_NAME_WORKERS: "workers",
 		CHEAT_NAME_WORKSHOPS: "workshops",
+		CHEAT_NAME_SET_ITEM_WEAR: "setItemWear",
 		
 	};
 	return CheatConstants;

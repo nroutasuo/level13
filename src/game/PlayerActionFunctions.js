@@ -2764,6 +2764,7 @@ define(['ash',
 			if (!itemVO) return;
 			GameGlobals.gameState.increaseGameStatSimple("numItemsRepaired");
 			itemVO.broken = false;
+			itemVO.wear = 0;
 			log.i("repaired " + itemVO.id);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 			GlobalSignals.inventoryChangedSignal.dispatch();

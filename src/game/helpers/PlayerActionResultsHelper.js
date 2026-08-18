@@ -2335,7 +2335,7 @@ define([
 						break;
 					case ItemConstants.itemTypes.bag:
 					case ItemConstants.itemTypes.light:
-						result = hasFirstCamp ? item.equipped ? 0.25 : 0.75 : 0;
+						result = hasFirstCamp ? item.equipped ? 0.25 : 0.5 : 0;
 						break;
 				}
 			}

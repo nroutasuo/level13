@@ -2361,7 +2361,8 @@
 			"warning_low_food_description": "There won't be much food left in the camp.",
 			"warning_low_stamina_description": "Won't get far with low stamina.",
 			"warning_low_supplies_description": "Won't get far without food and water.",
-			"warning_low_water_description": "There won't be much water left in the camp."
+			"warning_low_water_description": "There won't be much water left in the camp.",
+			"warning_worn_item_description": "Some items are heavily worn and may break soon."
 		},
 		"exploration": {
 			"action_rewards_generic_message_01": "Found something",
@@ -2480,6 +2481,7 @@
 			"improved_building_message": "Improved the {name}",
 			"improved_campfire_message": "Made the campfire a bit cosier",
 			"improved_generator_message": "Fixed up the generator",
+			"item_broke_from_wear_message": "{name} broke from wear.",
 			"improved_library_message": "Upgraded the library",
 			"improved_robot_factory_message": "Modernized the robot factory",
 			"investigate_locale_complete_message": "Investigated {name} and found some documents",

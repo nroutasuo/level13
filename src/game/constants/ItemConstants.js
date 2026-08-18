@@ -607,6 +607,46 @@ function (Ash, ItemData, Text, ArrayUtils, MathUtils, PlayerActionConstants, Sec
 			if (itemQuality == ItemConstants.itemQuality.low) return 0.85;
 			return 1;
 		},
+
+		getMaxWear: function (itemVO) {
+			if (!itemVO || !itemVO.equippable) return 0;
+			let baseMax = this.getMaxWearByType(itemVO.type);
+			if (baseMax === 0) return 0;
+			let quality = this.getItemQuality(itemVO);
+			let qualityModifier = this.getMaxWearQualityModifier(quality);
+			return Math.round(baseMax * qualityModifier);
+		},
+
+		getMaxWearByType: function (itemType) {
+			switch (itemType) {
+				case ItemConstants.itemTypes.weapon:
+					return 100;
+				case ItemConstants.itemTypes.bag:
+				case ItemConstants.itemTypes.light:
+				case ItemConstants.itemTypes.shoes:
+				case ItemConstants.itemTypes.clothing_over:
+				case ItemConstants.itemTypes.clothing_upper:
+				case ItemConstants.itemTypes.clothing_lower:
+				case ItemConstants.itemTypes.clothing_hands:
+				case ItemConstants.itemTypes.clothing_head:
+					return 1000;
+				default:
+					return 0; 
+			}
+		},
+
+		getMaxWearQualityModifier: function (quality) {
+			if (quality == ItemConstants.itemQuality.high) return 1.5;
+			if (quality == ItemConstants.itemQuality.low) return 0.5;
+			return 1.0;
+		},
+
+		getWearPercentage: function (itemVO) {
+			if (!itemVO) return 0;
+			let maxWear = this.getMaxWear(itemVO);
+			if (maxWear === 0) return 0;
+			return Math.floor((itemVO.wear || 0) / maxWear * 100);
+		},
 		
 		getNewItemInstanceByID: function (id, level, skipWarning) {
 			if (!id) return null;

@@ -183,15 +183,39 @@ define([
 		updateWarning: function (campResourcesAcc, campResources, selectedWater, selectedFood) {
 			var staminaComponent = this.playerPosNodes.head.entity.get(StaminaComponent);
 			var campComponent = this.playerLocationNodes.head.entity.get(CampComponent);
+			var itemsComponent = this.playerPosNodes.head.entity.get(ItemsComponent);
 			if (!campComponent) return;
 
 			let warningTextKey = "";
 
 			var campPopulation = Math.floor(campComponent.population);
+			
+			let hasBrokenItem = false;
+			let hasWornItem = false;
+
+			if (itemsComponent) {
+				let carried = itemsComponent.getAll(false, false);
+				for (let i = 0; i < carried.length; i++) {
+					let item = carried[i];
+					if (item.broken) {
+						hasBrokenItem = true;
+					}
+
+					let wearPercent = ItemConstants.getWearPercentage(item);
+					if (wearPercent > 90) {
+						hasWornItem = true;
+					}
+				}
+			}
+
 			if (staminaComponent.stamina < PlayerStatConstants.getStaminaWarningLimit(staminaComponent) * 2) {
 				warningTextKey = "ui.embark.warning_low_stamina_description";
 			} else if (selectedWater < 1 || selectedFood < 1) {
 				warningTextKey = "ui.embark.warning_low_supplies_description";
+			} else if (hasBrokenItem) {
+				warningTextKey = "ui.embark.warning_broken_item_description";
+			} else if (hasWornItem) {
+				warningTextKey = "ui.embark.warning_worn_item_description";
 			} else if (campPopulation >= 1) {
 				var remainingWater = campResources.resources.getResource(resourceNames.water) - selectedWater;
 				var remainingFood = campResources.resources.getResource(resourceNames.food) - selectedFood;
@@ -203,7 +227,7 @@ define([
 				else if ((isFoodDecreasing && selectedFood > 0 && remainingFood <= campPopulation) || remainingFood < 1) {
 					warningTextKey = "ui.embark.warning_low_food_description";
 				}
-			} 
+			}
 			
 			$("#embark-warning").text(Text.t(warningTextKey));
 			GameGlobals.uiFunctions.toggle("#embark-warning", warningTextKey.length > 0);

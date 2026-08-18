@@ -33,6 +33,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 		equipped: false,
 		carried: false,
 		broken: false,
+		wear: 0,
 
 		constructor: function (id, type, level, requiredCampOrdinal, maximumCampOrdinal, equippable, craftable, repairable, useable, bonuses, icon, isSpecialEquipment) {
 			this.id = id;
@@ -60,6 +61,7 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			this.equipped = false;
 			this.carried = false;
 			this.broken = false;
+			this.wear = 0;
 			this.foundPosition = null;
 		},
 		
@@ -116,6 +118,9 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 			if (!this.equippable)
 				delete clone.equipped;
 
+			if (this.wear === 0 || this.wear === undefined)
+				delete clone.wear;
+
 			return clone;
 		},
 
@@ -131,11 +136,13 @@ define(['ash', 'game/vos/ItemBonusVO'], function (Ash, ItemBonusVO) {
 
 			clone.tradePrice = this.tradePrice;
 			clone.broken = this.broken;
+			clone.wear = this.wear || 0;
 
 			if (componentValues) {
 				if (componentValues.itemID) clone.itemID = componentValues.itemID; 
 				if (componentValues.foundPosition) clone.foundPosition = componentValues.foundPosition; 
 				if (componentValues.level) clone.level = componentValues.level;
+				if (componentValues.wear) clone.wear = componentValues.wear;
 				clone.broken = componentValues.broken == 1;
 			}
 

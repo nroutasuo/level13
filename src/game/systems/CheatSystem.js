@@ -200,6 +200,9 @@ define(['ash',
 			this.registerCheat(CheatConstants.CHEAT_NAME_BREAK_ITEM, "Break a random item.", [], function () {
 				this.breakItem();
 			});
+			this.registerCheat(CheatConstants.CHEAT_NAME_SET_ITEM_WEAR, "Set wear on an equipped item.", ["item index (0-based)", "wear amount"], function (params) {
+				this.setItemWear(parseInt(params[0]), parseInt(params[1]));
+			});
 			this.registerCheat(CheatConstants.CHEAT_NAME_PERK, "Add the given perk to the player.", ["perk id"], function (params) {
 				this.addPerk(params[0]);
 			});
@@ -614,6 +617,35 @@ define(['ash',
 			let item = breakable[Math.floor(Math.random() * breakable.length)];
 			item.broken = true;
 			log.i("broke item: " + item.id + " " + item.itemID);
+			GlobalSignals.inventoryChangedSignal.dispatch();
+		},
+
+		setItemWear: function (itemIndex, wearAmount) {
+			let itemsComponent = this.playerPositionNodes.head.entity.get(ItemsComponent);
+			let equipped = itemsComponent.getEquipped();
+			
+			if (itemIndex < 0 || itemIndex >= equipped.length) {
+				log.w("Invalid item index. You have " + equipped.length + " equipped items (indices 0-" + (equipped.length - 1) + ")");
+				return;
+			}
+			
+			let item = equipped[itemIndex];
+			let maxWear = ItemConstants.getMaxWear(item);
+			
+			if (maxWear === 0) {
+				log.w("This item type does not have wear: " + item.id);
+				return;
+			}
+			
+			item.wear = Math.max(0, Math.min(wearAmount, maxWear));
+			
+			if (item.wear >= maxWear) {
+				item.broken = true;
+				log.i("Set wear to " + item.wear + "/" + maxWear + " and broke item: " + item.id);
+			} else {
+				log.i("Set wear to " + item.wear + "/" + maxWear + " on item: " + item.id);
+			}
+			
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
 

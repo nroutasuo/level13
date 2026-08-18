@@ -25,6 +25,10 @@
 				{
 					"type": "GD",
 					"summary": "Add small differences to camps to make each camp unique"
+				},
+				{
+					"type": "GD",
+					"summary": "Add (slow) wear to equippable items"
 				}
 			]
 		},

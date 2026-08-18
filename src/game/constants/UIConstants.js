@@ -222,7 +222,15 @@ define(['ash',
 				let quality = ItemConstants.getItemQuality(item);
 				itemCalloutContent += "</br>Quality: " + ItemConstants.getQualityDisplayName(quality);
 			}
+			
+			if (item.equippable && !item.broken) {
+				let wearPercent = ItemConstants.getWearPercentage(item);
+				let wearColor = wearPercent > 80 ? "warning" : "";
+				itemCalloutContent += "</br>Wear: <span class='" + wearColor + "'>" + wearPercent + "%</span>";
+			}
+
 			if (item.broken) itemCalloutContent += "<br><span class='warning'>Broken</span>";
+
 			itemCalloutContent += "</br>" + ItemConstants.getItemDescription(item);
 			if (smallCallout) itemCalloutContent = itemName + (detail.length > 0 ? " " + detail : "");
 			
