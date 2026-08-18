@@ -428,6 +428,8 @@ define([
 			this.updatePlayerStat("hope", playerStatsNode.hope, showHope, playerStatsNode.hope.hope, playerStatsNode.hope.maxHope, false, this.elements.valHope, this.elements.changeIndicatorHope);
 			this.updatePlayerStat("insight", playerStatsNode.insight, hasInsight, playerStatsNode.insight.value, playerStatsNode.insight.maxValue, false, this.elements.valInsight, this.elements.changeIndicatorInsight);
 
+			// header-tribe-container
+			GameGlobals.uiFunctions.toggle($("#header-tribe-container"), showEvidence || showRumours || hasDeity || hasInsight);
 			GameGlobals.uiFunctions.toggle($(".statsbar-tribe-stats"), showEvidence || showRumours || hasDeity || hasInsight);
 
 			var improvements = this.currentLocationNodes.head.entity.get(SectorImprovementsComponent);
@@ -1125,13 +1127,13 @@ define([
 			let featuresComponent = this.currentLocationNodes.head.entity.get(SectorFeaturesComponent);
 
 			let hasMap = GameGlobals.playerHelper.hasItem("equipment_map");
-			let positionText = "??";
+			let positionText = Text.t("ui.common.value_text_unknown");
 			if (hasMap) {
 				let showLevel = GameGlobals.gameState.unlockedFeatures.levels;
 				positionText = this.currentLocationNodes.head.entity.get(PositionComponent).getPosition().getInGameFormat(showLevel, true);
 			}
 
-			$("#out-position-indicator").text("Position: " + positionText);
+			$("#out-position-indicator").text(Text.t("ui.exploration.position_indicator_label", positionText));
 
 			let districtVO = levelComponent.districts[featuresComponent.districtIndex];
 			$("#out-district-indicator").text(TextConstants.getDistrictTypeText(districtVO));
