@@ -223,6 +223,8 @@ define([
 					break;
 			}
 
+			result.diagonalRateCombined = result.diagonalRateRect > 0 && result.diagonalRateLine > 0 ? (result.diagonalRateRect + result.diagonalRateLine) / 2 : 0;
+
 			return result;
 		},
 		
@@ -1112,9 +1114,11 @@ define([
 		createCentralPlaza: function (s1, s2, s3, worldVO, levelVO, position, pois) {
 			let options = this.getDefaultOptions();
 			let size = 3 + WorldCreatorRandom.randomInt(s3, 0, 2) * 2;
-			let minCornerLen = MathUtils.clamp(Math.floor(levelVO.numSectors / 20), 4, 8);
+			let minCornerLen = MathUtils.clamp(Math.floor(levelVO.numSectors / 22), 4, 8);
 			let cornerlen = minCornerLen + WorldCreatorRandom.randomInt(s1, 0, 4) * 2;
-			let isDiagonal = WorldCreatorRandom.randomBool(s2, levelVO.structureSettings.diagonalRateRect);
+
+			let diagonalProbability = levelVO.structureSettings.diagonalRateCombined;
+			let isDiagonal = WorldCreatorRandom.randomBool(s2, diagonalProbability);
 			
 			let getCorner = function (center, dir) {
 				let startPos = PositionConstants.getPositionOnPath(center, dir, 2);
