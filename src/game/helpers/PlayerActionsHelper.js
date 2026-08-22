@@ -1221,6 +1221,16 @@ define([
 						}
 					}
 
+					if (typeof requirements.sector.hasCorrodibleTarget !== "undefined") {
+						let requiredValue = requirements.sector.hasCorrodibleTarget;
+						let currentValue = false;
+						if (GameGlobals.movementHelper.hasCorrodibleBlocker(sector)) {
+							currentValue = true;
+						}
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, "Requires target");
+						if (result) return result;
+					}
+
 					if (typeof requirements.sector.controlledLocales !== "undefined") {
 						let sectorControlComponent = sector.get(SectorControlComponent);
 						for(let localei in requirements.sector.controlledLocales) {
@@ -2913,8 +2923,21 @@ define([
 			return { textKey: textKey, textParams: textParams };
 		},
 
+		getActionDisplayName: function (action) {
+			if (action.indexOf("use_item") >= 0) {
+				let param = PlayerActionConstants.getActionIDParam(action);
+				let itemVO = ItemConstants.getItemDefinitionByID(param);
+				return ItemConstants.getUseItemActionDisplaName(itemVO);
+			}
+
+			let key = this.getActionDisplayNameKey(action);
+
+			return Text.t(key);
+		},
+
 		getActionDisplayNameKey: function (action) {
 			let baseActionID = PlayerActionConstants.getBaseActionID(action);
+			let param = PlayerActionConstants.getActionIDParam(action);
 
 			let actionKey = action;
 

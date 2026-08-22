@@ -31,6 +31,8 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		DISABLED_REASON_SUNLIT: 'DISABLED_REASON_SUNLIT',
 		DISABLED_REASON_UPGRADE: 'DISABLED_REASON_UPGRADE',
 		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
+
+		DURATION_EXPEDITION: "EXPEDITION",
 		
 		loadData: function (data) {
 			Object.assign(this, data);
@@ -112,6 +114,8 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		getDuration: function (action, baseActionID) {
 			baseActionID = baseActionID || this.getBaseActionID(action);
 			let speed = this.isExplorationAction(baseActionID) ? GameConstants.gameSpeedExploration : GameConstants.gameSpeedCamp;
+
+			if (action === "disable_blockers_corrosive") return PlayerActionConstants.DURATION_EXPEDITION;
 
 			// TODO make send_caravan duration dependent on the trade partner's location
 			if (this.durations[baseActionID]) {
@@ -217,6 +221,9 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		
 		getBaseActionID: function (action) {
 			if (!action) return action;
+			if (typeof action !== "string") return "";
+
+			let parts = action.split("_");
 			
 			if (action.indexOf("build_in_") >= 0) return action;
 			if (action.indexOf("claim_milestone_") >= 0) return "claim_milestone";
@@ -261,11 +268,18 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 			if (action.indexOf("end_dialogue") >= 0) return "end_dialogue";
 			if (action.indexOf("select_dialogue_option") >= 0) return "select_dialogue_option";
 			if (action.indexOf("build_out_passage") >= 0) {
-				var parts = action.split("_");
 				if (isNaN(parts[parts.length-1]))
 					return action;
 				return action.substring(0, action.lastIndexOf("_"));
 			}
+
+			if (parts.length > 1) {
+				let postfix = parts[parts.length - 1];
+				if (/^\d+$/.test(postfix)) {
+					return parts.slice(0, -1).join("_");
+				}
+			}
+			
 			return action;
 		},
 		

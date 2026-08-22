@@ -475,9 +475,16 @@ define([
 			return itemsComponent.getCountById(id, true) > 0;
 		},
 		
-		hasItemBaseID: function (itemBaseID) {
+		hasItemBaseID: function (itemBaseID, includeNotCarried) {
+			includeNotCarried = includeNotCarried || this.isInCamp();
 			let itemsComponent = this.playerStatsNodes.head.items;
-			return itemsComponent.getCountByBaseId(itemBaseID, true) > 0;
+			return itemsComponent.getCountByBaseId(itemBaseID, includeNotCarried) > 0;
+		},
+
+		getItemByBaseID: function (itemBaseID, includeNotCarried) {
+			includeNotCarried = includeNotCarried || this.isInCamp();
+			let itemsComponent = this.playerStatsNodes.head.items;
+			return itemsComponent.getItemByBaseID(itemBaseID, includeNotCarried);
 		},
 		
 		getCurrentBonus: function (itemBonusType) {

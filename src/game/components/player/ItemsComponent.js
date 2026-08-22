@@ -379,6 +379,21 @@ function (Ash, ItemVO, ItemConstants) {
 			
 			return result;
 		},
+
+		getItemByBaseID: function (itemBaseID, includeNotCarried) {
+			for (let key in this.items) {
+				for (let i = 0; i < this.items[key].length; i++) {
+					var item = this.items[key][i];
+					if (!includeNotCarried && !item.carried) continue;
+					let baseID = ItemConstants.getBaseItemID(item.id);
+					if (baseID == itemBaseID) {
+						return item;
+					}
+				}
+			}
+			
+			return null;
+		},
 		
 		getCountByIdAndStatus: function (id, isBroken, includeNotCarried) {
 			let result = 0;

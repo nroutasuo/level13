@@ -24,31 +24,32 @@ define([
 			this.itemsNodes = engine.getNodeList(ItemsNode);
 		},
 		
-		getBlocker: function (sectorEntity, direction) {
-			var passagesComponent = sectorEntity.get(PassagesComponent);
+		getBlocker: function (sector, direction) {
+			let passagesComponent = sector.get(PassagesComponent);
 			return passagesComponent.getBlocker(direction);
 		},
 		
-		isBlocked: function (sectorEntity, direction) {
-			return this.isBlockedCheck(sectorEntity, direction).value;
+		isBlocked: function (sector, direction) {
+			return this.isBlockedCheck(sector, direction).value;
 		},
 		
-		getBlockedReason: function (sectorEntity, direction) {
-			return this.isBlockedCheck(sectorEntity, direction).reason;
+		getBlockedReason: function (sector, direction) {
+			return this.isBlockedCheck(sector, direction).reason;
 		},
 		
-		isBlockedCheck: function (sectorEntity, direction) {
-			let passagesComponent = sectorEntity.get(PassagesComponent);
+		isBlockedCheck: function (sector, direction) {
+			let passagesComponent = sector.get(PassagesComponent);
 			
 			let reason = "";
 			let blocked = true;
 			
 			if (PositionConstants.isLevelDirection(direction)) {
-				var isBridged = this.isBridged(sectorEntity, direction);
-				var isDefeated = this.isDefeated(sectorEntity, direction);
-				var isCleaned = this.isCleaned(sectorEntity, direction);
-				var isCleared = this.isCleared(sectorEntity, direction);
-				var blocker = passagesComponent.getBlocker(direction);
+				let isBridged = this.isBridged(sector, direction);
+				let isDefeated = this.isDefeated(sector, direction);
+				let isCleaned = this.isCleaned(sector, direction);
+				let isCleared = this.isCleared(sector, direction);
+				let isDisabled = this.isDisabled(sector, direction);
+				let blocker = passagesComponent.getBlocker(direction);
 				
 				if (blocker !== null) {
 					switch (blocker.type) {
@@ -65,7 +66,7 @@ define([
 						case MovementConstants.BLOCKER_TYPE_EXPLOSIVES:
 							return { value: !isCleared, reason: "Blocked by explosives." };
 						case MovementConstants.BLOCKER_TYPE_TOLL_GATE:
-							return { value: !isCleared, reason: "Blocked by a toll gate." };
+							return { value: !isDisabled && !isCleared, reason: "Blocked by a toll gate." };
 						default:
 							log.w(this, "Unknown blocker type: " + blocker.type);
 							return { value: false };
@@ -92,12 +93,12 @@ define([
 			return { value: blocked, reason: reason };
 		},
 		
-		isDefeated: function (sectorEntity, direction) {
-			var position = sectorEntity.get(PositionComponent).getPosition();
+		isDefeated: function (sector, direction) {
+			var position = sector.get(PositionComponent).getPosition();
 			var gangEntity = GameGlobals.levelHelper.getGang(position, direction);
 			if (!gangEntity) return true;
 			var gangComponent = gangEntity.get(GangComponent);
-			return this.hasDefeatableBlocker(sectorEntity, direction) && gangComponent.isDefeated();
+			return this.hasDefeatableBlocker(sector, direction) && gangComponent.isDefeated();
 		},
 		
 		isPassageTypeAvailable: function (sector, direction) {
@@ -125,41 +126,70 @@ define([
 			return true;
 		},
 		
-		isCleaned: function (sectorEntity, direction) {
-			var statusComponent = sectorEntity.get(SectorStatusComponent);
+		isCleaned: function (sector, direction) {
+			var statusComponent = sector.get(SectorStatusComponent);
 			var isCleared =
 				statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC) ||
 				statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE);
-			return this.hasClearableBlocker(sectorEntity, direction) && isCleared;
+			return this.hasClearableBlocker(sector, direction) && isCleared;
 		},
 		
-		isCleared: function (sectorEntity, direction) {
-			let statusComponent = sectorEntity.get(SectorStatusComponent);
-			if (!this.hasClearableBlocker(sectorEntity, direction)) return false;
+		isCleared: function (sector, direction) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (!this.hasClearableBlocker(sector, direction)) return false;
 			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_DEBRIS)) return true;
 			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_EXPLOSIVES)) return true;
 			if (statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_TOLL_GATE)) return true;
 			return false;
 		},
 		
-		isBridged: function (sectorEntity, direction) {
-			var statusComponent = sectorEntity.get(SectorStatusComponent);
-			return this.hasClearableBlocker(sectorEntity, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_GAP);
+		isBridged: function (sector, direction) {
+			var statusComponent = sector.get(SectorStatusComponent);
+			return this.hasClearableBlocker(sector, direction) && statusComponent.isBlockerCleared(direction, MovementConstants.BLOCKER_TYPE_GAP);
+		},
+
+		isDisabled: function (sector, direction) {
+			let statusComponent = sector.get(SectorStatusComponent);
+			return statusComponent.isBlockerDisabled(direction);
 		},
 		
-		hasBridgeableBlocker: function (sectorEntity, direction) {
-			var passagesComponent = sectorEntity.get(PassagesComponent);
+		hasBridgeableBlocker: function (sector, direction) {
+			if (!direction) return this.hasBridgeableBlocker(sector, this.hasClearableBlocker);
+			let passagesComponent = sector.get(PassagesComponent);
 			return passagesComponent.isBridgeable(direction);
 		},
 		
-		hasDefeatableBlocker: function (sectorEntity, direction) {
-			var passagesComponent = sectorEntity.get(PassagesComponent);
+		hasDefeatableBlocker: function (sector, direction) {
+			if (!direction) return this.hasDefeatableBlocker(sector, this.hasClearableBlocker);
+			let passagesComponent = sector.get(PassagesComponent);
 			return passagesComponent.isDefeatable(direction);
 		},
 		
-		hasClearableBlocker: function (sectorEntity, direction) {
-			var passagesComponent = sectorEntity.get(PassagesComponent);
+		hasClearableBlocker: function (sector, direction) {
+			if (!direction) return this.hasMatchingBlocker(sector, this.hasClearableBlocker);
+			let passagesComponent = sector.get(PassagesComponent);
 			return passagesComponent.isClearable(direction);
+		},
+
+		hasCorrodibleBlocker: function (sector, direction) {
+			if (!direction) return this.hasMatchingBlocker(sector, this.hasCorrodibleBlocker);
+			let passagesComponent = sector.get(PassagesComponent);
+			let blocker = passagesComponent.getBlocker(direction);
+			if (!blocker) return false;
+			if (blocker.type != MovementConstants.BLOCKER_TYPE_TOLL_GATE) return false;
+			
+			let statusComponent = sector.get(SectorStatusComponent);
+			if (statusComponent.isBlockerDisabled(direction, blocker.type)) return false;
+
+			return true;
+		},
+
+		hasMatchingBlocker: function (sector, check) {
+			for (let i in PositionConstants.getLevelDirections()) {
+				let direction = PositionConstants.getLevelDirections()[i];
+				if (check(sector, direction)) return true;
+			}
+			return false;
 		},
 
 		isProjectBlocker: function (blockerType) {

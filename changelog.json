@@ -29,6 +29,10 @@
 				{
 					"type": "GD",
 					"summary": "Add (slow) wear to equippable items"
+				},
+				{
+					"type": "GD",
+					"summary": "Add a way to permanently disable toll gates"
 				}
 			]
 		},

@@ -18,6 +18,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		localesInvestigated: [], // locale index -> float (weighted times investigated)
 		wasteClearedDirections: [],
 		blockerClearedDirections: [], // debris, explosives
+		blockerDisabledDirections: [], // alternative way to disable a blocker (currently only toll gate)
 		gapBridgedDirections: [],
 		weightedNumScavenges: 0,
 		weightedNumHeapScavenges: 0,
@@ -43,6 +44,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 			this.localesInvestigated = [];
 			this.wasteClearedDirections = [];
 			this.blockerClearedDirections = [];
+			this.blockerDisabledDirections = [];
 			this.gapBridgedDirections = [];
 			this.weightedNumScavenges = 0;
 			this.weightedNumHeapScavenges = 0;
@@ -131,6 +133,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 		setBlockerCleared: function (direction, blockerType) {
 			if (this.isBlockerCleared(direction, blockerType))
 				return;
+
 			if (blockerType == MovementConstants.BLOCKER_TYPE_WASTE_TOXIC || blockerType == MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE) {
 				this.wasteClearedDirections.push(parseInt(direction));
 			}
@@ -154,6 +157,20 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				if (index >= 0) {
 					this.blockerClearedDirections.splice(index, 1);
 				}
+			}
+		},
+
+		isBlockerDisabled: function (direction, blockerType) {
+			return this.blockerDisabledDirections && this.blockerDisabledDirections.indexOf(parseInt(direction)) >= 0;
+		},
+
+		setBlockerDisabled: function (direction, blockerType) {
+			if (this.isBlockerDisabled(direction, blockerType)) {
+				return;
+			}
+
+			if (blockerType == MovementConstants.BLOCKER_TYPE_TOLL_GATE) {
+				this.blockerDisabledDirections.push(parseInt(direction));
 			}
 		},
 
@@ -194,6 +211,8 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 				copy.wd = this.wasteClearedDirections;
 			if (this.blockerClearedDirections && this.blockerClearedDirections.length > 0)
 				copy.dd = this.blockerClearedDirections;
+			if (this.blockerDisabledDirections && this.blockerDisabledDirections.length > 0)
+				copy.ddd = this.blockerDisabledDirections;
 			if (this.gapBridgedDirections && this.gapBridgedDirections.length > 0)
 				copy.bd = this.gapBridgedDirections;
 			if (this.weightedNumScavenges)
@@ -234,6 +253,7 @@ define(['ash', 'game/constants/MovementConstants'], function (Ash, MovementConst
 
 			this.wasteClearedDirections = componentValues.wd ? componentValues.wd : [];
 			this.blockerClearedDirections = componentValues.dd ? componentValues.dd : [];
+			this.blockerDisabledDirections = componentValues.ddd ? componentValues.ddd : [];
 			this.gapBridgedDirections = componentValues.bd ? componentValues.bd : [];
 			this.weightedNumScavenges = componentValues.sw ? componentValues.sw : 0;
 			this.weightedNumHeapScavenges = componentValues.shw ? componentValues.shw : 0;

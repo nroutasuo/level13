@@ -861,8 +861,13 @@ define([
 				addStashes(seed % 45 * (l + 11) * 9 + (l+100)*7 + 1111, "guaranteed-noncampable", ItemConstants.STASH_TYPE_ITEM, [ "stamina_potion_1"], 1, 1);
 				addStashes(seed / 2 + l * 3, "guaranteed-noncampable", ItemConstants.STASH_TYPE_ITEM, [ "cache_food_1"], 1, 1);
 				addStashes(seed % 6 * 1000 + l * 5, "guaranteed-noncampable", ItemConstants.STASH_TYPE_ITEM, [ "cache_water_1"], 1, 1);
+
 				if (levelVO.level != worldVO.bottomLevel) {
 					addStashes(3000 + seed % 7 * 188 + (levelVO.level % 3) * 105 + Math.abs(levelVO.minX + 50) * 77, "guaranteed-noncampable", ItemConstants.STASH_TYPE_ITEM, [ "consumable_map_1", "consumable_map_2" ], 2, 1, lateZones);
+				}
+
+				if (levelVO.campOrdinal > 8) {
+					addStashes(seed % 5 + 3, "guaranteed-noncampable-late", ItemConstants.STASH_TYPE_ITEM, [ "consumable_corrosive_1"], 1, 1);
 				}
 			}
 			
@@ -894,7 +899,7 @@ define([
 			
 			// stashes: consumables and other bonus rewards (uncampable levels and late zones)
 			let bonusStashItems = this.getPossibleBonusStashItems(levelVO);
-			var numItems = Math.min(levelVO.isCampable ? 1 : 3, bonusStashItems.length);
+			let numItems = Math.min(levelVO.isCampable ? 1 : 3, bonusStashItems.length);
 			addStashes(seed + (l + 151) * 115, "bonus", ItemConstants.STASH_TYPE_ITEM, bonusStashItems, numItems, 1, earlyZonesOnCampableLevels);
 
 			// stashes: story items
@@ -908,31 +913,32 @@ define([
 		
 		getPossibleBonusStashItems: function (levelVO) {
 			let allItems = [
-				"first_aid_kit_1",
-				"first_aid_kit_2",
-				"glowstick_1",
-				"exploration_2",
-				"consumable_weapon_1",
-				"consumable_weapon_bio",
-				"consumable_weapon_mechanical",
-				"consumable_graffiti_01",
-				"flee_1",
 				"cache_evidence_11",
 				"cache_evidence_12",
 				"cache_evidence_21",
 				"cache_evidence_22",
 				"cache_evidence_31",
 				"cache_evidence_32",
-				"cache_rumours_11",
-				"cache_rumours_22",
+				"cache_food_1",
+				"cache_food_2",
 				"cache_metal_1",
 				"cache_metal_2",
 				"cache_metal_3",
 				"cache_metal_4",
-				"cache_food_1",
-				"cache_food_2",
+				"cache_rumours_11",
+				"cache_rumours_22",
 				"cache_water_1",
 				"cache_water_2",
+				"consumable_corrosive_1",
+				"consumable_graffiti_01",
+				"consumable_weapon_1",
+				"consumable_weapon_bio",
+				"consumable_weapon_mechanical",
+				"exploration_2",
+				"first_aid_kit_1",
+				"first_aid_kit_2",
+				"flee_1",
+				"glowstick_1",
 			];
 			return allItems.filter((itemID) => this.itemsHelper.isAvailable(ItemConstants.getItemDefinitionByID(itemID), levelVO.campOrdinal, WorldConstants.CAMP_STEP_END, true, true));
 		},

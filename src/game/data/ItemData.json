@@ -1808,6 +1808,19 @@
         "rarityTrade": 4,
         "type": "exploration"
     },
+    "consumable_corrosive_1": {
+        "campOrdinalRequired": 8,
+        "icon": "img/items/consumable-chemical.png",
+        "isCraftable": false,
+        "isEquippable": false,
+        "isUseable": true,
+        "rarityLocale": 8,
+        "rarityScavenge": 10,
+        "rarityTrade": 8,
+        "tradePrice": 1,
+        "tags": [ "equipment", "science", "industrial" ],
+        "type": "exploration"
+    },
     "document_story_apocalypse_cause_01": {
         "configData": {
             "noteText": "Official report regarding the earthquakes. According to it, they are caused by mining, and the effect is not reversible.",

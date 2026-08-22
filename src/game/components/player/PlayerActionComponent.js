@@ -4,11 +4,13 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 
 		endTimeStampToActionDict: {},
 		endTimeStampList: [],
+		expeditionActions: [],
 		busyStartTime: -1,
 
 		constructor: function () {
 			this.endTimeStampToActionDict = {};
 			this.endTimeStampList = [];
+			this.expeditionActions = [];
 			this.busyStartTime = -1;
 		},
 
@@ -21,10 +23,14 @@ define(['ash', 'game/constants/PlayerActionConstants', 'game/vos/PlayerActionVO'
 
 			let actionVO = new PlayerActionVO(action, position, param, deductedCosts, startTime, isBusyAction, cb);
 
-			let endTimeStamp = new Date().getTime() + duration * 1000;
-			this.endTimeStampToActionDict[endTimeStamp] = actionVO;
-			this.endTimeStampList.push(endTimeStamp);
-			this.sortTimeStamps();
+			if (duration === PlayerActionConstants.DURATION_EXPEDITION) {
+				this.expeditionActions.push(actionVO);
+			} else {
+				let endTimeStamp = new Date().getTime() + duration * 1000;
+				this.endTimeStampToActionDict[endTimeStamp] = actionVO;
+				this.endTimeStampList.push(endTimeStamp);
+				this.sortTimeStamps();
+			}
 		},
 
 		getLastAction: function (requireBusy) {

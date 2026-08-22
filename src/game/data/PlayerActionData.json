@@ -998,7 +998,7 @@
             "rumours": 8938
         },
         "improve_worker_scientist": {
-            "evidence": { },
+            "evidence": {},
             "hope": 135,
             "rumours": 2802
         },
@@ -1052,7 +1052,7 @@
             "resource_water": 1,
             "stamina": 12
         },
-        "move_sector_east": { },
+        "move_sector_east": {},
         "move_sector_grit_east": {
             "resource_food": 0,
             "resource_water": 0,
@@ -1093,13 +1093,13 @@
             "resource_water": 0,
             "stamina": 60
         },
-        "move_sector_ne": { },
-        "move_sector_north": { },
-        "move_sector_nw": { },
-        "move_sector_se": { },
-        "move_sector_south": { },
-        "move_sector_sw": { },
-        "move_sector_west": { },
+        "move_sector_ne": {},
+        "move_sector_north": {},
+        "move_sector_nw": {},
+        "move_sector_se": {},
+        "move_sector_south": {},
+        "move_sector_sw": {},
+        "move_sector_west": {},
         "nap": {
             "resource_food": 1,
             "resource_water": 1
@@ -2903,7 +2903,7 @@
             }
         },
         "improve_building_stable": {
-            "upgrades": { }
+            "upgrades": {}
         },
         "improve_building_stable_2": {
             "upgrades": {
@@ -3097,14 +3097,17 @@
         },
         "investigate_locale": {
             "busy": false,
-            "upgrades": {
-                "unlock_building_researchcenter": true
-            },
             "inCamp": false,
             "sector": {
                 "scouted": true
             },
-            "vision": [ 60, -1 ]
+            "upgrades": {
+                "unlock_building_researchcenter": true
+            },
+            "vision": [
+                60,
+                -1
+            ]
         },
         "launch": {
             "busy": false,
@@ -3435,7 +3438,7 @@
                 "unlock_action_clear_waste_t": true
             }
         },
-        "unlock_building_hospital": { },
+        "unlock_building_hospital": {},
         "unlock_building_house2": {
             "blueprint": 7,
             "upgrades": {
@@ -3515,7 +3518,7 @@
         "unlock_building_spaceship3": {
             "milestone": 7
         },
-        "unlock_building_square": { },
+        "unlock_building_square": {},
         "unlock_building_stable": {
             "upgrades": {
                 "unlock_building_market": true
@@ -3723,7 +3726,7 @@
                 "unlock_building_passage_elevator": true
             }
         },
-        "unlock_worker_rope": { },
+        "unlock_worker_rope": {},
         "use_in_campfire": {
             "busy": false,
             "camp": {
@@ -3862,6 +3865,17 @@
         },
         "use_item_cache_rumours": {
             "inCamp": true
+        },
+        "use_item_consumable_corrosive": {
+            "busy": false,
+            "inCamp": false,
+            "sector": {
+                "hasCorrodibleTarget": true
+            },
+            "vision": [
+                50,
+                -1
+            ]
         },
         "use_item_consumable_graffiti": {
             "inCamp": false,

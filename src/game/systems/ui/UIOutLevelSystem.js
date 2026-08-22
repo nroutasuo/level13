@@ -398,10 +398,14 @@ define([
 		},
 
 		showTollGatePopup: function (direction) {
-			let action = "clear_gate_" + direction;
+			let actions = [ "clear_gate_" + direction ];
+
+			let vial = GameGlobals.playerHelper.getItemByBaseID("consumable_corrosive");
+			if (vial) actions.push("use_item_" + vial.id);
+			
 			let title = "Toll gate";
-			let msg = "Some gangsters are lounging about. They want you to pay for passage.";
-			GameGlobals.uiFunctions.showActionPopup(action, title, msg);
+			let msg = "Some gangsters are lounging about a makeshift barricade. They want you to pay for passage.";
+			GameGlobals.uiFunctions.showActionPopup(actions, title, msg);
 		},
 
 		getDescription: function (entity, hasCampHere, hasCampOnLevel, hasVision, isScouted) {
@@ -698,9 +702,12 @@ define([
 				var blocker = passagesComponent.getBlocker(direction);
 
 				if (blocker) {
-					var gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
-					var blockerName = TextConstants.getMovementBlockerName(blocker, gangComponent).toLowerCase();
-					if (GameGlobals.movementHelper.isBlocked(entity, direction)) {
+					let gangComponent = GameGlobals.levelHelper.getGangComponent(position, direction);
+					let blockerName = TextConstants.getMovementBlockerName(blocker, gangComponent).toLowerCase();
+					let isBlocked = GameGlobals.movementHelper.isBlocked(entity, direction);
+					let isDisabled = GameGlobals.movementHelper.isDisabled(entity, direction);
+
+					if (isBlocked) {
 						switch (blocker.type) {
 							case MovementConstants.BLOCKER_TYPE_DEBRIS:
 							case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC:
@@ -712,19 +719,19 @@ define([
 								break;
 						}
 					} else {
-						var gang = GameGlobals.levelHelper.getGang(position, direction);
 						if (blocker.type == MovementConstants.BLOCKER_TYPE_DEBRIS) {
 							description += "Debris to the " + directionName + " has been cleared away. ";
 						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_EXPLOSIVES) {
 							description += "Old explosives to the " + directionName + " have been cleared away. ";
 						} else if (blocker.type == MovementConstants.BLOCKER_TYPE_GANG) {
+							let gang = GameGlobals.levelHelper.getGang(position, direction);
 							if (gang) {
 								description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
 							} else {
 								log.w("gang blocker but no gang component at " + position, this);
 							}
 						} else {
-							description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type) + ". ";
+							description += "A " + blockerName + " to the " + directionName + " has been " + TextConstants.getUnblockedVerb(blocker.type, isDisabled) + ". ";
 						}
 					}
 				}

@@ -107,12 +107,17 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			}
 
 			if (action) {
-				let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
-				let actionName = Text.t("game.actions." + baseActionID + "_name");
-				$("#common-popup .buttonbox").append("<button id='info-action' class='action' action='" + action + "'>" + actionName + "</button>");
-				$("#info-action").click(ExceptionHandler.wrapClick(function (e) {
-					popUpManager.handleOkButton(true, okCallback);
-				}));
+				let actions = typeof action === "string" ? [ action ] : action;
+				for (let i = 0; i < actions.length; i++) {
+					let buttonID = i === 0 ? "info-action" : "info-action-" + (i + 1);
+					let actionID = actions[i];
+					let actionDisplayNameKey = GameGlobals.playerActionsHelper.getActionDisplayName(actionID);
+					let actionName = Text.t(actionDisplayNameKey);
+					$("#common-popup .buttonbox").append("<button id='" + buttonID + "' class='action' action='" + actionID + "'>" + actionName + "</button>");
+					$("#" + buttonID).click(ExceptionHandler.wrapClick(function (e) {
+						popUpManager.handleOkButton(true, okCallback);
+					}));
+				}
 			}
 			
 			if (cancelButtonLabel) {

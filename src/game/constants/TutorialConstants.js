@@ -354,6 +354,12 @@ define(['ash'], function (Ash) {
 				logMessage: "ui.tutorial.encounter_sector_enemies_message",
 				conditions: { sector: { enemies: true } },
 			},
+			TUTORIAL_ENCOUNTER_CORRODIBLE_BLOCKER: {
+				triggers: [ "action_scout" ],
+				repeats: "COOLDOWN",
+				logMessage: "ui.tutorial.encounter_corrodible_blocker_message",
+				conditions: { sector: { hasCorrodibleTarget: true }, playerInventoryComplete: { item_consumable_corrosive_1: [ 1, -1 ] } },
+			},
 			TUTORIAL_ENCOUNTER_OUTPOST: {
 				triggers: [ "action_enter_camp" ],
 				repeats: "NEVER",

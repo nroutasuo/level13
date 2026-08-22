@@ -1337,7 +1337,9 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			return enemies;
 		},
 		
-		getUnblockedVerb: function (blockerType) {
+		getUnblockedVerb: function (blockerType, isDisabled) {
+			if (isDisabled) return "disabled";
+			
 			switch (blockerType) {
 				case MovementConstants.BLOCKER_TYPE_GAP: return "bridged";
 				case MovementConstants.BLOCKER_TYPE_WASTE_TOXIC: return "cleared";

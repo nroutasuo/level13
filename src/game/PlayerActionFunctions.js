@@ -154,7 +154,7 @@ define(['ash',
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			let duration = PlayerActionConstants.getDuration(action, baseId);
 
-			if (duration > 0) {
+			if (duration > 0 || duration === PlayerActionConstants.DURATION_EXPEDITION) {
 				this.startBusy(action, param, sector, deductedCosts, cb);
 			} else {
 				this.performAction(action, param, sector, deductedCosts, cb);
@@ -168,7 +168,7 @@ define(['ash',
 			let baseId = GameGlobals.playerActionsHelper.getBaseActionID(action);
 			let duration = PlayerActionConstants.getDuration(action, baseId);
 
-			if (duration > 0) {
+			if (duration > 0 || PlayerActionConstants.DURATION_EXPEDITION) {
 				let isBusy = PlayerActionConstants.isBusyAction(baseId);
 				let sectorPos = sector.get(PositionComponent).getPosition();
 				
@@ -325,6 +325,7 @@ define(['ash',
 				case "create_blueprint": this.createBlueprint(param); break;
 				case "claim_milestone": this.claimMilestone(param); break;
 				case "launch": this.launch(param); break;
+				case "disable_blockers_corrosive": this.disableBlockersCorrosive(param, sector);
 				// Mapped directly in UIFunctions or elsewheere
 				case "leave_camp": break;
 				case "fight": break;
@@ -1465,15 +1466,14 @@ define(['ash',
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
-			// parse sector pos
-			var direction = parseInt(sectorPos.split(".")[3]);
-			var sector = this.getActionSector(action, sectorPos);
-			var positionComponent = sector.get(PositionComponent);
+			// parse sector pos and direction
+			let direction = parseInt(sectorPos.split(".")[3]);
+			let sector = this.getActionSector(action, sectorPos);
+			let positionComponent = sector.get(PositionComponent);
 			
 			// find neighbour
-			var oppositeDirection = PositionConstants.getOppositeDirection(direction);
-			var neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
-			var neighbour = GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
+			let oppositeDirection = PositionConstants.getOppositeDirection(direction);
+			let neighbour = this.getBlockerNeighbour(sector, direction);
 			
 			// set status
 			var sectorStatus = sector.get(SectorStatusComponent);
@@ -1484,6 +1484,62 @@ define(['ash',
 			// complete
 			this.completeAction(action);
 			GlobalSignals.movementBlockerClearedSignal.dispatch();
+		},
+
+		disableBlockersCorrosive: function (param, sector) {
+			this.disableBlockers(sector, MovementConstants.BLOCKER_TYPE_TOLL_GATE);
+		},
+
+		disableBlockers: function (sector, blockerType) {
+			sector = sector || this.getActionSectorOrCurrent();
+			let sectorPos = sector.get(PositionComponent).getPosition();
+
+			for (let i in PositionConstants.getLevelDirections()) {
+				let direction = PositionConstants.getLevelDirections()[i];
+				this.disableBlocker(null, blockerType, sectorPos + "." + direction);
+			}
+		},
+
+		disableBlocker: function (action, blockerType, sectorPos) {
+			// parse sector pos and direction
+			let direction = parseInt(sectorPos.split(".")[3]);
+			let sector = this.getActionSector(action, sectorPos);
+			
+			let passagesComponent = sector.get(PassagesComponent);
+			let blocker = passagesComponent.getBlocker(direction);
+
+			if (!blocker || blocker.type !== blockerType) return;
+			
+			// find neighbour
+			let oppositeDirection = PositionConstants.getOppositeDirection(direction);
+			let neighbour = this.getBlockerNeighbour(sector, direction);
+
+			if (!neighbour) return;
+			
+			// set status
+			let sectorStatus = sector.get(SectorStatusComponent);
+			sectorStatus.setBlockerDisabled(direction, blockerType);
+			let neighbourStatus = neighbour.get(SectorStatusComponent);
+			neighbourStatus.setBlockerDisabled(oppositeDirection, blockerType);
+
+			let options = {
+				position: sector.get(PositionComponent),
+			};
+		
+			// complete
+			switch (blockerType) {
+				case MovementConstants.BLOCKER_TYPE_TOLL_GATE:
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "game.actions.disable_blocker_toll_gate_completed_message", options);
+					break;
+			}
+			if (action) this.completeAction(action);
+			GlobalSignals.movementBlockerClearedSignal.dispatch();
+		},
+
+		getBlockerNeighbour: function (sector, direction) {
+			let positionComponent = sector.get(PositionComponent);
+			let neighbourPos = PositionConstants.getPositionOnPath(positionComponent.getPosition(), direction, 1);
+			return GameGlobals.levelHelper.getSectorByPosition(neighbourPos.level, neighbourPos.sectorX, neighbourPos.sectorY);
 		},
 
 		nap: function () {
@@ -3002,8 +3058,13 @@ define(['ash',
 					
 					break;
 
+				case "consumable_corrosive":
+					this.startAction("disable_blockers_corrosive");
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), Text.t("game.actions.use_item_consumable_corrosive_completed_message"));
+					break;
+
 				default:
-					log.e("Item not mapped for useItem: " + itemId);
+					log.e("Item not mapped for useItem: " + itemId, this);
 					break;
 			}
 			

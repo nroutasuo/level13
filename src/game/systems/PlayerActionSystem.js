@@ -2,9 +2,11 @@
 define([
 	'ash',
 	'game/GameGlobals',
+	'game/GlobalSignals',
 	'game/nodes/PlayerActionNode',
-], function (Ash, GameGlobals, PlayerActionNode) {
-	var PlayerActionSystem = Ash.System.extend({
+], function (Ash, GameGlobals, GlobalSignals, PlayerActionNode) {
+	
+	let PlayerActionSystem = Ash.System.extend({
 	
 		playerActionNodes: null,
 
@@ -19,17 +21,21 @@ define([
 		addToEngine: function (engine) {
 			this.engine = engine;
 			this.playerActionNodes = engine.getNodeList(PlayerActionNode);
+			GlobalSignals.add(this, GlobalSignals.playerEnteredCampSignal, this.onPlayerEnteredCamp);
+			GlobalSignals.add(this, GlobalSignals.playerLeftCampSignal, this.onPlayerLeftCamp);
 		},
 
 		removeFromEngine: function (engine) {
 			this.playerActionNodes = null;
 			this.engine = null;
+
+			GlobalSignals.removeAll(this);
 		},
 
 		update: function (time) {
 			if (GameGlobals.gameState.isPaused) return;
 			var extraUpdateTime = GameGlobals.gameState.frameExtraUpdateTime;
-			for (var node = this.playerActionNodes.head; node; node = node.next) {
+			for (let node = this.playerActionNodes.head; node; node = node.next) {
 				this.updateNode(node, extraUpdateTime);
 			}
 		},
@@ -61,9 +67,33 @@ define([
 			
 			node.playerActions.endTimeStampToActionDict = newDict;
 			node.playerActions.endTimeStampList = newList;
+
+			this.performActions(actionsToPerform);
+		},
+
+		completeExpeditionActions: function () {
+			for (let node = this.playerActionNodes.head; node; node = node.next) {
+				this.completeExpeditionActionsOnNode(node);
+			}
+		},
+
+		completeExpeditionActionsOnNode: function (node) {
+			let actionsToPerform = [];
 			
-			for (let i = 0; i < actionsToPerform.length; i++) {
-				let actionVO = actionsToPerform[i];
+			for (let i = 0; i < node.playerActions.expeditionActions.length; i++) {
+				let actionVO = node.playerActions.expeditionActions[i];
+				if (!actionVO) continue;
+				actionsToPerform.push(actionVO);
+			}
+
+			node.playerActions.expeditionActions = [];
+			
+			this.performActions(actionsToPerform);
+		},
+
+		performActions: function (actions) {
+			for (let i = 0; i < actions.length; i++) {
+				let actionVO = actions[i];
 				if (actionVO.action) {
 					try {
 						let sector = GameGlobals.levelHelper.getSectorByPositionVO(actionVO.position);
@@ -73,6 +103,14 @@ define([
 					}
 				}
 			}
+		},
+
+		onPlayerEnteredCamp: function () {
+			this.completeExpeditionActions();
+		},
+
+		onPlayerLeftCamp: function () {
+			this.completeExpeditionActions();
 		},
 	});
 
