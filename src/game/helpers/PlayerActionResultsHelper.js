@@ -202,7 +202,7 @@ define([
 				for (let i = 0; i < resultVO.gainedItems.length; i++) {
 					let itemVO = resultVO.gainedItems[i];
 					if (!itemVO) {
-						logIssue("gainedItems contains null item");
+						logIssue("gainedItems contains null item",);
 					}
 				}
 			}
@@ -350,6 +350,7 @@ define([
 			let rewards = new ResultVO("scavenge_heap");
 			
 			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let efficiency = this.getCurrentScavengeEfficiency();
 
 			let heapResource = sectorFeatures.heapResource;
@@ -360,6 +361,10 @@ define([
 			heapResources.addResource(heapResource, WorldConstants.resourcePrevalence.HEAP);
 
 			rewards.gainedResources = this.getRewardResources(1, 1, efficiency, heapResources);
+
+			let weightedProgress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
+			let progressAfter = sectorStatus.getHeapScavengedPercent(weightedProgress);
+			rewards.progressbar = { current: progressAfter, max: 100, label: "heap progress" };
 
 			return rewards;
 		},
@@ -735,7 +740,7 @@ define([
 						if (itemVO) {
 							gainedItemUpgrades.push(itemVO.id);
 						} else {
-							log.w("could not found valid item for item upgrade: " + itemUpgradeID);
+							log.w("could not found valid item for item upgrade: " + itemUpgradeID, this);
 						}
 					} else {
 						gainedItemUpgrades.push(itemUpgradeID);
@@ -881,7 +886,7 @@ define([
 				if (campStorage) {
 					campStorage.addResource(resourceNames.robots, gainedRobots);
 				} else {
-					log.w("gained robots from rewards but found no camp storage to put them");
+					log.w("gained robots from rewards but found no camp storage to put them", this);
 				}
 			}
 
@@ -938,7 +943,7 @@ define([
 					} else if (defaultRewardCampNode) {
 						defaultRewardCampNode.camp.pendingRecruits.push(explorer);
 					} else {
-						log.w("no place to put reward explorer!")
+						log.w("no place to put reward explorer!", this)
 					}
 				}
 				GameGlobals.playerActionFunctions.unlockFeature("explorers");
@@ -1022,7 +1027,7 @@ define([
 				if (defaultRewardCampNode) {
 					defaultRewardCampNode.camp.pendingPopulation += 1;
 				} else {
-					log.w("No reward camp found for reward population.");
+					log.w("No reward camp found for reward population.", this);
 				}
 			}
 
@@ -1126,8 +1131,6 @@ define([
 			let hideInventoryManagement = options.hideInventoryManagement || false;
 			
 			let itemsComponent = this.playerStatsNodes.head.items;
-			let explorersComponent = this.playerStatsNodes.head.explorers;
-			let hasBag = itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.bag) > 0;
 			let bagComponent = this.playerResourcesNodes.head.entity.get(BagComponent);
 			let isInitialSelectionValid = bagComponent.usedCapacity <= bagComponent.totalCapacity;
 
@@ -1159,15 +1162,15 @@ define([
 					div += UIConstants.getExplorerDivSimple(explorerVO, false, false, true);
 					div += "<br/>";
 					if (isAnimal) {
-						div += "Found a stray <span class='hl-functionality'>" + Text.addArticle(explorerVO.name) + "</span>. ";
+						div += Text.t("ui.action.reward_found_animal", { explorerName: "<span class='hl-functionality'>" + Text.addArticle(explorerVO.name) + "</span>" }) + " ";
 					} else {
-						div += "Met <span class='hl-functionality'>" + Text.addArticle(explorerTypeName) + "</span> called " + explorerVO.name + ". ";
+						div += Text.t("ui.action.reward_met_explorer", { explorerType: "<span class='hl-functionality'>" + Text.addArticle(explorerTypeName) + "</span>", explorerName: explorerVO.name }) + " ";
 					}
 					
 					if (willJoin) {
-						div += Text.capitalize(pronoun) + " joined the party.";
+						div += Text.t("ui.action.reward_explorer_joined", { pronoun: Text.capitalize(pronoun) });
 					} else if (explorerCamp) {
-						div += Text.capitalize(pronoun) +" will meet you at " + explorerCamp.camp.getName() + " on level " + explorerCamp.position.level + ".";
+						div += Text.t("ui.action.reward_explorer_meeting", { pronoun: Text.capitalize(pronoun), campName: explorerCamp.camp.getName(), level: explorerCamp.position.level });
 					}
 					div += "</div>";
 				}
@@ -1176,19 +1179,19 @@ define([
 			let gainedhtml = "";
 			gainedhtml += "<ul class='resultlist resultlist-positive'>";
 			if (resultVO.gainedEvidence) {
-				gainedhtml += "<li>" + resultVO.gainedEvidence + " evidence</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_evidence", { value: resultVO.gainedEvidence }) + "</li>";
 			}
 			if (resultVO.gainedRumours) {
-				gainedhtml += "<li>" + resultVO.gainedRumours + " rumours</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_rumours", { value: resultVO.gainedRumours }) + "</li>";
 			}
 			if (resultVO.gainedHope) {
-				gainedhtml += "<li>" + resultVO.gainedHope + " hope</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_hope", { value: resultVO.gainedHope }) + "</li>";
 			}
 			if (resultVO.gainedInsight) {
-				gainedhtml += "<li>" + resultVO.gainedInsight + " insight</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_insight", { value: resultVO.gainedInsight }) + "</li>";
 			}
 			if (resultVO.gainedPopulation) {
-				gainedhtml += "<li>" + resultVO.gainedPopulation + " population</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_population", { value: resultVO.gainedPopulation }) + "</li>";
 			}
 			if (resultVO.gainedBlueprintPiece) {
 				gainedhtml += UIConstants.getBlueprintPieceLI(resultVO.gainedBlueprintPiece);
@@ -1196,11 +1199,11 @@ define([
 			if (resultVO.gainedItemUpgrades) {
 				for (let i = 0; i < resultVO.gainedItemUpgrades.length; i++) {
 					let itemID = resultVO.gainedItemUpgrades[i];
-					gainedhtml += "<li>Upgraded " + ItemConstants.getItemDisplayNameFromID(itemID) + "</li>";
+					gainedhtml += "<li>" + Text.t("ui.action.reward_upgraded_item", { itemName: ItemConstants.getItemDisplayNameFromID(itemID) }) + "</li>";
 				}
 			}
 			if (resultVO.gainedCurrency) {
-				gainedhtml += "<li>" + resultVO.gainedCurrency + " silver</li>";
+				gainedhtml += "<li>" + Text.t("ui.action.reward_gained_currency", { value: resultVO.gainedCurrency }) + "</li>";
 			}
 
 			gainedhtml += "</ul>";
@@ -1219,7 +1222,7 @@ define([
 				resultVO.lostPerks.length > 0;
 
 			if (hasLostInventoryStuff) {
-				var lostMsg = resultVO.lostItems.length > 1 ? "Lost some items." : resultVO.lostItems.length > 0 ? "Lost an item." : ""
+				var lostMsg = resultVO.lostItems.length > 1 ? Text.t("ui.action.reward_lost_items_multiple") : resultVO.lostItems.length > 0 ? Text.t("ui.action.reward_lost_items_single") : ""
 				var losthtml = "<div id='resultlist-loststuff' class='infobox'>";
 				var losthtml = "<div class='warning'>" + lostMsg + "</span>";
 				losthtml += "<div id='resultlist-loststuff-lost' class='infobox inventorybox inventorybox-negative'>";
@@ -1231,9 +1234,9 @@ define([
 			
 			if (resultVO.brokenItems.length > 0) {
 				if (resultVO.brokenItems.length == 1) {
-					div += "<p class='warning'>Broke an item (" + ItemConstants.getItemDisplayName(resultVO.brokenItems[0]) + ").</p>";
+					div += "<p class='warning'>" + Text.t("ui.action.reward_broke_item", { itemName: ItemConstants.getItemDisplayName(resultVO.brokenItems[0]) }) + "</p>";
 				} else {
-					div += "<p class='warning'>Broke some items.</p>";
+					div += "<p class='warning'>" + Text.t("ui.action.reward_broke_items") + "</p>";
 				}
 			}
 
@@ -1273,7 +1276,7 @@ define([
 			hasGainedStuff = hasGainedStuff || resultVO.gainedResources.getTotal() > 0 || resultVO.gainedItems.length > 0 || resultVO.gainedExplorers.length > 0;
 			
 			if (!hasGainedStuff && !hasLostSomething && !showInventoryManagement) {
-				if (isFight) div += "<p class='p-meta'>Nothing left behind.</p>"
+				if (isFight) div += "<p class='p-meta'>" + Text.t("ui.action.reward_nothing_left_behind") + "</p>"
 				else if (resultVO.action === "despair") div += "";
 				else if (resultVO.action === "clear_workshop") div += "";
 				else if (resultVO.action === "clear_waste_r") div += "";
@@ -1284,7 +1287,7 @@ define([
 			
 			if (resultVO.lostExplorers && resultVO.lostExplorers.length > 0) {
 				for (let i = 0; i < resultVO.lostExplorers.length; i++) {
-					div += "<p class='warning'><span class='hl-functionality'>" + resultVO.lostExplorers[i].name + "</span> left.</p>";
+					div += "<p class='warning'>" + Text.t("ui.action.reward_explorer_left", { explorerName: "<span class='hl-functionality'>" + resultVO.lostExplorers[i].name + "</span>" }) + "</p>";
 				}
 			}
 
@@ -1292,7 +1295,7 @@ define([
 				for (let i = 0; i < resultVO.gainedExplorerInjuries.length; i++) {
 					let explorerID = resultVO.gainedExplorerInjuries[i];
 					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
-					div += "<p class='warning'>" + explorerVO.name + " got injured.</p>";
+					div += "<p class='warning'>" + Text.t("ui.action.reward_explorer_injured", { explorerName: explorerVO.name }) + "</p>";
 				}
 			}
 
@@ -1301,7 +1304,7 @@ define([
 					let explorerID = resultVO.lostExplorerInjuries[i];
 					let explorerVO = GameGlobals.playerHelper.getExplorerByID(explorerID);
 					if (explorerVO) {
-						div += "<p>" + explorerVO.name + " got healed.</p>";
+						div += "<p>" + Text.t("ui.action.reward_explorer_healed", { explorerName: explorerVO.name }) + "</p>";
 					}
 				}
 			}
@@ -1329,17 +1332,17 @@ define([
 			if (resultVO.lostPerks.length > 0) {
 				let lostNegativePerks = resultVO.lostPerks.filter(p => p && PerkConstants.isNegative(p));
 				if (lostNegativePerks.length > 0) {
-					div += "<p>Got rid of " + TextConstants.getListText(lostNegativePerks.map(perkVO => perkVO.name)) + ".</p>";
+					div += "<p>" + Text.t("ui.action.reward_lost_perks_negative", { perks: TextConstants.getListText(lostNegativePerks.map(perkVO => perkVO.name)) }) + "</p>";
 				}
 
 				let lostPositivePerks = resultVO.lostPerks.filter(p => p && !PerkConstants.isNegative(p));
 				if (lostPositivePerks.length > 0) {
-					div += "<p class='warning'>You lost " + TextConstants.getListText(lostPositivePerks.map(perkVO => perkVO.name)) + ".</p>";
+					div += "<p class='warning'>" + Text.t("ui.action.reward_lost_perks_positive", { perks: TextConstants.getListText(lostPositivePerks.map(perkVO => perkVO.name)) }) + "</p>";
 				}
 			}
 
 			if (resultVO.lostCurrency > 0) {
-				div += "<p class='warning'>You lost " + resultVO.lostCurrency + " silver.</p>";
+				div += "<p class='warning'>" + Text.t("ui.action.reward_lost_currency", { value: resultVO.lostCurrency }) + "</p>";
 			}
 
 			div += "</div>";
@@ -1383,18 +1386,18 @@ define([
 					explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCOUT);
 				}
 
-				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
+				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : Text.t("ui.exploration.explorer_bonus_default_name");
 				
 				let displayFinds = "";
 				let totalResources = resultVO.gainedResourcesFromExplorers.getTotal();
 				let totalItems = resultVO.gainedItemsFromExplorers.length;
 				if (totalResources > 0 && totalItems == 0) {
 					if (resultVO.gainedResourcesFromExplorers.isOnlySupplies()) {
-						displayFinds = "some supplies";
+						displayFinds = Text.t("ui.action.explorer_bonus_finds_supplies");
 					} else if (resultVO.gainedResourcesFromExplorers.isOneResource()) {
-						displayFinds = "some " + resultVO.gainedResourcesFromExplorers.getNames()[0];
+						displayFinds = Text.t("ui.action.explorer_bonus_finds_resource", { resourceName: resultVO.gainedResourcesFromExplorers.getNames()[0] });
 					} else {
-						displayFinds = "some resources";
+						displayFinds = Text.t("ui.action.explorer_bonus_finds_resources");
 					}
 				} else if (totalItems == 1 && totalResources == 0) {
 					let itemName = ItemConstants.getItemDisplayName(resultVO.gainedItemsFromExplorers[0]);
@@ -1409,30 +1412,28 @@ define([
 						if (uniqueTypes.indexOf(item.type) < 0) uniqueTypes.push(item.type);
 					}
 					if (uniqueNames.length == 1) {
-						displayFinds = totalItems + " " + Text.pluralify(uniqueNames[0]);
-					} else if (uniqueTypes.length == 1) {
-						displayFinds = "some " + ItemConstants.getItemTypeDisplayName(uniqueTypes[0]);
+						displayFinds = Text.t("ui.action.explorer_bonus_finds_items_count", { count: totalItems, itemName: Text.pluralify(uniqueNames[0]) });
 					} else {
-						displayFinds = "some items";
+						displayFinds = Text.t("ui.action.explorer_bonus_finds_items");
 					}
 				} else {
-					displayFinds = "some things";
+					displayFinds = Text.t("ui.action.explorer_bonus_finds_mixed");
 				}
 				
 				div += "<div>";
-				div += displayName + " found " + displayFinds;
+				div += Text.t("ui.action.explorer_bonus_message", { explorerName: displayName, finds: displayFinds });
 				div += "</div>";
 			}
 			
 			if (GameGlobals.playerHelper.getPartyAbilityLevel(ExplorerConstants.abilityType.SCAVENGE_BLUEPRINTS) > 0) {
 				let explorer = explorersComponent.getExplorerInPartyByType(ExplorerConstants.explorerType.SCAVENGER);
 
-				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : "Explorers";
-				let displayFinds = " a blueprint";
+				let displayName = explorer ? "<span class='hl-functionality'>" + explorer.name + "</span>" : Text.t("ui.exploration.explorer_bonus_default_name");
+				let displayFinds = Text.t("ui.exploration.explorer_bonus_finds_blueprint");
 
 				if (resultVO.gainedBlueprintPiece && Math.random() < 0.75) {
 					div += "<div>";
-					div += displayName + " found " + displayFinds;
+					div += Text.t("ui.exploration.explorer_bonus_message", { explorerName: displayName, finds: displayFinds });
 					div += "</div>";
 				}
 			}
@@ -1876,7 +1877,7 @@ define([
 			}
 			
 			if (validItems.length === 0) {
-				log.w("No valid reward items found for campOrdinal " + campOrdinal + ", step " + step);
+				log.w("No valid reward items found for campOrdinal " + campOrdinal + ", step " + step, this);
 				return null;
 			}
 			
@@ -1886,7 +1887,7 @@ define([
 			});
 			
 			if (!GameGlobals.gameState.uiStatus.isHidden) {
-				log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + "/" + maxPossibleRarity + ", camp ordinal: " + campOrdinal + "/" + maxCampOrdinal + ")")
+				log.i("valid items: " + validItems.length + " (max rarity: " + maxRarity + "/" + maxPossibleRarity + ", camp ordinal: " + campOrdinal + "/" + maxCampOrdinal + ")", this)
 				// log.i(validItems);
 			}
 			
@@ -1894,7 +1895,7 @@ define([
 			var index = MathUtils.getWeightedRandom(0, validItems.length);
 			var item = validItems[index];
 			if (!GameGlobals.gameState.uiStatus.isHidden)
-				log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id);
+				log.i("- selected index " + index + "/" + validItems.length + ": "+ item.id, this);
 			
 			
 			// select level / quality
@@ -1910,7 +1911,7 @@ define([
 
 		getSpecificRewardItem: function (itemProbability, possibleItemIDs) {
 			if (!possibleItemIDs || possibleItemIDs.length === 0) {
-				log.w("No valid reward items for getSpecificRewardItem");
+				log.w("No valid reward items for getSpecificRewardItem", this);
 				return null;
 			}
 
@@ -1922,7 +1923,7 @@ define([
 			let item = ItemConstants.getItemDefinitionByID(itemID, true) || ItemConstants.getRandomItemDefinitionByPartialItemID(itemID, itemFilter);
 
 			if (!item) {
-				log.w("No valid reward items for getSpecificRewardItem");
+				log.w("No valid reward items for getSpecificRewardItem", this);
 				return null;
 			}
 
@@ -2083,7 +2084,7 @@ define([
 			}
 
 			if (!GameGlobals.gameState.uiStatus.isHidden) {
-				log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length);
+				log.i("found stash: " + stashVO.stashType + " " + stashVO.itemID + " " + (stashesFound+1) + "/" + stashes.length, this);
 			}
 
 			rewardsVO.foundStashVO = stashVO;
@@ -2634,7 +2635,7 @@ define([
 			let locationCampOrdinal = GameGlobals.worldState.getCampOrdinal(playerPos.level);
 			let playerCampOrdinal = GameGlobals.gameState.numCamps;
 
-			let hasInsightCache = GameGlobals.playerHelper.hasItemBaseID("cache_insight");
+			let hasInsightCache = GameGlobals.playerHelper.hasItemBaseID("cache_insight", true);
 
 			// insight caches if somehow not enough insight to unlock final upgrades
 			if (!hasInsightCache && playerCampOrdinal == WorldConstants.CAMPS_TOTAL) {

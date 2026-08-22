@@ -10,6 +10,8 @@ define(function () {
 		currentLanguage: null, // language code
 		currentTexts: {},
 
+		defaultDelimiter: "ui.common.sentence_separator",
+
 		TEXT_PARAM_WILDCARD: "wildcard",
 
 		compose: function (textVO) {
@@ -26,6 +28,8 @@ define(function () {
 			}
 			
 			let result = "";
+
+			if (!textVO.delimiter) textVO.delimiter = this.defaultDelimiter;
 
 			for (let i = 0; i < textVO.textFragments.length; i++) {
 				if (i > 0 && textVO.delimiter) result += this.t(textVO.delimiter);

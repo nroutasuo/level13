@@ -33,8 +33,9 @@ define([
 		
 		showIntroPopup: function () {
 			// TODO make this part of the story (just need to make sure to trigger at the right time relative to loading)
+			let title = Text.t("story.messages.game_intro_title");
 			let intro = Text.t("story.messages.game_intro_message");
-			GameGlobals.uiFunctions.showInfoPopup("Darkness", intro, "Continue", null, null, true, false);
+			GameGlobals.uiFunctions.showInfoPopup(title, intro, "Continue", null, null, true, false);
 		},
 		
 		onGamestateLoaded: function (hasState) {

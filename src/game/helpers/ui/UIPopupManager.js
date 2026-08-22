@@ -45,20 +45,23 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			let showInventoryManagement = hasResult || forceShowInventoryManagement;
 			
 			let isDismissable = options.isDismissable || (typeof options.isDismissable == 'undefined' && !showInventoryManagement && !cancelButtonLabel);
+
+			let debugTitle = title;
+			if (title.textKey) debugTitle = title.textKey;
 			
 			if (GameGlobals.gameState.uiStatus.isHidden && !isMeta) {
-				log.i("queue popup (" + title + ")", "ui");
+				log.i("queue popup (" + debugTitle + ")", "ui");
 				this.hiddenQueue.push({ title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, options: options });
 				return;
 			}
 			
 			if (this.hasOpenPopup()) {
-				log.i("queue popup (" + title + ")", "ui");
+				log.i("queue popup (" + debugTitle + ")", "ui");
 				this.popupQueue.push({ title: title, msg: msg, okButtonLabel: okButtonLabel, cancelButtonLabel: cancelButtonLabel, resultVO: resultVO, okCallback: okCallback, cancelCallback: cancelCallback, options: options });
 				return;
 			}
 			
-			log.i("show popup (" + title + ")", "ui");
+			log.i("show popup (" + debugTitle + ")", "ui");
 
 			GameGlobals.gameState.uiStatus.isBusyCounter++;
 			
@@ -67,9 +70,11 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			let $popup = $("#common-popup");
 			
 			// text
+			let message = msg;
+			if (message.textFragments) message = Text.compose(msg);
 			GameGlobals.uiFunctions.toggle("#common-popup-input-container", false);
-			$("#common-popup h3").text(title);
-			$("#common-popup p#common-popup-desc").html(msg || "");
+			$("#common-popup h3").text(Text.t(title));
+			$("#common-popup p#common-popup-desc").html(message || "");
 			
 			// results and rewards
 			GameGlobals.uiFunctions.toggle("#info-results", showInventoryManagement);

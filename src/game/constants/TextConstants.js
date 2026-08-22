@@ -283,7 +283,7 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			return options;
 		},
 		
-		getPassageFoundMessage: function (passageVO, direction, sunlit, isBuilt) {			
+		getPassageFoundMessageKey: function (passageVO, direction, sunlit, isBuilt) {			
 			let passageType = passageVO.type;
 			let textKey = "passage_found_" + passageType + "_message";
 

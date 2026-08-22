@@ -67,7 +67,6 @@ define(['ash',
 	'game/systems/ui/UIOutTabBarSystem',
 	'game/systems/ui/UIOutLevelSystem',
 	'game/systems/FaintingSystem',
-	'game/systems/PlayerPositionSystem',
 	'text/Text',
 	'utils/MathUtils',
 	'utils/StringUtils'
@@ -82,7 +81,7 @@ define(['ash',
 	ReputationComponent, SectorControlComponent, SectorFeaturesComponent, SectorLocalesComponent, SectorStatusComponent,
 	PassagesComponent, OutgoingCaravansComponent, CampEventTimersComponent, RefugeesComponent, VisitorComponent, TraderComponent, LevelStatusComponent,
 	SequenceHelper,
-	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem, PlayerPositionSystem,
+	UIOutHeaderSystem, UIOutTabBarSystem, UIOutLevelSystem, FaintingSystem,
 	Text, MathUtils, StringUtils
 ) {
 	var PlayerActionFunctions = Ash.System.extend({
@@ -180,7 +179,7 @@ define(['ash',
 					case "send_caravan":
 						let caravansComponent = this.playerLocationNodes.head.entity.get(OutgoingCaravansComponent);
 						if (!caravansComponent.pendingCaravan) {
-							log.w("Can't start caravan. No valid pending caravan found.");
+							log.w("Can't start caravan. No valid pending caravan found.", this);
 							return;
 						}
 						
@@ -198,7 +197,7 @@ define(['ash',
 						break;
 				}
 			} else {
-				log.w("could not start busy action: " + action + " (duration was 0)");
+				log.w("could not start busy action: " + action + " (duration was 0)", this);
 			}
 		},
 
@@ -354,7 +353,7 @@ define(['ash',
 				case "move_sector_grit_nw": this.moveTo(PositionConstants.DIRECTION_NW, action); break;
 				case "move_camp_global": this.moveToCamp(param); break;
 				default:
-					log.w("No function mapped for action " + action + " in PlayerActionFunctions.performAction");
+					log.w("No function mapped for action " + action + " in PlayerActionFunctions.performAction", this);
 					break;
 			}
 		},
@@ -385,12 +384,12 @@ define(['ash',
 			let dialogueVO = DialogueConstants.getDialogue(id);
 			
 			if (!dialogueVO || !dialogueVO.dialogueID) {
-				log.w("not able to start dialogue - no such dialogue found: " + id);
+				log.w("not able to start dialogue - no such dialogue found: " + id, this);
 				return;
 			}
 
 			if (!GameGlobals.dialogueHelper.isDialogueValid(dialogueVO, explorerVO)) {
-				log.w("not able to start dialogue - not valid: " + id);
+				log.w("not able to start dialogue - not valid: " + id, this);
 				return;
 			}
 
@@ -512,7 +511,7 @@ define(['ash',
 					}
 					break;
 				default:
-					log.w("unknown direction: " + direction);
+					log.w("unknown direction: " + direction, this);
 					break;
 			}
 			
@@ -532,7 +531,7 @@ define(['ash',
 			}
 			
 			if (!campSector) {
-				log.w("No camp found for campOrdinal " + campOrdinal);
+				log.w("No camp found for campOrdinal " + campOrdinal, this);
 				return;
 			}
 
@@ -587,35 +586,28 @@ define(['ash',
 		},
 
 		scavenge: function () {
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let isFirst = !GameGlobals.gameState.unlockedFeatures.scavenge;
 			
 			GameGlobals.playerActionFunctions.unlockFeature("scavenge");
 
+			let action = "scavenge";
 			let sector = this.playerLocationNodes.head.entity;
-			let sectorFeatures = sector.get(SectorFeaturesComponent);
-			let sectorResources = sectorFeatures.resourcesScavengable;
-			let sectorItems = sectorFeatures.itemsScavengeable.length;
-			
-			let logMsg = this.getScavengeMessageBase(sector);
+			let sectorStatus = sector.get(SectorStatusComponent);
 
-			var logMsgSuccess = logMsg;
-			var logMsgFlee = logMsg + "Fled empty-handed.";
-			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
+			let logMsgSuccess = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS);
+			let logMsgFlee = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_FLEE);
+			let logMsgDefeat = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_DEFEATED);
 
+			let sys = this;
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScavenged++;
 				let scavengedPercentBefore = sectorStatus.getScavengedPercent();
 				sectorStatus.scavenged = true;
 				sectorStatus.weightedNumScavenges += GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
 				let scavengedPercentAfter = sectorStatus.getScavengedPercent();
-				let warningThresholdHighScavengedPercent = 75;
-				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
-				if (sectorResources.getTotal() <= 0 && sectorItems.length <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg + " There doesn't seem to be anything to scavenge here.");
-				} else if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg + " There isn't much left to scavenge here.");
-				}
+
+				let logMessage = sys.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS, true, scavengedPercentBefore, scavengedPercentAfter);
+				if (logMessage) GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMessage);
 			};
 			
 			let messages = {
@@ -628,37 +620,30 @@ define(['ash',
 
 			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			
-			this.handleOutActionResults("scavenge", messages, showResultPopup, false, successCallback);
+			this.handleOutActionResults(action, messages, showResultPopup, false, successCallback);
 		},
 
 		scavengeHeap: function () {
+			let action = "scavenge_heap";
+
 			let sector = this.playerLocationNodes.head.entity;
 			let sectorStatus = sector.get(SectorStatusComponent);
-			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			
 			let weightedProgress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
 			let scavengedPercentBefore = sectorStatus.getHeapScavengedPercent();
 			let scavengedPercentAfter = sectorStatus.getHeapScavengedPercent(weightedProgress);
-
-			let resourceNameDisplayName = TextConstants.getResourceDisplayName(sectorFeatures.heapResource);
-			let heapDisplayName = TextConstants.getHeapDisplayName(sectorFeatures.heapResource, sectorFeatures);
 			
-			let logMsg = this.getScavengeMessageBase(sector);
+			let logMsgSuccess = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS, false, scavengedPercentBefore, scavengedPercentAfter);
+			let logMsgFlee = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_FLEE);
+			let logMsgDefeat = this.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_DEFEATED);
 
-			var logMsgSuccess = logMsg;
-			var logMsgFlee = logMsg + "Fled empty-handed.";
-			var logMsgDefeat = logMsg + "Got into a fight and was defeated.";
-			
-			logMsgSuccess += " " + Text.capitalize(resourceNameDisplayName) + " remaining: " + Math.round(100 - scavengedPercentAfter) + "%";
-
+			let sys = this;
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScavenged++;
 				sectorStatus.weightedNumHeapScavenges += weightedProgress;
 
-				let warningThresholdHighScavengedPercent = 100;
-				if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), heapDisplayName + " picked clean");
-				}
+				let logMessage = sys.getScavengeMessageTextVO(sector, action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS, true, scavengedPercentBefore, scavengedPercentAfter);
+				if (logMessage) GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMessage);
 			};
 			
 			let messages = {
@@ -671,22 +656,66 @@ define(['ash',
 
 			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			
-			this.handleOutActionResults("scavenge_heap", messages, showResultPopup, false, successCallback);
+			this.handleOutActionResults(action, messages, showResultPopup, false, successCallback);
 		},
 
-		getScavengeMessageBase: function (sector) {
+		getScavengeMessageTextVO: function (sector, action, result, isOptional, scavengedPercentBefore, scavengedPercentAfter) {
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			let sectorResources = sectorFeatures.resourcesScavengable;
+			let sectorItems = sectorFeatures.itemsScavengeable;			
 			let sunlit = sectorFeatures.sunlit;
+
 			let playerMaxVision = this.playerStatsNodes.head.vision.maximum;
 
-			let logMsg = "";
+			let fragments = [];
+			let hasFeedback = false;
+
+			// base
 			if (playerMaxVision <= PlayerStatConstants.VISION_BASE) {
-				if (sunlit) logMsg = "Rummaged blindly for loot. ";
-				else logMsg = "Rummaged in the dark. ";
+				if (sunlit) {
+					fragments.push( { textKey: "ui.actions.scavenge_completed_message_sunlit", textParams: {} } );
+				} else {
+					fragments.push( { textKey: "ui.actions.scavenge_completed_message_dark", textParams: {} } );
+				}
 			} else {
-				logMsg = "Went scavenging. ";
+				fragments.push( { textKey: "ui.actions.scavenge_completed_message", textParams: {} } );
 			}
-			return logMsg;
+
+			// results
+			if (result == PlayerActionConstants.OUT_ACTION_RESULT_FLEE) {
+				fragments.push( { textKey: "ui.actions.scavenge_fled_addendum", textParams: {} } );
+			}
+
+			if (result == PlayerActionConstants.OUT_ACTION_RESULT_DEFEATED) {
+				fragments.push( { textKey: "ui.actions.scavenge_defeated_addendum", textParams: {} } );
+			}
+
+			// scavenged percent feedback
+			if (scavengedPercentBefore && scavengedPercentAfter) {
+				let warningThresholdHighScavengedPercent = 75;
+				let warningThresholdFullScavengedPercent = 100;
+				let warningThresholdNoScavengeResources = ExplorationConstants.THRESHOLD_SCAVENGED_PERCENT_REVEAL_NO_RESOURCES;
+
+				if (action == "scavenge") {
+					if (sectorResources.getTotal() <= 0 && sectorItems.length <= 0 && scavengedPercentAfter >= warningThresholdNoScavengeResources) {
+						fragments.push( { textKey: "ui.actions.scavenge_completed_empty_addendum", textParams: {} } );
+						hasFeedback = true;
+					} else if (scavengedPercentBefore < warningThresholdHighScavengedPercent && scavengedPercentAfter >= warningThresholdHighScavengedPercent) {
+						fragments.push( { textKey: "ui.actions.scavenge_completed_emptied_addendum", textParams: {} } );
+						hasFeedback = true;
+					}
+				} else if (action == "scavenge_heap") {
+					let heapDisplayName = TextConstants.getHeapDisplayName(sectorFeatures.heapResource, sectorFeatures);
+					if (scavengedPercentBefore < warningThresholdFullScavengedPercent && scavengedPercentAfter >= warningThresholdFullScavengedPercent) {
+						fragments.push( { textKey: "ui.actions.scavenge_heap_completed_emptied_addendum", textParams: { name: heapDisplayName } } );
+						hasFeedback = true;
+					}
+				}
+			}
+
+			if (isOptional && !hasFeedback) return null;
+
+			return { textFragments: fragments };
 		},
 
 		examine: function (sectorPos) {
@@ -721,7 +750,7 @@ define(['ash',
 			let improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
 			
 			if (sectorStatus.scouted) {
-				log.w("Sector already scouted.");
+				log.w("Sector already scouted.", this);
 				return;
 			}
 			
@@ -736,110 +765,98 @@ define(['ash',
 			
 			let level = sector.get(PositionComponent).level;
 
-			let popupMsg = "Scouted the area.";
-			let logMsg = "";
+			let popupMsgFragments = [];
+			let logMsgFragments = [];
+
+			popupMsgFragments.push({ textKey: "ui.actions.scout_completed_message" });
+
 			let found = false;
 			let showResultPopup = !GameConstants.uiModeMinimialExplorationPopups;
 			let sunlit = featuresComponent.sunlit;
-			
-			if (featuresComponent.hasSpring) {
+
+			let PRIORITY_ONLY_POPUP = 1;
+			let PRIORITY_ONLY_LOG = 2;
+			let PRIORITY_BOTH = 3;
+
+			let recordFoundObject = function (priority, customKey, name) {
 				found = true;
 				showResultPopup = true;
-				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getSpringName(featuresComponent)) + ".";
+
+				let textFragment = {};
+				textFragment.textKey = customKey ||"ui.actions.scout_completed_found_generic_addendum";
+				textFragment.textParams = {};
+				if (name) textFragment.textParams.name = name;
+
+				if (priority == PRIORITY_BOTH || priority == PRIORITY_ONLY_POPUP) popupMsgFragments.push(textFragment);
+				if (priority == PRIORITY_BOTH || priority == PRIORITY_ONLY_LOG) logMsgFragments.push(textFragment);
+			}
+			
+			if (featuresComponent.hasSpring) {
+				recordFoundObject(PRIORITY_BOTH, null, TextConstants.getSpringName(featuresComponent));
 			}
 			
 			if (featuresComponent.hasTradeConnectorSpot && !GameGlobals.levelHelper.getFirstScoutedSectorWithFeatureOnLevel(level, "hasTradeConnectorSpot")) {
-				found = true;
-				showResultPopup = true;
-				popupMsg += "<br/>Found a good place for a bigger building project.";
-				logMsg += "Found a good place for a bigger building project.";
+				recordFoundObject(PRIORITY_BOTH, "ui.actions.scout_completed_found_trade_connector_spot_addendum");
 			}
 			
 			let workshopComponent = sector.get(WorkshopComponent);
 			if (workshopComponent && workshopComponent.isClearable) {
-				found = true;
-				showResultPopup = true;
-				popupMsg += "<br/>Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
-				logMsg += "Found " + Text.addArticle(TextConstants.getWorkshopName(workshopComponent.resource));
+				recordFoundObject(PRIORITY_BOTH, null, TextConstants.getWorkshopName(workshopComponent.resource));
 			}
 
 			if (featuresComponent.examineSpots.length > 0) {
-				found = true;
-				showResultPopup = true;
-				popupMsg += "<br/>Found some interesting objects.";
+				recordFoundObject(PRIORITY_ONLY_POPUP, null, spotDef.nameKey);
 			}
 			
 			if (featuresComponent.campable) {
 				if (!this.nearestCampNodes.head || this.nearestCampNodes.head.position.level != this.playerLocationNodes.head.position.level) {
-					found = true;
-					showResultPopup = true;
-					if (GameGlobals.gameState.numCamps == 0) {
-						popupMsg += "<br/>This seems like a safe spot to build a shelter.";
-					} else {
-						popupMsg += "<br/>This seems like a good place for a camp.";
-					}
+					recordFoundObject(PRIORITY_ONLY_POPUP, GameGlobals.gameState.numCamps < 2 ? "ui.actions.scout_completed_found_campable_addendum" : "ui.actions.scout_completed_found_campable_addendum");
 				}
 			}
 
-			if (improvements.getTotalCount() == 0 || true) {
-				let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
-				if (passagesComponent.passageUp && !GameGlobals.levelHelper.isPassageUpBuilt(level)) {
-					found = true;
-					showResultPopup = true;
-					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit) + " ";
-					logMsg += level == 13 ? "Found a hole in the ceiling leading to the level above, but it's far too high to reach." : "Found a passage to the level above.";
-				}
+			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			if (passagesComponent.passageUp && !GameGlobals.levelHelper.isPassageUpBuilt(level)) {
+				recordFoundObject(PRIORITY_ONLY_POPUP, TextConstants.getPassageFoundMessageKey(passagesComponent.passageUp, PositionConstants.DIRECTION_UP, sunlit));
+				recordFoundObject(PRIORITY_ONLY_LOG, level == 13 ? "ui.actions.scout_completed_found_passage_up_addendum_first" : "ui.actions.scout_completed_found_passage_up_addendum");
+			}
 
-				if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
-					found = true;
-					showResultPopup = true;
-					popupMsg += "<br/>" + TextConstants.getPassageFoundMessage(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit) + " ";
-					logMsg += "Found a passage to the level below.";
-					GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_FOUND, true);
-				}
+			if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
+				recordFoundObject(PRIORITY_ONLY_POPUP, TextConstants.getPassageFoundMessageKey(passagesComponent.passageUp, PositionConstants.DIRECTION_DOWN, sunlit));
+				recordFoundObject(PRIORITY_ONLY_LOG,"ui.actions.scout_completed_found_passage_down_addendum");
+				GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_FOUND, true);
 			}
 
 			let sectorLocalesComponent = sector.get(SectorLocalesComponent);
 			if (sectorLocalesComponent.locales.length > 0) {
-				found = true;
-				showResultPopup = true;
 				let locale = sectorLocalesComponent.locales[0];
+				let localeName = UIConstants.highlight(TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase());
+
 				if (sectorLocalesComponent.locales.length > 1) {
-					popupMsg += "<br/>There are some interesting buildings here.";
+					recordFoundObject(PRIORITY_ONLY_POPUP, "ui.actions.scout_completed_locale_multiple_addendum");
 				} else if (locale.type == localeTypes.greenhouse) {
-					popupMsg += "<br/>There is an abandoned " + UIConstants.highlight(TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase()) + " here.";
-					logMsg += "Found a greenhouse.";
+					recordFoundObject(PRIORITY_BOTH, null, localeName);
 				} else {
-					popupMsg += "<br/>There is a " + UIConstants.highlight(TextConstants.getLocaleName(locale, featuresComponent, true).toLowerCase()) + " here that seems worth scouting.";
+					recordFoundObject(PRIORITY_ONLY_POPUP, "ui.actions.scout_completed_locale_addedum", localeName);
 				}
 			}
 			
 			if (featuresComponent.waymarks.length > 0) {
-				let sectorFeatures = GameGlobals.sectorHelper.getTextFeatures(sector);
 				for (let i = 0; i < featuresComponent.waymarks.length; i++) {
-					showResultPopup = true;
-					popupMsg += "<br/>" + TextConstants.getWaymarkText(featuresComponent.waymarks[i], sectorFeatures);
+					recordFoundObject(PRIORITY_ONLY_POPUP, "ui.actions.scout_completed_waymark_addedum");
 				}
 			}
 
 			if (featuresComponent.heapResource) {
-				showResultPopup = true;
 				let heapDisplayName = TextConstants.getHeapDisplayName(featuresComponent.heapResource, featuresComponent);
-				popupMsg += "<br/>There is " + Text.addArticle(heapDisplayName) + " which can be scavenged for " + featuresComponent.heapResource + ".";
-			}
-			
-			if (GameGlobals.sectorHelper.hasInvestigateableLocale(sector, true)) {
-				showResultPopup = true;
-				popupMsg += "<br/>Something happened here just before the Fall. There is a locale here that can be <span class='hl-functionality'>investigated</span>.";
-				logMsg += "Found a locale that can be investigated.";
+				recordFoundObject(PRIORITY_ONLY_POPUP, "ui.actions.scout_completed_heap_addedum", heapDisplayName);
 			}
 			
 			let successCallback = function () {
 				GameGlobals.gameState.stats.numTimesScouted++;
 				sectorStatus.scouted = true;
 				
-				if (logMsg) {
-					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), logMsg);
+				if (logMsgFragments.length > 0) {
+					GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), { textFragments: logMsgFragments });
 				}
 				
 				GlobalSignals.sectorScoutedSignal.dispatch(sector);
@@ -847,12 +864,14 @@ define(['ash',
 				GameGlobals.playerActionFunctions.engine.getSystem(UIOutLevelSystem).rebuildVis();
 				GameGlobals.playerActionFunctions.save();
 			};
+
+			let popupMsgTextVO = { textFragments: popupMsgFragments, delimiter: UIConstants.TEXT_HTML_LINE_BREAK };
 			
 			let messages = {
 				id: found ? LogConstants.MSG_ID_SCOUT_FOUND_SOMETHING : LogConstants.MSG_ID_SCOUT,
-				msgSuccess: popupMsg,
-				msgFlee: popupMsg,
-				msgDefeat: popupMsg,
+				msgSuccess: popupMsgTextVO,
+				msgFlee: popupMsgTextVO,
+				msgDefeat: popupMsgTextVO,
 				addToLog: isFirst,
 			};
 			
@@ -870,7 +889,7 @@ define(['ash',
 			let localeVO = sectorLocalesComponent.locales[i];
 
 			if (!localeVO) {
-				log.e("scoutLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length);
+				log.e("scoutLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length, this);
 				return;
 			}
 			
@@ -951,7 +970,7 @@ define(['ash',
 			let localeVO = sectorLocalesComponent.locales[i];
 
 			if (!localeVO) {
-				log.e("investigateLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length);
+				log.e("investigateLocale: no such locale " + i + "/" + sectorLocalesComponent.locales.length, this);
 				return;
 			}
 
@@ -1342,22 +1361,23 @@ define(['ash',
 		},
 
 		useSpring: function () {
+			let action = "use_spring";
 			let sector = this.playerLocationNodes.head.entity;
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let springName = TextConstants.getSpringName(sectorFeatures);
 
-			let logMsgFailBase = "Approached the " + springName + ", but got attacked. ";
+			let textParams = { name: springName };
 			
 			let messages = {
 				popupTitle: springName,
 				id: LogConstants.MSG_ID_USE_SPRING,
-				msgSuccess: "Refilled water at the " + springName + ".",
-				msgFlee: logMsgFailBase + "Fled empty-handed.",
-				msgDefeat: logMsgFailBase + "Lost the fight.",
+				msgSuccess: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS, null, null, textParams),
+				msgFlee: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_FLEE, null, null, textParams),
+				msgDefeat: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_DEFEATED, null, null, textParams),
 				addToLog: false,
 			};
 
-			this.handleOutActionResults("use_spring", messages, true, false);
+			this.handleOutActionResults(action, messages, true, false);
 		},
 
 		clearWorkshop: function () {
@@ -1399,29 +1419,26 @@ define(['ash',
 		},
 
 		clearWaste: function (action, direction) {
-			let sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
 			let positionComponent = this.playerLocationNodes.head.entity.get(PositionComponent);
 			let passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
 			let blocker = passagesComponent.getBlocker(direction);
 			
 			if (!blocker) {
-				log.w("can't clear waste - no blocker here");
+				log.w("can't clear waste - no blocker here", this);
 				return;
 			}
 
 			let sys = this;
 			let successCallback = function () {
-				var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
+				let sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
 				sys.clearBlocker(action, blocker.type, sectorPos);
 			};
 			
-			let logMsgFailBase = "Tried to clear the waste. ";
-			
 			let messages = {
 				id: LogConstants.MSG_ID_CLEAR_WASTE,
-				msgSuccess: "Cleared the waste. The area is now safe to pass through.",
-				msgFlee: logMsgFailBase + "Fled before completing the operation.",
-				msgDefeat: logMsgFailBase + "Lost the fight.",
+				msgSuccess: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS),
+				msgFlee: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_FLEE),
+				msgDefeat: this.getActionMessageTextVO(action, PlayerActionConstants.OUT_ACTION_RESULT_DEFEATED),
 				addToLog: true,
 			};
 
@@ -1431,14 +1448,14 @@ define(['ash',
 		bridgeGap: function (sectorPos) {
 			let position = this.getPositionVO(sectorPos);
 			this.clearBlocker("bridge_gap", MovementConstants.BLOCKER_TYPE_GAP, sectorPos);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "Built a bridge.", { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BRIDGED_GAP, "ui.actions.bridge_gap_completed_message", { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 		
 		clearDebris: function (sectorPos) {
 			let position = this.getPositionVO(sectorPos);
 			let playerPos = this.playerPositionNodes.head.position;
 			this.clearBlocker("clear_debris", MovementConstants.BLOCKER_TYPE_DEBRIS, sectorPos);
-			let msg = "Debris cleared at " + position.getInGameFormat(position.level !== playerPos.level);
+			let msg = { textKey: "ui.actions.clear_debris_completed_message", textParams: { position: position.getInGameFormat(position.level !== playerPos.level) } };
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_CLEAR_DEBRIS, msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 
@@ -1446,7 +1463,7 @@ define(['ash',
 			let position = this.getPositionVO(sectorPos);
 			let playerPos = this.playerPositionNodes.head.position;
 			this.clearBlocker("clear_explosives", MovementConstants.BLOCKER_TYPE_EXPLOSIVES, sectorPos);
-			let msg = "Explosives cleared at " + position.getInGameFormat(position.level !== playerPos.level);
+			let msg = { textKey: "ui.actions.clear_explosives_completed_message", textParams: { position: position.getInGameFormat(position.level !== playerPos.level) } };
 			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), msg, { position: position, visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 		},
 
@@ -1456,13 +1473,13 @@ define(['ash',
 			let blocker = passagesComponent.getBlocker(direction);
 			
 			if (!blocker) {
-				log.w("can't clear toll gate - no blocker here");
+				log.w("can't clear toll gate - no blocker here", this);
 				return;
 			}
 
-			var sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
+			let sectorPos = positionComponent.level + "." + positionComponent.sectorId() + "." + direction;
 			this.clearBlocker("clear_gate", MovementConstants.BLOCKER_TYPE_TOLL_GATE, sectorPos);
-			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "Paid for passage.");
+			GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "ui.actions.clear_toll_gate_completed_message");
 		},
 		
 		clearBlocker: function (action, blockerType, sectorPos) {
@@ -1720,6 +1737,38 @@ define(['ash',
 				resultPopupCallback(true);
 			}
 		},
+
+		getActionMessageTextVO: function (action, result, baseMessageKey, addendumKey, textParams) {
+			let fragments = [];
+
+			textParams = textParams || {};
+
+			let isSuccess = result == PlayerActionConstants.OUT_ACTION_RESULT_SUCCESS;
+
+			// base: custom or default based on success / failure
+			if (!baseMessageKey) {
+				let defaultFailedKey = "ui.actions." + action + "_failed_message";
+				let defaultSuccessKey = "ui.actions." + action + "_completed_message";
+
+				if (isSuccess || !Text.hasKey(defaultFailedKey)) baseMessageKey = defaultSuccessKey;
+				else baseMessageKey = defaultFailedKey;
+			}
+
+			fragments.push( { textKey: baseMessageKey, textParams: textParams } );
+
+			// addendum: custom or generic default based on result
+			if (!addendumKey && result == PlayerActionConstants.OUT_ACTION_RESULT_FLEE) {
+				addendumKey = "ui.actions.generic_fled_addendum";
+			}
+
+			if (!addendumKey && result == PlayerActionConstants.OUT_ACTION_RESULT_FLEE) {
+				addendumKey = "ui.actions.generic_defeated_addendum";
+			}
+
+			if (addendumKey) fragments.push({ textKey: addendumKey, textParams: textParams });
+
+			return { textFragments: fragments };
+		},
 		
 		startInventoryManagement: function () {
 			let player = this.playerStatsNodes.head.entity;
@@ -1774,7 +1823,7 @@ define(['ash',
 			}
 
 			if (!campSector || !caravan) {
-				log.w("No matching returning caravan found.");
+				log.w("No matching returning caravan found.", this);
 				return;
 			}
 
@@ -1782,7 +1831,7 @@ define(['ash',
 			var tradePartner = TradeConstants.getTradePartner(parseInt(tradePartnerOrdinal));
 
 			if (!tradePartner) {
-				log.w("No matching trade partner found.");
+				log.w("No matching trade partner found.", this);
 				log.i(caravan);
 				return;
 			}
@@ -1897,7 +1946,7 @@ define(['ash',
 			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerId);
 			
 			if (!recruitComponent) {
-				log.w("no recruit found: " + explorerId);
+				log.w("no recruit found: " + explorerId, this);
 				return;
 			}
 			
@@ -1908,7 +1957,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numExplorersRecruited");
 			GlobalSignals.explorersChangedSignal.dispatch();
 			
-			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "Recruited a new explorer.", { visibility: LogConstants.MSG_VISIBILITY_CAMP });
+			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_RECRUIT, "ui.actions.recruit_explorer_completed_message", { visibility: LogConstants.MSG_VISIBILITY_CAMP });
 		},
 
 		startExplorerDialogue: function (explorerID) {
@@ -1997,7 +2046,7 @@ define(['ash',
 			}
 
 			if (!characterVO) {
-				log.w("did not find character for starting dialogue");
+				log.w("did not find character for starting dialogue", this);
 				return;
 			}
 
@@ -2012,18 +2061,18 @@ define(['ash',
 		},
 		
 		dismissRecruit: function (explorerId) {
-			log.i("dismiss recruit: " + explorerId);
+			log.i("dismiss recruit: " + explorerId, this);
 			let recruitComponent = GameGlobals.campHelper.findRecruitComponentWithExplorerId(explorerId);
 			
 			if (!recruitComponent) {
-				log.w("no recruit found: " + explorerId);
+				log.w("no recruit found: " + explorerId, this);
 				return;
 			}
 
 			let explorer = recruitComponent.explorer;
 
 			if (!GameGlobals.explorerHelper.isDismissable(explorer)) {
-				log.w("not allowed to dismiss explorer " + explorer.id);
+				log.w("not allowed to dismiss explorer " + explorer.id, this);
 				return;
 			}
 			
@@ -2035,17 +2084,17 @@ define(['ash',
 			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
 			if (!explorer) {
-				log.w("no such explorer: " + explorerID);
+				log.w("no such explorer: " + explorerID, this);
 				return;
 			}
 
 			if (!GameGlobals.explorerHelper.isDismissable(explorer)) {
-				log.w("can't dismiss explorer " + explorerID);
+				log.w("can't dismiss explorer " + explorerID, this);
 				return;
 			}
 			
 			GameGlobals.uiFunctions.showConfirmation(
-				"Are you sure you want to dismiss " + explorer.name + "?",
+				{ textKey: "ui.party.dismiss_explorer_confirmation_message", textParams: { name: explorer.name } },
 				function () {
 					explorersComponent.removeExplorer(explorer);
 					GameGlobals.gameState.increaseGameStatSimple("numExplorersDismissed");
@@ -2060,7 +2109,7 @@ define(['ash',
 			let explorerVO = explorersComponent.getExplorerByID(explorerID);
 			
 			if (!explorerVO) {
-				log.w("no such explorer: " + explorerID);
+				log.w("no such explorer: " + explorerID, this);
 				return;
 			}
 			
@@ -2100,12 +2149,12 @@ define(['ash',
 			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
 			if (explorer.inParty) {
-				log.w("explorer already in party");
+				log.w("explorer already in party", this);
 				return;
 			}
 			
 			if (!explorer) {
-				log.w("no such explorer: " + explorerID);
+				log.w("no such explorer: " + explorerID, this);
 				return;
 			}
 			
@@ -2125,12 +2174,12 @@ define(['ash',
 			let explorer = explorersComponent.getExplorerByID(explorerID);
 			
 			if (!explorer) {
-				log.w("no such explorer: " + explorerID);
+				log.w("no such explorer: " + explorerID, this);
 				return;
 			}
 			
 			if (!explorer.inParty) {
-				log.w("can't deselect explorer that is not in party");
+				log.w("can't deselect explorer that is not in party", this);
 				return;
 			}
 			
@@ -2162,7 +2211,7 @@ define(['ash',
 			var level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 			var position = sector.get(PositionComponent).getPosition();
 			var campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
-			if (GameGlobals.gameFlowLogger.isEnabled) log.i("Build camp " + position + " ordinal " + campOrdinal);
+			if (GameGlobals.gameFlowLogger.isEnabled) log.i("Build camp " + position + " ordinal " + campOrdinal, this);
 			var campComponent = new CampComponent(position.toString());
 			campComponent.foundedTimeStamp = new Date().getTime();
 			campComponent.foundedTimeStampGameTime = GameGlobals.gameState.gameTime;
@@ -2181,7 +2230,7 @@ define(['ash',
 
 			GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_CAMP, "ui.log.built_camp_message", { visibility: LogConstants.MGS_VISIBILITY_LEVEL });
 			if (position.level == 15) {
-				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "It will be difficult to trade resources with camps from below Level 14 from here.");
+				GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), "ui.log.new_camp_no_trade_connector_warning");
 			}
 
 			GameGlobals.gameState.numCamps++;
@@ -2234,7 +2283,7 @@ define(['ash',
 				this.buildImprovement(action, GameGlobals.playerActionsHelper.getImprovementNameForAction(action), sector);
 				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_BUILT_PASSAGE, msg, { position: position, visibility: LogConstants.MSG_VISIBILITY_GLOBAL });
 			} else {
-				log.w("Couldn't find sectors for building passage.");
+				log.w("Couldn't find sectors for building passage.", this);
 				log.i(sector);
 				log.i(sectorPos);
 			}
@@ -2654,7 +2703,7 @@ define(['ash',
 					campComponent.rumourpoolchecked = true;
 				}
 			} else {
-				log.w("No camp sector found.");
+				log.w("No camp sector found.", this);
 			}
 			this.completeAction("use_in_campfire");
 			GameGlobals.playerActionFunctions.unlockFeature("rumours");
@@ -2685,7 +2734,7 @@ define(['ash',
 				this.playerStatsNodes.head.rumours.value += GameGlobals.campBalancingHelper.getRumoursPerVisitMarket(marketLevel);
 				GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_MARKET, "game.actions.use_in_market_completed_message");
 			} else {
-				log.w("No camp sector found.");
+				log.w("No camp sector found.", this);
 			}
 			this.completeAction("use_in_market");
 		},
@@ -2721,7 +2770,7 @@ define(['ash',
 			let campComponent = campSector.get(CampComponent);
 			let improvementsComponent = campSector.get(SectorImprovementsComponent);
 			if (!campSector) {
-				log.w("No camp sector found.");
+				log.w("No camp sector found.", this);
 				return;
 			}
 			
@@ -2750,7 +2799,6 @@ define(['ash',
 			if (campSector) {
 				let shrineLevel = improvementsComponent.getLevel(improvementNames.shrine);
 				let successChance = GameGlobals.campBalancingHelper.getMeditationSuccessRate(shrineLevel);
-				log.i("meditation success chance: " + successChance)
 				if (Math.random() < successChance) {
 					hopeComponent.hope += 1;
 					GameGlobals.playerHelper.addLogMessage(LogConstants.MSG_ID_USE_SHRINE, "ui.log.use_shrine_success_message");
@@ -2822,7 +2870,7 @@ define(['ash',
 			GameGlobals.gameState.increaseGameStatSimple("numItemsRepaired");
 			itemVO.broken = false;
 			itemVO.wear = 0;
-			log.i("repaired " + itemVO.id);
+			log.i("repaired " + itemVO.id, this);
 			GlobalSignals.equipmentChangedSignal.dispatch();
 			GlobalSignals.inventoryChangedSignal.dispatch();
 		},
@@ -2861,7 +2909,7 @@ define(['ash',
 			
 			let item = deductedCosts.items[0];
 			if (!item) {
-				log.w("trying to use item but none found in deductedCosts");
+				log.w("trying to use item but none found in deductedCosts", this);
 			}
 			let itemName = ItemConstants.getItemDisplayName(item);
 
@@ -3076,7 +3124,7 @@ define(['ash',
 			log.i("use item fight: " + itemId);
 			var fightComponent = this.fightNodes.head.fight;
 			if (!fightComponent) {
-				log.w("can't use item in fight, no fight in progress");
+				log.w("can't use item in fight, no fight in progress", this);
 				return;
 			}
 			var enemy = fightComponent.enemy;
@@ -3120,7 +3168,7 @@ define(['ash',
 		useExplorerFight: function (action) {
 			let fightComponent = this.fightNodes.head.fight;
 			if (!fightComponent) {
-				log.w("can't use explorer in fight, no fight in progress");
+				log.w("can't use explorer in fight, no fight in progress", this);
 				return;
 			}
 
@@ -3158,7 +3206,7 @@ define(['ash',
 
 			let unlockedResearchIDs = GameGlobals.upgradeEffectsHelper.getUnlockedResearchIDs(upgradeID);
 			
-			let title = "Research complete";
+			let title = "ui.upgrades.upgrade_bought_popup_title";
 			let upgradeName = TextConstants.getUpgradeDisplayName(upgradeID);
 			let message = "<p>You've researched <span class='hl-functionality'>" + upgradeName + "</span>.</p>";
 			message += "<p class='p-meta'>" + GameGlobals.upgradeEffectsHelper.getEffectDescription(upgradeID, true) + "</p>";
@@ -3198,7 +3246,7 @@ define(['ash',
 			
 			let hasDeity = GameGlobals.tribeHelper.hasDeity();
 			let hasInsight = this.playerStatsNodes.head.insight.value > 0;
-			let baseMsg = "Milestone claimed. We now call this a " + newMilestone.name + ".";
+			let baseMsg = "Milestone claimed. People refer to this place as a" + newMilestone.name + ".";
 			let popupMsg = "<p>" + baseMsg + "</p>";
 			popupMsg += "<p>" + UIConstants.getMilestoneUnlocksDescriptionHTML(newMilestone, oldMilestone, true, true, hasDeity, hasInsight) + "<p>";
 			GameGlobals.uiFunctions.showInfoPopup("Milestone", popupMsg, "Continue", null, null, false, false);
@@ -3304,7 +3352,7 @@ define(['ash',
 				}
 				GlobalSignals.workersAssignedSignal.dispatch(sector);
 			} else {
-				log.w("No camp found for worker assignment.");
+				log.w("No camp found for worker assignment.", this);
 			}
 		},
 
@@ -3370,7 +3418,7 @@ define(['ash',
 			if (!localeVO) return;
 
 			sectorStatus.localesScouted[i] = true;
-			log.i("set locale scouted: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent));
+			log.i("set locale scouted: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent), this);
 		},
 
 		setLocaleInvestigated: function (sector, i) {
@@ -3385,7 +3433,7 @@ define(['ash',
 			let progress = GameGlobals.playerActionResultsHelper.getCurrentExplorationActionWeightedProgress();
 			sectorStatus.localesInvestigated[i] += progress;
 
-			log.i("set locale investigated: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent));
+			log.i("set locale investigated: " + i + " " + localeVO.type + " at " + sector.get(PositionComponent), this);
 		},
 		
 		unlockFeatures: function (featureIDs) {
@@ -3400,7 +3448,7 @@ define(['ash',
 						
 			if (GameGlobals.gameState.unlockedFeatures[featureSaveKey]) return;
 			
-			log.i("unlocked feature: " + featureID,);
+			log.i("unlocked feature: " + featureID, this);
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = true;
 			GlobalSignals.featureUnlockedSignal.dispatch(featureID);
@@ -3411,7 +3459,7 @@ define(['ash',
 						
 			if (!GameGlobals.gameState.unlockedFeatures[featureSaveKey]) return;
 			
-			log.i("locked feature: " + featureID);
+			log.i("locked feature: " + featureID, this);
 			
 			GameGlobals.gameState.unlockedFeatures[featureSaveKey] = false;
 		},
@@ -3421,7 +3469,7 @@ define(['ash',
 						
 			if (GameGlobals.gameState.usedFeatures[featureSaveKey]) return;
 			
-			log.i("used feature: " + featureID);
+			log.i("used feature: " + featureID, this);
 			
 			GameGlobals.gameState.usedFeatures[featureSaveKey] = true;
 			GlobalSignals.featureUsedSignal.dispatch(featureID);

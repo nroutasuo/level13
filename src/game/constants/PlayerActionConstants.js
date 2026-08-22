@@ -2,10 +2,9 @@ define(['ash',
 	'json!game/data/PlayerActionData.json',
 	'utils/ObjectUtils',
 	'game/constants/GameConstants',
-	'game/constants/CampConstants',
 	'game/constants/ImprovementConstants',
 ],
-function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, ImprovementConstants) {
+function (Ash, PlayerActionData, ObjectUtils, GameConstants, ImprovementConstants) {
 	
 	var PlayerActionConstants = {
 		
@@ -31,6 +30,10 @@ function (Ash, PlayerActionData, ObjectUtils, GameConstants, CampConstants, Impr
 		DISABLED_REASON_SUNLIT: 'DISABLED_REASON_SUNLIT',
 		DISABLED_REASON_UPGRADE: 'DISABLED_REASON_UPGRADE',
 		DISABLED_REASON_VISION: "DISABLED_REASON_VISION",
+
+		OUT_ACTION_RESULT_SUCCESS: "succeess",
+		OUT_ACTION_RESULT_FLEE: "flee",
+		OUT_ACTION_RESULT_DEFEATED: "defeat",
 
 		DURATION_EXPEDITION: "EXPEDITION",
 		
