@@ -1524,6 +1524,7 @@ define(['ash',
 
 			let options = {
 				position: sector.get(PositionComponent),
+				isDynamicReveal: true
 			};
 		
 			// complete

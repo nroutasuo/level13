@@ -110,15 +110,27 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 
 			if (!playerPosition) return;
 
+			// reveal (set timestamp) on valid messages with dynamic reveal
+			for (let i = 0; i < messages.length; i++) {
+				let messageVO = messages[i];
+				if (!GameGlobals.playerHelper.isLogMessageRevealable(messageVO)) continue;
+				log.i("reveal: " + messages[i].message, "log");
+				messageVO.timestamp = new Date().getTime();
+			}
+
+			// filter messages by visibility
 			let shownMessages = messages.filter(m => GameGlobals.playerHelper.isLogMessageVisible(m));
 
+			// sort messages taking dynamic time stamp into account
+			shownMessages = shownMessages.sort((a, b) => b.timestamp - a.timestamp);
+
+			// show messages
 			let newItems = UIList.update(this.logList, shownMessages);
-			let latestMessages = newItems.map(li => li.data).filter(m => !m.markedAsSeen && !m.loadedFromSave);
-			
+			let latestMessages = newItems.map(li => li.data).filter(m => !m.markedAsSeen && !m.loadedFromSave);			
 			UIList.update(this.logListLatest, latestMessages);
 
+			// set shown status
 			let hasNewMessages = false;
-
 			for (let i = 0; i < shownMessages.length; i++) {
 				if (!shownMessages[i].hasBeenShown) {
 					log.i("mark as shown: " + shownMessages[i].message, "log");
@@ -127,6 +139,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 				}
 			}
 
+			// feedback for new messages
 			if (hasNewMessages) {
 				GlobalSignals.triggerSoundSignal.dispatch(UIConstants.soundTriggerIDs.logMessage, 300);
 			}
@@ -136,6 +149,7 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 				newItems[i].$root.fadeIn(600);
 			}
 
+			// save messages
 			this.currentMessages = shownMessages;
 		},
 

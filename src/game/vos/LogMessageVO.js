@@ -2,7 +2,7 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 	
 	let LogMessageVO = Ash.Class.extend({
 		
-		constructor: function (logMsgID, messageTextVO, position, visibility, timeOffset) {
+		constructor: function (logMsgID, messageTextVO, position, visibility, isDynamicReveal, timeOffset) {
 			timeOffset = timeOffset || 0;
 
 			this.logMsgID = logMsgID;
@@ -11,7 +11,10 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 			this.position = position ? position.getPosition().clone() : null;
 			this.visibility = visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
 
-			this.timestamp = new Date().getTime();
+			// dynamic reveal means the message only becomes visible & gets a time stamp when the player first visits its position after it has been added
+			this.isDynamicReveal = isDynamicReveal || false;
+
+			this.timestamp = isDynamicReveal ? null : new Date().getTime();
 
 			this.loadedFromSave = false;
 		},
@@ -25,6 +28,7 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 			copy.msg = this.messageTextVO;
 			copy.pos = this.position.getCustomSaveObject();
 			
+			if (this.isDynamicReveal) copy.isDynamicReveal = 1;
 			if (this.hasBeenShown) copy.shown = 1;
 			if (this.markedAsSeen) copy.seen = 1;
 
@@ -40,6 +44,7 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 			this.position = new PositionVO();
 			this.position.customLoadFromSave(componentValues.pos || componentValues.position);
 
+			this.isDynamicReveal = componentValues.isDynamicReveal == 1 || false;
 			this.hasBeenShown = componentValues.shown == 1 || componentValues.hasBeenShown || false;
 			this.markedAsSeen = componentValues.seen == 1 || componentValues.markedAsSeen || false;
 
@@ -57,7 +62,7 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 				case LogConstants.MSG_VISIBILITY_DEFAULT: return LogConstants.MSG_VISIBILITY_DEFAULT_SHORT;
 				case LogConstants.MGS_VISIBILITY_LEVEL: return LogConstants.MGS_VISIBILITY_LEVEL_SHORT;
 				case LogConstants.MSG_VISIBILITY_CAMP: return LogConstants.MSG_VISIBILITY_CAMP_SHORT;
-				case LogConstants.MSG_VISIBILITY_GLOBAL: return  LogConstants.MSG_VISIBILITY_GLOBAL_SHORT;
+				case LogConstants.MSG_VISIBILITY_GLOBAL: return LogConstants.MSG_VISIBILITY_GLOBAL_SHORT;
 			}
 		},
 

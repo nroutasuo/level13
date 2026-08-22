@@ -2,7 +2,7 @@
 define(['ash', 'game/GameGlobals', 'game/constants/LogConstants', 'game/constants/TextConstants', 'game/vos/LogMessageVO'],
 function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 	
-	var LogMessagesComponent = Ash.Class.extend({
+	let LogMessagesComponent = Ash.Class.extend({
 
 		messages: [],
 
@@ -11,9 +11,9 @@ function (Ash, GameGlobals, LogConstants, TextConstants, LogMessageVO) {
 			this.hasNewMessages = true;
 		},
 
-		addMessage: function (logMsgID, messageTextVO, position, visibility) {
+		addMessage: function (logMsgID, messageTextVO, position, visibility, isDynamicReveal) {
 			let timeOffset = GameGlobals.gameState.pendingUpdateTime;
-			let messageVO = new LogMessageVO(logMsgID, messageTextVO, position, visibility, timeOffset);
+			let messageVO = new LogMessageVO(logMsgID, messageTextVO, position, visibility, isDynamicReveal, timeOffset);
 
 			this.hasNewMessages = true;
 			this.messages.push(messageVO);

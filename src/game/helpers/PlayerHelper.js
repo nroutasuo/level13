@@ -315,15 +315,20 @@ define([
 
 			let position = options.position || this.playerPosNodes.head.position.getPosition();
 			let visibility = options.visibility || LogConstants.MSG_VISIBILITY_DEFAULT;
+			let isDynamicReveal = options.isDynamicReveal || false;
 
 			let logComponent = this.playerPosNodes.head.entity.get(LogMessagesComponent);
-			logComponent.addMessage(id, messageTextVO, position, visibility);
+			logComponent.addMessage(id, messageTextVO, position, visibility, isDynamicReveal);
 		},
 
 		isLogMessageVisible: function (messageVO) {
 			let playerPosition = this.playerPosNodes.head.position;
 			if (!playerPosition) return false;
 
+			// messages pending dynamic reveal do not have a time stamp yet
+			if (!messageVO.timestamp) return false;
+
+			// messages without position are visible everywhere
 			if (!messageVO.position) return true;
 
 			if (playerPosition.inCamp) {
@@ -351,6 +356,26 @@ define([
 			} else {
 				return messageVO.position.inCamp == playerPosition.inCamp
 			}
+		},
+
+		isLogMessageRevealable: function (messageVO) {
+			// reveal only applies to dynamically revealed messages
+			if (!messageVO.isDynamicReveal) return false;
+			// has timetamp means has been revealed
+			if (messageVO.timestamp) return false;
+
+			let playerPosition = this.playerPosNodes.head.position;
+			if (!playerPosition) return false;
+			if (!messageVO.position) return false;
+
+			switch (messageVO.visibility) {
+				case LogConstants.MSG_VISIBILITY_DEFAULT: return playerPosition.equals(messageVO.position);
+				case LogConstants.MGS_VISIBILITY_LEVEL: return playerPosition.inCamp == messageVO.position.inCamp;
+				case LogConstants.MSG_VISIBILITY_CAMP: return playerPosition.inCamp;
+				case LogConstants.MSG_VISIBILITY_GLOBAL: return true;
+			}
+
+			return false;
 		},
 
 		getLastVisibileLogMessageTimestamp: function () {
