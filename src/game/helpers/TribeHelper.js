@@ -136,6 +136,11 @@ define([
 			let nextIndex = GameGlobals.gameState.numUnlockedMilestones + 1;
 			return TribeConstants.getMilestone(nextIndex);
 		},
+
+		hasUnlockedEvent: function (event) {
+			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
+			return milestoneIndex <= 0 || GameGlobals.gameState.numUnlockedMilestones >= milestoneIndex;
+		},
 		
 		getCurrentEvidenceLimit: function () {
 			let currentMilestone = this.getCurrentMilestone();

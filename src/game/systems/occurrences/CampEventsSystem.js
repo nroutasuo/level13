@@ -193,10 +193,7 @@ define([
 			if (GameGlobals.storyHelper.isReadyForLaunch()) false;
 			if (GameGlobals.gameState.isLaunched) return false;
 			if (this.hasCampEvent(campNode, event)) return false;
-
-			
-			let milestoneIndex = GameGlobals.milestoneEffectsHelper.getMilestoneIndexForOccurrence(event);
-			if (GameGlobals.gameState.numUnlockedMilestones < milestoneIndex) return;
+			if (!GameGlobals.tribeHelper.hasUnlockedEvent(event)) return false;
 			
 			let population = campNode.camp.population;
 			let numCamps = GameGlobals.gameState.numCamps;

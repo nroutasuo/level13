@@ -975,7 +975,8 @@
 			GameGlobals.uiFunctions.toggle("#in-demographics-general-luxuries", showLuxuryResources);
 
 			// raids
-			let showRaid = raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1;
+			let hasRaids = GameGlobals.tribeHelper.hasUnlockedEvent(OccurrenceConstants.campOccurrenceTypes.raid);
+			let showRaid = hasRaids && (raidDanger > 0 || raidDefence > CampConstants.CAMP_BASE_DEFENCE || campComponent.population > 1);
 			if (showRaid) {
 				let showRaidWarning = raidDanger > CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
 				let defenceS = OccurrenceConstants.getRaidDefenceString(improvements, soldiers, soldierLevel);
