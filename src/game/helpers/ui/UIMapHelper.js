@@ -46,7 +46,7 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 		icons: [],
 
 		isMapRevealed: false,
-		isMapEasyMode: false,
+		isMapEasyMode: false, // show more stuff on map even when not revealed (mainly for debug)
 
 		constructor: function (engine) {
 			this.playerPosNodes = engine.getNodeList(PlayerPositionNode);
@@ -318,7 +318,8 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 
 			// sectors connecting paths
 			this.foreachVisibleSector(level, options.centered, dimensions, visibleSectors, (sector, sectorPos, sectorStatus, sectorXpx, sectorYpx) => {
-				if (SectorConstants.isLBasicInfoVisible(sectorStatus)) {
+				let isMovementLinesVisbile = this.isMapRevealed || SectorConstants.isLBasicInfoVisible(sectorStatus);
+				if (isMovementLinesVisbile) {
 					this.drawMovementLinesOnCanvas(ctx, options, sector, sectorPos, sectorXpx, sectorYpx, sectorSize, sectorPadding);
 				}
 			});
@@ -1003,11 +1004,9 @@ function (Ash, Text, CanvasUtils, MapElements, MapUtils, MathUtils,
 				var neighbourPos = PositionConstants.getPositionOnPath(sectorPos, direction, 1);
 				var neighbour = GameGlobals.levelHelper.getSectorByPosition(options.mapPosition.level, neighbourPos.sectorX, neighbourPos.sectorY);
 				if (neighbour) {
-					let neighbourStatus = this.getSectorStatus(neighbour);
 					let blocker = sectorPassages.getBlocker(direction);
 					let isBlocked = blocker != null && GameGlobals.movementHelper.isBlocked(sector, direction);
 					
-					let isVisited = SectorConstants.isVisited(sectorStatus) && SectorConstants.isVisited(neighbourStatus);
 					let lineColor = ColorConstants.getColor(sunlit, "map_stroke_movementlines");
 					ctx.strokeStyle = lineColor;
 					ctx.lineWidth = MapUtils.getMovementLineWidth(options.zoomLevel);
