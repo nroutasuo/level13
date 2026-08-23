@@ -6,9 +6,10 @@ define([
 	'game/vos/StorySegmentVO',
 	'game/vos/StoryEffectVO',
 	'game/vos/LocaleVO',
-	'game/constants/SectorConstants'
+	'game/constants/SectorConstants',
+	'game/constants/TextConstants'
 ], function (
-	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO, LocaleVO, SectorConstants
+	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO, LocaleVO, SectorConstants, TextConstants
 ) {
 	
 	let StoryConstants = {
@@ -244,8 +245,8 @@ define([
 			for (let i = 0; i < this.sectorExamineSpots.length; i++) {
 				if (this.sectorExamineSpots[i].id == id) {
 					let spotVO =  this.sectorExamineSpots[i];
-					spotVO.nameKey = spotVO.nameKey || "story.spots." + id + "_name";
-					spotVO.shortNameKey = spotVO.shortNameKey || "story.spots." + id + "_name_short";
+					spotVO.nameKey = spotVO.nameKey || TextConstants.getTextKeyWithFallback("story.spots." + id + "_name");
+					spotVO.shortNameKey = spotVO.shortNameKey || TextConstants.getTextKeyWithFallback("story.spots." + id + "_name_short");
 					if (!Text.hasKey(spotVO.shortNameKey)) spotVO.shortNameKey = spotVO.nameKey;
 					spotVO.descriptionKey = spotVO.descriptionKey || "story.spots." + id + "_message";
 					spotVO.logMessageKey = spotVO.logMessageKey || "story.spots." + id + "_log_message";

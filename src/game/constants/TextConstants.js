@@ -13,14 +13,13 @@ define(['ash',
 	'game/constants/EnemyConstants',
 	'game/constants/ItemConstants',
 	'game/constants/SectorConstants',
-	'game/constants/StoryConstants',
 	'game/constants/PositionConstants',
 	'game/constants/MovementConstants',
 	'game/constants/UpgradeConstants',
 	'game/constants/TradeConstants',
 	'game/constants/WorldConstants',
 ],
-function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, Text, TextBuilder, GameConstants, CampConstants, EnemyConstants, ItemConstants, SectorConstants, StoryConstants, PositionConstants, MovementConstants, UpgradeConstants, TradeConstants, WorldConstants) {
+function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, Text, TextBuilder, GameConstants, CampConstants, EnemyConstants, ItemConstants, SectorConstants, PositionConstants, MovementConstants, UpgradeConstants, TradeConstants, WorldConstants) {
 	
 	let TextConstants = {
 
@@ -100,6 +99,16 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			}
 
 			return trunk;
+		},
+
+		getTextKeyWithFallback: function (key, fallback) {
+			if (Text.hasKey(key)) return key;
+			if (fallback && Text.hasKey(fallback)) return fallback;
+			let keyStripped = key.replace(/_\d+/, "")
+			if (Text.hasKey(keyStripped)) return keyStripped;
+			let fallbackStripped = fallback ? fallback.replace(/_\d+/, "") : null;
+			if (fallbackStripped && Text.hasKey(fallbackStripped)) return fallbackStripped;
+			return fallback || key;
 		},
 		
 		sentencify: function (s) {

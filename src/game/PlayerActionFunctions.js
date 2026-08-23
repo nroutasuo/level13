@@ -805,6 +805,8 @@ define(['ash',
 			}
 
 			if (featuresComponent.examineSpots.length > 0) {
+				let spotID = featuresComponent.examineSpots[0];
+				let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 				recordFoundObject(PRIORITY_ONLY_POPUP, null, spotDef.nameKey);
 			}
 			
