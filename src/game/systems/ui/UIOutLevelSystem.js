@@ -130,8 +130,10 @@ define([
 			var sys = this;
 			GlobalSignals.playerPositionChangedSignal.add(function () {
 				sys.scheduleMapUpdate();
-				if (GameGlobals.gameState.uiStatus.isHidden) return;
-				sys.updateAll();
+				sys.updateAll(true);
+			});
+			GlobalSignals.tabChangedSignal.add(function () {
+				sys.updateAll(true);
 			});
 			GlobalSignals.improvementBuiltSignal.add(function () {
 				sys.updateAll();
@@ -199,8 +201,8 @@ define([
 			this.updateLevelPageActionsSlow();
 		},
 
-		updateAll: function () {
-			if (GameGlobals.gameState.uiStatus.isHidden) return;
+		updateAll: function (allowHidden) {
+			if (!allowHidden && GameGlobals.gameState.uiStatus.isHidden) return;
 			if (!this.playerLocationNodes.head) return;
 
 			if (this.pendingUpdateMap) this.rebuildVis();
