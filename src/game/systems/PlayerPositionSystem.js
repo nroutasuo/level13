@@ -10,6 +10,8 @@ define([
 	'game/constants/LogConstants',
 	'game/constants/PositionConstants',
 	'game/constants/StoryConstants',
+	'game/constants/TextConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/PlayerPositionNode',
 	'game/nodes/level/LevelNode',
 	'game/nodes/PlayerLocationNode',
@@ -28,7 +30,7 @@ define([
 	'game/components/common/RevealedComponent',
 	'game/components/common/CampComponent',
 	'game/components/type/LevelComponent',
-], function (Ash, Text, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants, StoryConstants,
+], function (Ash, Text, GameGlobals, GlobalSignals, GameConstants, LevelConstants, LogConstants, PositionConstants, StoryConstants, TextConstants, WorldConstants,
 	PlayerPositionNode, LevelNode, PlayerLocationNode, LastVisitedCampNode, SectorNode, CampNode,
 	CurrentPlayerLocationComponent, CurrentNearestCampComponent, LastVisitedCampComponent, SectorFeaturesComponent, SectorStatusComponent, PassagesComponent,
 	LevelStatusComponent, MovementComponent, PositionComponent,
@@ -343,14 +345,14 @@ define([
 
 			let levelCampOrdinal = GameGlobals.worldState.getCampOrdinal(sectorPos.level);
 			let isLevelCampable = GameGlobals.levelHelper.isLevelCampable(sectorPos.level);
+			let isAffectedByHazard = GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity);
+
+			let hasVision = GameGlobals.playerHelper.hasVision();
 
 			let isEarlyZone = featuresComponentCurrent.isEarlyZone();
-			
-			let isSearchingForGreenHouse = 
-				GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_SEARCHING_FOR_CURE) 
-				&& !GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_FOUND);
 
-			if (!isLevelCampable && levelCampOrdinal < 6) {
+			// incampable
+			if (hasVision && !isLevelCampable && levelCampOrdinal < 6) {
 				let levelSectors = GameGlobals.levelHelper.getSectorsByLevel(sectorPos.level);
 				let levelVisitedSectors = levelSectors.filter(s => GameGlobals.sectorHelper.isVisited(s));
 				if (levelVisitedSectors.length == 15) {
@@ -358,20 +360,47 @@ define([
 					return;
 				}
 			}
-			
-			if (previousSectorEntity != null && previousSectorEntity != sectorEntity && isLevelCampable) {
-				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
-				
-				let isPreviousEarlyZone = featuresComponentPrevious.isEarlyZone();
-				if (isPreviousEarlyZone && !isEarlyZone && !GameGlobals.playerHelper.isAffectedByHazardAt(sectorEntity)) {
-					this.addLogMessage(LogConstants.MSG_ID_ENTER_OUTSKIRTS, "Entering the outskirts.");
+
+			// level feature
+			let features = featuresComponentCurrent.levelFeatures;
+			for (let i = 0; i < features.length; i++) {
+				let featureType = features[i];
+				let featureLogMessage = null;
+				switch (featureType) {
+					case WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE:
+						let directionToCollapse = GameGlobals.levelHelper.getDirectionToFeature(sectorEntity, WorldConstants.FEATURE_HOLE_COLLAPSE);
+						featureLogMessage = { textKey: "ui.log.enter_sector_with_feature_collapse_edge_message", textParams: { direction: PositionConstants.getDirectionTextKey(directionToCollapse) } };
+						break;
+					case WorldConstants.FEATURE_HOLE_WELL_EDGE:
+						let directionToWell = GameGlobals.levelHelper.getDirectionToFeature(sectorEntity, WorldConstants.FEATURE_HOLE_WELL);
+						featureLogMessage = { textKey: "ui.log.enter_sector_with_feature_sunwell_edge_message", textParams: { direction: PositionConstants.getDirectionTextKey(directionToWell) } };
+						break;
+					case WorldConstants.FEATURE_HOLE_WELL:
+						featureLogMessage = { textKey: "ui.log.enter_sector_with_feature_sunwell_message" };
+						break;
+					case WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE:
+						let directionToMountain = GameGlobals.levelHelper.getDirectionToFeature(sectorEntity, WorldConstants.FEATURE_HOLE_MOUNTAIN);
+						featureLogMessage = { textKey: "ui.log.enter_sector_with_feature_mountain_edge_message", textParams: { direction: PositionConstants.getDirectionTextKey(directionToMountain) } };
+				}
+				if (featureLogMessage) {
+					this.addLogMessage(LogConstants.MSG_ID_ENTER_SECTOR_WITH_LEVEL_FEATURE, featureLogMessage);
 					return;
 				}
 			}
+
+			// log messages below not relevant if can't stay on the sector anyway
+			if (isAffectedByHazard) return;
 			
-			if (!isEarlyZone && isSearchingForGreenHouse && Math.random() < 0.01) {
-				this.addLogMessage(LogConstants.getUniqueID(), "Need to find a Greenhouse.");
-				return;
+			// new district
+			if (previousSectorEntity != null && previousSectorEntity != sectorEntity) {
+				let featuresComponentPrevious = previousSectorEntity.get(SectorFeaturesComponent);
+				
+				if (featuresComponentCurrent.districtIndex !== featuresComponentPrevious.districtIndex) {
+					let districtVO = GameGlobals.sectorHelper.getDistrictVO(sectorEntity);
+					let districtTypeText = TextConstants.getDistrictTypeText(districtVO);
+					this.addLogMessage(LogConstants.MSG_ID_ENTER_DISTRICT, { textKey: "ui.log.enter_new_district_message", textParams: districtTypeText });
+					return;
+				}
 			}
 		},
 
@@ -382,7 +411,7 @@ define([
 				if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.GREENHOUSE_SEARCHING_FOR_CURE)) {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. Somewhere out there is a cure waiting to be found.");
 				} else if (GameGlobals.gameState.getStoryFlag(StoryConstants.flags.ESCAPE_SEARCHING_FOR_GROUND)) {
-					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The camp is comfortable, but you have a goal.");
+					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again.");
 				} else {
 					this.addLogMessage(LogConstants.getUniqueID(), "Out into the City again. The darkness envelops you like water.");
 				}

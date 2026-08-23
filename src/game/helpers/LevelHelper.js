@@ -1034,22 +1034,32 @@ define([
 			return levelStatus.improvementCounts[improvementID] || 0;
 		},
 
-		getDirectionToFeature: function (sector, featureType) {
-			let result = null;
-			let neighbours = GameGlobals.levelHelper.getSectorNeighboursMap(sector);
-			for (let direction in neighbours) {
-				let neighbour = neighbours[direction];
-				if (!neighbour) continue;
-				let featuresComponent = neighbour.get(SectorFeaturesComponent);				
-				if (!featuresComponent.hasFeature(featureType)) continue;
+		getDirectionToFeature: function (sector, featureType) {	
+			let position = sector.get(PositionComponent);
+			let closestPosition = this.getClosestPositionWithFeature(sector, featureType);
+			return PositionConstants.getDirectionFrom(position, closestPosition);
+		},
 
-				let isBetterDirection = PositionConstants.isDiagonal(result) && !PositionConstants.isDiagonal(direction);
-				
-				if (result == null || isBetterDirection) {
-					result = direction;
+		getClosestPositionWithFeature: function (sector, featureType) {
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
+			let levelComponent = levelEntity.get(LevelComponent);
+			let position = sector.get(PositionComponent);
+
+			let nearestFeatureDistance = -1;
+			let nearestFeaturePosition = null;
+
+			for (let i = 0; i < levelComponent.features.length; i++) {
+				let featureVO = levelComponent.features[i];
+				if (featureVO.type != featureType) continue;
+				let featurePosition = featureVO.getClosestPosition(position);
+				let distance = PositionConstants.getDistanceTo(position, featurePosition);
+				if (nearestFeatureDistance < 0 || distance < nearestFeatureDistance) {
+					nearestFeatureDistance = distance;
+					nearestFeaturePosition = featurePosition;
 				}
 			}
-			return result;
+
+			return nearestFeaturePosition;
 		},
 
 		getFoundLuxuryResourceOnLevel: function (level) {

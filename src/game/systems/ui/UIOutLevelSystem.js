@@ -443,8 +443,6 @@ define([
 
 		getTextureDescription: function (hasVision, sector, position, featuresComponent, sectorStatus, localesComponent) {
 			let campOrdinal = GameGlobals.worldState.getCampOrdinal(position.level);
-			let hasGlowStickLight = sectorStatus.glowStickSeconds > 0;
-			let hasLight = hasVision || featuresComponent.sunlit || hasGlowStickLight;
 			
 			// sector static description
 			var features = GameGlobals.sectorHelper.getTextFeatures(sector);
@@ -469,7 +467,7 @@ define([
 			}
 
 			// world features
-			if (hasLight) {
+			if (hasVision) {
 				let features = featuresComponent.levelFeatures;
 				for (let i = 0; i < features.length; i++) {
 					let featureType = features[i];

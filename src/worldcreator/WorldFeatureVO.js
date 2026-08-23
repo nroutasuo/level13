@@ -1,4 +1,5 @@
-define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO', 'game/vos/AreaVO'], function (Ash, WorldCreatorConstants, PositionVO, AreaVO) {
+define(['ash', 'worldcreator/WorldCreatorConstants', 'game/constants/PositionConstants', 'game/vos/PositionVO', 'game/vos/AreaVO'], 
+function (Ash, WorldCreatorConstants, PositionConstants, PositionVO, AreaVO) {
 
 	let WorldFeatureVO = Ash.Class.extend({
 		
@@ -41,6 +42,26 @@ define(['ash', 'worldcreator/WorldCreatorConstants', 'game/vos/PositionVO', 'gam
 				result = result.concat(positions);
 			}
 			return result; 
+		},
+
+		getClosestPosition: function (pos) {
+			let closestPosition = -null;
+			let closestPositionDistance = -1;
+
+			for (let i = 0; i < this.areas.length; i++) {
+				let areaVO = this.areas[i];
+				if (areaVO.level !== pos.level) continue;
+				let positions = areaVO.getPositions();
+				for (let j = 0; j < positions.length; j++) {
+					let position = positions[j];
+					let positionDistance = PositionConstants.getDistanceTo(pos, position);
+					if (closestPositionDistance < 0 || positionDistance < closestPositionDistance) {
+						closestPosition = position;
+						closestPositionDistance = positionDistance;
+					}
+				}
+			}
+			return closestPosition; 
 		},
 		
 		getDistanceTo: function (pos) {

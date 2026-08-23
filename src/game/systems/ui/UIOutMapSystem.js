@@ -591,7 +591,6 @@ define([
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let districtVO = levelComponent.districts[sectorFeatures.districtIndex];
-			let districtType = districtVO.type;
 			let districtTypeText = TextConstants.getDistrictTypeText(districtVO);
 			let text = districtTypeText;
 			if (GameConstants.isDebugVersion) text = sectorFeatures.districtIndex + " " + text;

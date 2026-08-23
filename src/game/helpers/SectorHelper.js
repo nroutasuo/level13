@@ -185,6 +185,13 @@ define([
 
 			return features;
 		},
+
+		getDistrictVO: function (sector) {
+			let levelEntity = GameGlobals.levelHelper.getLevelEntityForSector(sector);
+			let levelComponent = levelEntity.get(LevelComponent);
+			let sectorFeatures = sector.get(SectorFeaturesComponent);
+			return levelComponent.districts[sectorFeatures.districtIndex];
+		},
 		
 		canExploreSector: function (sectorEntity, itemsComponent) {
 			let featuresComponent = sectorEntity.get(SectorFeaturesComponent);

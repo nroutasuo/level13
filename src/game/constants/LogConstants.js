@@ -64,7 +64,8 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		MSD_ID_MOVE_UNAVAILABLE: "MSD_ID_MOVE_UNAVAILABLE",
 		MSG_ID_STAMINA_WARNING: "MSG_ID_STAMINA_WARNING",
 		MSG_ID_VISION_RESET: "MSG_ID_VISION_RESET",
-		MSG_ID_ENTER_OUTSKIRTS: "MSG_ID_ENTER_OUTSKIRTS",
+		MSG_ID_ENTER_DISTRICT: "MSG_ID_ENTER_DISTRICT",
+		MSG_ID_ENTER_SECTOR_WITH_LEVEL_FEATURE: "MSG_ID_ENTER_SECTOR_WITH_LEVEL_FEATURE",
 
 		// in atmospheric and results
 		MSG_ID_POPULATION_NATURAL: "POPULATION_NATURAL",
@@ -195,6 +196,12 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.01,
 				message: "You need to find some way to stop the earthquakes."
 			},
+			"story_greenhouse_need_to_find_greenhouse_01": {
+				triggers: [ "change_position" ],
+				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_SEARCHING_FOR_CURE": true, "GREENHOUSE_FOUND": false } },
+				chance: 0.01,
+				message: "You need to find a greenhouse."
+			},
 			"story_greenhouse_need_to_find_seeds_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_FOUND": true, "GREENHOUSE_RESTORED": false } },
@@ -266,9 +273,10 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 			let minutes = 0;
 
 			switch (id) {
-				case LogConstants.MSG_ID_ENTER_OUTSKIRTS: minutes = 10; break;
+				case LogConstants.MSG_ID_ENTER_DISTRICT: minutes = 5; break;
 				case LogConstants.MSG_ID_AMBIENT_PLAYER: minutes = 3; break;
 				case LogConstants.MSG_ID_AMBIENT_CAMP: minutes = 10; break;
+				case LogConstants.MSG_ID_ENTER_SECTOR_WITH_LEVEL_FEATURE: minutes = 10; break;
 			}
 
 			return (minutes * 60 + seconds) * 1000;

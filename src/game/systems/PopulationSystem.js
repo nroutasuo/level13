@@ -340,23 +340,27 @@ define([
 			let isIncrease = change > 0;
 			
 			node.camp.populationDecreaseCooldown = null;
+
+			let workerChange = null;
 			
 			if (isIncrease) {
 				node.camp.population = Math.floor(node.camp.population);
 				node.camp.rumourpoolchecked = false;
 			} else {
 				node.camp.handlePopulationDecreased(1);
-				this.reassignWorkers(node);
+				workerChange = this.reassignWorkers(node);
 			}
 			
 			GlobalSignals.populationChangedSignal.dispatch(node.entity);
-			this.logChangePopulation(campPosition, change, node.camp.population);
+			this.logChangePopulation(campPosition, change, node.camp.population, workerChange);
 			
 			this.updateCampPopulationChange(node);
 			this.updateCampDemographics(node);
 		},
 		
 		reassignWorkers: function (node) {
+			let workersBefore = Object.assign({}, node.camp.assignedWorkers);
+
 			let improvements = node.entity.get(SectorImprovementsComponent);
 			let workerFactors = GameGlobals.campHelper.getWorkerFactors(node.position.level);
 
@@ -397,7 +401,20 @@ define([
 				if (GameConstants.isDebugVersion) debugger
 			}
 
+			let workersAfter = Object.assign({}, node.camp.assignedWorkers);
+
+			let result = {};
+			
+			for (let key in CampConstants.workerTypes) {
+				result[key] = (workersAfter[key] || 0) - (workersBefore[key] || 0);
+			}
+			
+			log.i("reassign workers result:")
+			console.log(result);
+
 			GlobalSignals.workersAssignedSignal.dispatch(node.entity);
+
+			return result;
 		},
 		
 		unassignInvalidWorkers: function () {
@@ -495,11 +512,12 @@ define([
 			return MathUtils.randomElement(possibleTypes);
 		},
 		
-		logChangePopulation: function (campPosition, change, population) {
+		logChangePopulation: function (campPosition, change, population, workerChange) {
 			let pos = campPosition.getPosition();
 			pos.inCamp = true;
 			let level = pos.level;
 			let message = null;
+			let workerTypeKey = null;
 
 			let levelComponent = GameGlobals.levelHelper.getLevelEntityForPosition(level).get(LevelComponent);
 			
@@ -516,11 +534,18 @@ define([
 					message = "ui.camp.population_increase_default_message";
 				}
 			} else {
+				for (let key in CampConstants.workerTypes) {
+					if (workerChange && workerChange[key] == -1) {
+						workerTypeKey = CampConstants.getWorkerDisplayNameKey(key);
+						break;
+					}
+				}
+				if (!workerTypeKey) workerTypeKey = "game.workers.unassigned_name";
 				message = "ui.camp.population_decrease_default_message";
 			}
 
 			if (message) {
-				let textFragmentVO = { textKey: message, textParams: { num: change } };
+				let textFragmentVO = { textKey: message, textParams: { num: change, type: workerTypeKey } };
 				GameGlobals.playerHelper.addLogMessageWithPosition(LogConstants.MSG_ID_POPULATION_NATURAL, textFragmentVO, pos);
 			}
 		},
