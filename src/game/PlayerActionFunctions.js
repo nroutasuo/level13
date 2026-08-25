@@ -1,5 +1,6 @@
 // Functions to respond to player actions parsed by the UIFunctions
 define(['ash',
+	'core/ExceptionHandler',
 	'game/GameGlobals',
 	'game/GlobalSignals',
 	'game/constants/GameConstants',
@@ -70,7 +71,7 @@ define(['ash',
 	'text/Text',
 	'utils/MathUtils',
 	'utils/StringUtils'
-], function (Ash, GameGlobals, GlobalSignals,
+], function (Ash, ExceptionHandler, GameGlobals, GlobalSignals,
 	GameConstants, CampConstants, DialogueConstants, ExplorationConstants, ExplorerConstants, LogConstants, ImprovementConstants, PositionConstants, MovementConstants, PlayerActionConstants, PlayerStatConstants, ItemConstants, PerkConstants, FightConstants, StoryConstants, TradeConstants, TribeConstants, UIConstants, UpgradeConstants, TextConstants,
 	CharacterVO, PositionVO, LocaleVO, ResultVO,
 	PlayerPositionNode, FightNode, PlayerStatsNode, PlayerResourcesNode, PlayerLocationNode,
@@ -1580,7 +1581,7 @@ define(['ash',
 				() => {
 					GameGlobals.uiFunctions.hideGame(false);
 					this.passTime(60, function () {
-						setTimeout(function () {
+						ExceptionHandler.wrapTimeout(function () {
 							GameGlobals.uiFunctions.showGame();
 							GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns
 							if (excursionComponent) excursionComponent.numNaps++;
@@ -1625,7 +1626,7 @@ define(['ash',
 				() => {
 					GameGlobals.uiFunctions.hideGame(false);
 					this.passTime(60, function () {
-						setTimeout(function () {
+						ExceptionHandler.wrapTimeout(function () {
 							GameGlobals.uiFunctions.showGame();
 							GameGlobals.uiFunctions.onPlayerPositionChanged(); // reset cooldowns
 							let msgFail = "Settled down to pass some time but got attacked.";
@@ -1646,7 +1647,7 @@ define(['ash',
 		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
 			this.currentAction = action;
 
-			setTimeout(function () {
+			ExceptionHandler.wrapTimeout(function () {
 				GameGlobals.playerActionFunctions.handleOutActionResultsInternal(action, messages, showResultPopup, hasCustomReward, successCallback, failCallback);
 			}, 1);
 		},

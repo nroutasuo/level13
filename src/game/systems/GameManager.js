@@ -190,13 +190,13 @@ define([
 			GameGlobals.uiFunctions.startGame();
 			
 			let sys = this;
-			setTimeout(function () {
+			ExceptionHandler.wrapTimeout(function () {
 				GlobalSignals.gameStartedSignal.dispatch();
-				setTimeout(function () {
+				ExceptionHandler.wrapTimeout(function () {
 					GameGlobals.gameState.uiStatus.isInitialized = true;
 					GameGlobals.uiFunctions.showGame();
 					log.i("game shown (" + GameConstants.getTimeSinceStart() + ")", "start");
-					setTimeout(function () {
+					ExceptionHandler.wrapTimeout(function () {
 						// updates to game state that should be done at start but can wait until the player is unblocked
 						GlobalSignals.gameStateRefreshSignal.dispatch();
 
@@ -213,7 +213,7 @@ define([
 			this.pauseGame();
 			GameGlobals.uiFunctions.hideGame(true);
 			var sys = this;
-			setTimeout(function () {
+			ExceptionHandler.wrapTimeout(function () {
 				GameGlobals.metaState.hasCompletedGame = GameGlobals.metaState.hasCompletedGame || GameGlobals.gameState.isLaunchStarted;
 				GameGlobals.metaState.maxCampOrdinalReached = Math.max(GameGlobals.metaState.maxCampOrdinalReached, GameGlobals.gameState.numCamps);
 				sys.engine.removeAllEntities();

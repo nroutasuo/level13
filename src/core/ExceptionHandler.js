@@ -23,6 +23,12 @@ define(function () {
 				ExceptionHandler.handleException(ex, msg);
 			}
 		},
+
+		wrapTimeout: function (fn, time) {
+			return setTimeout(() => {
+				this.wrapCall(this, () => { fn(); });
+			}, time || 1);
+		},
 		
 		handleException: function (ex, msg) {
 			ex.message = ex ? ex.message || msg : msg;
@@ -33,6 +39,7 @@ define(function () {
 				throw ex;
 			}
 		}
+		
 	};
 
 	return ExceptionHandler;

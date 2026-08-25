@@ -639,7 +639,7 @@ define(['ash',
 				this.updateButtonCooldowns();
 				this.setUIStatus(false, false);
 
-				setTimeout(function () {
+				ExceptionHandler.wrapTimeout(function () {
 					GlobalSignals.gameShownSignal.dispatch();
 				}, 1);
 			},
@@ -1196,7 +1196,7 @@ define(['ash',
 				this.toggleParentCalloutContainer($element, ".callout-container", show);
 
 				// NOTE: For some reason the element isn't immediately :visible for checks in UIOutElementsSystem without the timeout
-				setTimeout(function () {
+				ExceptionHandler.wrapTimeout(function () {
 					GlobalSignals.elementToggledSignal.dispatch($element, show, signalParams);
 				}, 1);
 			},

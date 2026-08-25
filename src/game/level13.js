@@ -190,7 +190,7 @@ define([
 					log.w("START mobile overlay shown, game setup delayed");
 
 					let wait = function () {
-						setTimeout(() => {
+						ExceptionHandler.wrapTimeout(() => {
 							if (GameConstants.isMobileOverlayShown) {
 								wait();
 							} else {
