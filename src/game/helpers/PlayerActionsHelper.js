@@ -590,7 +590,7 @@ define([
 				}
 
 				if (requirements.maxNumCamps) {
-					var currentCamps = GameGlobals.gameState.numCamps;
+					let currentCamps = GameGlobals.gameState.numCamps;
 					if (requirements.numCamps < currentCamps) {
 						return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "less than " + requirements.numCamps + " camps required.") };
 					}
@@ -1184,7 +1184,7 @@ define([
 						var requiredValue = requirements.sector.examinable;
 						var currentValue = GameGlobals.sectorHelper.getNumUnexaminedSpots(sector) > 0;
 						if (currentValue !== requiredValue) {
-							reason = requiredValue ? "There is nothing to examine." : "This sector can be examined";
+							reason = requiredValue ? "There is nothing new to examine." : "This sector can be examined";
 							return { value: 0, reason: this.getDisabledReasonVO(reason) };
 						}
 					}

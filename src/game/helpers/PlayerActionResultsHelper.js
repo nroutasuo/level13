@@ -372,8 +372,9 @@ define([
 		getExamineRewards: function () {
 			let resultVO = new ResultVO("examine");
 
-			let featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			let spotID = featuresComponent.examineSpots[0];
+			let sector = this.playerLocationNodes.head.entity;
+			let examineSpots = GameGlobals.sectorHelper.getSectorExamineSpots(sector);
+			let spotID = examineSpots[0];
 			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 
 			if (spotDef.reward) {

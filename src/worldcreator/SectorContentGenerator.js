@@ -363,6 +363,7 @@ define([
 			let spotDefinitions = StoryConstants.sectorExamineSpots;
 			for (let i = 0; i < spotDefinitions.length; i++) {
 				let def = spotDefinitions[i];
+				if (def.isDynamic) continue;
 				let campOrdinal = def.positionParams.campOrdinal;
 				let level = 13;
 

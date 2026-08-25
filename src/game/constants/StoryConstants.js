@@ -7,9 +7,10 @@ define([
 	'game/vos/StoryEffectVO',
 	'game/vos/LocaleVO',
 	'game/constants/SectorConstants',
-	'game/constants/TextConstants'
+	'game/constants/TextConstants',
+	'game/constants/WorldConstants'
 ], function (
-	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO, LocaleVO, SectorConstants, TextConstants
+	Ash, StoryData, Text, StoryVO, StorySegmentVO, StoryEffectVO, LocaleVO, SectorConstants, TextConstants, WorldConstants
 ) {
 	
 	let StoryConstants = {
@@ -180,6 +181,10 @@ define([
 			}
 
 			this.sectorExamineSpots = data.examineSpots;
+			this.sectorExamineSpots.push(this.getExamineSpotFromLevelFeature(WorldConstants.FEATURE_HOLE_COLLAPSE));
+			this.sectorExamineSpots.push(this.getExamineSpotFromLevelFeature(WorldConstants.FEATURE_HOLE_WELL));
+			this.sectorExamineSpots.push(this.getExamineSpotFromLevelFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER));
+			this.sectorExamineSpots.push(this.getExamineSpotFromLevelFeature(WorldConstants.FEATURE_STRUCTURE_PILLAR));
 		},
 
 		parseStoryTrigger: function (data) {
@@ -249,9 +254,23 @@ define([
 					spotVO.shortNameKey = spotVO.shortNameKey || TextConstants.getTextKeyWithFallback("story.spots." + id + "_name_short");
 					if (!Text.hasKey(spotVO.shortNameKey)) spotVO.shortNameKey = spotVO.nameKey;
 					spotVO.descriptionKey = spotVO.descriptionKey || "story.spots." + id + "_message";
-					spotVO.logMessageKey = spotVO.logMessageKey || "story.spots." + id + "_log_message";
+					spotVO.logMessageKey = spotVO.logMessageKey || TextConstants.getTextKeyWithFallback("story.spots." + id + "_log_message", "story.spots.generic_log_message");
 					return spotVO;
 				}
+			}
+			return null;
+		},
+
+		getExamineSpotFromLevelFeature: function (featureType) {
+			switch (featureType) {
+				case WorldConstants.FEATURE_HOLE_COLLAPSE:
+					return { id: "world_feature_hole_collapse", isDynamic: true };
+				case WorldConstants.FEATURE_HOLE_WELL:
+					return { id: "world_feature_hole_well", isDynamic: true };
+				case WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER:
+					return { id: "world_feature_structure_giga_center", isDynamic: true };
+				case WorldConstants.FEATURE_STRUCTURE_PILLAR:
+					return { id: "world_feature_structure_pillar", isDynamic: true };
 			}
 			return null;
 		},

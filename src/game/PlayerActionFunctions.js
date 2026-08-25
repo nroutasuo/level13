@@ -720,17 +720,21 @@ define(['ash',
 
 		examine: function (sectorPos) {
 			let sector = this.getActionSectorOrCurrent(sectorPos);
-			let featuresComponent = sector.get(SectorFeaturesComponent);
-			let spotID = featuresComponent.examineSpots[0];
+			let examineSpots = GameGlobals.sectorHelper.getSectorExamineSpots(sector);
+			let spotID = examineSpots[0];
 			let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 
-			if (!spotDef) return;
+			if (!spotDef) {
+				log.w("no examine spot found to examine", this);
+				return;
+			}
 			
 			let successCallback = function () {
 				let level = GameGlobals.levelHelper.getLevelEntityForSector(sector);
 				let levelStatus = level.get(LevelStatusComponent);
 				levelStatus.examinedSpots.push(spotID);
-				if (spotDef.logMessageKey) GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), spotDef.logMessageKey);
+				let displayName = spotDef.shortNameKey;
+				if (spotDef.logMessageKey) GameGlobals.playerHelper.addLogMessage(LogConstants.getUniqueID(), { textKey: spotDef.logMessageKey, textParams: { name: displayName }});
 				GlobalSignals.examineSpotExaminedSignal.dispatch(spotDef.storyTag);
 			};
 

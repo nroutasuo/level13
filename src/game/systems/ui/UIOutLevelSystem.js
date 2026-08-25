@@ -246,20 +246,21 @@ define([
 			this.updateDespair();
 		},
 
-		updateLevelPageActions: function (isScouted, hasCamp, hasCampHere) {
+		updateLevelPageActions: function () {
 			if (GameGlobals.gameState.uiStatus.isHidden) return;
 			
-			var sectorStatus = this.playerLocationNodes.head.entity.get(SectorStatusComponent);
-			var hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(this.playerLocationNodes.head.entity).has(CampComponent);
-			var hasCampHere = this.playerLocationNodes.head.entity.has(CampComponent);
-			var isScouted = sectorStatus.scouted;
+			let sector = this.playerLocationNodes.head.entity;
+			let sectorStatus = sector.get(SectorStatusComponent);
+			let hasCamp = GameGlobals.levelHelper.getLevelEntityForSector(sector).has(CampComponent);
+			let hasCampHere = sector.has(CampComponent);
+			let isScouted = sectorStatus.scouted;
 			let isAwake = this.playerPosNodes.head.entity.get(VisionComponent).isAwake;
 			
-			var sectorControlComponent = this.playerLocationNodes.head.entity.get(SectorControlComponent);
-			var featuresComponent = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
-			var workshopComponent = this.playerLocationNodes.head.entity.get(WorkshopComponent);
-			var improvements = this.playerLocationNodes.head.entity.get(SectorImprovementsComponent);
-			var passagesComponent = this.playerLocationNodes.head.entity.get(PassagesComponent);
+			let sectorControlComponent = sector.get(SectorControlComponent);
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let workshopComponent = sector.get(WorkshopComponent);
+			let improvements = sector.get(SectorImprovementsComponent);
+			let passagesComponent = sector.get(PassagesComponent);
 
 			var passageUpBuilt = improvements.getCount(improvementNames.passageUpStairs) +
 				improvements.getCount(improvementNames.passageUpElevator) +
@@ -279,10 +280,11 @@ define([
 			GameGlobals.uiFunctions.toggle("#out-action-use-spring", isAwake && isScouted && featuresComponent.hasSpring);
 
 			// examine spots
-			let showExamine = featuresComponent.examineSpots.length > 0 && isScouted;
+			let examineSpots = GameGlobals.sectorHelper.getSectorExamineSpots(sector);
+			let showExamine = examineSpots.length > 0 && isScouted;
 			GameGlobals.uiFunctions.toggle("#out-action-examine", showExamine);
 			if (showExamine) {
-				let spotID = featuresComponent.examineSpots[0];
+				let spotID = examineSpots[0];
 				let spotDef = StoryConstants.getSectorExampineSpot(spotID);
 				$("#out-action-examine").find(".btn-label").text("examine " + Text.t(spotDef.shortNameKey));
 			}

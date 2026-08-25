@@ -8,6 +8,7 @@ define([
 	'game/constants/PerkConstants',
 	'game/constants/PositionConstants',
 	'game/constants/SectorConstants',
+	'game/constants/StoryConstants',
 	'game/constants/ExplorationConstants',
 	'game/constants/MovementConstants',
 	'game/constants/TextConstants',
@@ -36,6 +37,7 @@ define([
 	PerkConstants,
 	PositionConstants,
 	SectorConstants,
+	StoryConstants,
 	ExplorationConstants,
 	MovementConstants,
 	TextConstants,
@@ -257,6 +259,22 @@ define([
 			if (hazards.flooded > itemsComponent.getCurrentBonus(ItemConstants.itemBonusTypes.res_water))
 				return "area too flooded";
 			return null;
+		},
+
+		getSectorExamineSpots: function (sector) {
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let result = [];
+
+			// regular
+			result = result.concat(featuresComponent.examineSpots);
+
+			// dynamic (from level features)
+			for (let i = 0; i < featuresComponent.levelFeatures.length; i++) {
+				let spotDef = StoryConstants.getExamineSpotFromLevelFeature(featuresComponent.levelFeatures[i]);
+				if (spotDef) result.push(spotDef.id);
+			}
+
+			return result;
 		},
 		
 		getLuxuryResourceOnSector: function (sector, onlyFound) {
@@ -531,11 +549,10 @@ define([
 		},
 
 		getNumUnexaminedSpots: function (sector) {
-			let featuresComponent = sector.get(SectorFeaturesComponent);
-
 			let result = 0;
-			for (let i = 0; i < featuresComponent.examineSpots.length; i++) {
-				let spotID = featuresComponent.examineSpots[i];
+			let examineSpots = this.getSectorExamineSpots(sector);
+			for (let i = 0; i < examineSpots.length; i++) {
+				let spotID = examineSpots[i];
 				if (!GameGlobals.levelHelper.isExamineSpotExamined(sector, spotID)) {
 					result++;
 				}
