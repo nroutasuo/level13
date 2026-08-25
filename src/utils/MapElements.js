@@ -147,6 +147,8 @@ define([
 				ctx.drawImage(this.icons["ingredient" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				ctx.globalAlpha = 1;
 				return true;
+			} else if (features.isRevealed && features.hasCollectors) {
+				return false;
 			} else if (features.isRevealed && features.hasGraffiti) {
 				ctx.drawImage(this.icons["graffiti" + (useSunlitIcon ? "-sunlit" : "")], iconPosX, iconPosY);
 				return true;
