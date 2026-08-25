@@ -375,7 +375,18 @@ define([
 		},
 		
 		updateGameVersion: function () {
-			this.elements.gameVersion.text("v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber());
+			if (!GameConstants.isDebugVersion) {
+				GameGlobals.uiFunctions.toggle(this.elements.gameVersion, false);
+				return;
+			}
+
+			let text = "v. " + GameGlobals.changeLogHelper.getCurrentVersionNumber();
+
+			if (GameGlobals.gameState.hasCheated) {
+				text += " (cheated)";
+			}
+			
+			this.elements.gameVersion.text(text);
 		},
 
 		updatePlayerStats: function () {
@@ -1614,6 +1625,7 @@ define([
 			this.updateHeaderTexts();
 			this.updatePlayerStats();
 			this.updateLayout();
+			this.updateGameVersion();
 		},
 
 		onElementCreated: function () {
