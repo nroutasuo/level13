@@ -268,6 +268,9 @@ define(['ash',
 
                 let minDistance = this.getPOIMinDistance(poiType);
                 let maxDistance = this.getPOIMaxDistance(poiType);
+                let requiresPath = this.getPOIRequiresPath(poiType);
+                
+                let pathSettings = { skipBlockers: true, omitWarnings: true, maxLength: maxDistance };
                 
                 GameGlobals.levelHelper.forEverySectorFromLocation(playerPosition, (sector) => {
                     let sectorPosition = sector.get(PositionComponent);
@@ -275,6 +278,7 @@ define(['ash',
                     if (distance == 0) return false;
                     if (minDistance > 0 && distance < minDistance) return false;
                     if (maxDistance > 0 && distance > maxDistance) return false;
+                    if (requiresPath && !GameGlobals.levelHelper.findPathTo(playerLocation, sector, pathSettings)) return false;
                     let poiData = GameGlobals.sectorHelper.getPOIData(sector, poiType, isScouted);
                     if (poiData) {
                         let direction = PositionConstants.getDirectionFrom(playerPosition, sectorPosition);
@@ -302,6 +306,13 @@ define(['ash',
                     case "center": return -1;
                 }
                 return 8;
+            },
+
+            getPOIRequiresPath: function (poiType) {
+                switch (poiType) {
+                    case "spring": return true;
+                }
+                return false;
             },
 
             hasResults: function (dialogueVO) {
