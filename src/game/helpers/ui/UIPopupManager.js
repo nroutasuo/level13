@@ -33,18 +33,20 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 		// - isMeta (bool) - default false
 		// - isDismissable (bool) - default derived from other params
 		// - forceShowInventoryManagement (bool) - default false
+		// - hideInventoryManagement (bool) - default false
 		// - setupCallback - callback to set up the popup before it's actually shown
 		showPopup: function (title, msg, okButtonLabel, cancelButtonLabel, resultVO, okCallback, cancelCallback, options) {
 			options = options || {};
 			let isMeta = options.isMeta || false;
 			let forceShowInventoryManagement = options.forceShowInventoryManagement;
+			let hideInventoryManagement = options.hideInventoryManagement;
 
 			let action = options.action;
 			
 			let hasResult = resultVO && typeof resultVO !== 'undefined';
-			let showInventoryManagement = hasResult || forceShowInventoryManagement;
+			let showRewardsDiv = hasResult || forceShowInventoryManagement;
 			
-			let isDismissable = options.isDismissable || (typeof options.isDismissable == 'undefined' && !showInventoryManagement && !cancelButtonLabel);
+			let isDismissable = options.isDismissable || (typeof options.isDismissable == 'undefined' && !showRewardsDiv && !cancelButtonLabel);
 
 			let debugTitle = title;
 			if (title.textKey) debugTitle = title.textKey;
@@ -77,10 +79,10 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 			$("#common-popup p#common-popup-desc").html(message || "");
 			
 			// results and rewards
-			GameGlobals.uiFunctions.toggle("#info-results", showInventoryManagement);
+			GameGlobals.uiFunctions.toggle("#info-results", showRewardsDiv);
 			$("#info-results").empty();
-			if (showInventoryManagement) {
-				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, { forceShowInventoryManagement: forceShowInventoryManagement });
+			if (showRewardsDiv) {
+				let rewardDiv = GameGlobals.playerActionResultsHelper.getRewardDiv(resultVO, { forceShowInventoryManagement: forceShowInventoryManagement, hideInventoryManagement: hideInventoryManagement });
 				$("#info-results").append(rewardDiv);
 				GameGlobals.uiFunctions.updateProgressBar("#result-popup-bar");
 				GameGlobals.uiFunctions.generateInfoCallouts("#reward-div");
@@ -92,9 +94,9 @@ function (Ash, Text, ExceptionHandler, GameGlobals, GlobalSignals, UIConstants) 
 
 			if (!action) {
 				$("#common-popup .buttonbox").append("<button id='info-ok' class='action'>" + okButtonLabel + "</button>");
-				$("#info-ok").attr("action", showInventoryManagement ? "accept_inventory" : null);
-				$("#info-ok").toggleClass("inventory-selection-ok", showInventoryManagement);
-				$("#info-ok").toggleClass("action", showInventoryManagement);
+				$("#info-ok").attr("action", showRewardsDiv ? "accept_inventory" : null);
+				$("#info-ok").toggleClass("inventory-selection-ok", showRewardsDiv);
+				$("#info-ok").toggleClass("action", showRewardsDiv);
 				$("#info-ok").click(ExceptionHandler.wrapClick(function (e) {
 					e.stopPropagation();
 					popUpManager.handleOkButton(false, okCallback);

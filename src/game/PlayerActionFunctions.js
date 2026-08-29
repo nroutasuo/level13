@@ -745,7 +745,7 @@ define(['ash',
 				addToLog: false,
 			};
 
-			this.handleOutActionResults("examine", messages, true, false, successCallback);
+			this.handleOutActionResults("examine", messages, true, false, successCallback, null, { hideInventoryManagement: true });
 		},
 
 		scout: function () {
@@ -828,7 +828,7 @@ define(['ash',
 			}
 
 			if (passagesComponent.passageDown && !GameGlobals.levelHelper.isPassageDownBuilt(level)) {
-				recordFoundObject(PRIORITY_ONLY_POPUP, TextConstants.getPassageFoundMessageKey(passagesComponent.passageUp, PositionConstants.DIRECTION_DOWN, sunlit));
+				recordFoundObject(PRIORITY_ONLY_POPUP, TextConstants.getPassageFoundMessageKey(passagesComponent.passageDown, PositionConstants.DIRECTION_DOWN, sunlit));
 				recordFoundObject(PRIORITY_ONLY_LOG,"ui.actions.scout_completed_found_passage_down_addendum");
 				GameGlobals.gameState.setStoryFlag(StoryConstants.ESCAPE_PASSAGE_DOWN_FOUND, true);
 			}
@@ -1644,28 +1644,28 @@ define(['ash',
 			);
 		},
 
-		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
+		handleOutActionResults: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback, options) {
 			this.currentAction = action;
 
 			ExceptionHandler.wrapTimeout(function () {
-				GameGlobals.playerActionFunctions.handleOutActionResultsInternal(action, messages, showResultPopup, hasCustomReward, successCallback, failCallback);
+				GameGlobals.playerActionFunctions.handleOutActionResultsInternal(action, messages, showResultPopup, hasCustomReward, successCallback, failCallback, options);
 			}, 1);
 		},
 
-		handleOutActionResultsInternal: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback) {
+		handleOutActionResultsInternal: function (action, messages, showResultPopup, hasCustomReward, successCallback, failCallback, options) {
 			let logMsgId = messages.id || LogConstants.getUniqueID();
 			
 			let playerActionFunctions = this;
 			GameGlobals.fightHelper.handleRandomEncounter(action, function () {
 				// if no fight or fight won
 				let rewards = GameGlobals.playerActionResultsHelper.getResultVOByAction(action, hasCustomReward);
-				playerActionFunctions.handleActionRewards(action, rewards, messages, successCallback, showResultPopup);
+				playerActionFunctions.handleActionRewards(action, rewards, messages, successCallback, showResultPopup, options);
 				playerActionFunctions.completeAction(action);
 			}, function () {
 				// if fled (either before fight or mid-fight)
 				let fleeRewards = GameGlobals.playerActionResultsHelper.getResultVOByAction("flee");
 				let fleeMessages = { addToLog: false, msgSuccess: messages.msgFlee };
-				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup);
+				playerActionFunctions.handleActionRewards("flee", fleeRewards, fleeMessages, successCallback, showResultPopup, options);
 				if (messages.addToLog && messages.msgFlee) GameGlobals.playerHelper.addLogMessage(logMsgId, messages.msgFlee);
 				if (failCallback) failCallback();
 				playerActionFunctions.completeAction(action);
@@ -1677,7 +1677,7 @@ define(['ash',
 			});
 		},
 
-		handleActionRewards: function (action, rewards, messages, callback, showResultPopup) {
+		handleActionRewards: function (action, rewards, messages, callback, showResultPopup, options) {
 			let baseActionID = GameGlobals.playerActionsHelper.getBaseActionID(action);
 
 			let popupTitle = messages.popupTitle || TextConstants.getActionName(baseActionID);
@@ -1690,10 +1690,10 @@ define(['ash',
 				GameGlobals.playerHelper.addLogMessage(logMsgId, logMsg);
 			}
 
-			this.handleRewards(rewards, callback, showResultPopup, popupTitle, popupMsg);
+			this.handleRewards(rewards, callback, showResultPopup, popupTitle, popupMsg, options);
 		},
 
-		handleRewards: function (rewards, callback, showResultPopup, popupTitle, popupMsg) {			
+		handleRewards: function (rewards, callback, showResultPopup, popupTitle, popupMsg, options) {			
 			let player = this.playerStatsNodes.head.entity;
 
 			player.add(new PlayerActionResultComponent(rewards));
@@ -1738,7 +1738,7 @@ define(['ash',
 			GameGlobals.playerActionResultsHelper.preCollectRewards(rewards);
 			
 			if (showResultPopup) {
-				GameGlobals.uiFunctions.showResultPopup(popupTitle, popupMsg, rewards, resultPopupCallback);
+				GameGlobals.uiFunctions.showResultPopup(popupTitle, popupMsg, rewards, resultPopupCallback, options);
 			} else {
 				GameGlobals.uiFunctions.showResultFlyout(rewards);
 				resultPopupCallback(true);
@@ -3026,7 +3026,7 @@ define(['ash',
 					resultVO.gainedHope = hope;
 					GameGlobals.uiFunctions.showInfoPopup(
 						itemName,
-						message,
+						Text.t(message),
 						"Continue",
 						resultVO
 					);
@@ -3055,7 +3055,7 @@ define(['ash',
 							{ type: "dialogue", dialogueID: itemConfig.configData.noteDialogue },
 						], ItemConstants.getItemDisplayNameKey(itemConfig));
 					} else {
-						let message = Text.t(itemConfig.configData.noteText);
+						let message = Text.t(itemConfig.configData.noteTextKey);
 						GameGlobals.uiFunctions.showInfoPopup(
 							itemName,
 							message,
