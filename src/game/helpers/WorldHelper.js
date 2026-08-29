@@ -33,6 +33,7 @@ define([
 		CHANGE_TYPE_LOCALE_ADDED: "locale_added",
 		CHANGE_TYPE_LOCALE_REMOVED: "locale_removed",
 		CHANGE_TYPE_MOVEMENT_BLOCKER_CHANGED: "movement_blocker_changed",
+		CHANGE_TYPE_ITEMS_SCAVENGEABLE_CHANGED: "items_scavengeable_changed",
 		CHANGE_TYPE_GENERIC: "generic",
 
 		constructor: function () {},
@@ -80,15 +81,16 @@ define([
 				let loadedGameState = save.gameState;
 				worldSeed = parseInt(GameGlobals.saveHelper.getWorldSeedFromSave(save));
 
-				if (save.worldState && save.worldState.revealedLevels) 
-					log.i("save.worldState.revealedLevels: " + save.worldState.revealedLevels.join(","))
-				else
-					log.w("no revealedLevels found!")
+				if (save.worldState && save.worldState.revealedLevels) {
+					log.i("save.worldState.revealedLevels: " + save.worldState.revealedLevels.join(","), this);
+				} else {
+					log.w("no revealedLevels found!", this);
+				}
 
 				if (save.worldState) {
+					levels = save.worldState.revealedLevels || [];
 					savedWorldTemplateVO = new WorldTemplateVO();
 					savedWorldTemplateVO.customLoadFromSave(save.worldState.worldTemplateVO);
-					levels = save.worldState.revealedLevels || [];
 				} else {
 					levels = [];
 				}
@@ -122,6 +124,7 @@ define([
 			if (!worldTemplateVO) return null;
 
 			let validationResult = WorldValidator.validateLoadedWorldTemplateVO(worldTemplateVO);
+
 			if (validationResult.isValid) {
 				return worldTemplateVO;
 			} else {
@@ -241,13 +244,15 @@ define([
 
 			let result = { changes: [] };
 
+			if (!worldTemplateVO) return result;
+
 			result.worldGeneratorVersion = WorldConstants.version;
 			result.worldVersion = worldVO.version;
 			result.worldTemplateVersion = worldTemplateVO.version;
 
 			let resultWorldTemplateVO = new WorldTemplateVO(worldVO);
 
-			let diff = ObjectUtils.diff(worldTemplateVO, resultWorldTemplateVO, { ignoredKeys: [ "levels" ] });
+			let diff = ObjectUtils.diff(worldTemplateVO, resultWorldTemplateVO, { ignoredKeys: [ "levels", "requiredPositions" ] });
 			for (let key in diff.byKey) {
 				result.changes.push({ level: null, type: this.CHANGE_TYPE_GENERIC, detail: "world property " + key + " changed" });
 			}
@@ -295,10 +300,17 @@ define([
 
 			let level = sectorVO.position.level;
 
+			let namedKeys = [
+				{ key: "movementBlockers", type: this.CHANGE_TYPE_MOVEMENT_BLOCKER_CHANGED },
+				{ key: "itemsScavengeable", type: this.CHANGE_TYPE_ITEMS_SCAVENGEABLE_CHANGED },
+			];
+
 			// - generic 
-			let diff = ObjectUtils.diff(sectorTemplateVO, resultSectorTemplateVO, { ignoredKeys: [ "locales", "movementBlockers" ] });
+			let ignoredKeys = [ "locales" ];
+			for (let i in namedKeys) ignoredKeys.push(namedKeys[i].key);
+			let diff = ObjectUtils.diff(sectorTemplateVO, resultSectorTemplateVO, { ignoredKeys: ignoredKeys });
 			for (let key in diff.byKey) {
-				result.push({ level: level, type: this.CHANGE_TYPE_GENERIC, detail: "sector property " + key + " changed" });
+				result.push({ level: level, type: this.CHANGE_TYPE_GENERIC, detail: "sector property " + key + " changed at" + sectorVO.position });
 			}
 
 			// - added or removed locales
@@ -329,10 +341,14 @@ define([
 				result.push({ level: level, type: this.CHANGE_TYPE_LOCALE_REMOVED, detail: "removed locale " + notFoundLocales[i].type + " at " + sectorVO.position, seen: false });
 			}
 
-			// - movement blockers
-			let movementBlockersDiff = ObjectUtils.diff(sectorTemplateVO.movementBlockers, resultSectorTemplateVO.movementBlockers);
-			if (movementBlockersDiff.total > 0) {
-				result.push({ level: level, type: this.CHANGE_TYPE_MOVEMENT_BLOCKER_CHANGED, detail: "changed movement blockers at " + sectorVO.position });
+			// - named keys (check using simple object diff but with its own text in change dialog)
+			for (let i in namedKeys) {
+				let def = namedKeys[i];
+				let key = def.key;
+				let diff = ObjectUtils.diff(sectorTemplateVO[key], resultSectorTemplateVO[key]);
+				if (diff.total > 0) {
+					result.push({ level: level, type: def.type, detail: "changed " + key + " at " + sectorVO.position });
+				}
 			}
 
 			return result;
