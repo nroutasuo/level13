@@ -958,6 +958,7 @@ define([
 
 			for (let i = 0; i < definitions.length; i++) {
 				let def = definitions[i];
+				if (def.isDynamic) continue;	
 				let campOrdinal = def.positionParams.campOrdinal;
 				let level = 13;
 
@@ -983,7 +984,7 @@ define([
 				if (sectorVO.examineSpots.length < 1) continue;
 
 				if (sectorVO.examineSpots.length > 1) {
-					// more than one currently not supported by UI/action/reward code (always assumes [0])
+					// more than one currently not supported by ui.action./reward code (always assumes [0])
 					issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "sector at " + sectorVO.position + " has more than one examine spot" });
 				}
 
