@@ -197,6 +197,7 @@ define([
 				let carried = itemsComponent.getAll(false, false);
 				for (let i = 0; i < carried.length; i++) {
 					let item = carried[i];
+					if (!item.equipped) continue;
 					if (item.broken) {
 						hasBrokenItem = true;
 					}
