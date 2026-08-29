@@ -1438,6 +1438,14 @@ span.improvement-badge.improvement-upgrade-level {
   padding: 2px;
   border-radius: 3px;
 }
+.explorer-icons {
+  display: flex;
+  height: 1em;
+  justify-content: center;
+}
+.explorer-icons img {
+  width: 1em;
+}
 .npc-container {
   display: inline-flex;
   flex-direction: column;
@@ -1623,9 +1631,9 @@ table .camp-unique-feature-icon-list {
   justify-content: inherit;
 }
 .camp-unique-feature-icon {
-  width: 20px;
-  height: 20px;
-  padding: 2px;
+  width: 18px;
+  height: 18px;
+  padding: 3px;
   overflow: hidden;
   border-radius: 3px;
   align-content: center;
