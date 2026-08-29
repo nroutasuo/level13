@@ -1823,7 +1823,7 @@
     },
     "document_story_apocalypse_cause_01": {
         "configData": {
-            "noteText": "Official report regarding the earthquakes. According to it, they are caused by mining, and the effect is not reversible.",
+            "noteTextKey": "game.items.document_story_apocalypse_cause_01_message",
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",
@@ -1838,7 +1838,7 @@
     },
     "document_story_apocalypse_cause_02": {
         "configData": {
-            "noteText": "Official report regarding the earthquakes. According to it, they will likely increase in severity and frequency in the coming years until the City can no longer withstand them.",
+            "noteTextKey": "game.items.document_story_apocalypse_cause_02_message",
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",
@@ -1853,7 +1853,7 @@
     },
     "document_story_apocalypse_evacuation_01": {
         "configData": {
-            "noteText": "Official documents where Goverment experts recommend evacuation as a result of the earthquakes.",
+            "noteTextKey": "game.items.document_story_apocalypse_evacuation_01_message",
             "storyFlag": "FALL_SEEN_EVACUATION"
         },
         "icon": "img/items/document.png",
@@ -1868,7 +1868,7 @@
     },
     "document_story_apocalypse_severity_01": {
         "configData": {
-            "noteText": "Official report regarding increasing earthquakes. According to experts, the City can only withstand them for some years. They say urgent actions are needed.",
+            "noteTextKey": "game.items.document_story_apocalypse_severity_01_message", 
             "storyFlag": "APOCALYPSE_KNOWN"
         },
         "icon": "img/items/document.png",
@@ -1896,7 +1896,7 @@
     "document_story_expedition_leaflet_01": {
         "campOrdinalRequired": 10,
         "configData": {
-            "noteText": "Leaflet calling for volunteers for an expedition to the Surface, to investigate what happened there, led by the famous explorer Amanda Ettler. Participants are asked gather at former <style='nowrap'>District 31</style> elevator station by the end of N21."
+            "noteTextKey": "game.items.document_story_expedition_leaflet_01_message"
         },
         "icon": "img/items/leaflet.png",
         "isCraftable": false,
@@ -1909,7 +1909,7 @@
     },
     "document_story_fall_diary_01": {
         "configData": {
-            "noteText": "Diary of someone who was selected for evacuation and confined to the secret isolation facility. Their family member worked on the Exodus project, but they did not know the details. They were confident that everything would work out and looking forward to their new life in a space colony, only sorry for those who would stay behind."
+            "noteTextKey": "game.items.document_story_fall_diary_01_message"
         },
         "icon": "img/items/book.png",
         "isCraftable": false,
@@ -1923,7 +1923,7 @@
     },
     "document_story_fall_evacuation_01": {
         "configData": {
-            "noteText": "Official documents detailing a plan to secretly quarantine and evacuate a fraction of the population of the City.",
+            "noteTextKey": "game.items.document_story_fall_evacuation_01_message",
             "storyFlag": "FALL_SEEN_EVACUATION"
         },
         "icon": "img/items/document.png",
@@ -1938,7 +1938,7 @@
     },
     "document_story_fall_evacuation_02": {
         "configData": {
-            "noteText": "Detailed freight manifests containing everything the Exodus project shuttle would need to carry to enable the evacuees to establish a self-sustaining colony on a moon.",
+            "noteTextKey": "game.items.document_story_fall_evacuation_02_message",
             "storyFlag": "FALL_SEEN_EVACUATION"
         },
         "icon": "img/items/document.png",
@@ -1953,7 +1953,7 @@
     },
     "document_story_fall_evacuation_03": {
         "configData": {
-            "noteText": "An official list of people to be evacuated from the City by the Exodus project. It is about half prominent people important to the Government, and half people by skill needed in the new colony. People working on the Exodus project and their families are also included. The Governor is not.",
+            "noteTextKey": "game.items.document_story_fall_evacuation_03_message",
             "storyFlag": "FALL_SEEN_EVACUATION"
         },
         "icon": "img/items/document.png",
@@ -1968,7 +1968,7 @@
     },
     "document_story_fall_launch_schedule_01": {
         "configData": {
-            "noteText": "Detailed launch schedule for a space craft, part of the so called Exodus project. The final launch date coincides with the Fall.",
+            "noteTextKey": "game.items.document_story_fall_launch_schedule_01_message",
             "storyFlag": "FALL_LINKED_EXODUS_TO_FALL"
         },
         "icon": "img/items/document.png",
@@ -1983,7 +1983,7 @@
     },
     "document_story_fall_warning_01": {
         "configData": {
-            "noteText": "Official Exodus project documents warning about a potential disaster in case the shuttle launch fails and damages the Sundome."
+            "noteTextKey": "game.items.document_story_fall_warning_01_message"
         },
         "icon": "img/items/document.png",
         "isCraftable": false,
