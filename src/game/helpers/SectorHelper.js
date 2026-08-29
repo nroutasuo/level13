@@ -184,6 +184,10 @@ define([
 				}
 			}
 			features.hasNeighbourFeature = features.neighboursFeatures.length > 0 || features.neighboursDistricts.length > 0;
+			features.isDistrictEdge = features.neighboursDistricts.length > 0;
+			features.isDistrictMiddle = neighbours.length > 1 && features.neighboursDistricts.length == 0;
+			
+			features.isSectorTypeMatchingDistrictType = districtVO.type === features.sectorType;
 
 			return features;
 		},
