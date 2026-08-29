@@ -88,6 +88,12 @@
 				{ "text": [ "systematic" ], "filters": { "bookType": "[book_type_nonfiction]" } },
 				{ "text": [ "official" ], "filters": { "bookType": "[book_type_nonfiction]" } }
 			],
+			"a-genre": [
+				{ "text": [ "fantasy", "adventure", "mystery", "detective" ], "filters": { "bookType": "fiction"} },
+				{ "text": [ "fairy tale" ], "filters": { "bookType": "fiction", "bookLevel": 2 } },
+				{ "text": [ "romance", "horror", "crime", "comedy" ], "filters": { "bookType": "fiction", "bookLevel": 2 } },
+				{ "text": [ "espionage", "thriller", "alternate history" ], "filters": { "bookType": "fiction", "bookLevel": 3 } }
+			],
 			"c-event": [
 				{ "text": "a war that the City waged against some far-away civilization hundreds of years ago", "filters": { "bookType": "history" } },
 				{ "text": "wars in the City in the past 500 years", "filters": { "bookType": "history" } },
@@ -122,6 +128,7 @@
 				{ "text": "you can't taste food without saliva", "filters": { "bookType": "science" } },
 				{ "text": "the City was built on marshland and is slowly sinking in it", "filters": { "bookType": "science" } },
 				{ "text": "the Ocean currents were changing direction before the Fall", "filters": { "bookType": "science" } },
+				{ "text": "despite advances in medicine, the City is never expected to reach population levels previously predicted", "filters": { "bookType": "science" } },
 				{ "text": "a few powerful mining corporations held great power before the Fall", "filters": { "bookType": "history" } },
 				{ "text": "ancient civilizations based their calendars on four seasons", "filters": { "bookType": "history" } },
 				{ "text": "the City was originally built on swamp land", "filters": { "bookType": "history" } },
@@ -164,6 +171,25 @@
 				{ "text": "a boy's friendship with a robot", "filters": { "bookType": "fiction" } },
 				{ "text": "a computer program that made people forget who they were", "filters": { "bookType": "fiction" } },
 				{ "text": "forgotten places outside the City", "filters": { "bookType": "fiction" } }
+			],
+			"c-setting": [
+				{ "text": "the early days of the City, where poorer people lived on the edges and rich in the middle", "filters": { "bookType": "fiction"} },
+				{ "text": "a warehouse management facility deep in the dark levels, its few human inhabitants largely isolated from the surface for long periods of time", "filters": { "bookType": "fiction"} },
+				{ "text": "a district that collapsed due to a mining accident", "filters": { "bookType": "fiction"} },
+				{ "text": "a religious boarding school", "filters": { "bookType": "fiction"} },
+				{ "text": "a refugee processing facility near the Ground during the time when people were moving from outside to the City", "filters": { "bookType": "fiction"} },
+				{ "text": "a completely unrealistic and overgrown version of the Dark Levels", "filters": { "bookType": "fiction"} },
+				{ "text": "the high-stakes corporate world on the Surface", "filters": { "bookType": "fiction"} },
+				{ "text": "a small and tight-knit Hansa community in the slums", "filters": { "bookType": "fiction"} },
+				{ "text": "the Kievan city state during the wars", "filters": { "bookType": "fiction"} },
+				{ "text": "Città, a small city state that existed before the City unified under the Government", "filters": { "bookType": "fiction"} },
+				{ "text": "the ruins of another city outside The City", "filters": { "bookType": "fiction"} },
+				{ "text": "a surreal imaginary mirror world that exists between the levels of the City", "filters": { "bookType": "fiction"} },
+				{ "text": "a fictional luxury residential outpost deep in the Dark Levels", "filters": { "bookType": "fiction"} },
+				{ "text": "a mining facility", "filters": { "bookType": "fiction"} },
+				{ "text": "Media, a historical City State destroyed in the wars", "filters": { "bookType": "fiction"} },
+				{ "text": "District 47, a famous slum district", "filters": { "bookType": "fiction"} },
+				{ "text": "a working class housing block during the Dictatorship era", "filters": { "bookType": "fiction"} }
 			],
 			"n-object": [
 				{ "text": "transistors", "filters": { "bookType": "engineering" } },
@@ -254,6 +280,7 @@
 				{ "text": "undersea travel", "filters": { "bookType": "fiction" } },
 				{ "text": "a monster that lives in the core of the planet.", "filters": { "bookType": "fiction" } },
 				{ "text": "a terrifying sea monster", "filters": { "bookType": "fiction" } },
+				{ "text": "a girl trapper in a time machine", "filters": { "bookType": "fiction" } },
 				{ "text": "the relationship of a boy and his bat", "filters": { "bookType": "fiction" } },
 				{ "text": "a war", "filters": { "bookType": "fiction" } },
 				{ "text": "an asteroid hitting the City", "filters": { "bookType": "fiction" } },
@@ -262,7 +289,6 @@
 				{ "text": "pre-City civilizations", "filters": { "bookType": "history" } },
 				{ "text": "the development of agriculture", "filters": { "bookType": "history" } },
 				{ "text": "rise of sea levels", "filters": { "bookType": "history" } },
-				{ "text": "the history of painting", "filters": { "bookType": "history" } },
 				{ "text": "the industrial revolution", "filters": { "bookType": "history" } },
 				{ "text": "the digital revolution", "filters": { "bookType": "history" } },
 				{ "text": "property rights to ground and mining sites", "filters": { "bookType": "history" } },
@@ -270,14 +296,13 @@
 				{ "text": "a specific ethnic group", "filters": { "bookType": "history" } },
 				{ "text": "a famine soon after the founding of the City", "filters": { "bookType": "history" } },
 				{ "text": "a pre-City global legal organization", "filters": { "bookType": "history" } },
-				{ "text": "the history of mathematics", "filters": { "bookType": "history" } },
 				{ "text": "a great scientific project", "filters": { "bookType": "history" } },
 				{ "text": "the city states period", "filters": { "bookType": "history" } },
 				{ "text": "the city wars", "filters": { "bookType": "history" } },
 				{ "text": "class tensions", "filters": { "bookType": "history" } },
 				{ "text": "population crisis", "filters": { "bookType": "history" } },
 				{ "text": "shipwrecks", "filters": { "bookType": "history" } },
-				{ "text": "architectural styles on differetn Levels", "filters": { "bookType": "history" } },
+				{ "text": "architectural styles on different Levels", "filters": { "bookType": "history" } },
 				{ "text": "slavery", "filters": { "bookType": "history" } },
 				{ "text": "the magical beliefs of people living in a specific part of the City", "filters": { "bookType": "history" } },
 				{ "text": "a historical dictatorship", "filters": { "bookType": "history" } },
@@ -286,9 +311,8 @@
 				{ "text": "architectural styles in different parts of the City", "filters": { "bookType": "history", "bookLevel": 1 } },
 				{ "text": "the effects of a major earthquake on the City", "filters": { "bookType": "history", "bookLevel": 1 } },
 				{ "text": "pre-Fall religions and how they contributed to several wars", "filters": { "bookType": "history", "bookLevel": 1 } },
-				{ "text": "the history of a powerful crime syndicate", "filters": { "bookType": "history", "bookLevel": 2 } },
+				{ "text": "a powerful crime syndicate", "filters": { "bookType": "history", "bookLevel": 2 } },
 				{ "text": "a great war between two factions within the City", "filters": { "bookType": "history", "bookLevel": 2 } },
-				{ "text": "the history of a powerful crime syndicate", "filters": { "bookType": "history", "bookLevel": 3 } },
 				{ "text": "how the pre-Fall Government was formed", "filters": { "bookType": "history", "bookLevel": 3 } },
 				{ "text": "an industrial process", "filters": { "bookType": "engineering" } },
 				{ "text": "transistors", "filters": { "bookType": "engineering" } },
@@ -367,71 +391,90 @@
 					{
 						"text": "There is {a} {a-good} story about {c-theme}."
 					},
-							{
+					{
 						"text": "It is a tale about {c-theme}."
 					},
-							{
+					{
+						"text": "It is a {a-genre} story by a very popular author."
+					},
+					{
 						"text": "It is about {c-theme}."
 					},
-							{
+					{
 						"text": "It is story about {n-topic}."
 					},
-							{
+					{
 						"text": "A story about {c-theme} stays with you."
 					},
-							{
+					{
 						"text": "You are touched by a poem about {c-theme}."
 					},
-							{
+					{
 						"text": "It contains {a} {a-good} description of {c-theme}."
 					},
-							{
+					{
 						"text": "It is {a} {a-style} novel dealing with {n-topic}."
 					},
-							{
+					{
 						"text": "It is {a} {a-style} tale about {n-topic}."
 					},
-							{
+					{
 						"text": "It is a very {a-style} portrayal of {n-topic}."
 					},
-							{
+					{
 						"text": "It is {a} {a-style} story about {n-topic}."
 					},
-							{
+					{
 						"text": "It a collection of {a-style} short stories about {n-topic}."
 					},
-							{
+					{
 						"text": "It is {a} {a-style} and {a-good} story about {n-topic}."
 					},
 					{
 						"text": "It is a children's book featuring {n-topic}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It's a simple story about {c-theme}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It seems to be aimed at school children.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is a classic novel about {n-topic}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It is a {a-style} novel about {c-theme}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
+						"text": "It is a {a-style} novel set in {c-setting}.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
 						"text": "It is a {a-style} story set in the time of the great Rebellion.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
+						"text": "It is a travel journal by a backpacker who travelled across the whole City from east to west, back when trains still worked.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
+						"text": "It is a {a-genre} story set {c-setting}.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
+						"text": "It is a completely unrealistic story about an orphan who grows up on Level 14 and goes on to become a successful entrepreneur.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
 						"text": "It is quite a heavy book on {n-topic}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It is a {a-good} story about {c-theme}.",
 						"filters": { "bookLevel": 3 }
 					}
@@ -440,140 +483,159 @@
 			"nonfiction": {
 				"filters": { "bookType": "[book_type_nonfiction]" },
 				"descriptions": [
+					{
+						"text": "It is {a} {a-level} textbook on {n-topic}."
+					},
+					{
+						"text": "It is {a} {a-style} textbook on {n-topic}."
+					},
+					{
+						"text": "It is {a} {a-good} textbook on {n-topic}."
+					},
+					{
+						"text": "It is {a} {a-bad} textbook on {n-topic}, but you learn something new anyway."
+					},
+					{
+						"text": "It contains a {a-good} description of {n-topic}."
+					},
+					{
+						"text": "You learn that {c-fact}."
+					},
+					{
+						"text": "You find out that {c-fact}."
+					},
+					{
+						"text": "It seems that {c-fact}."
+					},
+					{
+						"text": "It describes {n-topic}."
+					},
+					{
+						"text": "It is an introductory text on {n-topic}.",
+						"filters": { "bookLevel": 1 }
+					},
+					{
+						"text": "You find some details about {n-topic}.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
+						"text": "You gain a wealth of information {n-topic}.",
+						"filters": { "bookLevel": 3 }
+					}
 				]
 			},
 			"history": {
 				"filters": { "bookType": "history" },
 				"descriptions": [
 					{
-						"text": "You find details about {n-topic}."
-					},
-							{
-						"text": "It describes {n-topic}."
-					},
-							{
 						"text": "It describes {c-event}."
 					},
-							{
+					{
 						"text": "It is a rather dry text on {n-topic}."
 					},
-							{
+					{
 						"text": "It is {a} {a-style} overview of {n-topic}."
 					},
-							{
+					{
 						"text": "It is very {a-level} introduction {n-topic}."
 					},
-							{
-						"text": "You learn that {c-fact}."
-					},
-							{
-						"text": "It seems that {c-fact}."
-					},
-							{
+					{
 						"text": "You learn about {c-event}."
 					},
-							{
+					{
 						"text": "It describes the explosive urbanization that led to the formation of the City."
 					},
-							{
+					{
 						"text": "There is {a} {a-style} chapter on {c-event}."
 					},
-							{
+					{
 						"text": "A section on {c-event} catches your eye."
 					},
-							{
+					{
 						"text": "There are several references to {c-event}."
 					},
-							{
+					{
 						"text": "It is {a} very {a-good} explanation of {n-topic}."
 					},
-							{
+					{
 						"text": "It is otherwise dull, but there is {a} {a-good} chapter on {n-topic}."
 					},
-							{
+					{
 						"text": "It is a history of Donbalism, a monotheistic religion that has been popular in the City throughout its history."
 					},
-							{
+					{
 						"text": "It is a history of Ugurism, a fairly new religion combining bleak apocalyptic spiritualism and a worship of the City as a sentient entity."
 					},
-							{
+					{
 						"text": "A reference to the \"currently uninhabited levels\" of the City offers a perspective on the pre-Fall City."
 					},
-							{
+					{
 						"text": "It is an old book predicting a huge population explosion in the City, driven by immigration and medical breakthroughs."
 					},
-							{
+					{
 						"text": "It describes the Dictatorship era, how it rose to power from the Utopia, waged war against the Western Government, and finally collapsed to rebellion."
 					},
 					{
-						"text": "It is an introductory text on {n-topic}.",
-						"filters": { "bookLevel": 1 }
-					},
-							{
 						"text": "It is the autobiography of a famous athlete.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It mentions {c-event}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It discusses {c-event}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It discusses the utopistic roots of the City and how it was first built and imagined.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is a biased exposition of the charitable work of a religious group.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is a Government-produced text book in the history of the City, stressing class differences and the importance of unity.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
-						"text": "It is an art book featuring architecture from the earliest levels of the City, quiant with windows and ventilation and greenery.",
+					{
+						"text": "It is an art book featuring architecture from the earliest levels of the City, quiant with windows, visible ventilation and greenery.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is an overview of the Karboque architecture which the author believes is unjustly unpopular because of its associations with the Dictatorship era.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is an ode to the architecture of the City States.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "There is a long section about {c-event}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It is a history of the use of nuclear weapons, describing the first use by the City against a civilization outside, and then second use within the City by one City state against another.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It is a detailed exploration of {n-topic}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It discusses the splintering of the original City Government into multiple City States within the City, their flourishing, war and collapse.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It discusses the gradual depopulation of the planet outside the City, first driven by economy, then pollution, and finally floods.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
-						"text": "You a wealth of information {c-event}.",
+					{
+						"text": "You gain a wealth of information {c-event}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
-						"text": "You a wealth of information {n-topic}.",
-						"filters": { "bookLevel": 3 }
-					},
-							{
+					{
 						"text": "You find a detailed timeline of {c-event}.",
 						"filters": { "bookLevel": 3 }
 					}
@@ -585,111 +647,85 @@
 					{
 						"text": "It is a cook book, not much of it relevant to the ingredients available today."
 					},
-							{
-						"text": "It is {a} {a-level} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-style} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-good} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-bad} textbook on {n-topic}, but you learn something new anyway."
-					},
-							{
-						"text": "It describes {n-topic}."
-					},
-							{
+					{
 						"text": "There are several interesting passages about {n-topic}."
 					},
-							{
+					{
 						"text": "It is a rather dry text on {n-topic}."
 					},
-							{
-						"text": "It contains a description of {n-topic}."
-					},
-							{
-						"text": "You learn that {c-fact}."
-					},
-							{
-						"text": "You find out that {c-fact}."
-					},
-							{
+					{
 						"text": "It is a grammar book for the Kievan language."
 					},
-							{
+					{
 						"text": "It is a grammar book for the Hansa language and its many dialects."
 					},
 					{
-						"text": "It is an introductory text on {n-topic}.",
-						"filters": { "bookLevel": 1 }
+						"text": "It is a comparative study about the effects of living near a sunwell, compared to someplace with no access to natural sunlight."
 					},
-							{
+					{
+						"text": "It is a study showing that {c-fact}"
+					},
+					{
 						"text": "It is {a} {a-bad} book on {n-topic}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It is a scout's handbook.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It contains some basic information about {n-topic}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "A description of a refining process offers clues to the kind of building materials used commonly before the Fall.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It contains a catalog of known animal life in the 'Dark Levels'. You recognize several.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "You notice old census data about people who are exposed daily to sunlight versus those who are not.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It contains a detailed description of a sun-based calendar system you are unfamiliar with.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
-						"text": "You find details about {n-topic}.",
-						"filters": { "bookLevel": 2 }
-					},
-							{
+					{
 						"text": "It contains detailed information about {n-topic}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It is a survivor's cookbook, and contains a few useful tips.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It is an old book exploring the possibility of extending the City to cover oceans.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "You are spell-bound by a description of abundant plant-life on the Ground.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "There is a wealth of information about {n-topic}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It contains a dissertation on {n-topic}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It contains in-depth information about {n-topic}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It is an ethical inquiry into lab grown meat versus keeping animals.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It explores the theoretical possibility of restarting human life outside the City, and concludes that it would be nearly impossible.",
 						"filters": { "bookLevel": 3 }
 					}
@@ -699,60 +735,46 @@
 				"filters": { "bookType": "engineering" },
 				"descriptions": [
 					{
-						"text": "It is {a} {a-level} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-style} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-good} textbook on {n-topic}."
-					},
-							{
-						"text": "It is {a} {a-bad} textbook on {n-topic}, but you learn something new anyway."
-					},
-							{
 						"text": "There are abandoned plans of {n-object}."
 					},
-							{
+					{
 						"text": "It contains a detailed description of {n-object}."
 					},
-							{
+					{
 						"text": "There is diagram explaining in detail how {n-object} worked."
 					},
-							{
-						"text": "It is an operation manual for {n-object}."
-					},
-							{
-						"text": "You learn a lot about how the {n-object}."
-					},
-							{
-						"text": "You learn that {c-fact}."
+					{
+						"text": "You learn a lot about how the {n-object} worked."
 					},
 					{
 						"text": "There is an interesting diagram of {n-object}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It contains some basic information about {n-topic}.",
 						"filters": { "bookLevel": 1 }
 					},
-							{
+					{
 						"text": "It contains many useful bits of information on {n-topic}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
 						"text": "It contains detailed information about {n-topic}.",
 						"filters": { "bookLevel": 2 }
 					},
-							{
+					{
+						"text": "It is an operation manual for {n-object}.",
+						"filters": { "bookLevel": 2 }
+					},
+					{
 						"text": "There are technical drawings of {n-object}",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It contains in-depth information about {n-topic}.",
 						"filters": { "bookLevel": 3 }
 					},
-							{
+					{
 						"text": "It is a legal book about the rights and obligations of robots and rules for programming their behaviour.",
 						"filters": { "bookLevel": 3 }
 					}
@@ -787,6 +809,7 @@
 				{ "text": [ "a disease outbreak" ], "filters": {} },
 				{ "text": [ "a lost trade caravan" ], "filters": {} },
 				{ "text": [ "a ghost sighting" ], "filters": {} },
+				{ "text": [ "the rebuilding of a bridge connecting two districts on Level 18" ] },
 				{ "text": [ "an unexplained light in a certain building" ], "filters": {} },
 				{ "text": [ "the discovery of a new hunting grounds" ], "filters": { "bookLevel": 1 } },
 				{ "text": [ "the collapse of a level floor" ], "filters": { "bookLevel": 1 } },
@@ -804,7 +827,24 @@
 				{ "text": [ "celebration of the new year was disrupted by flooding" ], "filters": {} },
 				{ "text": [ "a restaurant has opened on Level 17" ], "filters": {} },
 				{ "text": [ "drug trade continues on Level 19" ], "filters": {} },
-				{ "text": [ "disease strikes at a major settlement" ], "filters": {} }
+				{ "text": [ "disease strikes at a major settlement" ], "filters": {} },
+				{ "text": [ "a person who worked for the Government before the Fall has been tried and executed in New Blueview" ], "filters": {} },
+				{ "text": [ "no signs of the Governor was found at his Frost Palace." ], "filters": {} },
+				{ "text": [ "a group of survivors raided a compound by a former media personality who had stockpiled supplies for himself and his family." ], "filters": {} }
+			],
+			"c-task": [
+				{ "text": [ "generate electricity from salvaged batteries of various kinds" ], "filters": {} },
+				{ "text": [ "build a jury-rigged refrigerator" ], "filters": {} },
+				{ "text": [ "recognize materials that are fit to burn for heat or energy" ], "filters": {} },
+				{ "text": [ "harvest condensate water" ], "filters": {} },
+				{ "text": [ "cultivate fungus for food" ], "filters": {} },
+				{ "text": [ "build traps to catch food" ], "filters": {} },
+				{ "text": [ "assess edibility of stored food" ], "filters": {} },
+				{ "text": [ "assess edibility of scavenged food found in stores and homes" ], "filters": {} },
+				{ "text": [ "detect foul air" ], "filters": {} },
+				{ "text": [ "repair clothing" ], "filters": {} },
+				{ "text": [ "care for wounds" ], "filters": {} },
+				{ "text": [ "identify useful metals" ], "filters": {} }
 			],
 			"n-topic": [
 				{ "text": [ "local politics", "local gossip", "horoscopes" ], "filters": {} },
@@ -842,14 +882,35 @@
 						"text": "According to it, {c-fact}."
 					},
 					{
+						"text": "Apparently, {c-fact}."
+					},
+					{
 						"text": "Contrary to rumours, {c-fact}."
+					},
+					{
+						"text": "It contains a warning about an area where ventilation isn't working well anymore and the air is not breathable."
+					},
+					{
+						"text": "It contains an announcement about a community on the Ground level, looking for hardy settlers to join to preparing for a big expedition to the outside."
 					},
 					{
 						"text": "It is a story about a settlement plagued by swarms of mechanical locusts, destroying all its stores including building materials whenever they appeared."
 					},
 					{
+						"text": "It is full of missing persons notices.",
+						"filters": { "itemLevel": 1 }
+					},
+					{
 						"text": "It contains supposed stories of survivors who saw the Fall, all very different.",
 						"filters": { "itemLevel": 2 }
+					},
+					{
+						"text": "It contains instructions on how to {c-task}",
+						"filters": { "itemLevel": 2 }
+					},
+					{
+						"text": "It contains useful tips on how to {c-task}",
+						"filters": { "itemLevel": 3 }
 					},
 					{
 						"text": "There is an investigative story about {n-topic}.",

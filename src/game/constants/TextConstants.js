@@ -71,8 +71,10 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 					ObjectUtils.assignValues(filters, entry.filters);
 					TextConstants.loadFilters(Object.assign({}, filters), macros);
 
-					for (let j in entry.text) {
-						let text = entry.text[j];
+					let values = typeof entry.text === "string" ? [ entry.text ] : entry.text;
+
+					for (let j in values) {
+						let text = values[j];
 						let param = { text: text, filters: filters };
 						this.params[type][paramID].push(param);
 					}
@@ -410,7 +412,9 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			let names = [ "a-level", "a-style", "a-good", "a-bad", "n-topic" ];
 			if (features.bookType == ItemConstants.bookTypes.engineering) names.push("n-object");
 			if (features.bookType == ItemConstants.bookTypes.history) names.push("c-event");
+			if (features.bookType == ItemConstants.bookTypes.fiction) names.push("a-genre");
 			if (features.bookType == ItemConstants.bookTypes.fiction) names.push("c-theme");
+			if (features.bookType == ItemConstants.bookTypes.fiction) names.push("c-setting");
 			if (features.bookType != ItemConstants.bookTypes.fiction) names.push("c-fact");
 			
 			return this.getRandomDescriptionParams("cache-evidence-message", features, names);
