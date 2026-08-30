@@ -84,17 +84,11 @@ define([
 		
 		getTargetReputation: function (campNode, baseValue) {
 			let sectorImprovements = campNode.entity.get(SectorImprovementsComponent);
-			let sectorFeatures = campNode.entity.get(SectorFeaturesComponent);
 			
 			let storage = GameGlobals.resourcesHelper.getCurrentCampStorage(campNode.entity);
 			let resources = storage ? storage.resources : null;
 			
-			let danger = GameGlobals.campHelper.getCampRaidDanger(campNode.entity);
-			let levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campNode.entity).get(LevelComponent);
-			
-			let isSunlit = sectorFeatures.sunlit;
-			
-			let targetReputation = GameGlobals.campHelper.getTargetReputation(campNode.entity, baseValue, sectorImprovements, resources, campNode.camp.population, levelComponent.habitability, danger, isSunlit);
+			let targetReputation = GameGlobals.campHelper.getTargetReputation(campNode.entity, baseValue, sectorImprovements, resources, campNode.camp.population);
 			
 			let sources = targetReputation.sources;
 			let percentages = targetReputation.percentages;

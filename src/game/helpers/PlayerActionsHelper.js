@@ -436,7 +436,7 @@ define([
 				let hopeComponent = this.playerResourcesNodes.head.entity.get(HopeComponent);
 				
 				var positionComponent = sector.get(PositionComponent);
-				var improvementComponent = sector.get(SectorImprovementsComponent);
+				var improvementsComponent = sector.get(SectorImprovementsComponent);
 				var movementOptionsComponent = sector.get(MovementOptionsComponent);
 				var passagesComponent = sector.get(PassagesComponent);
 				var campComponent = sector.get(CampComponent);
@@ -624,7 +624,7 @@ define([
 
 				if (requirements.improvements) {
 					for (var improvementID in requirements.improvements) {
-						var amount = this.getCurrentImprovementCount(improvementComponent, campComponent, improvementID);
+						var amount = this.getCurrentImprovementCount(improvementsComponent, campComponent, improvementID);
 						var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 						
 						var range = requirements.improvements[improvementID];
@@ -647,7 +647,7 @@ define([
 				
 				if (requirements.improvementMajorLevel) {
 					for (var improvementID in requirements.improvementMajorLevel) {
-						var amount = this.getCurrentImprovementMajorLevel(improvementComponent, campComponent, improvementID);
+						var amount = this.getCurrentImprovementMajorLevel(improvementsComponent, campComponent, improvementID);
 						var requiredImprovementDisplayName = this.getImprovementDisplayName(improvementID);
 						
 						var range = requirements.improvementMajorLevel[improvementID];
@@ -680,7 +680,7 @@ define([
 				if (requirements.improvementsDamaged) {
 					for (var improvementID in requirements.improvementsDamaged) {
 						let improvementName = improvementNames[improvementID];
-						let amount = improvementComponent.getNumDamaged(improvementName);
+						let amount = improvementsComponent.getNumDamaged(improvementName);
 						let range = requirements.improvements[improvementID];
 						
 						let result = this.checkRequirementsRange(
@@ -950,7 +950,7 @@ define([
 
 					if (typeof requirements.outgoingcaravan.available !== "undefined") {
 						var requiredValue = requirements.outgoingcaravan.available ? 1 : 0;
-						var totalCaravans = improvementComponent.getCount(improvementNames.stable);
+						var totalCaravans = improvementsComponent.getCount(improvementNames.stable);
 						var busyCaravans = caravansComponent.outgoingCaravans.length;
 						var currentValue = totalCaravans - busyCaravans;
 						if (requiredValue > currentValue) {
@@ -1069,7 +1069,7 @@ define([
 
 					if (typeof requirements.camp.overcrowded !== "undefined") {
 						let requiredValue = requirements.camp.overcrowded;
-						let housingCap = CampConstants.getHousingCap(improvementComponent);
+						let housingCap = CampConstants.getHousingCap(improvementsComponent);
 						let currentValue = currentPopulation > housingCap;
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
 						if (result) return result;
@@ -1082,7 +1082,7 @@ define([
 							let type = getImprovementType(improvementName);
 							if (type !== improvementTypes.camp) continue;
 							// even if you can't build a hospital now, you're guaranteed to be able to before blocked
-							let count = this.getCurrentImprovementCount(improvementComponent, campComponent, key);
+							let count = this.getCurrentImprovementCount(improvementsComponent, campComponent, key);
 							if (count == 0 && improvementName == improvementNames.hospital) {
 								canBuildSomething = true;
 								break;
@@ -1099,6 +1099,21 @@ define([
 						if (canBuildSomething) {
 							return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "Possible to build something") };
 						}
+					}
+
+					if (typeof requirements.camp.isUnhappy !== "undefined") {
+						let requiredValue = requirements.camp.isUnhappy;
+						
+						let danger = GameGlobals.campHelper.getCampRaidDanger(campSector);
+						let hasDamagedBuildings = improvementsComponent.hasDamagedBuildings();
+						let isOvercrowded = GameGlobals.campBalancingHelper.isOvercrowded(improvementsComponent, currentPopulation);
+						let isUndefended = GameGlobals.campBalancingHelper.hasRaidDangerPenalty(danger);
+						let hasDisease = campSector.has(DiseaseComponent);
+						let isPopulationDecreasing = campComponent.populationChangePerSecWithoutCooldown < 0;
+						let currentValue = isUndefended || hasDamagedBuildings || isOvercrowded || hasDisease || isPopulationDecreasing;
+
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
 					}
 				}
 
@@ -1338,7 +1353,7 @@ define([
 					}
 
 					if (typeof requirements.sector.collected_food != "undefined") {
-						var collector = improvementComponent.getVO(improvementNames.collector_food);
+						var collector = improvementsComponent.getVO(improvementNames.collector_food);
 						var requiredStorage = requirements.sector.collected_food;
 						var currentStorage = collector.storedResources.getResource(resourceNames.food);
 						if (currentStorage < requiredStorage) {
@@ -1350,7 +1365,7 @@ define([
 					}
 
 					if (typeof requirements.sector.collected_water != "undefined") {
-						var collector = improvementComponent.getVO(improvementNames.collector_water);
+						var collector = improvementsComponent.getVO(improvementNames.collector_water);
 						var requiredStorage = requirements.sector.collected_water;
 						var currentStorage = collector.storedResources.getResource(resourceNames.water);
 						if (currentStorage < requiredStorage) {
@@ -1562,9 +1577,15 @@ define([
 						}
 					}
 
+					if (requirements.excursion.numSteps) {
+						let currentValue = excursionComponent != null ? excursionComponent.numSteps : 0;
+						let result = this.checkRequirementsRange(requirements.excursion.numSteps, currentValue, "{min} steps needed", "max {max} steps");
+						if (result) return result;
+					}
+
 					if (requirements.excursion.numGritSteps) {
 						let currentValue = excursionComponent != null ? excursionComponent.numGritSteps : 0;
-						let result = this.checkRequirementsRange(requirements.excursion.numGritSteps, currentValue, "{min} grit steps needed", "Need supplies");
+						let result = this.checkRequirementsRange(requirements.excursion.numGritSteps, currentValue, "{min} grit steps needed");
 						if (result) return result;
 					}
 				}
@@ -1595,7 +1616,7 @@ define([
 				
 				if (requirements.camp) {
 					if (typeof requirements.camp.exposed !== "undefined") {
-						let currentValue = featuresComponent.sunlit && improvementComponent.getCount(improvementNames.sundome) <= 0;
+						let currentValue = featuresComponent.sunlit && improvementsComponent.getCount(improvementNames.sundome) <= 0;
 						let requiredValue = requirements.camp.exposed;
 						let trueReason = this.getDisabledReasonVO("ui.action.disabled_reason_camp_exposed", null, PlayerActionConstants.DISABLED_REASON_EXPOSED);
 						let falseReason = this.getDisabledReasonVO(null, null, PlayerActionConstants.DISABLED_REASON_EXPOSED, "Camp not exposed to direct sunlight");
@@ -3209,25 +3230,25 @@ define([
 			}
 		},
 		
-		getCurrentImprovementCount: function (improvementComponent, campComponent, improvementID) {
+		getCurrentImprovementCount: function (improvementsComponent, campComponent, improvementID) {
 			switch (improvementID) {
 				case "camp":
 					return campComponent ? 1 : 0;
 				case "passageUp":
-					return improvementComponent.getCount(improvementNames.passageUpStairs)
-						+ improvementComponent.getCount(improvementNames.passageUpElevator)
-						+ improvementComponent.getCount(improvementNames.passageUpHole);
+					return improvementsComponent.getCount(improvementNames.passageUpStairs)
+						+ improvementsComponent.getCount(improvementNames.passageUpElevator)
+						+ improvementsComponent.getCount(improvementNames.passageUpHole);
 				case "passageDown":
-					return improvementComponent.getCount(improvementNames.passageDownStairs)
-						+ improvementComponent.getCount(improvementNames.passageDownElevator)
-						+ improvementComponent.getCount(improvementNames.passageDownHole);
+					return improvementsComponent.getCount(improvementNames.passageDownStairs)
+						+ improvementsComponent.getCount(improvementNames.passageDownElevator)
+						+ improvementsComponent.getCount(improvementNames.passageDownHole);
 				default:
-					return improvementComponent.getCount(improvementNames[improvementID]);
+					return improvementsComponent.getCount(improvementNames[improvementID]);
 			}
 		},
 		
-		getCurrentImprovementMajorLevel : function (improvementComponent, campComponent, improvementID) {
-			return improvementComponent.getMajorLevel(improvementNames[improvementID]);
+		getCurrentImprovementMajorLevel : function (improvementsComponent, campComponent, improvementID) {
+			return improvementsComponent.getMajorLevel(improvementNames[improvementID]);
 		},
 		
 		getCurrentImprovementCountOnLevel: function (level, improvementID) {

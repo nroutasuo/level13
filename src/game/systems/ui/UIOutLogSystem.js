@@ -316,7 +316,30 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			let msgKey = def.message;
 
 			if (def.messages && def.messages.length > 0) {
-				msgKey = MathUtils.randomElement(def.messages);
+				let possibleMessages = [];
+
+				for (let i = 0; i < def.messages.length; i++) {
+					let possibleMessage = def.messages[i];
+					if (typeof possibleMessage === "string") {
+						possibleMessages.push(possibleMessage);
+						continue;
+					}
+
+					let key = possibleMessage.key;
+					let conditions = possibleMessage.conditions;
+
+					if (!key) continue;
+					
+					if (conditions && !this.isAmbientMessageConditionsMet(conditions, triggerParam)) {
+						continue;
+					}
+
+					possibleMessages.push(key);
+				}
+
+				if (possibleMessages.length == 0) return false;
+
+				msgKey = MathUtils.randomElement(possibleMessages);
 			}
 			
 			let options = {};

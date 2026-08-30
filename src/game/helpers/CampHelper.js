@@ -214,14 +214,14 @@ define([
 			return GameGlobals.campBalancingHelper.getRobotsProductionPerSecond(workers, improvementsComponent, this.tribeUpgradesNodes.head.upgrades, robots) * multiplier;
 		},
 		
-		getEvidenceProductionPerSecond: function (workers, improvementComponent, workerFactors) {
+		getEvidenceProductionPerSecond: function (workers, improvementsComponent, workerFactors) {
 			workers = workers || 0;
 			let evidenceUpgradeBonus = this.getUpgradeBonus("scientist");
 			let multiplier = this.getCampProductionMultiplier() * this.getCampWorkerProductionMultiplier(workerFactors, CampConstants.workerTypes.scientist.id);
 			return workers * CampConstants.PRODUCTION_EVIDENCE_PER_WORKER_PER_S * evidenceUpgradeBonus * multiplier;
 		},
 		
-		getHopeProductionPerSecond: function (workers, improvementComponent, workerFactors) {
+		getHopeProductionPerSecond: function (workers, improvementsComponent, workerFactors) {
 			workers = workers || 0;
 			let upgradeBonus = this.getUpgradeBonus("cleric");
 			let multiplier = this.getCampProductionMultiplier() * this.getCampWorkerProductionMultiplier(workerFactors, CampConstants.workerTypes.cleric.id);
@@ -1013,8 +1013,15 @@ define([
 			return ImprovementConstants.getMajorLevel(id, level + 1);
 		},
 		
-		getTargetReputation: function (campEntity, baseValue, improvementsComponent, resourcesVO, population, habitability, danger, isSunlit) {
+		getTargetReputation: function (campEntity, baseValue, improvementsComponent, resourcesVO, population) {
+			let sectorFeatures = campEntity.get(SectorFeaturesComponent);
+			let levelComponent = GameGlobals.levelHelper.getLevelEntityForSector(campEntity).get(LevelComponent);
+			
+			let habitability = levelComponent.habitability;
+			let isSunlit = sectorFeatures.sunlit;
+			let danger = GameGlobals.campHelper.getCampRaidDanger(campEntity);
 			let availableLuxuryResources = this.getAvailableLuxuryResources(campEntity);
+
 			return GameGlobals.campBalancingHelper.getTargetReputation(baseValue, improvementsComponent, availableLuxuryResources.length, resourcesVO, population, habitability, danger, isSunlit);
 		},
 		

@@ -73,6 +73,7 @@ define([
 			GlobalSignals.registerTrigger(GlobalSignals.campEventStartedSignal, StoryConstants.triggers.camp_event);
 			GlobalSignals.registerTrigger(GlobalSignals.dialogueCompletedSignal, StoryConstants.triggers.action_complete_dialogue);
 			GlobalSignals.registerTrigger(GlobalSignals.examineSpotExaminedSignal, StoryConstants.triggers.action_examine);
+			GlobalSignals.registerTrigger(GlobalSignals.excursionCompletedSignal, StoryConstants.triggers.excursion_completed);
 			GlobalSignals.registerTrigger(GlobalSignals.explorersChangedSignal, StoryConstants.triggers.explorers_changed);
 			GlobalSignals.registerTrigger(GlobalSignals.featureUnlockedSignal, StoryConstants.triggers.feature_unlocked);
 			GlobalSignals.registerTrigger(GlobalSignals.improvementBuiltSignal, StoryConstants.triggers.action_build);

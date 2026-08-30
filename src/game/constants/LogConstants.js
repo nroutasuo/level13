@@ -142,89 +142,89 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 		],
 
 		ambientMessages: {
-			"residential_ghosts": { 
+			"world_residential_ghosts": { 
 				triggers: [ "locale_scouted" ],
 				conditions: { sector: { sectorType: "residential" }, deity: false, numCamps: 2 },
 				chance: 0.02,
-				message: "Suddenly, the weight of all the people who have lived and died in the City presses down upon you like a heavy blanket"
+				message: "ui.log.ambient_world_residential_ghosts_message"
 			},
-			"darkness_madness_01": {
+			"world_darkness_madness_01": {
 				triggers: [ "action_any" ],
 				conditions: { inCamp: false, sunlit: false, vision: [ -1, 50 ] },
 				chance: 0.01,
-				message: "The darkness shifts and twists and presses closer."
+				message: "ui.log.ambient_world_darkness_madness_01_message"
 			},
-			"ground_wonder_01": {
+			"world_ground_wonder_01": {
 				triggers: [ "change_position" ],
 				conditions: { sector: { ground: true }, sunlit: false },
 				chance: 0.03,
-				message: "There is an almost constant rustle all around you, even though you can't see anything."
+				message: "ui.log.ambient_world_ground_wonder_01_message"
 			},
-			"ground_wonder_02": {
+			"world_ground_wonder_02": {
 				triggers: [ "change_position" ],
 				conditions: { sector: { ground: true }, sunlit: true },
 				chance: 0.03,
-				message: "Somewhere not far away, several birds are chirping."
+				message: "ui.log.ambient_world_ground_wonder_02_message"
 			},
 			"story_rescue_prospector_missing_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, storyFlags: {  "RESCUE_EXPLORER_LEFT": true } },
 				chance: 0.01,
-				message: "You wonder if Sunita made it through Level 14 somehow."
+				message: "ui.log.ambient_story_rescue_prospector_missing_01_message"
 			},
 			"story_escape_need_to_find_passage_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], level: { nextPassageFound: false }, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
 				chance: 0.01,
-				message: "You need to find a passage down from this level."
+				message: "ui.log.ambient_story_escape_need_to_find_passage_01_message"
 			},
 			"story_apocalypse_need_tp_find_cause_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "APOCALYPSE_KNOWN": false, "FALL_SEEN_STOREHOUSE": true } },
 				chance: 0.01,
-				message: "You need to find out what the Government was preparing emergency supplies for."
+				message: "ui.log.ambient_story_apocalypse_need_tp_find_cause_01_message"
 			},
 			"story_apocalypse_need_tp_find_cause_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "FALL_SEEN_SPACEFACTORY": true, "FALL_SEEN_EVACUATION": false } },
 				chance: 0.01,
-				message: "You need to find out what that space ship was being built for."
+				message: "ui.log.ambient_story_apocalypse_need_tp_find_cause_02_message"
 			},
 			"story_apocalypse_need_to_find_solution_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "APOCALYPSE_KNOWN": true, "APOCALYPSE_PLAN_READY": false } },
 				chance: 0.01,
-				message: "You need to find some way to stop the earthquakes."
+				message: "ui.log.ambient_story_apocalypse_need_to_find_solution_01_message"
 			},
 			"story_greenhouse_need_to_find_greenhouse_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_SEARCHING_FOR_CURE": true, "GREENHOUSE_FOUND": false } },
 				chance: 0.01,
-				message: "You need to find a greenhouse."
+				message: "ui.log.ambient_story_greenhouse_need_to_find_greenhouse_01_message"
 			},
 			"story_greenhouse_need_to_find_seeds_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 2, -1 ], storyFlags: {  "GREENHOUSE_FOUND": true, "GREENHOUSE_RESTORED": false } },
 				chance: 0.01,
-				message: "You need to find a way to restore the Greenhouses."
+				message: "ui.log.ambient_story_greenhouse_need_to_find_seeds_01_message"
 			},
 			"story_spirits_suspicion_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], deity: false, storyFlags: { numCamps: 2, "SPIRITS_MAGIC_SEEN": false } },
 				chance: 0.01,
-				message: "You wonder if there really are ghosts in the City."
+				message: "ui.log.ambient_story_spirits_suspicion_01_message"
 			},
 			"story_tribe_double_guess_escape_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
 				chance: 0.01,
-				message: "You wonder if you can convince someone to leave the City with you."
+				message: "ui.log.ambient_story_tribe_double_guess_escape_01_message"
 			},
 			"story_tribe_double_guess_escape_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, numCamps: 3, storyFlags: {  "ESCAPE_SEARCHING_FOR_GROUND": true } },
 				chance: 0.005,
-				message: "You wonder how the camps will develop after you've left the City."
+				message: "ui.log.ambient_story_tribe_double_guess_escape_02_message"
 			},
 			"action_despair": {
 				triggers: [ "action_any" ],
@@ -232,25 +232,38 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.5,
 				visibility: "MSG_VISIBILITY_CAMP",
 				messages: [ 
-					"Your dreams were filled with vague worries.",
-					"You dreamed of a snapping rope and falling.",
-					"You dreamed of rising water.",
-					"Your dreams were plagued by visions of explosions.",
-					"Your dreams were full of senseless violence.",
-					"In your dreams the City shook and collapsed like a house of cards.",
-					"In your dreams the City was full of regretful ghosts.",
-					"You dreamed of rivers of refugees.",
-					"You dreamed of melting into a mass of people, all hungry and desperate.",
-					"You dreamed of ancient spirits, choking under the weight of the City.",
-					"You dreamed of being alone and exposed on the Surface, the last person left alive in the City.",
-					"You dreamed of being stuck in a network, unable to come back to the physical world.",
+					"ui.log.ambient_action_despair_message_01",
+					"ui.log.ambient_action_despair_message_02",
+					"ui.log.ambient_action_despair_message_03",
+					"ui.log.ambient_action_despair_message_04",
+					"ui.log.ambient_action_despair_message_05",
+					"ui.log.ambient_action_despair_message_06",
+					"ui.log.ambient_action_despair_message_07",
+					"ui.log.ambient_action_despair_message_08",
+					"ui.log.ambient_action_despair_message_09",
+					"ui.log.ambient_action_despair_message_10",
+					"ui.log.ambient_action_despair_message_11",
+					"ui.log.ambient_action_despair_message_12"
 				 ]
 			},
 			"action_move_sunlight": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, sunlit: true, vision: [ -1, 30 ] },
 				chance: 0.1,
-				message: "As your eyes begin to tolerate the sunlight, you see the City sprawl in front of you, and feel small."
+				message: "ui.log.ambient_action_move_sunlight_message"
+			},
+			"excursion_completed": {
+				triggers: [ "excursion_completed" ],
+				conditions: { excursion: { numSteps: [ 8, -1 ]} },
+				chance: 0.02,
+				messages: [
+					{ key: "ui.log.ambient_excursion_completed_message_01", conditions: { population: [ 12, -1 ] } },
+					{ key: "ui.log.ambient_excursion_completed_message_02", conditions: { population: [ 2, -1 ] } },
+					{ key: "ui.log.ambient_excursion_completed_message_03", conditions: { camp: { isUnhappy: true } } },
+					{ key: "ui.log.ambient_excursion_completed_message_04", conditions: { camp: { campfireStarted: true }, improvements: { "lights": [ -1, 1 ] } } },
+					{ key: "ui.log.ambient_excursion_completed_message_05", conditions: { improvements: { "lights": [ 1, -1 ] } } },
+					{ key: "ui.log.ambient_excursion_completed_message_06", conditions: { stamina: [ -1, 200 ] } },
+				]
 			},
 		},
 		

@@ -173,7 +173,9 @@ define([
 			if (isCampTransition) GlobalSignals.saveGameSignal.dispatch(GameConstants.SAVE_SLOT_DEFAULT, false);
 		},
 		
-		enterCamp: function (position) {			
+		enterCamp: function (position) {
+			GlobalSignals.excursionCompletedSignal.dispatch();
+
 			GameGlobals.resourcesHelper.moveResFromBagToCamp();
 			GameGlobals.resourcesHelper.moveCurrencyFromBagToCamp();
 			

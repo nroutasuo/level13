@@ -40,14 +40,15 @@ define(['ash',], function (Ash) {
 		playerMoveCompletedSignal: new Ash.Signals.Signal(),
 		playerLocationChangedSignal: new Ash.Signals.Signal(),
 		playerEnteredLevelSignal: new Ash.Signals.Signal(),
+		playerEnteredCampSignal: new Ash.Signals.Signal(),
+		playerLeftCampSignal: new Ash.Signals.Signal(),
+		excursionCompletedSignal: new Ash.Signals.Signal(),
 
 		// player actions
 		actionStartingSignal: new Ash.Signals.Signal(),
 		actionStartedSignal: new Ash.Signals.Signal(),
 		actionCompletedSignal: new Ash.Signals.Signal(),
 		examineSpotExaminedSignal: new Ash.Signals.Signal(),
-		playerEnteredCampSignal: new Ash.Signals.Signal(),
-		playerLeftCampSignal: new Ash.Signals.Signal(),
 		sectorScoutedSignal: new Ash.Signals.Signal(),
 		sectorVisitedSignal: new Ash.Signals.Signal(),
 		sectorRevealedSignal: new Ash.Signals.Signal(),

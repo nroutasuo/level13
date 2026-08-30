@@ -280,7 +280,7 @@ define([
 			
 			// penalties: defences
 			let minDangerForPenalty = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
-			let noDefences = danger > minDangerForPenalty;
+			let noDefences = this.hasRaidDangerPenalty(danger);
 			if (noDefences) {
 				let penaltyRatio = MathUtils.map(danger, minDangerForPenalty, 1, 0.05, 0.5);
 				let penaltyRatioRounded = Math.round(penaltyRatio * 20) / 20;
@@ -296,7 +296,7 @@ define([
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_DEFENCES, noDefences);
 
 			// penalties: damaged buildings
-			var hasDamagedBuildings = improvementsComponent.hasDamagedBuildings();
+			let hasDamagedBuildings = improvementsComponent.hasDamagedBuildings();
 			if (hasDamagedBuildings) {
 				let penaltyRatio = 0.20;
 				let penaltyValue = result * penaltyRatio;
@@ -307,7 +307,7 @@ define([
 			// penalties: over-crowding
 			let housingCap = CampConstants.getHousingCap(improvementsComponent);
 			let populationFullPeople = Math.floor(population);
-			let noHousing = populationFullPeople > housingCap;
+			let noHousing = this.isOvercrowded(improvementsComponent, population);
 			if (noHousing) {
 				let hasShelter = improvementsComponent.getCount(improvementNames.shelter);
 				let overflowRatio = (populationFullPeople - housingCap) / populationFullPeople;
@@ -319,6 +319,17 @@ define([
 			addPenalty(CampConstants.REPUTATION_PENALTY_TYPE_HOUSING, noHousing);
 			
 			return { value: Math.max(0, result), sources: sources, penalties: penalties, percentages: percentages, isStatic: staticValues };
+		},
+
+		isOvercrowded: function (improvementsComponent, population) {
+			let housingCap = CampConstants.getHousingCap(improvementsComponent);
+			let populationFullPeople = Math.floor(population);
+			return populationFullPeople > housingCap;
+		},
+
+		hasRaidDangerPenalty: function (danger) {
+			let minDangerForPenalty = CampConstants.REPUTATION_PENALTY_DEFENCES_THRESHOLD;
+			return danger > minDangerForPenalty;
 		},
 		
 		getMaxImprovementActionOrdinal: function (improvementName, actionName) {

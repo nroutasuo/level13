@@ -116,6 +116,7 @@ define([
 			camp_population_changed: "camp_population_changed",
 			change_inventory: "change_inventory",
 			change_position: "change_position",
+			excursion_completed: "excursion_completed",
 			explorers_changed: "explorers_changed",
 			feature_unlocked: "feature_unlocked",
 			immediate: "immediate",
@@ -125,6 +126,7 @@ define([
 			upgrade_researched: "upgrade_researched",
 		},
 
+		// TODO reformulate so that flags are only set to true, never back to false (easier to debug/migrate)
 		flags: {
 			APOCALYPSE_KNOWN: "APOCALYPSE_KNOWN",
 			APOCALYPSE_PENDING_REFUGEES: "APOCALYPSE_PENDING_REFUGEES",
