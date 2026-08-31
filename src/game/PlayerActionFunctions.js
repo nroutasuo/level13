@@ -507,6 +507,7 @@ define(['ash',
 						let path = GameGlobals.playerActionsHelper.getPathToNearestCamp();
 						newPos = campPosition.clone();
 						newPos.inCamp = true;
+						this.handlePerksOnEnterCamp();
 						this.recordExcursionSurvived();
 						this.recordSteps(path.length);
 					}
