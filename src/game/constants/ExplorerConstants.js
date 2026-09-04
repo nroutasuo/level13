@@ -98,6 +98,7 @@ define(['ash',
 			{ id: "template_architect_2", abilityType: "detect_poi", origin: "surface", appearLevel: [ 15, 100 ], dialogueSource: "explorer_template_architect" },
 			{ id: "template_darkdweller", explorerType: "scavenger", origin: "darklevels", appearLevel: [ -100, 14 ], dialogueSource: "explorer_template_darkdweller" },
 			{ id: "template_hacker", abilityType: "cost_lockpick", origin: "slums", dialogueSource: "explorer_template_hacker" },
+			{ id: "template_bureaucrat", abilityType: "cost_scout", origin: "surface", dialogueSource: "explorer_template_bureaucrat" },
 			{ id: "generic_scout_01", explorerType: "scout", dialogueSource: "explorer_generic_scout_01" },
 			{ id: "generic_scavenger_01", explorerType: "scavenger", dialogueSource: "explorer_generic_scavenger_01" },
 			{ id: "generic_mercenary_01", explorerType: "fighter", dialogueSource: "explorer_generic_mercenary_01" },
@@ -142,6 +143,8 @@ define(['ash',
 			{ icon: "img/characters/explorer_template_teen_01.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_template_teen_02.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.FEMALE },
 			{ icon: "img/characters/explorer_template_teen_03.png", dialogueSource: "explorer_template_teen", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_bureaucrat_01.png", dialogueSource: "explore_template_bureaucrat", gender: CultureConstants.genders.MALE },
+			{ icon: "img/characters/explorer_template_bureaucrat_02.png", dialogueSource: "explore_template_bureaucrat", gender: CultureConstants.genders.FEMALE },
 		],
 
 		typicalFighterCache: {},
@@ -477,6 +480,8 @@ define(['ash',
 					icons.push("img/characters/animal_dog.png");
 					icons.push("img/characters/animal_dog_02.png");
 					icons.push("img/characters/animal_dog_03.png");
+					icons.push("img/characters/animal_dog_04.png");
+					icons.push("img/characters/animal_dog_05.png");
 					break;
 				case ExplorerConstants.animalType.RAVEN:
 					icons.push("img/characters/animal_bird.png");

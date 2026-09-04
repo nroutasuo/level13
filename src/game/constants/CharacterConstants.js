@@ -6,15 +6,19 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
             bard: "bard",
             beggar: "beggar",
             crafter: "crafter",
+            cynic: "cynic",
             darkDweller: "darkDweller",
             doomsayer: "doomsayer",
             drifter: "drifter",
             fortuneTeller: "fortuneTeller",
             guard: "guard",
             hunter: "hunter",
+            machineCultist: "machineCultist",
             mercenary: "mercenary",
             messenger: "messenger",
-            pet: "pet",
+            namekeeper: "namekeeper",
+            natureCultist: "natureCultist",
+            pilgrim: "pilgrim",
             scavenger: "scavenger",
             scout: "scout",
             settlementRefugee: "settlementRefugee",
@@ -22,6 +26,7 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
             slumRefugee: "slumRefugee",
             surfaceRefugee: "surfaceRefugee",
             trader: "trader",
+            trafficker: "trafficker",
             workerApothecary: "workerApothecary",
             workerChemist: "workerChemist",
             workerCleric: "workerCleric",
@@ -60,16 +65,21 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                 case CharacterConstants.characterTypes.beggar:
                     possibleIcons.push("character_beggar_01");
                     possibleIcons.push("character_beggar_02");
+                    possibleIcons.push("character_beggar_03");
                     break;
                 case CharacterConstants.characterTypes.crafter:
                     possibleIcons.push("character_crafter_01");
                     possibleIcons.push("character_crafter_02");
+                    break;
+                case CharacterConstants.characterTypes.cynic:
+                    possibleIcons.push("character_cynic_01");
                     break;
                 case CharacterConstants.characterTypes.darkDweller:
                     possibleIcons.push("character_darkDweller_01");
                     possibleIcons.push("character_darkDweller_02");
                     possibleIcons.push("character_darkDweller_03");
                     possibleIcons.push("character_darkDweller_04");
+                    possibleIcons.push("character_darkDweller_05")
                     break;
                 case CharacterConstants.characterTypes.doomsayer:
                     possibleIcons.push("character_doomsayer_01");
@@ -80,6 +90,7 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_drifter_01");
                     possibleIcons.push("character_drifter_02");
                     possibleIcons.push("character_drifter_03");
+                    possibleIcons.push("character_drifter_04");
                     break;
                 case CharacterConstants.characterTypes.fortuneTeller:
                     possibleIcons.push("character_fortuneteller_01");
@@ -92,6 +103,11 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_hunter_01");
                     possibleIcons.push("character_hunter_02");
                     break;
+                case CharacterConstants.characterTypes.machineCultist:
+                    possibleIcons.push("character_machine_cultist_01");
+                    possibleIcons.push("character_machine_cultist_02");
+                    possibleIcons.push("character_machine_cultist_03");
+                    break;
                 case CharacterConstants.characterTypes.mercenary:
                     possibleIcons.push("character_mercenary_01");
                     possibleIcons.push("character_mercenary_02");
@@ -102,6 +118,19 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_messenger_02");
                     possibleIcons.push("character_messenger_03");
                     possibleIcons.push("character_messenger_04");
+                    break;
+                case CharacterConstants.characterTypes.namekeeper:
+                    possibleIcons.push("character_namekeeper_01");
+                    possibleIcons.push("character_namekeeper_02");
+                    break;
+                case CharacterConstants.characterTypes.natureCultist:
+                    possibleIcons.push("character_nature_cultist_01");
+                    possibleIcons.push("character_nature_cultist_02");
+                    possibleIcons.push("character_nature_cultist_03");
+                    break;
+                case CharacterConstants.characterTypes.pilgrim:
+                    possibleIcons.push("character_pilgrim_01");
+                    possibleIcons.push("character_pilgrim_02");
                     break;
                 case CharacterConstants.characterTypes.scavenger:
                     possibleIcons.push("character_scavenger_01");
@@ -119,15 +148,20 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_slumRefugee_01");
                     possibleIcons.push("character_slumRefugee_02");
                     possibleIcons.push("character_slumRefugee_03");
+                    possibleIcons.push("character_slumRefugee_04");
                     break;
                 case CharacterConstants.characterTypes.surfaceRefugee:
                     possibleIcons.push("character_surfaceRefugee_01");
                     possibleIcons.push("character_surfaceRefugee_02");
                     possibleIcons.push("character_surfaceRefugee_03");
+                    possibleIcons.push("character_surfaceRefugee_04");
                     break;
                 case CharacterConstants.characterTypes.trader:
                     possibleIcons.push("character_trader_01");
                     possibleIcons.push("character_trader_02");
+                    break;
+                case CharacterConstants.characterTypes.trafficker:
+                    possibleIcons.push("character_trafficker_01");
                     break;
                 case CharacterConstants.characterTypes.workerApothecary:
                     possibleIcons.push("worker_apothecary_01");
@@ -183,6 +217,7 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                 case CharacterConstants.characterTypes.workerTrapper:
                     possibleIcons.push("worker_trapper_01");
                     possibleIcons.push("worker_trapper_02");
+                    possibleIcons.push("worker_trapper_03");
                     break;
                 case CharacterConstants.characterTypes.workerWater:
                     possibleIcons.push("worker_water_01");

@@ -4,10 +4,12 @@ define([
 	'utils/MathUtils',
 	'game/GameGlobals', 
 	'game/GlobalSignals', 
+	'game/constants/CampConstants', 
 	'game/constants/CharacterConstants', 
 	'game/constants/PositionConstants', 
 	'game/constants/SectorConstants', 
 	'game/constants/TradeConstants', 
+	'game/constants/WorldConstants', 
 	'game/components/common/PositionComponent',
 	'game/components/sector/SectorFeaturesComponent',
 	'game/components/sector/SectorLocalesComponent',
@@ -19,10 +21,12 @@ define([
 	MathUtils, 
 	GameGlobals, 
 	GlobalSignals, 
+	CampConstants, 
 	CharacterConstants, 
 	PositionConstants, 
 	SectorConstants, 
 	TradeConstants, 
+	WorldConstants,
 	PositionComponent, 
 	SectorFeaturesComponent, 
 	SectorLocalesComponent,
@@ -248,10 +252,8 @@ define([
 				score -= Math.abs(Math.floor(sectorPosition.sectorX / 5)) * weightX;
 				score -= Math.abs(Math.floor(sectorPosition.sectorY / 5)) * weightY;
 
-				if (sectorFeaturesComponent.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) score -= 1;
 				if (sectorFeaturesComponent.buildingDensity > 2 && sectorFeaturesComponent.buildingDensity < 8) score += 1;
-				if (sectorFeaturesComponent.damage < 6) score += 1;
-				if (sectorFeaturesComponent.sunlit) score -= 1;
+				if (sectorFeaturesComponent.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_NEW) || sectorFeaturesComponent.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_OLD)) score += 1;
 				if (sectorFeaturesComponent.hasSpring) score += 3 * weightSpring;
 				if (sectorFeaturesComponent.examineSpots.length > 1) score -= 1;
 				if (sectorFeaturesComponent.heapResource) score -= 1;
@@ -274,13 +276,20 @@ define([
 			let sectorFeatures = sector.get(SectorFeaturesComponent);
 			let sectorPosition = sector.get(PositionComponent);
 
+			let districtVO = GameGlobals.sectorHelper.getDistrictVO(sector);
+			let districtType = districtVO.type;
+
 			let level = sectorPosition.level;
+			let levelComponent = GameGlobals.levelHelper.getLevelComponentForPosition(level);
 			let levelOrdinal = GameGlobals.worldState.getLevelOrdinal(level);
 			let isCampable = GameGlobals.levelHelper.isLevelCampable(sectorPosition.level);
 			let condition = sectorFeatures.getCondition();
-			let isEarlyZone = sectorFeatures.isEarlyZone();
 			let isGround = sectorPosition.level == GameGlobals.worldState.getGroundLevel();
+			let hasWater = sectorFeatures.hasResource(resourceNames.water);
+			let hasFood = sectorFeatures.hasResource(resourceNames.food);
 			let hasHazards = sectorFeatures.hasHazards();
+			let hasTracks = sectorFeatures.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_NEW) || sectorFeatures.hasFeature(WorldConstants.FEATURE_TRAIN_TRACKS_OLD);
+			let isSunlit = sectorFeatures.sunlit;
 
 			let existingTypes = existingCharacters.map(characterVO => characterVO.characterType);
 
@@ -291,132 +300,105 @@ define([
 				distanceToCamp = PositionConstants.getDistanceTo(campPosition, sectorPosition);
 			}
 
-			if (isCampable && distanceToCamp < 5) {
-				validTypes.push(CharacterConstants.characterTypes.workerScavenger);
-				validTypes.push(CharacterConstants.characterTypes.workerTrapper);
-				validTypes.push(CharacterConstants.characterTypes.workerWater);
-			}
+			let isNearCamp = (d) => isCampable && distanceToCamp <= d;
+			let hasExisting = (type) => existingTypes.indexOf(type) >= 0;
+			let isSectorType = (type) => sectorFeatures.sectorType == type || districtType == type;
+			let isGoodCondition = condition == SectorConstants.SECTOR_CONDITION_MAINTAINED || condition == SectorConstants.SECTOR_CONDITION_RECENT;
+			let hasWorker = (type) => this.nearestCampNodes.head && this.nearestCampNodes.camp.assignedWorkers[this.getWorkerTypeForCharacterType(type)];
+			let hasWorkshop = (type) => GameGlobals.sectorHelper.getWorkshopResource(sector) == this.getResourceNameForCharacterType(type); 
 
-			if (isCampable && sectorFeatures.buildingDensity < 5 && levelOrdinal > 1) {
-				validTypes.push(CharacterConstants.characterTypes.bard);
-			}
+			let possibleTypes = [
+				{ type: CharacterConstants.characterTypes.bard, condition: (t) => isCampable && sectorFeatures.buildingDensity < 5 && levelOrdinal > 1 },
+				{ type: CharacterConstants.characterTypes.bard, condition: (t) => isCampable && isSectorType(SectorConstants.SECTOR_TYPE_PUBLIC) },
+				{ type: CharacterConstants.characterTypes.beggar, condition: (t) => !hasHazards && level > 14 && sectorFeatures.activity > 4 },
+				{ type: CharacterConstants.characterTypes.crafter, condition: (t) => sectorFeatures.itemsScavengeable.length > 0, weight: 2 },
+				{ type: CharacterConstants.characterTypes.crafter, condition: (t) => sectorFeatures.hasResource(resourceNames.metal) || sectorFeatures.hasResource(resourceNames.rope) },
+				{ type: CharacterConstants.characterTypes.crafter, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_INDUSTRIAL) },
+				{ type: CharacterConstants.characterTypes.cynic, condition: (t) => isCampable && distanceToCamp > 3 && !hasHazards },
+				{ type: CharacterConstants.characterTypes.doomsayer, condition: (t) => condition == SectorConstants.SECTOR_CONDITION_RUINED && levelOrdinal > 2 },
+				{ type: CharacterConstants.characterTypes.doomsayer, condition: (t) => isCampable && districtType == SectorConstants.SECTOR_TYPE_RESIDENTIAL && levelOrdinal > 2 },
+				{ type: CharacterConstants.characterTypes.drifter, condition: (t) => !isSunlit && sectorFeatures.heapResource },
+				{ type: CharacterConstants.characterTypes.drifter, condition: (t) => !isSunlit && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE },
+				{ type: CharacterConstants.characterTypes.drifter, condition: (t) => !isSunlit && sectorFeatures.activity < 7 },
+				{ type: CharacterConstants.characterTypes.drifter, condition: (t) => !isCampable },
+				{ type: CharacterConstants.characterTypes.fortuneTeller, condition: (t) => !isSunlit && distanceToCamp > 5 && !hasHazards && levelOrdinal > 2 && !hasExisting(t) && Math.random() < 0.02 },
+				{ type: CharacterConstants.characterTypes.guard, condition: (t) => level > 14 && sectorFeatures.damage < 3 && sectorFeatures.wear < 8 },
+				{ type: CharacterConstants.characterTypes.guard, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_PUBLIC) },
+				{ type: CharacterConstants.characterTypes.hunter, condition: (t) => isGround },
+				{ type: CharacterConstants.characterTypes.hunter, condition: (t) => hasFood },
+				{ type: CharacterConstants.characterTypes.hunter, condition: (t) => isSunlit },
+				{ type: CharacterConstants.characterTypes.machineCultist, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_MAINTENANCE) },
+				{ type: CharacterConstants.characterTypes.machineCultist, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_INDUSTRIAL) },
+				{ type: CharacterConstants.characterTypes.machineCultist, condition: (t) => sectorFeatures.wear < 5 && sectorFeatures.activity < 5 },
+				{ type: CharacterConstants.characterTypes.mercenary, condition: (t) => isCampable && level > 14 },
+				{ type: CharacterConstants.characterTypes.mercenary, condition: (t) => sectorFeatures.isOnCriticalPath },
+				{ type: CharacterConstants.characterTypes.messenger, condition: (t) => !isGround && hasTracks },
+				{ type: CharacterConstants.characterTypes.messenger, condition: (t) => isCampable && sectorFeatures.waymarks.length > 0 },
+				{ type: CharacterConstants.characterTypes.messenger, condition: (t) => level > 15 },
+				{ type: CharacterConstants.characterTypes.namekeeper, condition: (t) => isCampable && sectorFeatures.activity > 3 && levelOrdinal > 2 },
+				{ type: CharacterConstants.characterTypes.natureCultist, condition: (t) => level < 14 && sectorFeatures.hasSpring },
+				{ type: CharacterConstants.characterTypes.natureCultist, condition: (t) => isSunlit },
+				{ type: CharacterConstants.characterTypes.natureCultist, condition: (t) => level < 14 && sectorFeatures.wear > 5 },
+				{ type: CharacterConstants.characterTypes.pilgrim, condition: (t) => !hasHazards && hasTracks, weight: 3 },
+				{ type: CharacterConstants.characterTypes.pilgrim, condition: (t) => !hasHazards && sectorFeatures.wealth > 4 },
+				{ type: CharacterConstants.characterTypes.scavenger, condition: (t) => sectorFeatures.itemsScavengeable.length > 0 },
+				{ type: CharacterConstants.characterTypes.scavenger, condition: (t) => sectorFeatures.resourcesScavengable.getTotal() > 0 },
+				{ type: CharacterConstants.characterTypes.scavenger, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_RESIDENTIAL) },
+				{ type: CharacterConstants.characterTypes.shaman, condition: (t) => level < 14 && condition == SectorConstants.SECTOR_CONDITION_ABANDONED },
+				{ type: CharacterConstants.characterTypes.shaman, condition: (t) => isGround },
+				{ type: CharacterConstants.characterTypes.slumRefugee, condition: (t) => hasWater },
+				{ type: CharacterConstants.characterTypes.slumRefugee, condition: (t) => sectorPosition.level > 3 && isGoodCondition },
+				{ type: CharacterConstants.characterTypes.slumRefugee, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_RESIDENTIAL) },
+				{ type: CharacterConstants.characterTypes.surfaceRefugee, condition: (t) => sectorFeatures.waymarks.length > 0 && sectorPosition.level > 14 },
+				{ type: CharacterConstants.characterTypes.surfaceRefugee, condition: (t) => isGoodCondition },
+				{ type: CharacterConstants.characterTypes.surfaceRefugee, condition: (t) => isSectorType(SectorConstants.SECTOR_TYPE_COMMERCIAL) },
+				{ type: CharacterConstants.characterTypes.trader, condition: (t) => !hasHazards && levelComponent.traderFrequencyFactor >= 1 && isSectorType(SectorConstants.SECTOR_TYPE_COMMERCIAL) },
+				{ type: CharacterConstants.characterTypes.trader, condition: (t) => !hasHazards && levelComponent.traderFrequencyFactor >= 1 && sectorFeatures.isOnCriticalPath },
+				{ type: CharacterConstants.characterTypes.trafficker, condition: (t) => !isSunlit && distanceToCamp > 5 && sectorFeatures.activity > 2 && sectorFeatures.wealth < 8 },
+				{ type: CharacterConstants.characterTypes.workerChemist, condition: (t) => hasWorker(t) && hasWorkshop(t), weight: 10 },
+				{ type: CharacterConstants.characterTypes.workerGardener, condition: (t) => hasWorker(t) && hasWorkshop(t), weight: 10 },
+				{ type: CharacterConstants.characterTypes.workerRubber, condition: (t) => hasWorker(t) && hasWorkshop(t), weight: 10 },
+				{ type: CharacterConstants.characterTypes.workerScavenger, condition: (t) => hasWorker(t) && !hasHazards && isNearCamp(10) },
+				{ type: CharacterConstants.characterTypes.workerTrapper, condition: (t) => hasWorker(t) && !hasHazards && isNearCamp(6) && hasFood },
+				{ type: CharacterConstants.characterTypes.workerWater, condition: (t) => hasWorker(t) && !hasHazards && isNearCamp(6) && hasWater },
+			];
 
-			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_PUBLIC) {
-				validTypes.push(CharacterConstants.characterTypes.bard);
-			}
+			for (let i = 0; i < possibleTypes.length; i++) {
+				let def = possibleTypes[i];
+				
+				if (!def.condition()) continue;
 
-			if (level > 14) {
-				validTypes.push(CharacterConstants.characterTypes.beggar);
-			}
-
-			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
-				validTypes.push(CharacterConstants.characterTypes.crafter);
-			}
-
-			if (sectorFeatures.resourcesScavengable.metal > 0) {
-				validTypes.push(CharacterConstants.characterTypes.crafter);
-			}
-			
-			if (condition == SectorConstants.SECTOR_CONDITION_RUINED && levelOrdinal > 2) {
-				validTypes.push(CharacterConstants.characterTypes.doomsayer);
-			}
-
-			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL && levelOrdinal > 2) {
-				validTypes.push(CharacterConstants.characterTypes.doomsayer);
-			}
-
-			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
-				validTypes.push(CharacterConstants.characterTypes.drifter);
-			}
-
-			if (sectorFeatures.heapResource) {
-				validTypes.push(CharacterConstants.characterTypes.drifter);
-			}
-
-			if (distanceToCamp > 5 && !hasHazards && levelOrdinal > 2 && Math.random() < 0.01) {
-				if (existingTypes.indexOf(CharacterConstants.characterTypes.fortuneTeller) < 0) {
-					validTypes.push(CharacterConstants.characterTypes.fortuneTeller);
+				let weight = def.weight || 1;
+				for (let j = 0; j < weight; j++) {
+					validTypes.push(def.type);
 				}
-			}
-			
-			if (level > 14 && sectorFeatures.damage < 3 && sectorFeatures.wear < 7) {
-				validTypes.push(CharacterConstants.characterTypes.guard);
-			}
-			
-			if (sectorFeatures.sunlit) {
-				validTypes.push(CharacterConstants.characterTypes.hunter);
-			}
-
-			if (isGround) {
-				validTypes.push(CharacterConstants.characterTypes.hunter);
-				validTypes.push(CharacterConstants.characterTypes.shaman);
-			}
-			
-			if (sectorFeatures.resourcesCollectable.food > 0) {
-				validTypes.push(CharacterConstants.characterTypes.hunter);
-			}
-
-			if (sectorFeatures.isOnCriticalPath) {
-				validTypes.push(CharacterConstants.characterTypes.mercenary);
-			}
-
-			if (isCampable && level > 14) {
-				validTypes.push(CharacterConstants.characterTypes.mercenary);
-			}
-
-			if (!isGround && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) {
-				validTypes.push(CharacterConstants.characterTypes.messenger);
-			}
-
-			if (isCampable && sectorFeatures.waymarks.length > 0) {
-				validTypes.push(CharacterConstants.characterTypes.messenger);
-			}
-
-			if (level > 15) {
-				validTypes.push(CharacterConstants.characterTypes.messenger);
-			}
-
-			if (sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
-				validTypes.push(CharacterConstants.characterTypes.scavenger);
-			}
-			
-			if (sectorFeatures.itemsScavengeable.length > 0) {
-				validTypes.push(CharacterConstants.characterTypes.scavenger);
-			}
-
-			if (condition == SectorConstants.SECTOR_CONDITION_ABANDONED) {
-				validTypes.push(CharacterConstants.characterTypes.shaman);
-			}
-			
-			if (level < 13) {
-				validTypes.push(CharacterConstants.characterTypes.shaman);
-			}
-
-			if (sectorFeatures.wealth < 5) {
-				validTypes.push(CharacterConstants.characterTypes.slumRefugee);
-			}
-			
-			if (sectorFeatures.resourcesCollectable.water > 0) {
-				validTypes.push(CharacterConstants.characterTypes.slumRefugee);
-			}
-
-			if (sectorPosition.level > 3 && condition == SectorConstants.SECTOR_CONDITION_MAINTAINED || condition == SectorConstants.SECTOR_CONDITION_RECENT) {
-				validTypes.push(CharacterConstants.characterTypes.surfaceRefugee);
-			}
-			
-			if (sectorFeatures.waymarks.length > 0 && sectorPosition.level > 14) {
-				validTypes.push(CharacterConstants.characterTypes.surfaceRefugee);
-			}
-			
-			if (isCampable && sectorFeatures.sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL && isEarlyZone) {
-				validTypes.push(CharacterConstants.characterTypes.trader);
-			}
-			
-			if (isCampable && sectorFeatures.isOnCriticalPath) {
-				validTypes.push(CharacterConstants.characterTypes.trader);
 			}
 
 			return MathUtils.randomElement(validTypes);
+		},
+
+		getWorkerTypeForCharacterType: function (type) {
+			switch (type) {
+				case CharacterConstants.characterTypes.workerChemist: return CampConstants.workerTypes.chemist.id;
+				case CharacterConstants.characterTypes.workerGardener: return CampConstants.workerTypes.gardener.id;
+				case CharacterConstants.characterTypes.workerRubber: return CampConstants.workerTypes.rubbermaker.id;
+				case CharacterConstants.characterTypes.workerScavenger: return CampConstants.workerTypes.scavenger.id;
+				case CharacterConstants.characterTypes.workerTrapper: return CampConstants.workerTypes.trapper.id;
+				case CharacterConstants.characterTypes.workerWater: return CampConstants.workerTypes.water.id;
+			}
+			return null;
+		},
+
+		getResourceNameForCharacterType: function (type) {
+			switch (type) {
+				case CharacterConstants.characterTypes.workerChemist: return resourceNames.fuel;
+				case CharacterConstants.characterTypes.workerGardener: return resourceNames.herbs;
+				case CharacterConstants.characterTypes.workerRubber: return resourceNames.rubber;
+				case CharacterConstants.characterTypes.workerScavenger: return resourceNames.metal;
+				case CharacterConstants.characterTypes.workerTrapper: return resourceNames.trapper;
+				case CharacterConstants.characterTypes.workerWater: return resourceNames.water;
+			}
+			return null;
 		},
 
 		onGameStateReady: function () {

@@ -528,6 +528,12 @@ define([
 			
 			return SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
 		},
+
+		getWorkshopResource: function (sector) {
+			let workshopComponent = sector.get(WorkshopComponent);
+			if (!workshopComponent) return null;
+			return workshopComponent.resource;
+		},
 		
 		hasInvestigateableLocale: function (sector, ignoreScoutedStatus) {
 			if (!GameGlobals.gameState.isFeatureUnlocked("investigate")) return false;

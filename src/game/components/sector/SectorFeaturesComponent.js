@@ -86,6 +86,10 @@ define(
 		hasFeature: function (featureType) {
 			return this.levelFeatures.indexOf(featureType) >= 0;
 		},
+
+		hasResource: function (type) {
+			return this.resourcesCollectable[type] > 0 || this.resourcesCollectable[type] > 0 || this.heapResource == type;
+		},
 		
 		getCondition: function () {
 			return SectorConstants.getCondition(this.wear, this.damage);

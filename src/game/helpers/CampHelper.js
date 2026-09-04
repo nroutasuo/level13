@@ -456,6 +456,7 @@ define([
 			result.push(CharacterConstants.characterTypes.crafter);
 			result.push(CharacterConstants.characterTypes.drifter);
 			result.push(CharacterConstants.characterTypes.fortuneTeller);
+			result.push(CharacterConstants.characterTypes.namekeeper);
 
 			if (position.level < 14) {
 				result.push(CharacterConstants.characterTypes.drifter);
@@ -467,6 +468,7 @@ define([
 				result.push(CharacterConstants.characterTypes.bard);
 				result.push(CharacterConstants.characterTypes.crafter);
 				result.push(CharacterConstants.characterTypes.doomsayer);
+				result.push(CharacterConstants.characterTypes.namekeeper);
 			}
 
 			if (levelComponent.habitability > 1) {
