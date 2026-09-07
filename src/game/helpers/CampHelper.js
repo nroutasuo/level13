@@ -567,6 +567,13 @@ define([
 				}
 			}
 
+			if (campComponent.population > 12) {
+				let num = Math.max(1, campComponent.population / 20);
+				for (let i = 0; i < num; i++) {
+					result.push(CharacterConstants.characterTypes.elder);
+				}
+			}
+
 			return result;
 		},
 

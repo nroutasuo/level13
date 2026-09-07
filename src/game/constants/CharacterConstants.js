@@ -10,6 +10,7 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
             darkDweller: "darkDweller",
             doomsayer: "doomsayer",
             drifter: "drifter",
+            elder: "elder",
             fortuneTeller: "fortuneTeller",
             guard: "guard",
             hunter: "hunter",
@@ -91,6 +92,11 @@ define(['ash', 'game/constants/DialogueConstants'], function (Ash, DialogueConst
                     possibleIcons.push("character_drifter_02");
                     possibleIcons.push("character_drifter_03");
                     possibleIcons.push("character_drifter_04");
+                    break;
+                case CharacterConstants.characterTypes.elder:
+                    possibleIcons.push("character_elder_01");
+                    possibleIcons.push("character_elder_02");
+                    possibleIcons.push("character_elder_03");
                     break;
                 case CharacterConstants.characterTypes.fortuneTeller:
                     possibleIcons.push("character_fortuneteller_01");
