@@ -9,12 +9,12 @@ define( function () {
 		isCheatsEnabled: false,
 		isAutosaveEnabled: true,
 
-		uiModeMinimialExplorationPopups: false,
+		uiModeMinimialExplorationPopups: false, // show result popups only when something important to show
 
-		cheatModeBlueprints: false,
-		cheatModeSupplies: false,
-		cheatModeCampProduction: false,
-		cheatModeHazards: false,
+		cheatModeBlueprints: false, // require only 1 blueprint piece to unlock all blueprints
+		cheatModeSupplies: false, // movement costs food/water only if player has enough
+		cheatModeCampProduction: false, // double camp resource production
+		cheatModeHazards: false, // actions are not disabled by hazards
 
 		SAVE_SLOT_DEFAULT: "default",
 		SAVE_SLOT_BACKUP: "backup",
