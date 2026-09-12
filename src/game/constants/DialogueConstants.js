@@ -31,13 +31,28 @@ define([
 		},
 
 		loadData: function (data) {
-			let sourcesRaw = data.sources;
+			let sourcesRaw = data.sources || {};
+			let bundlesRaw = data.bundles || {};
 			this.dialogueSources = {};
 
 			for (let dialogueSourceID in sourcesRaw) {
-				let source = sourcesRaw[dialogueSourceID];
+				let sourceRaw = sourcesRaw[dialogueSourceID];
+				let source = Object.assign({}, sourceRaw);
 				source.id = dialogueSourceID;
+				source.dialogues = {};
+				for (let context in (sourceRaw.dialogues || {})) {
+					source.dialogues[context] = (sourceRaw.dialogues[context] || []).slice();
+				}
 				this.dialogueSources[dialogueSourceID] = source;
+			}
+
+			for (let dialogueSourceID in this.dialogueSources) {
+				let source = this.dialogueSources[dialogueSourceID];
+				let includes = source.includes || [];
+				for (let i = 0; i < includes.length; i++) {
+					let bundleID = includes[i];
+					this.mergeBundleIntoSource(source, bundleID, bundlesRaw, []);
+				}
 			}
 
 			let dialoguesRaw = data.dialogues;
@@ -51,6 +66,37 @@ define([
 			}
 
 			this.dialogues = dialogues;
+		},
+
+		mergeBundleIntoSource: function (source, bundleID, bundlesRaw, seenBundles) {
+			let bundle = bundlesRaw[bundleID];
+			if (!bundle) {
+				log.w("no such dialogue bundle found: " + bundleID + " included by source " + source.id);
+				return;
+			}
+			if (seenBundles.indexOf(bundleID) >= 0) {
+				log.w("dialogue bundle recursion detected: " + bundleID);
+				return;
+			}
+			seenBundles.push(bundleID);
+
+			let bundleDialogues = bundle.dialogues || {};
+			for (let context in bundleDialogues) {
+				let target = source.dialogues[context] || [];
+				let bundleContextIDs = bundleDialogues[context] || [];
+				for (let j = 0; j < bundleContextIDs.length; j++) {
+					let dialogueID = bundleContextIDs[j];
+					if (target.indexOf(dialogueID) < 0) {
+						target.push(dialogueID);
+					}
+				}
+				source.dialogues[context] = target;
+			}
+
+			let nestedBundles = bundle.includes || [];
+			for (let i = 0; i < nestedBundles.length; i++) {
+				this.mergeBundleIntoSource(source, nestedBundles[i], bundlesRaw, seenBundles.slice());
+			}
 		},
 
 		parseDialogue: function (dialogueID, d) {
