@@ -485,6 +485,16 @@
 				"character_beggar_default_meet_04_p1"
 			]
 		},
+		"character_beggar_default_meet_05": {
+			"pages": [
+				"character_beggar_default_meet_05_p1"
+			]
+		},
+		"character_beggar_default_meet_06": {
+			"pages": [
+				"character_beggar_default_meet_06_p1"
+			]
+		},
 		"character_crafter_default_event_01": {
 			"conditions": {
 				"maxNumCamps": 9
@@ -716,6 +726,144 @@
 				}
 			]
 		},
+		"character_cynic_default_meet_01": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_01_p1"
+			]
+		},
+		"character_cynic_default_meet_02": {
+			"conditions": {
+				"maxNumCamps": 7
+			},
+			"pages": [
+				"character_cynic_default_meet_02_p1"
+			]
+		},
+		"character_cynic_default_meet_03": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_03_p1"
+			]
+		},
+		"character_cynic_default_meet_04": {
+			"pages": [
+				"character_cynic_default_meet_04_p1"
+			]
+		},
+		"character_cynic_default_meet_05": {
+			"pages": [
+				"character_cynic_default_meet_05_p1"
+			]
+		},
+		"character_cynic_default_meet_06": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_06_p1"
+			]
+		},
+		"character_cynic_default_meet_07": {
+			"conditions": {
+				"numCamps": 2
+			},
+			"pages": [
+				"character_cynic_default_meet_07_p1"
+			]
+		},
+		"character_cynic_default_meet_08": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_08_p1"
+			]
+		},
+		"character_cynic_default_meet_09": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_INVESTIGATING": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_09_p1"
+			]
+		},
+		"character_cynic_default_meet_10": {
+			"conditions": {
+				"numCamps": 3
+			},
+			"pages": [
+				"character_cynic_default_meet_10_p1"
+			]
+		},
+		"character_cynic_default_meet_11": {
+			"conditions": {
+				"storyFlags": {
+					"SPIRITS_MAGIC_SEEN": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_11_p1"
+			]
+		},
+		"character_cynic_default_meet_12": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_RESTORED": false
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_12_p1"
+			]
+		},
+		"character_cynic_default_meet_13": {
+			"conditions": {
+				"numCamps": 4
+			},
+			"pages": [
+				"character_cynic_default_meet_13_p1"
+			]
+		},
+		"character_cynic_default_meet_14": {
+			"conditions": {
+				"numCamps": 9
+			},
+			"pages": [
+				"character_cynic_default_meet_14_p1"
+			]
+		},
+		"character_cynic_default_meet_15": {
+			"conditions": {
+				"numCamps": 6
+			},
+			"pages": [
+				"character_cynic_default_meet_15_p1"
+			]
+		},
+		"character_cynic_default_meet_16": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"character_cynic_default_meet_16_p1"
+			]
+		},
 		"character_darkDweller_default_interact_01": {
 			"conditions": {
 				"population": [
@@ -760,6 +908,54 @@
 		"character_darkDweller_default_interact_06": {
 			"pages": [
 				"character_darkDweller_default_interact_06_p1"
+			]
+		},
+		"character_darkDweller_default_interact_07": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_darkDweller_default_interact_07_p1"
+			]
+		},
+		"character_darkDweller_default_interact_08": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_darkDweller_default_interact_08_p1"
+			]
+		},
+		"character_darkDweller_default_interact_09": {
+			"conditions": {
+				"inCamp": true,
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							14
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_darkDweller_default_interact_09_p1"
+			]
+		},
+		"character_darkDweller_default_interact_10": {
+			"conditions": {
+				"inCamp": true,
+				"player": {
+					"position": {
+						"level": [
+							14,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"character_darkDweller_default_interact_10_p1"
 			]
 		},
 		"character_doomsayer_default_event_01": {
@@ -999,6 +1195,80 @@
 				{
 					"key": "character_drifter_default_meet_09_p1"
 				}
+			]
+		},
+		"character_drifter_default_meet_10": {
+			"pages": [
+				"character_drifter_default_meet_10_p1"
+			]
+		},
+		"character_drifter_default_meet_11": {
+			"pages": [
+				"character_drifter_default_meet_11_p1"
+			]
+		},
+		"character_elder_default_interact_01": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_01_p1"
+			]
+		},
+		"character_elder_default_interact_02": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_02_p1"
+			]
+		},
+		"character_elder_default_interact_03": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_03_p1"
+			]
+		},
+		"character_elder_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_04_p1"
+			]
+		},
+		"character_elder_default_interact_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_05_p1"
+			]
+		},
+		"character_elder_default_interact_06": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_06_p1"
+			]
+		},
+		"character_elder_default_interact_07": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_07_p1"
+			]
+		},
+		"character_elder_default_interact_08": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_elder_default_interact_08_p1"
 			]
 		},
 		"character_fortuneTeller_default_event_01": {
@@ -1781,6 +2051,30 @@
 				"character_fortuneTeller_default_meet_04_p1"
 			]
 		},
+		"character_generic_helpful_enemy_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"character_generic_helpful_enemy_01_p1"
+			]
+		},
+		"character_generic_helpful_enemy_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"character_generic_helpful_enemy_02_p1"
+			]
+		},
+		"character_generic_helpful_enemy_03": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"character_generic_helpful_enemy_03_p1"
+			]
+		},
 		"character_generic_helpful_meet_poi_blocker_debris_01": {
 			"conditions": {
 				"vicinity": "blocker_debris"
@@ -1929,6 +2223,125 @@
 			},
 			"pages": [
 				"character_generic_helpful_meet_poi_water_02_p1"
+			]
+		},
+		"character_generic_meet_district_current_commercial_01": {
+			"conditions": {
+				"sector": {
+					"type": "commerical"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_current_commercial_01_p1"
+			]
+		},
+		"character_generic_meet_district_current_industrial_01": {
+			"conditions": {
+				"sector": {
+					"type": "industrial"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_current_industrial_01_p1"
+			]
+		},
+		"character_generic_meet_district_current_public_01": {
+			"conditions": {
+				"sector": {
+					"type": "public"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_current_public_01_p1"
+			]
+		},
+		"character_generic_meet_district_current_residential_01": {
+			"conditions": {
+				"sector": {
+					"type": "residential"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_current_residential_01_p1"
+			]
+		},
+		"character_generic_meet_district_warning_01": {
+			"conditions": {
+				"district": {
+					"hasHazard": true
+				},
+				"sector": {
+					"zone": "late"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_warning_01_p1"
+			]
+		},
+		"character_generic_meet_district_warning_02": {
+			"conditions": {
+				"sector": {
+					"zone": "late"
+				}
+			},
+			"pages": [
+				"character_generic_meet_district_warning_02_p1"
+			]
+		},
+		"character_generic_meet_world_feature_collapse_01": {
+			"conditions": {
+				"vicinity": "collapse"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_collapse_01_p1"
+			]
+		},
+		"character_generic_meet_world_feature_collapse_02": {
+			"conditions": {
+				"vicinity": "collapse"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_collapse_02_p1"
+			]
+		},
+		"character_generic_meet_world_feature_giga_center_01": {
+			"conditions": {
+				"vicinity": "hq"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_giga_center_01_p1"
+			]
+		},
+		"character_generic_meet_world_feature_mountain_01": {
+			"conditions": {
+				"vicinity": "mountain"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_mountain_01_p1"
+			]
+		},
+		"character_generic_meet_world_feature_mountain_02": {
+			"conditions": {
+				"vicinity": "mountain"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_mountain_02_p1"
+			]
+		},
+		"character_generic_meet_world_feature_sunwell_01": {
+			"conditions": {
+				"vicinity": "well"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_sunwell_01_p1"
+			]
+		},
+		"character_generic_meet_world_feature_sunwell_02": {
+			"conditions": {
+				"vicinity": "well"
+			},
+			"pages": [
+				"character_generic_meet_world_feature_sunwell_02_p1"
 			]
 		},
 		"character_generic_reserved_meet_01": {
@@ -2296,6 +2709,7 @@
 					"key": "character_generic_stranded_meet_water_p1_accept",
 					"options": "END",
 					"result": {
+						"gainedRumours": 1,
 						"removeCharacter": true
 					}
 				},
@@ -2405,6 +2819,81 @@
 				}
 			]
 		},
+		"character_hunter_default_meet_07": {
+			"pages": [
+				"character_hunter_default_meet_07_p1"
+			]
+		},
+		"character_machineCultist_default_meet_01": {
+			"pages": [
+				"character_machineCultist_default_meet_01_p1"
+			]
+		},
+		"character_machineCultist_default_meet_02": {
+			"pages": [
+				"character_machineCultist_default_meet_02_p1"
+			]
+		},
+		"character_machineCultist_default_meet_03": {
+			"pages": [
+				"character_machineCultist_default_meet_03_p1"
+			]
+		},
+		"character_machineCultist_default_meet_04": {
+			"pages": [
+				"character_machineCultist_default_meet_04_p1"
+			]
+		},
+		"character_machineCultist_default_meet_05": {
+			"pages": [
+				"character_machineCultist_default_meet_05_p1"
+			]
+		},
+		"character_machineCultist_default_meet_06": {
+			"pages": [
+				"character_machineCultist_default_meet_06_p1"
+			],
+			"result": {
+				"gainedItems": [
+					"cache_evidence_43"
+				]
+			}
+		},
+		"character_machineCultist_default_meet_07": {
+			"pages": [
+				"character_machineCultist_default_meet_07_p1"
+			]
+		},
+		"character_machineCultist_default_meet_08": {
+			"pages": [
+				"character_machineCultist_default_meet_08_p1"
+			]
+		},
+		"character_machineCultist_default_meet_09": {
+			"pages": [
+				"character_machineCultist_default_meet_09_p1"
+			]
+		},
+		"character_machineCultist_default_meet_10": {
+			"pages": [
+				"character_machineCultist_default_meet_10_p1"
+			]
+		},
+		"character_machineCultist_default_meet_11": {
+			"pages": [
+				"character_machineCultist_default_meet_11_p1"
+			]
+		},
+		"character_machineCultist_default_meet_12": {
+			"pages": [
+				"character_machineCultist_default_meet_12_p1"
+			]
+		},
+		"character_machineCultist_default_meet_13": {
+			"pages": [
+				"character_machineCultist_default_meet_13_p1"
+			]
+		},
 		"character_mercenary_default_meet_01": {
 			"pages": [
 				"character_mercenary_default_meet_01_p1"
@@ -2431,6 +2920,11 @@
 			},
 			"pages": [
 				"character_mercenary_default_meet_04_p1"
+			]
+		},
+		"character_mercenary_default_meet_05": {
+			"pages": [
+				"character_mercenary_default_meet_05_p1"
 			]
 		},
 		"character_messenger_default_meet_01": {
@@ -2461,6 +2955,194 @@
 			},
 			"pages": [
 				"character_messenger_default_meet_05_p1"
+			]
+		},
+		"character_messenger_default_meet_06": {
+			"pages": [
+				"character_messenger_default_meet_06_p1"
+			]
+		},
+		"character_messenger_default_meet_07": {
+			"pages": [
+				"character_messenger_default_meet_07_p1"
+			]
+		},
+		"character_namekeeper_default_event_01": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_01_p1"
+			]
+		},
+		"character_namekeeper_default_event_02": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_02_p1"
+			]
+		},
+		"character_namekeeper_default_event_03": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_03_p1"
+			]
+		},
+		"character_namekeeper_default_event_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_04_p1"
+			]
+		},
+		"character_namekeeper_default_event_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_05_p1"
+			]
+		},
+		"character_namekeeper_default_event_06": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_namekeeper_default_event_06_p1"
+			]
+		},
+		"character_namekeeper_default_meet_01": {
+			"pages": [
+				"character_namekeeper_default_meet_01_p1"
+			]
+		},
+		"character_namekeeper_default_meet_02": {
+			"pages": [
+				"character_namekeeper_default_meet_02_p1"
+			]
+		},
+		"character_namekeeper_default_meet_03": {
+			"pages": [
+				"character_namekeeper_default_meet_03_p1"
+			]
+		},
+		"character_namekeeper_default_meet_04": {
+			"pages": [
+				"character_namekeeper_default_meet_04_p1"
+			]
+		},
+		"character_namekeeper_default_meet_05": {
+			"pages": [
+				"character_namekeeper_default_meet_05_p1"
+			]
+		},
+		"character_namekeeper_default_meet_06": {
+			"pages": [
+				"character_namekeeper_default_meet_06_p1"
+			]
+		},
+		"character_natureCultist_default_meet_01": {
+			"pages": [
+				"character_natureCultist_default_meet_01_p1"
+			]
+		},
+		"character_natureCultist_default_meet_02": {
+			"pages": [
+				"character_natureCultist_default_meet_02_p1"
+			]
+		},
+		"character_natureCultist_default_meet_03": {
+			"pages": [
+				"character_natureCultist_default_meet_03_p1"
+			]
+		},
+		"character_natureCultist_default_meet_04": {
+			"pages": [
+				"character_natureCultist_default_meet_04_p1"
+			]
+		},
+		"character_natureCultist_default_meet_05": {
+			"pages": [
+				"character_natureCultist_default_meet_05_p1"
+			]
+		},
+		"character_natureCultist_default_meet_06": {
+			"pages": [
+				"character_natureCultist_default_meet_06_p1"
+			]
+		},
+		"character_natureCultist_default_meet_07": {
+			"pages": [
+				"character_natureCultist_default_meet_07_p1"
+			]
+		},
+		"character_natureCultist_default_meet_08": {
+			"pages": [
+				"character_natureCultist_default_meet_08_p1"
+			]
+		},
+		"character_natureCultist_default_meet_09": {
+			"pages": [
+				"character_natureCultist_default_meet_09_p1"
+			],
+			"result": {
+				"gainedItems": [
+					"cache_hope_11"
+				]
+			}
+		},
+		"character_pilgrim_default_meet_01": {
+			"pages": [
+				"character_pilgrim_default_meet_01_p1"
+			]
+		},
+		"character_pilgrim_default_meet_02": {
+			"pages": [
+				"character_pilgrim_default_meet_02_p1"
+			]
+		},
+		"character_pilgrim_default_meet_03": {
+			"pages": [
+				"character_pilgrim_default_meet_03_p1"
+			]
+		},
+		"character_pilgrim_default_meet_04": {
+			"pages": [
+				"character_pilgrim_default_meet_04_p1"
+			]
+		},
+		"character_pilgrim_default_meet_05": {
+			"pages": [
+				"character_pilgrim_default_meet_05_p1"
+			]
+		},
+		"character_pilgrim_default_meet_06": {
+			"pages": [
+				"character_pilgrim_default_meet_06_p1"
+			]
+		},
+		"character_pilgrim_default_meet_07": {
+			"pages": [
+				"character_pilgrim_default_meet_07_p1"
+			]
+		},
+		"character_pilgrim_default_meet_08": {
+			"pages": [
+				"character_pilgrim_default_meet_08_p1"
+			]
+		},
+		"character_pilgrim_default_meet_09": {
+			"pages": [
+				"character_pilgrim_default_meet_09_p1"
+			]
+		},
+		"character_pilgrim_default_meet_10": {
+			"pages": [
+				"character_pilgrim_default_meet_10_p1"
 			]
 		},
 		"character_scavenger_default_meet_01": {
@@ -2575,6 +3257,11 @@
 				"character_shaman_default_meet_06_p1"
 			]
 		},
+		"character_shaman_default_meet_07": {
+			"pages": [
+				"character_shaman_default_meet_07_p1"
+			]
+		},
 		"character_shaman_default_meet_blessing": {
 			"pages": [
 				{
@@ -2659,6 +3346,46 @@
 				"character_slumRefugee_default_interact_06_p1"
 			]
 		},
+		"character_slumRefugee_default_interact_07": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_07_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_08": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_08_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_09": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_09_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_10": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_10_p1"
+			]
+		},
+		"character_slumRefugee_default_interact_11": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_slumRefugee_default_interact_11_p1"
+			]
+		},
 		"character_slumRefugee_default_meet_01": {
 			"pages": [
 				"character_slumRefugee_default_meet_01_p1"
@@ -2692,6 +3419,21 @@
 		"character_slumRefugee_default_meet_05": {
 			"pages": [
 				"character_slumRefugee_default_meet_05_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_06": {
+			"pages": [
+				"character_slumRefugee_default_meet_06_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_07": {
+			"pages": [
+				"character_slumRefugee_default_meet_07_p1"
+			]
+		},
+		"character_slumRefugee_default_meet_08": {
+			"pages": [
+				"character_slumRefugee_default_meet_08_p1"
 			]
 		},
 		"character_surfaceRefugee_default_interact_01": {
@@ -2765,6 +3507,19 @@
 				"character_surfaceRefugee_default_interact_11_p1"
 			]
 		},
+		"character_surfaceRefugee_default_interact_12": {
+			"pages": [
+				"character_surfaceRefugee_default_interact_12_p1"
+			]
+		},
+		"character_surfaceRefugee_default_interact_13": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_surfaceRefugee_default_interact_13_p1"
+			]
+		},
 		"character_surfaceRefugee_default_meet_01": {
 			"pages": [
 				"character_surfaceRefugee_default_meet_01_p1"
@@ -2785,6 +3540,29 @@
 				"character_surfaceRefugee_default_meet_04_p1"
 			]
 		},
+		"character_surfaceRefugee_default_meet_05": {
+			"pages": [
+				"character_surfaceRefugee_default_meet_05_p1"
+			]
+		},
+		"character_surfaceRefugee_default_meet_06": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							14
+						]
+					}
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_surfaceRefugee_default_meet_06_p1"
+			]
+		},
 		"character_trader_default_meet_01": {
 			"pages": [
 				"character_trader_default_meet_01_p1"
@@ -2798,6 +3576,94 @@
 		"character_trader_default_meet_03": {
 			"pages": [
 				"character_trader_default_meet_03_p1"
+			]
+		},
+		"character_trader_default_meet_04": {
+			"pages": [
+				"character_trader_default_meet_04_p1"
+			]
+		},
+		"character_trafficker_default_meet_01": {
+			"conditions": {
+				"maxNumCamps": 3,
+				"player": {
+					"position": {
+						"level": [
+							9,
+							-1
+						]
+					}
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_trafficker_default_meet_01_p1"
+			]
+		},
+		"character_trafficker_default_meet_02": {
+			"conditions": {
+				"player": {
+					"position": {
+						"level": [
+							-1,
+							10
+						]
+					}
+				},
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_trafficker_default_meet_02_p1"
+			]
+		},
+		"character_trafficker_default_meet_03": {
+			"pages": [
+				"character_trafficker_default_meet_03_p1"
+			]
+		},
+		"character_trafficker_default_meet_04": {
+			"pages": [
+				"character_trafficker_default_meet_04_p1"
+			]
+		},
+		"character_trafficker_default_meet_05": {
+			"pages": [
+				"character_trafficker_default_meet_05_p1"
+			]
+		},
+		"character_trafficker_default_meet_06": {
+			"pages": [
+				"character_trafficker_default_meet_06_p1"
+			]
+		},
+		"character_trafficker_default_meet_07": {
+			"pages": [
+				"character_trafficker_default_meet_07_p1"
+			]
+		},
+		"character_trafficker_default_meet_08": {
+			"pages": [
+				"character_trafficker_default_meet_08_p1"
+			]
+		},
+		"character_workerAcademic_interact_camp_worker_academic_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerAcademicFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerAcademic_interact_camp_worker_academic_bonus_01_p1"
 			]
 		},
 		"character_workerApothecary_default_interact_01": {
@@ -2815,6 +3681,27 @@
 				"character_workerApothecary_default_interact_03_p1"
 			]
 		},
+		"character_workerApothecary_default_interact_04": {
+			"pages": [
+				"character_workerApothecary_default_interact_04_p1"
+			]
+		},
+		"character_workerArtisan_interact_camp_worker_artisan_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerArtisanFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerArtisan_interact_camp_worker_artisan_bonus_01_p1"
+			]
+		},
 		"character_workerChemist_default_interact_01": {
 			"pages": [
 				"character_workerChemist_default_interact_01_p1"
@@ -2823,6 +3710,19 @@
 		"character_workerChemist_default_interact_02": {
 			"pages": [
 				"character_workerChemist_default_interact_02_p1"
+			]
+		},
+		"character_workerChemist_default_interact_03": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerChemist_default_interact_03_p1"
+			]
+		},
+		"character_workerChemist_default_meet_01": {
+			"pages": [
+				"character_workerChemist_default_meet_01_p1"
 			]
 		},
 		"character_workerCleric_default_interact_01": {
@@ -2850,6 +3750,14 @@
 				"character_workerCleric_default_interact_05_p1"
 			]
 		},
+		"character_workerCleric_default_interact_06": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerCleric_default_interact_06_p1"
+			]
+		},
 		"character_workerConcrete_default_interact_01": {
 			"pages": [
 				"character_workerConcrete_default_interact_01_p1"
@@ -2865,6 +3773,30 @@
 				"character_workerConcrete_default_interact_03_p1"
 			]
 		},
+		"character_workerConcrete_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerConcrete_default_interact_04_p1"
+			]
+		},
+		"character_workerTrapper_interact_camp_worker_food_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerFoodFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerTrapper_interact_camp_worker_food_bonus_01_p1"
+			]
+		},
 		"character_workerGardener_default_interact_01": {
 			"pages": [
 				"character_workerGardener_default_interact_01_p1"
@@ -2878,6 +3810,11 @@
 		"character_workerGardener_default_interact_03": {
 			"pages": [
 				"character_workerGardener_default_interact_03_p1"
+			]
+		},
+		"character_workerGardener_default_meet_01": {
+			"pages": [
+				"character_workerGardener_default_meet_01_p1"
 			]
 		},
 		"character_workerGeneric_default_interact_01": {
@@ -2929,6 +3866,14 @@
 				"character_workerGeneric_interact_04_p1"
 			]
 		},
+		"character_workerGeneric_interact_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_05_p1"
+			]
+		},
 		"character_workerGeneric_interact_apocalypse_01": {
 			"conditions": {
 				"storyFlags": {
@@ -2961,6 +3906,292 @@
 				"character_workerGeneric_interact_apocalypse_03_p1"
 			]
 		},
+		"character_workerGeneric_interact_camp_feature_disaster_high_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"disaster": true
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_disaster_high_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_disease_factor_high_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"diseaseFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_disease_factor_high_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_disease_factor_high_02": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"diseaseFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_disease_factor_high_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_disease_factor_low_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"diseaseFactor": [
+							-1,
+							1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_disease_factor_low_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_disease_factor_low_02": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"diseaseFactor": [
+							-1,
+							1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_disease_factor_low_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_habitability_high_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"habitability": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_habitability_high_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_habitability_low_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"habitability": [
+							-1,
+							1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_habitability_low_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_raid_danger_high_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"raidDangerFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_raid_danger_high_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_raid_danger_high_02": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"raidDangerFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_raid_danger_high_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_feature_raid_danger_low_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"raidDangerFactor": [
+							-1,
+							1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_feature_raid_danger_low_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_trader_rate_high_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"traderFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_trader_rate_high_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_trader_rate_low_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"traderFactor": [
+							-1,
+							1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_trader_rate_low_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_academic_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerAcademicFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_academic_bonus_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_artisan_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerArtisanFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_artisan_bonus_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_food_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerFoodFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_food_bonus_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_hope_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerHopeFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"deity": true,
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_hope_bonus_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_metal_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerMetalFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_metal_bonus_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_camp_worker_water_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerWaterFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_camp_worker_water_bonus_01_p1"
+			]
+		},
 		"character_workerGeneric_interact_disease_01": {
 			"conditions": {
 				"camp": {
@@ -2982,6 +4213,42 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_disease_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_escape_01": {
+			"conditions": {
+				"inCamp": true,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_escape_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_escape_02": {
+			"conditions": {
+				"inCamp": true,
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_escape_02_p1"
+			]
+		},
+		"character_workerGeneric_interact_explorer_injury_01": {
+			"conditions": {
+				"inCamp": true,
+				"pages": [
+					"character_workerGeneric_interact_explorer_injury_01_p1"
+				],
+				"player": {
+					"hasInjuredExplorer": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_explorer_injury_01_p1"
 			]
 		},
 		"character_workerGeneric_interact_hint_rumours_01": {
@@ -3115,6 +4382,20 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_injury_01": {
+			"conditions": {
+				"improvements": {
+					"hospital": [
+						1,
+						-1
+					]
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerGeneric_interact_injury_01_p1"
 			]
 		},
 		"character_workerGeneric_interact_l15_01": {
@@ -3312,6 +4593,39 @@
 				"character_workerGeneric_story_escape_build_passage_02_p1"
 			]
 		},
+		"character_workerHope_interact_camp_worker_hope_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerHopeFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"deity": true,
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerHope_interact_camp_worker_hope_bonus_01_p1"
+			]
+		},
+		"character_workerScavenger_interact_camp_worker_metal_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerMetalFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerScavenger_interact_camp_worker_metal_bonus_01_p1"
+			]
+		},
 		"character_workerRobotmaker_default_interact_01": {
 			"pages": [
 				"character_workerRobotmaker_default_interact_01_p1"
@@ -3337,6 +4651,30 @@
 				"character_workerRope_default_interact_02_p1"
 			]
 		},
+		"character_workerRope_default_interact_03": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerRope_default_interact_03_p1"
+			]
+		},
+		"character_workerRope_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerRope_default_interact_04_p1"
+			]
+		},
+		"character_workerRope_default_interact_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerRope_default_interact_05_p1"
+			]
+		},
 		"character_workerRubber_default_interact_01": {
 			"pages": [
 				"character_workerRubber_default_interact_01_p1"
@@ -3345,6 +4683,11 @@
 		"character_workerRubber_default_interact_02": {
 			"pages": [
 				"character_workerRubber_default_interact_02_p1"
+			]
+		},
+		"character_workerRubber_default_meet_01": {
+			"pages": [
+				"character_workerRubber_default_meet_01_p1"
 			]
 		},
 		"character_workerScavenger_default_interact_01": {
@@ -3381,6 +4724,22 @@
 		"character_workerScavenger_default_interact_06": {
 			"pages": [
 				"character_workerScavenger_default_interact_06_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_07": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerScavenger_default_interact_07_p1"
+			]
+		},
+		"character_workerScavenger_default_interact_08": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerScavenger_default_interact_08_p1"
 			]
 		},
 		"character_workerScavenger_default_meet_01": {
@@ -3486,6 +4845,14 @@
 				"character_workerSoldier_default_interact_03_p1"
 			]
 		},
+		"character_workerSoldier_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerSoldier_default_interact_04_p1"
+			]
+		},
 		"character_workerToolsmith_default_interact_01": {
 			"pages": [
 				"character_workerToolsmith_default_interact_01_p1"
@@ -3494,6 +4861,22 @@
 		"character_workerToolsmith_default_interact_02": {
 			"pages": [
 				"character_workerToolsmith_default_interact_02_p1"
+			]
+		},
+		"character_workerToolsmith_default_interact_03": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerToolsmith_default_interact_03_p1"
+			]
+		},
+		"character_workerToolsmith_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerToolsmith_default_interact_04_p1"
 			]
 		},
 		"character_workerTrapper_default_interact_01": {
@@ -3519,6 +4902,30 @@
 		"character_workerTrapper_default_interact_03": {
 			"pages": [
 				"character_workerTrapper_default_interact_03_p1"
+			]
+		},
+		"character_workerTrapper_default_interact_04": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerTrapper_default_interact_04_p1"
+			]
+		},
+		"character_workerTrapper_default_interact_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerTrapper_default_interact_05_p1"
+			]
+		},
+		"character_workerTrapper_default_interact_06": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerTrapper_default_interact_06_p1"
 			]
 		},
 		"character_workerTrapper_default_meet_01": {
@@ -3578,6 +4985,22 @@
 				"character_workerWater_default_interact_04_p1"
 			]
 		},
+		"character_workerWater_default_interact_05": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerWater_default_interact_05_p1"
+			]
+		},
+		"character_workerWater_default_interact_06": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerWater_default_interact_06_p1"
+			]
+		},
 		"character_workerWater_default_meet_01": {
 			"pages": [
 				"character_workerWater_default_meet_01_p1"
@@ -3599,7 +5022,7 @@
 			},
 			"pages": [
 				{
-					"key": "character_workerWater_default_meet_03",
+					"key": "character_workerWater_default_meet_03_p1",
 					"replaceDialogue": true,
 					"result": {
 						"gainedResources": {
@@ -3607,6 +5030,22 @@
 						}
 					}
 				}
+			]
+		},
+		"character_workerWater_interact_camp_worker_water_bonus_01": {
+			"conditions": {
+				"camp": {
+					"feature": {
+						"workerWaterFactor": [
+							1.01,
+							-1
+						]
+					}
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"character_workerWater_interact_camp_worker_water_bonus_01_p1"
 			]
 		},
 		"explorer_generic_ability_cost_blueprints_outside_01": {
@@ -4113,6 +5552,46 @@
 				"explorer_generic_dog_outside_03_p1"
 			]
 		},
+		"explorer_generic_fighter_enemy_current_district_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_current_district_01_p1"
+			]
+		},
+		"explorer_generic_fighter_enemy_current_district_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_current_district_02_p1"
+			]
+		},
+		"explorer_generic_fighter_enemy_current_level_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_current_level_01_p1"
+			]
+		},
+		"explorer_generic_fighter_enemy_current_level_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_current_level_02_p1"
+			]
+		},
+		"explorer_generic_fighter_enemy_other_district_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_other_district_01_p1"
+			]
+		},
 		"explorer_generic_fighter_outside_01": {
 			"conditions": {
 				"inCamp": false
@@ -4195,6 +5674,14 @@
 			},
 			"pages": [
 				"explorer_generic_interact_directions_center_01_p1"
+			]
+		},
+		"explorer_generic_interact_directions_district_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_generic_interact_directions_district_01_p1"
 			]
 		},
 		"explorer_generic_interact_directions_explore_01": {
@@ -4307,6 +5794,28 @@
 			},
 			"pages": [
 				"explorer_generic_interact_directions_unscouted_01_p1"
+			]
+		},
+		"explorer_generic_interact_district_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"zone": "late"
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_district_01_p1"
+			]
+		},
+		"explorer_generic_interact_district_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"zone": "early"
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_district_02_p1"
 			]
 		},
 		"explorer_generic_interact_forced_01": {
@@ -4487,6 +5996,12 @@
 		},
 		"explorer_generic_interact_low_food_01": {
 			"conditions": {
+				"improvements": {
+					"collector_food": [
+						-1,
+						1
+					]
+				},
 				"inCamp": false,
 				"playerInventory": {
 					"resource_food": [
@@ -4502,6 +6017,12 @@
 		},
 		"explorer_generic_interact_low_water_01": {
 			"conditions": {
+				"improvements": {
+					"collector_water": [
+						-1,
+						1
+					]
+				},
 				"inCamp": false,
 				"playerInventory": {
 					"resource_water": [
@@ -4539,6 +6060,221 @@
 			},
 			"pages": [
 				"explorer_generic_interact_story_apocalypse_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_cold_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"cold": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_cold_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_cold_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"cold": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_cold_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_debris_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"debris": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_debris_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_debris_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"debris": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_debris_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_flood_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"flood": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_flood_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_flood_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"flood": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_flood_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_pollution_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"poison": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_pollution_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_pollution_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"poison": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_pollution_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_radiation_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"radiation": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_radiation_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_radiation_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"radiation": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_radiation_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_territory_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"territory": [
+							1,
+							-1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_territory_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_territory_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"territory": [
+							0,
+							1
+						]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_territory_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_unexplored_level_01": {
+			"pages": [
+				"explorer_generic_interact_tip_unexplored_level_01_p1"
 			]
 		},
 		"explorer_generic_intract_new_camp_10_01": {
@@ -5504,6 +7240,38 @@
 				"explorer_template_amnesiac_interact_12_p1"
 			]
 		},
+		"explorer_template_amnesiac_interact_13": {
+			"pages": [
+				"explorer_template_amnesiac_interact_13_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_14": {
+			"conditions": {
+				"improvements": {
+					"garden": [
+						1,
+						-1
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_14_p1"
+			]
+		},
+		"explorer_template_amnesiac_interact_15": {
+			"conditions": {
+				"improvements": {
+					"lights": [
+						1,
+						-1
+					]
+				},
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_amnesiac_interact_15_p1"
+			]
+		},
 		"explorer_template_amnesiac_meet_01": {
 			"pages": [
 				"explorer_template_amnesiac_meet_01_p1"
@@ -5686,6 +7454,47 @@
 				"explorer_template_architect_interact_12_p1"
 			]
 		},
+		"explorer_template_architect_interact_13": {
+			"conditions": {
+				"trust": 3
+			},
+			"pages": [
+				"explorer_template_architect_interact_13_p1"
+			]
+		},
+		"explorer_template_architect_interact_14": {
+			"conditions": {
+				"trust": 4
+			},
+			"pages": [
+				"explorer_template_architect_interact_14_p1"
+			]
+		},
+		"explorer_template_architect_interact_15": {
+			"conditions": {
+				"trust": 7
+			},
+			"pages": [
+				"explorer_template_architect_interact_15_p1"
+			]
+		},
+		"explorer_template_architect_interact_16": {
+			"conditions": {
+				"inCamp": false,
+				"trust": 7
+			},
+			"pages": [
+				"explorer_template_architect_interact_16_p1"
+			]
+		},
+		"explorer_template_architect_interact_17": {
+			"conditions": {
+				"trust": 5
+			},
+			"pages": [
+				"explorer_template_architect_interact_17_p1"
+			]
+		},
 		"explorer_template_architect_meet_01": {
 			"pages": [
 				"explorer_template_architect_meet_01_p1"
@@ -5711,6 +7520,113 @@
 			},
 			"pages": [
 				"explorer_template_architect_outside_02_p1"
+			]
+		},
+		"explorer_template_architect_outside_03": {
+			"conditions": {
+				"trust": 1
+			},
+			"pages": [
+				"explorer_template_architect_outside_03_p1"
+			]
+		},
+		"explorer_template_architect_outside_cittadinian_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "cittadinian"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_cittadinian_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_humanist_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "humanist"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_humanist_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_industrial_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "industrial"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_industrial_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_karboque_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "karboque"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_karboque_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_kievan_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "kievan"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_kievan_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_modern_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "modern"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_modern_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_neowestern_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "neowestern"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_neowestern_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_slum_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "slum"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_slum_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_western_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"style": "western"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_western_01_p1"
 			]
 		},
 		"explorer_template_architect_story_apocalypse_plan_ready_01": {
@@ -5844,6 +7760,14 @@
 				"explorer_template_bard_interact_12_p1"
 			]
 		},
+		"explorer_template_bard_interact_13": {
+			"conditions": {
+				"trust": 8
+			},
+			"pages": [
+				"explorer_template_bard_interact_13_p1"
+			]
+		},
 		"explorer_template_bard_meet_01": {
 			"pages": [
 				"explorer_template_bard_meet_01_p1"
@@ -5877,6 +7801,132 @@
 			},
 			"pages": [
 				"explorer_template_bard_story_apocalypse_plan_ready_01_p1"
+			]
+		},
+		"explorer_template_bureaucrat_event_01": {
+			"pages": [
+				"explorer_template_bureaucrat_event_01_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_01": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_01_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_02": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_02_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_03": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_03_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_04": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_04_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_05": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_05_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_06": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_06_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_07": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_07_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_08": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_08_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_09": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_09_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_10": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_10_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_11": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_11_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_12": {
+			"conditions": {
+				"storyFlags": {
+					"FALL_SEEN_EVACUATION": true
+				}
+			},
+			"pages": [
+				"explorer_template_bureaucrat_interact_12_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_13": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_13_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_14": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_14_p1"
+			]
+		},
+		"explorer_template_bureaucrat_interact_15": {
+			"pages": [
+				"explorer_template_bureaucrat_interact_15_p1"
+			]
+		},
+		"explorer_template_bureaucrat_meet_01": {
+			"pages": [
+				"explorer_template_bureaucrat_meet_01_p1"
+			]
+		},
+		"explorer_template_bureaucrat_outside_01": {
+			"pages": [
+				"explorer_template_bureaucrat_outside_01_p1"
+			]
+		},
+		"explorer_template_bureaucrat_outside_02": {
+			"pages": [
+				"explorer_template_bureaucrat_outside_02_p1"
+			]
+		},
+		"explorer_template_bureaucrat_outside_03": {
+			"conditions": {
+				"sector": {
+					"wear": [
+						5,
+						-1
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_bureaucrat_outside_03_p1"
+			]
+		},
+		"explorer_template_bureaucrat_outside_04": {
+			"conditions": {
+				"sector": {
+					"wear": [
+						-1,
+						5
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_bureaucrat_outside_04_p1"
 			]
 		},
 		"explorer_template_darkdweller_event_01": {
@@ -5997,6 +8047,24 @@
 			},
 			"pages": [
 				"explorer_template_darkdweller_interact_13_p1"
+			]
+		},
+		"explorer_template_darkdweller_interact_14": {
+			"pages": [
+				"explorer_template_darkdweller_interact_14_p1"
+			]
+		},
+		"explorer_template_darkdweller_interact_15": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_darkdweller_interact_15_p1"
+			]
+		},
+		"explorer_template_darkdweller_interact_16": {
+			"pages": [
+				"explorer_template_darkdweller_interact_16_p1"
 			]
 		},
 		"explorer_template_darkdweller_interact_directions_safety_01": {
@@ -6164,6 +8232,16 @@
 				"explorer_template_guard_interact_12_p1"
 			]
 		},
+		"explorer_template_guard_interact_13": {
+			"pages": [
+				"explorer_template_guard_interact_13_p1"
+			]
+		},
+		"explorer_template_guard_interact_14": {
+			"pages": [
+				"explorer_template_guard_interact_14_p1"
+			]
+		},
 		"explorer_template_guard_meet_01": {
 			"pages": [
 				"explorer_template_guard_meet_01_p1"
@@ -6327,6 +8405,36 @@
 				"explorer_template_hacker_interact_12_p1"
 			]
 		},
+		"explorer_template_hacker_interact_13": {
+			"pages": [
+				"explorer_template_hacker_interact_13_p1"
+			]
+		},
+		"explorer_template_hacker_interact_14": {
+			"pages": [
+				"explorer_template_hacker_interact_14_p1"
+			]
+		},
+		"explorer_template_hacker_interact_15": {
+			"pages": [
+				"explorer_template_hacker_interact_15_p1"
+			]
+		},
+		"explorer_template_hacker_interact_16": {
+			"pages": [
+				"explorer_template_hacker_interact_16_p1"
+			]
+		},
+		"explorer_template_hacker_interact_17": {
+			"pages": [
+				"explorer_template_hacker_interact_17_p1"
+			]
+		},
+		"explorer_template_hacker_interact_18": {
+			"pages": [
+				"explorer_template_hacker_interact_18_p1"
+			]
+		},
 		"explorer_template_hacker_meet_01": {
 			"pages": [
 				"explorer_template_hacker_meet_01_p1"
@@ -6482,6 +8590,21 @@
 				"explorer_template_lover_interact_12_p1"
 			]
 		},
+		"explorer_template_lover_interact_13": {
+			"pages": [
+				"explorer_template_lover_interact_13_p1"
+			]
+		},
+		"explorer_template_lover_interact_14": {
+			"pages": [
+				"explorer_template_lover_interact_14_p1"
+			]
+		},
+		"explorer_template_lover_interact_15": {
+			"pages": [
+				"explorer_template_lover_interact_15_p1"
+			]
+		},
 		"explorer_template_lover_meet_01": {
 			"pages": [
 				"explorer_template_lover_meet_01_p1"
@@ -6617,7 +8740,7 @@
 		"explorer_template_researcher_interact_10": {
 			"conditions": {
 				"explorer": {
-					"trust": 8
+					"trust": 6
 				}
 			},
 			"pages": [
@@ -6642,6 +8765,100 @@
 			},
 			"pages": [
 				"explorer_template_researcher_interact_12_p1"
+			]
+		},
+		"explorer_template_researcher_interact_13": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_13_p1"
+			]
+		},
+		"explorer_template_researcher_interact_14": {
+			"conditions": {
+				"storyFlags": {
+					"GREENHOUSE_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_14_p1"
+			]
+		},
+		"explorer_template_researcher_interact_15": {
+			"conditions": {
+				"storyFlags": {
+					"ESCAPE_SEARCHING_FOR_GROUND": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_15_p1"
+			]
+		},
+		"explorer_template_researcher_interact_16": {
+			"pages": [
+				"explorer_template_researcher_interact_16_p1"
+			]
+		},
+		"explorer_template_researcher_interact_17": {
+			"pages": [
+				"explorer_template_researcher_interact_17_p1"
+			]
+		},
+		"explorer_template_researcher_interact_18": {
+			"pages": [
+				"explorer_template_researcher_interact_18_p1"
+			]
+		},
+		"explorer_template_researcher_interact_19": {
+			"conditions": {
+				"storyFlags": {
+					"APOCALYPSE_PLAN_READY": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_19_p1"
+			]
+		},
+		"explorer_template_researcher_interact_outside_danger": {
+			"conditions": {
+				"district": {
+					"hasHazard": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_outside_danger_p1"
+			]
+		},
+		"explorer_template_researcher_interact_outside_nature": {
+			"conditions": {
+				"district": {
+					"hasHazard": false
+				},
+				"sector": {
+					"wear": [
+						5,
+						-1
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_outside_nature_p1"
+			]
+		},
+		"explorer_template_researcher_interact_outside_sterile": {
+			"conditions": {
+				"sector": {
+					"wear": [
+						-1,
+						2
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_interact_outside_sterile_p1"
 			]
 		},
 		"explorer_template_researcher_meet_01": {
@@ -6756,6 +8973,245 @@
 				"explorer_template_servo_interact_06_p1"
 			]
 		},
+		"explorer_template_slummer_event_01": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"explorer_template_slummer_event_01_p1"
+			]
+		},
+		"explorer_template_slummer_interact_01": {
+			"pages": [
+				"explorer_template_slummer_interact_01_p1"
+			]
+		},
+		"explorer_template_slummer_interact_02": {
+			"pages": [
+				"explorer_template_slummer_interact_02_p1"
+			]
+		},
+		"explorer_template_slummer_interact_03": {
+			"conditions": {
+				"trust": 1
+			},
+			"pages": [
+				"explorer_template_slummer_interact_03_p1"
+			]
+		},
+		"explorer_template_slummer_interact_04": {
+			"conditions": {
+				"trust": 2
+			},
+			"pages": [
+				"explorer_template_slummer_interact_04_p1"
+			]
+		},
+		"explorer_template_slummer_interact_05": {
+			"conditions": {
+				"trust": 3
+			},
+			"pages": [
+				"explorer_template_slummer_interact_05_p1"
+			]
+		},
+		"explorer_template_slummer_interact_06": {
+			"conditions": {
+				"trust": 4
+			},
+			"pages": [
+				"explorer_template_slummer_interact_06_p1"
+			]
+		},
+		"explorer_template_slummer_interact_07": {
+			"conditions": {
+				"trust": 5
+			},
+			"pages": [
+				"explorer_template_slummer_interact_07_p1"
+			]
+		},
+		"explorer_template_slummer_interact_08": {
+			"conditions": {
+				"trust": 6
+			},
+			"pages": [
+				"explorer_template_slummer_interact_08_p1"
+			]
+		},
+		"explorer_template_slummer_interact_09": {
+			"conditions": {
+				"trust": 7
+			},
+			"pages": [
+				"explorer_template_slummer_interact_09_p1"
+			]
+		},
+		"explorer_template_slummer_interact_10": {
+			"conditions": {
+				"trust": 8
+			},
+			"pages": [
+				"explorer_template_slummer_interact_10_p1"
+			]
+		},
+		"explorer_template_slummer_interact_11": {
+			"conditions": {
+				"trust": 9
+			},
+			"pages": [
+				"explorer_template_slummer_interact_11_p1"
+			]
+		},
+		"explorer_template_slummer_interact_12": {
+			"conditions": {
+				"trust": 10
+			},
+			"pages": [
+				"explorer_template_slummer_interact_12_p1"
+			]
+		},
+		"explorer_template_slummer_meet_01": {
+			"pages": [
+				"explorer_template_slummer_meet_01_p1"
+			]
+		},
+		"explorer_template_slummer_outside_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_slummer_outside_01_p1"
+			]
+		},
+		"explorer_template_slummer_outside_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_slummer_outside_02_p1"
+			]
+		},
+		"explorer_template_surfacer_event_01": {
+			"conditions": {
+				"inCamp": true
+			},
+			"pages": [
+				"explorer_template_surfacer_event_01_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_01": {
+			"pages": [
+				"explorer_template_surfacer_interact_01_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_02": {
+			"pages": [
+				"explorer_template_surfacer_interact_02_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_03": {
+			"conditions": {
+				"trust": 1
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_03_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_04": {
+			"conditions": {
+				"trust": 2
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_04_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_05": {
+			"conditions": {
+				"trust": 3
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_05_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_06": {
+			"conditions": {
+				"trust": 4
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_06_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_07": {
+			"conditions": {
+				"trust": 5
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_07_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_08": {
+			"conditions": {
+				"trust": 6
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_08_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_09": {
+			"conditions": {
+				"maxNumCamps": 14,
+				"trust": 7
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_09_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_10": {
+			"conditions": {
+				"trust": 8
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_10_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_11": {
+			"conditions": {
+				"trust": 9
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_11_p1"
+			]
+		},
+		"explorer_template_surfacer_interact_12": {
+			"conditions": {
+				"trust": 10
+			},
+			"pages": [
+				"explorer_template_surfacer_interact_12_p1"
+			]
+		},
+		"explorer_template_surfacer_meet_01": {
+			"pages": [
+				"explorer_template_surfacer_meet_01_p1"
+			]
+		},
+		"explorer_template_surfacer_outside_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_surfacer_outside_01_p1"
+			]
+		},
+		"explorer_template_surfacer_outside_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_surfacer_outside_02_p1"
+			]
+		},
 		"explorer_template_teen_event_01": {
 			"pages": [
 				"explorer_template_teen_event_01_p1"
@@ -6865,6 +9321,29 @@
 			},
 			"pages": [
 				"explorer_template_teen_interact_12_p1"
+			]
+		},
+		"explorer_template_teen_interact_13": {
+			"pages": [
+				"explorer_template_teen_interact_13_p1"
+			]
+		},
+		"explorer_template_teen_interact_14": {
+			"conditions": {
+				"improvements": {
+					"lights": [
+						1,
+						-1
+					]
+				}
+			},
+			"pages": [
+				"explorer_template_teen_interact_14_p1"
+			]
+		},
+		"explorer_template_teen_interact_15": {
+			"pages": [
+				"explorer_template_teen_interact_15_p1"
 			]
 		},
 		"explorer_template_teen_meet_01": {
@@ -7073,6 +9552,16 @@
 				"explorer_unique_gambler_interact_15_p1"
 			]
 		},
+		"explorer_unique_gambler_interact_16": {
+			"pages": [
+				"explorer_unique_gambler_interact_16_p1"
+			]
+		},
+		"explorer_unique_gambler_interact_17": {
+			"pages": [
+				"explorer_unique_gambler_interact_17_p1"
+			]
+		},
 		"explorer_unique_gambler_meet_01": {
 			"pages": [
 				"explorer_unique_gambler_meet_01_p1"
@@ -7080,6 +9569,9 @@
 		},
 		"explorer_unique_gambler_outside_01": {
 			"conditions": {
+				"explorer": {
+					"trust": 1
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -7135,7 +9627,8 @@
 		"explorer_unique_gambler_story_escape_stay_01": {
 			"conditions": {
 				"storyFlags": {
-					"ESCAPE_SEARCHING_FOR_EXIT": false
+					"ESCAPE_SEARCHING_FOR_EXIT": false,
+					"ESCAPE_SEARCHING_FOR_GROUND": false
 				}
 			},
 			"pages": [
@@ -7512,6 +10005,78 @@
 				"explorer_unique_handler_interact_16_p1"
 			]
 		},
+		"explorer_unique_handler_interact_17": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_17_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_big_animal_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_big_animal_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_big_animal_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_big_animal_02_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_bird_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_bird_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_flora_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_flora_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_flora_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_flora_02_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_fungi_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_fungi_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_small_animal_01": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_small_animal_01_p1"
+			]
+		},
+		"explorer_unique_handler_interact_enemy_small_animal_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_handler_interact_enemy_small_animal_02_p1"
+			]
+		},
 		"explorer_unique_handler_meet_01": {
 			"pages": [
 				"explorer_unique_handler_meet_01_p1"
@@ -7819,6 +10384,11 @@
 				"explorer_unique_hermit_interact_15_p1"
 			]
 		},
+		"explorer_unique_hermit_interact_16": {
+			"pages": [
+				"explorer_unique_hermit_interact_16_p1"
+			]
+		},
 		"explorer_unique_hermit_interact_directions_passage_01": {
 			"conditions": {
 				"explorer": {
@@ -8018,6 +10588,16 @@
 			},
 			"pages": [
 				"explorer_unique_journalist_interact_15_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_16": {
+			"pages": [
+				"explorer_unique_journalist_interact_16_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_17": {
+			"pages": [
+				"explorer_unique_journalist_interact_17_p1"
 			]
 		},
 		"explorer_unique_journalist_interact_forced_investigate_01": {
@@ -8247,6 +10827,31 @@
 				"explorer_unique_journalist_story_storehouse_p1"
 			]
 		},
+		"explorer_unique_journalist_tip_investigate_locale_01": {
+			"pages": [
+				"explorer_unique_journalist_tip_investigate_locale_01_p1"
+			]
+		},
+		"explorer_unique_journalist_tip_unlock_insight_01": {
+			"conditions": {
+				"featureUnlocked": {
+					"insight": true
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_tip_unlock_insight_01_p1"
+			]
+		},
+		"explorer_unique_journalist_tip_unlock_investigate_01": {
+			"conditions": {
+				"featureUnlocked": {
+					"investigate": true
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_tip_unlock_investigate_01_p1"
+			]
+		},
 		"explorer_unique_prospector_event_01": {
 			"pages": [
 				"explorer_unique_prospector_event_01_p1"
@@ -8395,6 +11000,37 @@
 			"pages": [
 				"explorer_unique_prospector_interact_15_p1",
 				"explorer_unique_prospector_interact_15_p2"
+			]
+		},
+		"explorer_unique_prospector_interact_16": {
+			"conditions": {
+				"trust": 8
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_16_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_17": {
+			"pages": [
+				"explorer_unique_prospector_interact_17_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_18": {
+			"pages": [
+				"explorer_unique_prospector_interact_18_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_19": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_prospector_interact_19_p1"
+			]
+		},
+		"explorer_unique_prospector_interact_20": {
+			"pages": [
+				"explorer_unique_prospector_interact_20_p1"
 			]
 		},
 		"explorer_unique_prospector_meet_01": {
@@ -9151,6 +11787,92 @@
 				"locale_generic_pharmacy_intro_02_p1"
 			]
 		},
+		"locale_generic_repairshop": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.dialogue.locale_generic_repairshop_intro"
+				},
+				{
+					"id": "offer",
+					"key": "story.dialogue.locale_generic_repairshop_offer",
+					"options": [
+						{
+							"buttonKey": "npc_request_disassemble",
+							"costs": {
+								"item_disassemblable": [
+									1,
+									-1
+								]
+							},
+							"isPreviewCosts": true,
+							"response": "disassemble"
+						},
+						{
+							"buttonKey": "npc_request_repair",
+							"conditions": {
+								"playerInventory": {
+									"item_broken": [
+										1,
+										-1
+									]
+								}
+							},
+							"costs": {
+								"silver": 1
+							},
+							"response": "repair"
+						},
+						{
+							"buttonKey": "npc_request_reject",
+							"response": "reject"
+						}
+					]
+				},
+				{
+					"id": "disassemble",
+					"key": "story.dialogue.locale_generic_repairshop_disassemble_choose",
+					"options": [
+						{
+							"buttonKey": "npc_request_disassemble",
+							"costs": {
+								"item_disassemblable": [
+									1,
+									-1
+								]
+							},
+							"isPreviewCosts": true,
+							"response": "disassemble_done"
+						},
+						{
+							"buttonKey": "npc_request_cancel",
+							"response": "reject"
+						}
+					],
+					"selection": {
+						"source": "item_disassemblable",
+						"type": "DROPDOWN"
+					}
+				},
+				{
+					"action": "disassemble_item",
+					"id": "disassemble_done",
+					"key": "story.dialogue.locale_generic_repairshop_disassemble_done",
+					"options": "END"
+				},
+				{
+					"action": "repair_all_items",
+					"id": "repair",
+					"key": "story.dialogue.locale_generic_repairshop_repair_done",
+					"options": "END"
+				},
+				{
+					"id": "reject",
+					"key": "story.dialogue.locale_generic_repairshop_reject",
+					"options": "END"
+				}
+			]
+		},
 		"locale_generic_restaurant_intro_01": {
 			"pages": [
 				"locale_generic_restaurant_intro_01_p1"
@@ -9229,86 +11951,6 @@
 		"locale_generic_warehouse_intro_02": {
 			"pages": [
 				"locale_generic_warehouse_intro_02_p1"
-			]
-		},
-		"locale_generic_repairshop": {
-			"pages": [
-				{
-					"id": "intro",
-					"key": "story.dialogue.locale_generic_repairshop_intro"
-				},
-				{
-					"id": "offer",
-					"key": "story.dialogue.locale_generic_repairshop_offer",
-					"options": [
-						{
-							"buttonKey": "npc_request_disassemble",
-							"response": "disassemble",
-							"costs": {
-								"item_disassemblable": [ 1, -1 ]
-							},
-							"isPreviewCosts": true
-						},
-						{
-							"buttonKey": "npc_request_repair",
-							"costs": {
-								"silver": 1
-							},
-							"conditions": {
-								"playerInventory": {
-									"item_broken": [
-										1,
-										-1
-									]
-								}
-							},
-							"response": "repair"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "disassemble",
-					"key": "story.dialogue.locale_generic_repairshop_disassemble_choose",
-					"options": [
-						{
-							"buttonKey": "npc_request_disassemble",
-							"response": "disassemble_done",
-							"costs": {
-								"item_disassemblable": [ 1, -1 ]
-							},
-							"isPreviewCosts": true
-						},
-						{
-							"buttonKey": "npc_request_cancel",
-							"response": "reject"
-						}
-					],
-					"selection": {
-						"type": "DROPDOWN",
-						"source": "item_disassemblable"
-					}
-				},
-				{
-					"id": "disassemble_done",
-					"action": "disassemble_item",
-					"key": "story.dialogue.locale_generic_repairshop_disassemble_done",
-					"options": "END"
-				},
-				{
-					"id": "repair",
-					"action": "repair_all_items",
-					"key": "story.dialogue.locale_generic_repairshop_repair_done",
-					"options": "END"
-				},
-				{
-					"id": "reject",
-					"key": "story.dialogue.locale_generic_repairshop_reject",
-					"options": "END"
-				}
 			]
 		},
 		"locale_story_compound": {
@@ -9440,7 +12082,18 @@
 				}
 			]
 		},
-
+		"locale_story_spaceFactory_assembly": {
+			"pages": [
+				{
+					"id": "intro",
+					"key": "story.stories.fall_locale_spaceFactory_assembly_p1"
+				},
+				{
+					"id": "description",
+					"key": "story.stories.fall_locale_spaceFactory_assembly_p2"
+				}
+			]
+		},
 		"locale_story_spaceFactory_fuel": {
 			"pages": [
 				{
@@ -9452,7 +12105,7 @@
 					"key": "story.stories.fall_locale_spaceFactory_fuel_p2"
 				}
 			]
-				},
+		},
 		"locale_story_spaceFactory_material": {
 			"pages": [
 				{
@@ -9462,18 +12115,6 @@
 				{
 					"id": "description",
 					"key": "story.stories.fall_locale_spaceFactory_material_p2"
-					}
-			]
-		},
-		"locale_story_spaceFactory_assembly": {
-			"pages": [
-				{
-					"id": "intro",
-					"key": "story.stories.fall_locale_spaceFactory_assembly_p1"
-				},
-				{
-					"id": "description",
-					"key": "story.stories.fall_locale_spaceFactory_assembly_p2"
 				}
 			]
 		},
@@ -9502,54 +12143,6 @@
 					"metaKey": "locale_workshop_rubber_outro_p1_meta"
 				}
 			]
-		},
-		"npc_generic_request_water_01": {
-			"conditions": {
-				"level": {
-					"population": [
-						1,
-						-1
-					]
-				}
-			},
-			"pages": [
-				{
-					"id": "start",
-					"key": "npc_generic_request_water_01",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"resource_water": 5
-							},
-							"response": "agree"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "agree",
-					"key": "npc_generic_request_water_01_thanks",
-					"result": {
-						"gainedRumours": 1,
-						"removeCharacter": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "npc_generic_request_water_01_reject",
-					"result": {
-						"gainedPerks": [
-							"injury"
-						],
-						"removeCharacter": true
-					}
-				}
-			],
-			"repeatable": true
 		},
 		"refugees_default_event_01": {
 			"pages": [
@@ -9699,12 +12292,22 @@
 					"character_bard_default_meet_03",
 					"character_bard_default_meet_04",
 					"character_bard_default_meet_05",
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
 					"character_generic_helpful_meet_poi_blocker_gate_01",
 					"character_generic_helpful_meet_poi_blocker_waste_01",
 					"character_generic_helpful_meet_poi_campable_01",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_helpful_meet_poi_campable_02",
 					"character_generic_helpful_meet_poi_hazard_cold_01",
 					"character_generic_helpful_meet_poi_hazard_debris_01",
@@ -9736,6 +12339,8 @@
 					"character_beggar_default_meet_02",
 					"character_beggar_default_meet_03",
 					"character_beggar_default_meet_04",
+					"character_beggar_default_meet_05",
+					"character_beggar_default_meet_06",
 					"character_generic_story_fall_dunno_01",
 					"character_generic_story_surface_01"
 				]
@@ -9787,6 +12392,28 @@
 				]
 			}
 		},
+		"character_cynic_default": {
+			"dialogues": {
+				"meet": [
+					"character_cynic_default_meet_01",
+					"character_cynic_default_meet_02",
+					"character_cynic_default_meet_03",
+					"character_cynic_default_meet_04",
+					"character_cynic_default_meet_05",
+					"character_cynic_default_meet_06",
+					"character_cynic_default_meet_07",
+					"character_cynic_default_meet_08",
+					"character_cynic_default_meet_09",
+					"character_cynic_default_meet_10",
+					"character_cynic_default_meet_11",
+					"character_cynic_default_meet_12",
+					"character_cynic_default_meet_13",
+					"character_cynic_default_meet_14",
+					"character_cynic_default_meet_15",
+					"character_cynic_default_meet_16"
+				]
+			}
+		},
 		"character_darkDweller_default": {
 			"dialogues": {
 				"interact": [
@@ -9796,16 +12423,22 @@
 					"character_darkDweller_default_interact_04",
 					"character_darkDweller_default_interact_05",
 					"character_darkDweller_default_interact_06",
+					"character_darkDweller_default_interact_07",
+					"character_darkDweller_default_interact_08",
+					"character_darkDweller_default_interact_09",
+					"character_darkDweller_default_interact_10",
 					"character_generic_story_explain_ground_05",
 					"character_generic_story_fall_theory_government_01",
 					"character_generic_story_government_negative",
 					"character_generic_story_l14_01",
 					"character_generic_story_warn_ground_03",
 					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
 					"character_workerGeneric_interact_l15_01",
 					"character_workerGeneric_interact_overcrowded_01",
@@ -9853,6 +12486,12 @@
 					"character_drifter_default_meet_06",
 					"character_drifter_default_meet_07",
 					"character_drifter_default_meet_08",
+					"character_drifter_default_meet_09",
+					"character_drifter_default_meet_10",
+					"character_drifter_default_meet_11",
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -9871,6 +12510,19 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_meet_district_current_commercial_01",
+					"character_generic_meet_district_current_industrial_01",
+					"character_generic_meet_district_current_public_01",
+					"character_generic_meet_district_current_residential_01",
+					"character_generic_meet_district_warning_01",
+					"character_generic_meet_district_warning_02",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
 					"character_generic_story_explain_ground_01",
@@ -9886,6 +12538,22 @@
 					"character_generic_story_warn_ground_02",
 					"character_generic_story_warn_ground_03",
 					"character_generic_stranded_meet_water"
+				]
+			}
+		},
+		"character_elder_default": {
+			"dialogues": {
+				"interact": [
+					"character_elder_default_interact_01",
+					"character_elder_default_interact_02",
+					"character_elder_default_interact_03",
+					"character_elder_default_interact_04",
+					"character_elder_default_interact_05",
+					"character_elder_default_interact_06",
+					"character_elder_default_interact_07",
+					"character_elder_default_interact_08",
+					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_injury_01"
 				]
 			}
 		},
@@ -9928,6 +12596,16 @@
 		"character_guard_default": {
 			"dialogues": {
 				"meet": [
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_story_fall_encourage_01",
 					"character_generic_story_fall_encourage_02",
 					"character_generic_story_surface_01",
@@ -9942,6 +12620,9 @@
 		"character_hunter_default": {
 			"dialogues": {
 				"meet": [
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -9971,7 +12652,34 @@
 					"character_hunter_default_meet_03",
 					"character_hunter_default_meet_04",
 					"character_hunter_default_meet_05",
-					"character_hunter_default_meet_06"
+					"character_hunter_default_meet_06",
+					"character_hunter_default_meet_07"
+				]
+			}
+		},
+		"character_machineCultist_default": {
+			"dialogues": {
+				"meet": [
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
+					"character_machineCultist_default_meet_01",
+					"character_machineCultist_default_meet_02",
+					"character_machineCultist_default_meet_03",
+					"character_machineCultist_default_meet_04",
+					"character_machineCultist_default_meet_05",
+					"character_machineCultist_default_meet_06",
+					"character_machineCultist_default_meet_07",
+					"character_machineCultist_default_meet_08",
+					"character_machineCultist_default_meet_09",
+					"character_machineCultist_default_meet_10",
+					"character_machineCultist_default_meet_11",
+					"character_machineCultist_default_meet_12",
+					"character_machineCultist_default_meet_13"
 				]
 			}
 		},
@@ -9996,6 +12704,13 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
 					"character_generic_story_explain_ground_03",
@@ -10010,13 +12725,17 @@
 					"character_mercenary_default_meet_01",
 					"character_mercenary_default_meet_02",
 					"character_mercenary_default_meet_03",
-					"character_mercenary_default_meet_04"
+					"character_mercenary_default_meet_04",
+					"character_mercenary_default_meet_05"
 				]
 			}
 		},
 		"character_messenger_default": {
 			"dialogues": {
 				"meet": [
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -10035,6 +12754,19 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_meet_district_current_commercial_01",
+					"character_generic_meet_district_current_industrial_01",
+					"character_generic_meet_district_current_public_01",
+					"character_generic_meet_district_current_residential_01",
+					"character_generic_meet_district_warning_01",
+					"character_generic_meet_district_warning_02",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
 					"character_generic_story_fall_dunno_01",
@@ -10049,14 +12781,76 @@
 					"character_messenger_default_meet_02",
 					"character_messenger_default_meet_03",
 					"character_messenger_default_meet_04",
-					"character_messenger_default_meet_05"
+					"character_messenger_default_meet_05",
+					"character_messenger_default_meet_06",
+					"character_messenger_default_meet_07"
+				]
+			}
+		},
+		"character_namekeeper_default": {
+			"dialogues": {
+				"event": [
+					"character_namekeeper_default_event_01",
+					"character_namekeeper_default_event_02",
+					"character_namekeeper_default_event_03",
+					"character_namekeeper_default_event_04",
+					"character_namekeeper_default_event_05",
+					"character_namekeeper_default_event_06"
+				],
+				"meet": [
+					"character_namekeeper_default_meet_01",
+					"character_namekeeper_default_meet_02",
+					"character_namekeeper_default_meet_03",
+					"character_namekeeper_default_meet_04",
+					"character_namekeeper_default_meet_05",
+					"character_namekeeper_default_meet_06"
+				]
+			}
+		},
+		"character_natureCultist_default": {
+			"dialogues": {
+				"meet": [
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
+					"character_natureCultist_default_meet_01",
+					"character_natureCultist_default_meet_02",
+					"character_natureCultist_default_meet_03",
+					"character_natureCultist_default_meet_04",
+					"character_natureCultist_default_meet_05",
+					"character_natureCultist_default_meet_06",
+					"character_natureCultist_default_meet_07",
+					"character_natureCultist_default_meet_08",
+					"character_natureCultist_default_meet_09"
+				]
+			}
+		},
+		"character_pilgrim_default": {
+			"dialogues": {
+				"meet": [
+					"character_pilgrim_default_meet_01",
+					"character_pilgrim_default_meet_02",
+					"character_pilgrim_default_meet_03",
+					"character_pilgrim_default_meet_04",
+					"character_pilgrim_default_meet_05",
+					"character_pilgrim_default_meet_06",
+					"character_pilgrim_default_meet_07",
+					"character_pilgrim_default_meet_08",
+					"character_pilgrim_default_meet_09",
+					"character_pilgrim_default_meet_10"
 				]
 			}
 		},
 		"character_scavenger_default": {
 			"dialogues": {
 				"meet": [
-					"character_scavenger_default_meet_01",
+					"character_generic_helpful_enemy_01",
+					"character_generic_helpful_enemy_02",
+					"character_generic_helpful_enemy_03",
 					"character_generic_helpful_meet_poi_blocker_debris_01",
 					"character_generic_helpful_meet_poi_blocker_explosives_01",
 					"character_generic_helpful_meet_poi_blocker_gap_01",
@@ -10075,10 +12869,17 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_meet_district_current_commercial_01",
+					"character_generic_meet_district_current_industrial_01",
+					"character_generic_meet_district_current_public_01",
+					"character_generic_meet_district_current_residential_01",
+					"character_generic_meet_district_warning_01",
+					"character_generic_meet_district_warning_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_reserved_meet_02",
 					"character_generic_story_explain_ground_03",
 					"character_generic_story_explain_ground_04",
+					"character_scavenger_default_meet_01",
 					"character_generic_story_l14_01",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02",
@@ -10107,6 +12908,7 @@
 					"character_shaman_default_meet_04",
 					"character_shaman_default_meet_05",
 					"character_shaman_default_meet_06",
+					"character_shaman_default_meet_07",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
 					"character_generic_story_searching_for_greenhouse_02",
@@ -10132,6 +12934,13 @@
 					"character_slumRefugee_default_interact_04",
 					"character_slumRefugee_default_interact_05",
 					"character_slumRefugee_default_interact_06",
+					"character_slumRefugee_default_interact_07",
+					"character_slumRefugee_default_interact_08",
+					"character_slumRefugee_default_interact_09",
+					"character_slumRefugee_default_interact_10",
+					"character_slumRefugee_default_interact_11",
+					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_hint_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
@@ -10179,7 +12988,10 @@
 					"character_slumRefugee_default_meet_02",
 					"character_slumRefugee_default_meet_03",
 					"character_slumRefugee_default_meet_04",
-					"character_slumRefugee_default_meet_05"
+					"character_slumRefugee_default_meet_05",
+					"character_slumRefugee_default_meet_06",
+					"character_slumRefugee_default_meet_07",
+					"character_slumRefugee_default_meet_08"
 				]
 			}
 		},
@@ -10197,6 +13009,10 @@
 					"character_surfaceRefugee_default_interact_09",
 					"character_surfaceRefugee_default_interact_10",
 					"character_surfaceRefugee_default_interact_11",
+					"character_surfaceRefugee_default_interact_12",
+					"character_surfaceRefugee_default_interact_13",
+					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
@@ -10236,7 +13052,9 @@
 					"character_surfaceRefugee_default_meet_01",
 					"character_surfaceRefugee_default_meet_02",
 					"character_surfaceRefugee_default_meet_03",
-					"character_surfaceRefugee_default_meet_04"
+					"character_surfaceRefugee_default_meet_04",
+					"character_surfaceRefugee_default_meet_05",
+					"character_surfaceRefugee_default_meet_06"
 				]
 			}
 		},
@@ -10259,13 +13077,41 @@
 					"character_generic_helpful_meet_poi_settlement",
 					"character_generic_helpful_meet_poi_water_01",
 					"character_generic_helpful_meet_poi_water_02",
+					"character_generic_meet_district_current_commercial_01",
+					"character_generic_meet_district_current_industrial_01",
+					"character_generic_meet_district_current_public_01",
+					"character_generic_meet_district_current_residential_01",
+					"character_generic_meet_district_warning_01",
+					"character_generic_meet_district_warning_02",
+					"character_generic_meet_world_feature_collapse_01",
+					"character_generic_meet_world_feature_collapse_02",
+					"character_generic_meet_world_feature_giga_center_01",
+					"character_generic_meet_world_feature_mountain_01",
+					"character_generic_meet_world_feature_mountain_02",
+					"character_generic_meet_world_feature_sunwell_01",
+					"character_generic_meet_world_feature_sunwell_02",
 					"character_generic_reserved_meet_01",
 					"character_generic_story_fall_dunno_03",
 					"character_generic_story_government_neg2pos",
 					"character_generic_story_government_negative",
 					"character_trader_default_meet_01",
 					"character_trader_default_meet_02",
-					"character_trader_default_meet_03"
+					"character_trader_default_meet_03",
+					"character_trader_default_meet_04"
+				]
+			}
+		},
+		"character_trafficker_default": {
+			"dialogues": {
+				"meet": [
+					"character_trafficker_default_meet_01",
+					"character_trafficker_default_meet_02",
+					"character_trafficker_default_meet_03",
+					"character_trafficker_default_meet_04",
+					"character_trafficker_default_meet_05",
+					"character_trafficker_default_meet_06",
+					"character_trafficker_default_meet_07",
+					"character_trafficker_default_meet_08"
 				]
 			}
 		},
@@ -10276,19 +13122,40 @@
 					"character_generic_story_government_neg2pos",
 					"character_workerApothecary_default_interact_02",
 					"character_workerApothecary_default_interact_03",
+					"character_workerApothecary_default_interact_04",
 					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
 					"character_workerGeneric_interact_spirits_03",
-					"character_workerGeneric_interact_03",
-					"character_workerGeneric_interact_04",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -10302,11 +13169,31 @@
 					"character_generic_story_government_neg2pos",
 					"character_workerChemist_default_interact_01",
 					"character_workerChemist_default_interact_02",
+					"character_workerChemist_default_interact_03",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
@@ -10317,6 +13204,9 @@
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04"
+				],
+				"meet": [
+					"character_workerChemist_default_meet_01"
 				]
 			}
 		},
@@ -10328,9 +13218,22 @@
 					"character_workerCleric_default_interact_03",
 					"character_workerCleric_default_interact_04",
 					"character_workerCleric_default_interact_05",
+					"character_workerCleric_default_interact_06",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerHope_interact_camp_worker_hope_bonus_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
@@ -10347,16 +13250,38 @@
 					"character_workerConcrete_default_interact_01",
 					"character_workerConcrete_default_interact_02",
 					"character_workerConcrete_default_interact_03",
+					"character_workerConcrete_default_interact_04",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
@@ -10377,6 +13302,24 @@
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
@@ -10384,6 +13327,9 @@
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04"
+				],
+				"meet": [
+					"character_workerGardener_default_meet_01"
 				]
 			}
 		},
@@ -10395,6 +13341,24 @@
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
@@ -10412,25 +13376,52 @@
 			"dialogues": {
 				"interact": [
 					"character_workerGeneric_interact_01",
+					"character_workerArtisan_interact_camp_worker_artisan_bonus_01",
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_escape_01",
+					"character_workerGeneric_interact_escape_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
-					"character_workerRope_default_interact_01",
-					"character_workerRope_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
+					"character_workerRope_default_interact_01",
+					"character_workerRope_default_interact_02",
+					"character_workerRope_default_interact_03",
+					"character_workerRope_default_interact_04",
+					"character_workerRope_default_interact_05",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -10442,14 +13433,33 @@
 		"character_workerRubber_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerRubber_default_interact_01",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
+					"character_workerRubber_default_interact_01",
 					"character_workerRubber_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
@@ -10457,6 +13467,9 @@
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_default_interact_02"
+				], 
+				"meet": [
+					"character_workerRubber_default_meet_01"
 				]
 			}
 		},
@@ -10469,17 +13482,40 @@
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_escape_01",
+					"character_workerGeneric_interact_escape_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -10494,9 +13530,12 @@
 					"character_workerScavenger_default_interact_01",
 					"character_workerScavenger_default_interact_02",
 					"character_workerScavenger_default_interact_03",
+					"character_workerScavenger_interact_camp_worker_metal_bonus_01",
 					"character_workerScavenger_default_interact_04",
 					"character_workerScavenger_default_interact_05",
-					"character_workerScavenger_default_interact_06"
+					"character_workerScavenger_default_interact_06",
+					"character_workerScavenger_default_interact_07",
+					"character_workerScavenger_default_interact_08"
 				],
 				"meet": [
 					"character_workerScavenger_default_meet_01",
@@ -10517,6 +13556,8 @@
 					"character_workerGeneric_interact_hint_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_hope_01",
+					"character_workerAcademic_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01",
@@ -10532,7 +13573,6 @@
 					"character_workerScientist_default_interact_07",
 					"character_workerScientist_default_interact_08",
 					"character_workerScientist_default_interact_09",
-					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_story_greenhouse_found_01"
 				]
 			}
@@ -10542,12 +13582,35 @@
 				"interact": [
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_03",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_escape_01",
+					"character_workerGeneric_interact_escape_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
@@ -10560,30 +13623,52 @@
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerSoldier_default_interact_01",
 					"character_workerSoldier_default_interact_02",
-					"character_workerSoldier_default_interact_03"
+					"character_workerSoldier_default_interact_03",
+					"character_workerSoldier_default_interact_04"
 				]
 			}
 		},
 		"character_workerToolsmith_default": {
 			"dialogues": {
 				"interact": [
-					"character_workerToolsmith_default_interact_01",
+					"character_workerArtisan_interact_camp_worker_artisan_bonus_01",
 					"character_workerGeneric_default_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_smith_3_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
+					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
-					"character_workerToolsmith_default_interact_02",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
-					"character_workerGeneric_interact_story_greenhouse_found_01"
+					"character_workerToolsmith_default_interact_01",
+					"character_workerToolsmith_default_interact_02",
+					"character_workerToolsmith_default_interact_03",
+					"character_workerToolsmith_default_interact_04"
 				]
 			}
 		},
@@ -10595,30 +13680,57 @@
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_escape_01",
+					"character_workerGeneric_interact_escape_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
+					"character_workerTrapper_interact_camp_worker_food_bonus_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
 					"character_workerGeneric_interact_story_greenhouse_fixed_01",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
-					"character_workerTrapper_default_interact_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerGeneric_story_escape_build_passage_01",
 					"character_workerGeneric_story_escape_build_passage_02",
+					"character_workerTrapper_default_interact_01",
 					"character_workerTrapper_default_interact_02",
-					"character_workerTrapper_default_interact_03"
+					"character_workerTrapper_default_interact_03",
+					"character_workerTrapper_default_interact_04",
+					"character_workerTrapper_default_interact_05",
+					"character_workerTrapper_default_interact_06"
 				],
 				"meet": [
 					"character_workerTrapper_default_meet_01",
@@ -10637,18 +13749,42 @@
 					"character_workerGeneric_interact_02",
 					"character_workerGeneric_interact_03",
 					"character_workerGeneric_interact_04",
+					"character_workerGeneric_interact_05",
 					"character_workerGeneric_interact_apocalypse_01",
 					"character_workerGeneric_interact_apocalypse_02",
 					"character_workerGeneric_interact_apocalypse_03",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_high_02",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_01",
+					"character_workerGeneric_interact_camp_feature_disease_factor_low_02",
+					"character_workerGeneric_interact_camp_feature_habitability_high_01",
+					"character_workerGeneric_interact_camp_feature_habitability_low_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_01",
+					"character_workerGeneric_interact_camp_feature_raid_danger_high_02",
+					"character_workerGeneric_interact_camp_feature_raid_danger_low_01",
+					"character_workerGeneric_interact_camp_trader_rate_high_01",
+					"character_workerGeneric_interact_camp_trader_rate_low_01",
+					"character_workerGeneric_interact_camp_worker_academic_bonus_01",
+					"character_workerGeneric_interact_camp_worker_artisan_bonus_01",
+					"character_workerGeneric_interact_camp_worker_food_bonus_01",
+					"character_workerGeneric_interact_camp_worker_hope_bonus_01",
+					"character_workerGeneric_interact_camp_worker_metal_bonus_01",
+					"character_workerGeneric_interact_camp_worker_water_bonus_01",
 					"character_workerGeneric_interact_disease_01",
 					"character_workerGeneric_interact_disease_02",
+					"character_workerGeneric_interact_escape_01",
+					"character_workerGeneric_interact_escape_02",
+					"character_workerGeneric_interact_explorer_injury_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_01",
 					"character_workerGeneric_interact_searching_for_greenhouse_02",
+					"character_workerGeneric_interact_story_greenhouse_fixed_01",
 					"character_workerGeneric_interact_story_greenhouse_found_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_02",
@@ -10660,7 +13796,9 @@
 					"character_workerWater_default_interact_02",
 					"character_workerWater_default_interact_03",
 					"character_workerWater_default_interact_04",
-					"character_workerGeneric_interact_story_greenhouse_fixed_01"
+					"character_workerWater_default_interact_05",
+					"character_workerWater_default_interact_06",
+					"character_workerWater_interact_camp_worker_water_bonus_01"
 				],
 				"meet": [
 					"character_workerWater_default_meet_01",
@@ -10678,17 +13816,21 @@
 					"explorer_generic_human_outside_01",
 					"explorer_generic_human_outside_02",
 					"explorer_generic_human_outside_03",
+					"explorer_generic_fighter_enemy_current_district_01",
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_01",
 					"explorer_generic_interact_02",
 					"explorer_generic_interact_directions_center_01",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
 					"explorer_generic_interact_directions_none_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_scouted_01",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_01",
 					"explorer_generic_interact_injured_party_01",
 					"explorer_generic_interact_injured_recovering_01",
@@ -10696,6 +13838,18 @@
 					"explorer_generic_interact_low_water_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
@@ -10808,6 +13962,11 @@
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
+					"explorer_generic_fighter_enemy_current_district_01",
+					"explorer_generic_fighter_enemy_current_district_02",
+					"explorer_generic_fighter_enemy_current_level_01",
+					"explorer_generic_fighter_enemy_current_level_02",
+					"explorer_generic_fighter_enemy_other_district_01",
 					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
@@ -10992,13 +14151,16 @@
 					"explorer_generic_ability_stat_rumours_outside_02",
 					"explorer_generic_human_outside_01",
 					"explorer_generic_human_outside_02",
-					"explorer_generic_interact_directions_home_02",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_explore_01",
+					"explorer_generic_interact_directions_home_02",
 					"explorer_generic_interact_directions_passage_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_scouted_01",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_04",
 					"explorer_generic_interact_injured_party_04",
 					"explorer_generic_interact_injured_recovering_04",
@@ -11006,6 +14168,19 @@
 					"explorer_generic_interact_low_water_01",
 					"explorer_generic_interact_story_apocalypse_01",
 					"explorer_generic_interact_story_apocalypse_02",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
+					"explorer_generic_interact_tip_unexplored_level_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_12_01",
@@ -11069,6 +14244,11 @@
 				"interact": [
 					"explorer_generic_ability_fight_outside_01",
 					"explorer_generic_ability_flee_outside_01",
+					"explorer_generic_fighter_enemy_current_district_01",
+					"explorer_generic_fighter_enemy_current_district_02",
+					"explorer_generic_fighter_enemy_current_level_01",
+					"explorer_generic_fighter_enemy_current_level_02",
+					"explorer_generic_fighter_enemy_other_district_01",
 					"explorer_generic_fighter_outside_01",
 					"explorer_generic_fighter_outside_02",
 					"explorer_generic_human_outside_03",
@@ -11102,6 +14282,9 @@
 					"explorer_template_amnesiac_interact_10",
 					"explorer_template_amnesiac_interact_11",
 					"explorer_template_amnesiac_interact_12",
+					"explorer_template_amnesiac_interact_13",
+					"explorer_template_amnesiac_interact_14",
+					"explorer_template_amnesiac_interact_15",
 					"explorer_template_amnesiac_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
@@ -11135,6 +14318,7 @@
 					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_unexplored_level_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -11143,6 +14327,15 @@
 					"explorer_generic_intract_new_camp_7_01",
 					"explorer_generic_intract_new_camp_8_01",
 					"explorer_generic_intract_new_camp_9_01",
+					"explorer_template_architect_outside_cittadinian_01",
+					"explorer_template_architect_outside_humanist_01",
+					"explorer_template_architect_outside_industrial_01",
+					"explorer_template_architect_outside_karboque_01",
+					"explorer_template_architect_outside_kievan_01",
+					"explorer_template_architect_outside_modern_01",
+					"explorer_template_architect_outside_neowestern_01",
+					"explorer_template_architect_outside_slum_01",
+					"explorer_template_architect_outside_western_01",
 					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
@@ -11167,8 +14360,14 @@
 					"explorer_template_architect_interact_10",
 					"explorer_template_architect_interact_11",
 					"explorer_template_architect_interact_12",
+					"explorer_template_architect_interact_13",
+					"explorer_template_architect_interact_14",
+					"explorer_template_architect_interact_15",
+					"explorer_template_architect_interact_16",
+					"explorer_template_architect_interact_17",
 					"explorer_template_architect_outside_01",
 					"explorer_template_architect_outside_02",
+					"explorer_template_architect_outside_03",
 					"explorer_template_architect_story_apocalypse_plan_ready_01",
 					"explorer_template_architect_story_ground_01",
 					"explorer_template_architect_story_surface_01"
@@ -11192,8 +14391,6 @@
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
 					"explorer_generic_interact_injured_recovering_02",
-					"explorer_generic_interact_low_food_01",
-					"explorer_generic_interact_low_water_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_generic_intract_new_camp_15_01",
@@ -11219,12 +14416,49 @@
 					"explorer_template_bard_interact_10",
 					"explorer_template_bard_interact_11",
 					"explorer_template_bard_interact_12",
+					"explorer_template_bard_interact_13",
 					"explorer_template_bard_outside_01",
 					"explorer_template_bard_outside_02",
 					"explorer_template_bard_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_bard_meet_01"
+				]
+			}
+		},
+		"explorer_template_bureaucrat": {
+			"dialogues": {
+				"event": [
+					"explorer_template_bureaucrat_event_01"
+				],
+				"interact": [
+					"explorer_generic_interact_directions_district_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
+					"explorer_generic_interact_low_food_01",
+					"explorer_generic_interact_low_water_01",
+					"explorer_template_bureaucrat_interact_01",
+					"explorer_template_bureaucrat_interact_02",
+					"explorer_template_bureaucrat_interact_03",
+					"explorer_template_bureaucrat_interact_04",
+					"explorer_template_bureaucrat_interact_05",
+					"explorer_template_bureaucrat_interact_06",
+					"explorer_template_bureaucrat_interact_07",
+					"explorer_template_bureaucrat_interact_08",
+					"explorer_template_bureaucrat_interact_09",
+					"explorer_template_bureaucrat_interact_10",
+					"explorer_template_bureaucrat_interact_11",
+					"explorer_template_bureaucrat_interact_12",
+					"explorer_template_bureaucrat_interact_13",
+					"explorer_template_bureaucrat_interact_14",
+					"explorer_template_bureaucrat_interact_15",
+					"explorer_template_bureaucrat_outside_01",
+					"explorer_template_bureaucrat_outside_02",
+					"explorer_template_bureaucrat_outside_03",
+					"explorer_template_bureaucrat_outside_04"
+				],
+				"meet": [
+					"explorer_template_bureaucrat_meet_01"
 				]
 			}
 		},
@@ -11266,6 +14500,9 @@
 					"explorer_template_darkdweller_interact_11",
 					"explorer_template_darkdweller_interact_12",
 					"explorer_template_darkdweller_interact_13",
+					"explorer_template_darkdweller_interact_14",
+					"explorer_template_darkdweller_interact_15",
+					"explorer_template_darkdweller_interact_16",
 					"explorer_template_darkdweller_interact_directions_safety_01",
 					"explorer_template_darkdweller_outside_01",
 					"explorer_template_darkdweller_outside_02",
@@ -11284,14 +14521,22 @@
 				],
 				"interact": [
 					"explorer_generic_human_outside_02",
-					"explorer_generic_human_outside_03",
 					"explorer_generic_ability_fight_outside_01",
+					"explorer_generic_fighter_enemy_current_district_01",
+					"explorer_generic_fighter_enemy_current_district_02",
+					"explorer_generic_fighter_enemy_current_level_01",
+					"explorer_generic_fighter_enemy_current_level_02",
+					"explorer_generic_fighter_enemy_other_district_01",
 					"explorer_generic_fighter_outside_01",
 					"explorer_generic_fighter_outside_02",
+					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
 					"explorer_generic_interact_directions_none_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
 					"explorer_generic_interact_injured_recovering_02",
@@ -11326,6 +14571,8 @@
 					"explorer_template_guard_interact_10",
 					"explorer_template_guard_interact_11",
 					"explorer_template_guard_interact_12",
+					"explorer_template_guard_interact_13",
+					"explorer_template_guard_interact_14",
 					"explorer_template_guard_outside_01",
 					"explorer_template_guard_outside_02",
 					"explorer_template_guard_story_expedition_found_01",
@@ -11357,6 +14604,7 @@
 					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_unexplored_level_01",
 					"explorer_generic_intract_new_camp_11_01",
 					"explorer_generic_intract_new_camp_9_01",
 					"explorer_generic_story_fall_exodus_01",
@@ -11378,6 +14626,12 @@
 					"explorer_template_hacker_interact_10",
 					"explorer_template_hacker_interact_11",
 					"explorer_template_hacker_interact_12",
+					"explorer_template_hacker_interact_13",
+					"explorer_template_hacker_interact_14",
+					"explorer_template_hacker_interact_15",
+					"explorer_template_hacker_interact_16",
+					"explorer_template_hacker_interact_17",
+					"explorer_template_hacker_interact_18",
 					"explorer_template_hacker_outside_01",
 					"explorer_template_hacker_outside_02",
 					"explorer_template_hacker_story_apocalypse_plan_ready_01"
@@ -11395,6 +14649,11 @@
 				"interact": [
 					"explorer_generic_ability_fight_outside_01",
 					"explorer_generic_ability_flee_outside_01",
+					"explorer_generic_fighter_enemy_current_district_01",
+					"explorer_generic_fighter_enemy_current_district_02",
+					"explorer_generic_fighter_enemy_current_level_01",
+					"explorer_generic_fighter_enemy_current_level_02",
+					"explorer_generic_fighter_enemy_other_district_01",
 					"explorer_generic_fighter_outside_01",
 					"explorer_generic_fighter_outside_02",
 					"explorer_generic_human_outside_01",
@@ -11402,7 +14661,10 @@
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_center_01",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
 					"explorer_generic_interact_injured_recovering_02",
@@ -11438,6 +14700,9 @@
 					"explorer_template_lover_interact_10",
 					"explorer_template_lover_interact_11",
 					"explorer_template_lover_interact_12",
+					"explorer_template_lover_interact_13",
+					"explorer_template_lover_interact_14",
+					"explorer_template_lover_interact_15",
 					"explorer_template_lover_outside_01",
 					"explorer_template_lover_outside_02",
 					"explorer_template_lover_story_escape_stay_01"
@@ -11453,17 +14718,32 @@
 					"explorer_template_researcher_event_01"
 				],
 				"interact": [
-					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
+					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"explorer_generic_ability_cost_movement_outside_01",
 					"explorer_generic_ability_cost_scout_outside_01",
 					"explorer_generic_ability_detect_ingredients_outside_01",
 					"explorer_generic_human_outside_02",
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_05",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
 					"explorer_generic_interact_directions_scouted_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_03",
 					"explorer_generic_interact_injured_party_03",
 					"explorer_generic_interact_injured_recovering_03",
@@ -11495,17 +14775,112 @@
 					"explorer_template_researcher_interact_09",
 					"explorer_template_researcher_interact_10",
 					"explorer_template_researcher_interact_11",
-					"explorer_template_researcher_story_ground_01",
-					"explorer_template_researcher_story_ground_02",
 					"explorer_template_researcher_interact_12",
+					"explorer_template_researcher_interact_13",
+					"explorer_template_researcher_interact_14",
+					"explorer_template_researcher_interact_15",
+					"explorer_template_researcher_interact_16",
+					"explorer_template_researcher_interact_17",
+					"explorer_template_researcher_interact_18",
+					"explorer_template_researcher_interact_19",
+					"explorer_template_researcher_interact_outside_danger",
+					"explorer_template_researcher_interact_outside_nature",
+					"explorer_template_researcher_interact_outside_sterile",
 					"explorer_template_researcher_outside_01",
 					"explorer_template_researcher_outside_02",
 					"explorer_template_researcher_outside_03",
 					"explorer_template_researcher_outside_04",
+					"explorer_template_researcher_story_ground_01",
+					"explorer_template_researcher_story_ground_02",
 					"explorer_template_researcher_story_apocalypse_plan_ready_01"
 				],
 				"meet": [
 					"explorer_template_researcher_meet_01"
+				]
+			}
+		},
+		"explorer_template_slummer": {
+			"dialogues": {				
+				"event": [
+					"explorer_template_slummer_event_01"
+				],
+				"interact": [
+					"explorer_generic_interact_directions_district_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
+					"explorer_generic_interact_low_food_01",
+					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
+					"explorer_generic_interact_tip_unexplored_level_01",
+					"explorer_template_slummer_interact_01",
+					"explorer_template_slummer_interact_02",
+					"explorer_template_slummer_interact_03",
+					"explorer_template_slummer_interact_04",
+					"explorer_template_slummer_interact_05",
+					"explorer_template_slummer_interact_06",
+					"explorer_template_slummer_interact_07",
+					"explorer_template_slummer_interact_08",
+					"explorer_template_slummer_interact_09",
+					"explorer_template_slummer_interact_10",
+					"explorer_template_slummer_interact_11",
+					"explorer_template_slummer_interact_12",
+					"explorer_template_slummer_outside_01",
+					"explorer_template_slummer_outside_02"
+				],
+				"meet": [
+					"explorer_template_slummer_meet_01"
+				]
+			}
+		},
+		"explorer_template_surfacer": {
+			"dialogues": {
+				"event": [
+					"explorer_template_surfacer_event_01"
+				],
+				"interact": [
+					"explorer_generic_interact_low_food_01",
+					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
+					"explorer_generic_interact_tip_unexplored_level_01",
+					"explorer_template_surfacer_interact_01",
+					"explorer_template_surfacer_interact_02",
+					"explorer_template_surfacer_interact_03",
+					"explorer_template_surfacer_interact_04",
+					"explorer_template_surfacer_interact_05",
+					"explorer_template_surfacer_interact_06",
+					"explorer_template_surfacer_interact_07",
+					"explorer_template_surfacer_interact_08",
+					"explorer_template_surfacer_interact_09",
+					"explorer_template_surfacer_interact_10",
+					"explorer_template_surfacer_interact_11",
+					"explorer_template_surfacer_interact_12",
+					"explorer_template_surfacer_outside_01",
+					"explorer_template_surfacer_outside_02"
+				],
+				"meet": [
+					"explorer_template_surfacer_meet_01"
 				]
 			}
 		},
@@ -11546,6 +14921,9 @@
 					"explorer_template_teen_interact_10",
 					"explorer_template_teen_interact_11",
 					"explorer_template_teen_interact_12",
+					"explorer_template_teen_interact_13",
+					"explorer_template_teen_interact_14",
+					"explorer_template_teen_interact_15",
 					"explorer_template_teen_story_rescue_absence_01"
 				],
 				"meet": [
@@ -11560,11 +14938,14 @@
 				],
 				"interact": [
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
 					"explorer_generic_interact_directions_passage_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_forced_01",
 					"explorer_generic_interact_injured_outside_02",
 					"explorer_generic_interact_injured_party_02",
@@ -11603,6 +14984,8 @@
 					"explorer_unique_gambler_interact_13",
 					"explorer_unique_gambler_interact_14",
 					"explorer_unique_gambler_interact_15",
+					"explorer_unique_gambler_interact_16",
+					"explorer_unique_gambler_interact_17",
 					"explorer_unique_gambler_outside_01",
 					"explorer_unique_gambler_outside_02",
 					"explorer_unique_gambler_story_apocalypse_plan_ready_01",
@@ -11635,12 +15018,22 @@
 				"interact": [
 					"explorer_generic_ability_handler_outside_01",
 					"explorer_generic_ability_handler_outside_02",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_02",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_04",
 					"explorer_generic_interact_injured_party_04",
 					"explorer_generic_interact_injured_recovering_04",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_intract_new_camp_6_01",
@@ -11659,11 +15052,25 @@
 					"explorer_unique_handler_interact_09",
 					"explorer_unique_handler_interact_10",
 					"explorer_unique_handler_interact_11",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
 					"explorer_unique_handler_interact_12",
 					"explorer_unique_handler_interact_13",
 					"explorer_unique_handler_interact_14",
 					"explorer_unique_handler_interact_15",
 					"explorer_unique_handler_interact_16",
+					"explorer_unique_handler_interact_17",
+					"explorer_unique_handler_interact_enemy_big_animal_01",
+					"explorer_unique_handler_interact_enemy_big_animal_02",
+					"explorer_unique_handler_interact_enemy_bird_01",
+					"explorer_unique_handler_interact_enemy_flora_01",
+					"explorer_unique_handler_interact_enemy_flora_02",
+					"explorer_unique_handler_interact_enemy_fungi_01",
+					"explorer_unique_handler_interact_enemy_small_animal_01",
+					"explorer_unique_handler_interact_enemy_small_animal_02",
 					"explorer_unique_handler_outside_01",
 					"explorer_unique_handler_outside_02",
 					"explorer_unique_handler_outside_03",
@@ -11690,11 +15097,26 @@
 					"explorer_generic_interact_directions_center_01",
 					"explorer_generic_interact_directions_home_02",
 					"explorer_generic_interact_directions_scouted_01",
+					"explorer_generic_interact_directions_district_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_01",
 					"explorer_generic_interact_injured_party_01",
 					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
 					"explorer_template_darkdweller_interact_directions_safety_01",
@@ -11713,6 +15135,7 @@
 					"explorer_unique_hermit_interact_13",
 					"explorer_unique_hermit_interact_14",
 					"explorer_unique_hermit_interact_15",
+					"explorer_unique_hermit_interact_16",
 					"explorer_unique_hermit_interact_directions_passage_01",
 					"explorer_unique_hermit_outside_01",
 					"explorer_unique_hermit_story_apocalypse_plan_ready_01",
@@ -11736,17 +15159,33 @@
 					"explorer_generic_human_outside_03",
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_explore_01",
 					"explorer_generic_interact_directions_passage_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_scouted_01",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_injured_outside_01",
 					"explorer_generic_interact_injured_party_01",
 					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
+					"explorer_generic_interact_tip_unexplored_level_01",
 					"explorer_generic_intract_new_camp_10_01",
 					"explorer_generic_intract_new_camp_15_01",
 					"explorer_generic_intract_new_camp_5_01",
@@ -11778,6 +15217,8 @@
 					"explorer_unique_journalist_interact_13",
 					"explorer_unique_journalist_interact_14",
 					"explorer_unique_journalist_interact_15",
+					"explorer_unique_journalist_interact_16",
+					"explorer_unique_journalist_interact_17",
 					"explorer_unique_journalist_interact_forced_investigate_01",
 					"explorer_unique_journalist_outside_01",
 					"explorer_unique_journalist_outside_02",
@@ -11796,7 +15237,10 @@
 					"explorer_unique_journalist_story_spacecraft",
 					"explorer_unique_journalist_story_spirits_found_01",
 					"explorer_unique_journalist_story_start",
-					"explorer_unique_journalist_story_storehouse"
+					"explorer_unique_journalist_story_storehouse",
+					"explorer_unique_journalist_tip_investigate_locale_01",
+					"explorer_unique_journalist_tip_unlock_insight_01",
+					"explorer_unique_journalist_tip_unlock_investigate_01"
 				],
 				"meet": [
 					"explorer_unique_journalist_meet_01"
@@ -11817,18 +15261,33 @@
 					"explorer_generic_human_outside_04",
 					"explorer_generic_human_outside_05",
 					"explorer_generic_interact_directions_center_01",
+					"explorer_generic_interact_directions_district_01",
 					"explorer_generic_interact_directions_home_01",
 					"explorer_generic_interact_directions_passage_01",
 					"explorer_generic_interact_directions_safety_01",
 					"explorer_generic_interact_directions_safety_02",
 					"explorer_generic_interact_directions_scouted_01",
 					"explorer_generic_interact_directions_unscouted_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
 					"explorer_generic_interact_forced_01",
 					"explorer_generic_interact_injured_outside_01",
 					"explorer_generic_interact_injured_party_01",
 					"explorer_generic_interact_injured_recovering_01",
 					"explorer_generic_interact_low_food_01",
 					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_tip_hazard_cold_01",
+					"explorer_generic_interact_tip_hazard_cold_02",
+					"explorer_generic_interact_tip_hazard_debris_01",
+					"explorer_generic_interact_tip_hazard_debris_02",
+					"explorer_generic_interact_tip_hazard_flood_01",
+					"explorer_generic_interact_tip_hazard_flood_02",
+					"explorer_generic_interact_tip_hazard_pollution_01",
+					"explorer_generic_interact_tip_hazard_pollution_02",
+					"explorer_generic_interact_tip_hazard_radiation_01",
+					"explorer_generic_interact_tip_hazard_radiation_02",
+					"explorer_generic_interact_tip_hazard_territory_01",
+					"explorer_generic_interact_tip_hazard_territory_02",
 					"explorer_generic_intract_new_camp_12_01",
 					"explorer_generic_intract_new_camp_13_01",
 					"explorer_generic_intract_new_camp_14_01",
@@ -11851,11 +15310,17 @@
 					"explorer_unique_prospector_interact_08",
 					"explorer_unique_prospector_interact_09",
 					"explorer_unique_prospector_interact_10",
+					"explorer_generic_interact_tip_unexplored_level_01",
 					"explorer_unique_prospector_interact_11",
 					"explorer_unique_prospector_interact_12",
 					"explorer_unique_prospector_interact_13",
 					"explorer_unique_prospector_interact_14",
 					"explorer_unique_prospector_interact_15",
+					"explorer_unique_prospector_interact_16",
+					"explorer_unique_prospector_interact_17",
+					"explorer_unique_prospector_interact_18",
+					"explorer_unique_prospector_interact_19",
+					"explorer_unique_prospector_interact_20",
 					"explorer_unique_prospector_outside_01",
 					"explorer_unique_prospector_outside_02",
 					"explorer_unique_prospector_story_apocalypse_plan_ready_01",
