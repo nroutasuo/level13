@@ -1698,6 +1698,8 @@ define(['ash',
 			let player = this.playerStatsNodes.head.entity;
 
 			player.add(new PlayerActionResultComponent(rewards));
+
+			if (typeof popupMsg == "string") popupMsg = { textFragments: [ popupMsg ] };
 			
 			let messages1 = GameGlobals.playerActionResultsHelper.getResultMessagesBeforeSelection(rewards);
 			
@@ -1713,7 +1715,7 @@ define(['ash',
 			
 			for (let i = 0; i < messages1.length; i++) {
 				if (messages1[i].addToPopup) {
-					popupMsg += " " + TextConstants.sentencify(messages1[i].text);
+					popupMsg.textFragments.push({ rawText: TextConstants.sentencify(messages1[i].text) });
 				}
 			}
 			
