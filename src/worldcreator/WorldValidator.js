@@ -647,12 +647,19 @@ define([
 			let levelIndex = WorldCreatorHelper.getLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
 			let maxLevelIndex = WorldCreatorHelper.getMaxLevelIndexForCamp(worldVO.seed, campOrdinal, levelVO.level);
 			let numEarlyBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_EARLY, levelIndex, maxLevelIndex);
+
 			if (numEarlyLocales < numEarlyBlueprints) {
 				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few early locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + ", " + numEarlyLocales + "/" + numEarlyBlueprints });
 			}
 			let numLateBlueprints = UpgradeConstants.getPiecesByCampOrdinal(campOrdinal, UpgradeConstants.BLUEPRINT_BRACKET_LATE, levelIndex, maxLevelIndex);
 			if (numLateLocales < numLateBlueprints) {
 				issues.push({ severity: WorldValidator.SEVERITY_CRITICAL, desc: "too few late locales for level " + levelVO.level + ", camp ordinal " + campOrdinal + ", " + numLateLocales + "/" + numLateBlueprints });
+			}
+
+			let totalLocales = numEarlyLocales + numLateLocales;
+			let numSectors = levelVO.sectors.length || 1;
+			if (totalLocales / numSectors > 0.11) {
+				issues.push({ severity: WorldValidator.SEVERITY_MINOR, desc: "too many locales on level " + levelVO.level + ", camp ordinal " + campOrdinal + ", " + totalLocales + " locales / " + levelVO.sectors.length + " sectors" });
 			}
 
 			return { isValid: issues.length === 0, issues: issues };
