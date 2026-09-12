@@ -48,6 +48,22 @@ define([], function () {
 			}
 			assert.ok(true, "Passed " + times + " iterations");
 			return true;
+		},
+
+		propEqualDecomposed: function (assert, actual, expected, subs) {
+			for (let key of subs) {
+				assert.propEqual(actual[key], expected[key], key);
+			}
+
+			let remainingActual = { ...actual };
+			let remainingExpected = { ...expected };
+
+			for (let key of subs) {
+				delete remainingActual[key];
+				delete remainingExpected[key];
+			}
+
+			assert.propEqual(remainingActual, remainingExpected, "remaining properties");
 		}
 
 	};
