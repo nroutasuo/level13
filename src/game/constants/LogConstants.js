@@ -184,7 +184,7 @@ define(['ash', 'text/Text', 'game/constants/TextConstants', 'game/constants/Item
 				chance: 0.01,
 				message: "ui.log.ambient_story_apocalypse_need_tp_find_cause_01_message"
 			},
-			"story_apocalypse_need_tp_find_cause_01": {
+			"story_apocalypse_need_to_find_cause_01": {
 				triggers: [ "change_position" ],
 				conditions: { inCamp: false, distanceToCamp: [ 3, -1 ], storyFlags: {  "FALL_SEEN_SPACEFACTORY": true, "FALL_SEEN_EVACUATION": false } },
 				chance: 0.01,
