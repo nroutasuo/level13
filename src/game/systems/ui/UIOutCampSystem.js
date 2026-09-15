@@ -1030,8 +1030,7 @@
 			if (showDemographics) {
 				let level = this.playerLocationNodes.head.position.level;
 				let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
-				let seed = GameGlobals.worldState.worldSeed;
-				let campFeatures = GameGlobals.campBalancingHelper.getCampUniqueFeaturesSummary(seed, campOrdinal);
+				let campFeatures = GameGlobals.campHelper.getCampUniqueFeaturesSummary(campOrdinal);
 				
 				// founding date
 				let showCalendar = this.tribeUpgradesNodes.head.upgrades.hasUpgrade(GameGlobals.upgradeEffectsHelper.getUpgradeIdForUIEffect(UpgradeConstants.upgradeUIEffects.calendar));

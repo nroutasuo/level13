@@ -493,6 +493,21 @@ define([
 			return true;
 		},
 
+		getCampUniqueFeaturesSummary: function (campOrdinal) {
+			let seed = GameGlobals.worldState.worldSeed;
+			let result = GameGlobals.campBalancingHelper.getCampUniqueFeaturesSummary(seed, campOrdinal);
+
+			// hide workshop if not built
+			if (result.workshopResource) {
+				let workshops = GameGlobals.levelHelper.getWorkshopsByResourceForCamp(campOrdinal);
+				if (!workshops[result.workshopResource]) {
+					result.workshopResource = null;
+				}
+			}
+			
+			return result;
+		},
+
 		getValidCampCharacters: function (campComponent, unique) {
 			let result = [];
 
@@ -940,7 +955,6 @@ define([
 			return result;
 		},
 
-		
 		addDisabledPopulation: function (sector, num, workerType, reason, timer) {
 			let campComponent = sector.get(CampComponent);
 			campComponent.addDisabledPopulation(num, workerType, reason, timer);

@@ -366,8 +366,7 @@ define([
 			let level = node.entity.get(PositionComponent).level;
 
 			let campOrdinal = GameGlobals.worldState.getCampOrdinal(level);
-			let seed = GameGlobals.worldState.worldSeed;
-			let campFeatures = GameGlobals.campBalancingHelper.getCampUniqueFeaturesSummary(seed, campOrdinal);
+			let campFeatures = GameGlobals.campHelper.getCampUniqueFeaturesSummary(campOrdinal);
 
 			$("#camp-overview tr#" + rowID + " .camp-overview-name .label").text(camp.campName);
 			$("#camp-overview tr#" + rowID + " .camp-overview-name .label").attr("description", camp.campName);
