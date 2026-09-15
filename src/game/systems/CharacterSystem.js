@@ -304,7 +304,7 @@ define([
 			let hasExisting = (type) => existingTypes.indexOf(type) >= 0;
 			let isSectorType = (type) => sectorFeatures.sectorType == type || districtType == type;
 			let isGoodCondition = condition == SectorConstants.SECTOR_CONDITION_MAINTAINED || condition == SectorConstants.SECTOR_CONDITION_RECENT;
-			let hasWorker = (type) => this.nearestCampNodes.head && this.nearestCampNodes.camp.assignedWorkers[this.getWorkerTypeForCharacterType(type)];
+			let hasWorker = (type) => this.nearestCampNodes.head && this.nearestCampNodes.head.camp.assignedWorkers[this.getWorkerTypeForCharacterType(type)];
 			let hasWorkshop = (type) => GameGlobals.sectorHelper.getWorkshopResource(sector) == this.getResourceNameForCharacterType(type); 
 
 			let possibleTypes = [

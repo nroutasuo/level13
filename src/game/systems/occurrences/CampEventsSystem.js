@@ -407,7 +407,7 @@ define([
 						logMsg = "There has been a raid.";
 						if (lostResources.getTotal() > 0) {
 							logMsg += " We lost some resources.";
-						} else if (currencyLost > 0) {
+						} else if (lostCurrency > 0) {
 							logMsg += " They stole some silver.";
 						} else {
 							logMsg += " There was nothing left to steal.";
