@@ -68,10 +68,10 @@ define(['ash', 'game/constants/LogConstants', 'game/vos/PositionVO'], function (
 
 		getVisibilityLongName: function (visibility) {
 			switch (visibility) {
-				case LogConstants.MSG_VISIBILITY_DEFAULT_SHORT: LogConstants.MSG_VISIBILITY_DEFAULT;
-				case LogConstants.MGS_VISIBILITY_LEVEL_SHORT: LogConstants.MGS_VISIBILITY_LEVEL;
-				case LogConstants.MSG_VISIBILITY_CAMP_SHORT: LogConstants.MSG_VISIBILITY_CAMP;
-				case LogConstants.MSG_VISIBILITY_GLOBAL_SHORT: LogConstants.MSG_VISIBILITY_GLOBAL;
+				case LogConstants.MSG_VISIBILITY_DEFAULT_SHORT: return LogConstants.MSG_VISIBILITY_DEFAULT;
+				case LogConstants.MGS_VISIBILITY_LEVEL_SHORT: return LogConstants.MGS_VISIBILITY_LEVEL;
+				case LogConstants.MSG_VISIBILITY_CAMP_SHORT: return LogConstants.MSG_VISIBILITY_CAMP;
+				case LogConstants.MSG_VISIBILITY_GLOBAL_SHORT: return LogConstants.MSG_VISIBILITY_GLOBAL;
 			}
 
 			return visibility;
