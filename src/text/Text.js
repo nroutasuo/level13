@@ -16,14 +16,22 @@ define(function () {
 
 		compose: function (textVO) {
 			if (!textVO) {
-				if (GameConstants.isDebugVersion) debugger
+				if (this.isDebugMode) debugger
 				log.w("no TextVO provided for Text.compose");
 				return "";
 			}
 
+			if (textVO.rawText || textVO.textKey) {
+				textVO.textFragments = [ textVO ];
+			}
+
 			if (!textVO.textFragments) {
-				if (GameConstants.isDebugVersion) debugger
+				if (this.isDebugMode) debugger
 				log.w("invalid TextVO provided for Text.compose");
+				return "";
+			}
+
+			if (textVO.textFragments.length == 0) {
 				return "";
 			}
 			
