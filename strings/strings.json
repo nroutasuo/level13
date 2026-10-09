@@ -2931,6 +2931,7 @@
 			"improved_robot_factory_message": "Modernized the robot factory",
 			"investigate_locale_complete_message": "Investigated {name} and found some documents",
 			"item_broke_from_wear_message": "{name} broke from wear.",
+			"message_location_detail_level": "level {level}",
 			"new_camp_no_trade_connector_warning": "It will be difficult to trade resources with camps from below Level 14 from here.",
 			"player_hungry_message": "Your stomach is grumbling.",
 			"player_thirsty_message": "Your throat is dry.",

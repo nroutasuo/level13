@@ -164,25 +164,8 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 
 		updateLogListItem: function (li, data) {
 			let hasPosition = data.position != null;
-			let visibility = data.visibility;
 
-			let positionText = "";
-			if (visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
-				positionText = "";
-			} else if (visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
-				positionText = " (level " + data.position.level + ")";
-			} else if (visibility == LogConstants.MSG_VISIBILITY_CAMP) {
-				positionText += "";
-			} else if (hasPosition) {
-				positionText += " (";
-				let campNode = GameGlobals.campHelper.getCampNodeForLevel(data.position.level);
-				if (data.position.inCamp && campNode) {
-					positionText += UIConstants.getCampDisplayName(campNode, true);
-				} else {
-					positionText += new PositionVO(data.position.level, data.position.sectorX, data.position.sectorY).getInGameFormat(true, true);
-				}
-				positionText += ")"
-			}
+			let positionTextVO = this.getLogListItemPositionTextVO(data);
 
 			let message = "";
 			
@@ -204,7 +187,37 @@ function (Ash, Text, UIList, MathUtils, GameGlobals, GlobalSignals, LogConstants
 			li.$spanMsg.text(message);
 			li.$spanTime.text(UIConstants.getTimeSinceText(timestamp) + " ago");
 			li.$spanLevel.toggle(hasPosition);
-			if (hasPosition) li.$spanLevel.text(positionText);
+			if (hasPosition) li.$spanLevel.text(Text.compose(positionTextVO));
+		},
+
+		getLogListItemPositionTextVO: function (data) {
+			let hasPosition = data.position != null;
+			let visibility = data.visibility;
+
+			if (!hasPosition) return {};
+
+			let campNode = GameGlobals.campHelper.getCampNodeForLevel(data.position.level);
+
+			let positionTextFragment = null;
+
+			if (visibility == LogConstants.MSG_VISIBILITY_GLOBAL) {
+				positionTextFragment = null;
+			} else if (visibility == LogConstants.MGS_VISIBILITY_LEVEL) {
+				positionTextFragment = { textKey: "ui.log.message_location_detail_level", textParams: data.position.level }
+			} else if (campNode && (visibility == LogConstants.MSG_VISIBILITY_CAMP || data.position.inCamp)) {
+				positionTextFragment = { rawText: UIConstants.getCampDisplayName(campNode, true) };
+			} else {
+				positionTextFragment = { rawText: new PositionVO(data.position.level, data.position.sectorX, data.position.sectorY).getInGameFormat(true, true) };
+			}
+
+			let positionTextVO = { textFragments: [] };
+			
+			if (positionTextFragment) {
+				positionTextVO.textFragments.push({ textKey: "ui.common.sentence_separator" });
+				positionTextVO.textFragments.push({ textKey: "ui.common.value_detail_postfix", textParams: { value: Text.compose(positionTextFragment) }});
+			}
+
+			return positionTextVO;
 		},
 
 		isLogListItemDataSame: function (d1, d2) {
