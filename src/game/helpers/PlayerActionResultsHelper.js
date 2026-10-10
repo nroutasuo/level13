@@ -496,10 +496,8 @@ define([
 			}
 
 			// population 
-			if (hasMiscRewards && localeCategory !== "u") {
-				if (rewards.gainedExplorers.length == 0 && this.nearestCampNodes.head && campOrdinal > 1) {
-					rewards.gainedPopulation = Math.random() < 0.1 ? 1 : 0;
-				}
+			if (hasMiscRewards && localeCategory !== "u" && rewards.gainedExplorers.length == 0) {
+				rewards.gainedPopulation = this.getRewardPopulation(0.1);
 			}
 
 			// temporary perks
@@ -1667,6 +1665,39 @@ define([
 			}
 
 			return modifier;
+		},
+
+		getRewardPopulation: function (probability) {
+			let campNode = this.getDefaultRewardCampNode();
+
+			if (!campNode) return 0;
+
+			let playerPos = this.playerLocationNodes.head.position;
+			
+			let levelComponent = GameGlobals.levelHelper.getLevelComponentForPosition(playerPos.level);
+			if (levelComponent.habitability < 1) return 0;
+			
+			let campOrdinal = GameGlobals.worldState.getCampOrdinal(playerPos.level);
+			if (campOrdinal < 2) return 0;
+
+			let sectorFeatures = this.playerLocationNodes.head.entity.get(SectorFeaturesComponent);
+			let sectorType = sectorFeatures.sectorType;
+
+			switch (sectorType) {
+				case SectorConstants.SECTOR_TYPE_RESIDENTIAL: probability *= 2; break;
+				case SectorConstants.SECTOR_TYPE_INDUSTRIAL: probability /= 2; break;
+				case SectorConstants.SECTOR_TYPE_MAINTENANCE: probability /= 4; break;
+			}
+
+			if (Math.random() > probability) return 0;
+
+			let amount = 1;
+			if (sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
+				if (campNode.camp.population > 16) amount = 2;
+				if (campNode.camp.population > 42) amount = 3;
+			}
+
+			return amount;
 		},
 
 		// itemProbability: base probability of finding one item (0-1)
