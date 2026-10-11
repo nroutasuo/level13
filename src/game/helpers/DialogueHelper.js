@@ -7,9 +7,13 @@ define(['ash',
     'game/constants/PositionConstants',
     'game/constants/StoryConstants',
     'game/constants/TextConstants',
+    'game/constants/TribeConstants',
+    'game/constants/EnemyConstants',
     'game/components/common/PositionComponent',
+    'game/components/sector/EnemiesComponent',
+    'game/components/sector/SectorFeaturesComponent',
     'game/nodes/player/DialogueNode' 
-], function (Ash, Text, GameGlobals, DialogueConstants, ExplorerConstants, ItemConstants, PositionConstants, StoryConstants, TextConstants, PositionComponent, DialogueNode) {
+], function (Ash, Text, GameGlobals, DialogueConstants, ExplorerConstants, ItemConstants, PositionConstants, StoryConstants, TextConstants, TribeConstants, EnemyConstants, PositionComponent, EnemiesComponent, SectorFeaturesComponent, DialogueNode) {
         
         let DialogueHelper = Ash.Class.extend({
 
@@ -147,35 +151,41 @@ define(['ash',
                 }
 
                 // conditions checks
-
                 let conditions = dialogueVO.conditions;
-                if (!conditions) return true;
+                if (conditions) {
+                    // - general
+                    let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
+                    if (reqsCheck.value < 1) return false;
 
-                let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(conditions);
-                if (reqsCheck.value < 1) return false;
+                    // - dialogue specific: explorer
+                    if (conditions.explorer) {
+                        if (!explorerVO) return false;
+                        if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
+                        if (conditions.explorer.maxTrust && conditions.explorer.maxTrust < explorerVO.trust) return false;
+                        if (typeof conditions.explorer.inParty !== "undefined" && conditions.explorer.inParty != explorerVO.inParty) return false;
+                        let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
+                        let isForced = explorerVO.id == forcedExplorerID
+                        if (typeof conditions.explorer.isForced !== "undefined" && conditions.explorer.isForced != isForced) return false;
+                        if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
+                        if (conditions.explorer.abilityType && explorerVO.abilityType != conditions.explorer.abilityType) return false;
+                        if (conditions.explorer.explorerType && ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType) != conditions.explorer.explorerType) return false;
+                        if (conditions.explorer.origin && explorerVO.origin != conditions.explorer.origin) return false;
+                        if (conditions.explorer.quest && GameGlobals.storyHelper.getExplorerQuestStories(explorerVO).indexOf(conditions.explorer.quest) <0) return false;
+                        if (typeof conditions.explorer.isFamiliarLevel !== "undefined" && conditions.explorer.isFamiliarLevel != GameGlobals.explorerHelper.isFamiliarWithCurrentLevel(explorerVO)) return false;
+                        if (conditions.explorer.meetCampOrdinal 
+                            && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
+                    }
 
-                if (conditions.explorer) {
-                    if (!explorerVO) return false;
-                    if (conditions.explorer.trust && conditions.explorer.trust > explorerVO.trust) return false;
-                    if (conditions.explorer.maxTrust && conditions.explorer.maxTrust < explorerVO.trust) return false;
-                    if (typeof conditions.explorer.inParty !== "undefined" && conditions.explorer.inParty != explorerVO.inParty) return false;
-			        let forcedExplorerID = GameGlobals.explorerHelper.getForcedExplorerID();
-                    let isForced = explorerVO.id == forcedExplorerID
-                    if (typeof conditions.explorer.isForced !== "undefined" && conditions.explorer.isForced != isForced) return false;
-                    if (conditions.explorer.injured && explorerVO.injuredTimer <= 0) return false;
-                    if (conditions.explorer.abilityType && explorerVO.abilityType != conditions.explorer.abilityType) return false;
-                    if (conditions.explorer.explorerType && ExplorerConstants.getExplorerTypeForAbilityType(explorerVO.abilityType) != conditions.explorer.explorerType) return false;
-                    if (conditions.explorer.quest && GameGlobals.storyHelper.getExplorerQuestStories(explorerVO).indexOf(conditions.explorer.quest) <0) return false;
-                    if (typeof conditions.explorer.isFamiliarLevel !== "undefined" && conditions.explorer.isFamiliarLevel != GameGlobals.explorerHelper.isFamiliarWithCurrentLevel(explorerVO)) return false;
-                    if (conditions.explorer.meetCampOrdinal 
-                        && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
-                }
+                    // - dialogue specific: vicinity
+                    if (conditions.vicinity) {
+                        let requiredPOIType = dialogueVO.conditions.vicinity;
+                        let requiredPOIScouted = dialogueVO.conditions.vicinityScouted;
+                        let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType, requiredPOIScouted);
+                        if (!requiredPOIData) return false;
+                    }
 
-                if (conditions.vicinity) {
-                    let requiredPOIType = dialogueVO.conditions.vicinity;
-                    let requiredPOIScouted = dialogueVO.conditions.vicinityScouted;
-                    let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType, requiredPOIScouted);
-                    if (!requiredPOIData) return false;
+                    // - dialogue specific: enemy
+                    if (conditions.enemy && this.getDialogueEnemyCandidates(conditions.enemy).length == 0) return false;
                 }
 
                 // some dialogues can ONLY be triggered when they are marked as pending dialogues from story (or requested for triggering one)
@@ -187,7 +197,8 @@ define(['ash',
             },
 
             getDialogueTextParams: function (dialogueVO, pageVO, resultVO, isExplorer) {
-                let staticTextParams = this.dialogueNodes.head.dialogue.textParams;
+                let dialogueComponent = this.dialogueNodes.head.dialogue;
+                let staticTextParams = dialogueComponent.textParams;
                 
                 let result = staticTextParams || {};
 
@@ -197,6 +208,7 @@ define(['ash',
                     let requiredPOIData = this.findPOIDataForDialogue(requiredPOIType, requiredPOIScouted);
                     if (requiredPOIData) {
                         result.direction = requiredPOIData.directionTextKey;
+                        result.sectorType = TextConstants.getSectorTypeDisplayName(requiredPOIData.sectorType);
                         result.name = requiredPOIData.nameTextKey;
                     }
                 }
@@ -214,6 +226,46 @@ define(['ash',
                         let upgradeID = upgradeIDs[0];
                         result.upgradeName = TextConstants.getUpgradeDisplayName(upgradeID);
                     }
+                }
+
+                if (dialogueVO.conditions.availableLuxuryResources) {
+                    for (let key in dialogueVO.conditions.availableLuxuryResources) {
+                        result.luxuryResource = TribeConstants.getLuxuryDisplayName(key);
+                        break;
+                    }
+                }
+
+                if (dialogueVO.conditions.party?.hasInjuredExplorer) {
+					let party = GameGlobals.playerHelper.getParty();
+                    for (let i = 0; i < party.length; i++) {
+                        let explorerVO = party[i];
+                        if (explorerVO.injuredTimer >= 0) {
+                            result.explorer = explorerVO.name;
+                        }
+                    }
+                }
+
+                if (dialogueVO.conditions.world?.hasInvestigatableLocale) {
+                    let data = GameGlobals.levelHelper.getInvestigatableLocaleData();
+                    if (data) {
+                        result.level = data.level;
+                        result.locale = TextConstants.getLocaleName(data.localeVO);
+                    }
+                }
+
+                if (dialogueVO.conditions.world?.hasIncompleteLevel) {
+                    result.level = GameGlobals.levelHelper.getIncompleteLevel();
+                }
+
+                if (dialogueVO.conditions.district?.hasHazard) {
+                    result.hazard = TextConstants.getHazrdDisplayNameNoun(GameGlobals.levelHelper.getDistrictHazard());
+                }
+
+                if (dialogueVO.conditions.camp?.feature?.signatureDisaster) {
+                    let playerPosition = GameGlobals.playerHelper.getPosition();
+                    let campOrdinal = GameGlobals.worldState.getCampOrdinal(playerPosition.level);
+                    let features = GameGlobals.campHelper.getCampUniqueFeaturesSummary(campOrdinal);
+                    result.disasterType = features.signatureDisaster;
                 }
 
                 for (let j = 0; j < pageVO.options.length; j++) {
@@ -240,10 +292,137 @@ define(['ash',
                     }
                 }
 
+                if (dialogueVO.conditions.enemy) {
+                    let enemyCandidate = this.getDialogueEnemy(dialogueVO.conditions.enemy);
+                    if (enemyCandidate) {
+                        result.enemy = enemyCandidate.enemy.name;
+                        result.enemies = Text.pluralify(enemyCandidate.enemy.name);
+
+                        if (enemyCandidate.sector) {
+                            let playerPosition = GameGlobals.playerHelper.getPosition();
+					        let districtVO = GameGlobals.sectorHelper.getDistrictVO(enemyCandidate.sector);
+                            let districtPosition = districtVO.adjustedPosition;
+                            let direction = PositionConstants.getDirectionFrom(playerPosition, districtPosition);
+                            result.sectorType = TextConstants.getSectorTypeDisplayName(districtVO.type);
+                            result.direction = PositionConstants.getDirectionTextKey(direction);
+                        }
+                    }
+                }
+
+                Object.assign(result, GameGlobals.sectorHelper.getTextParams());
+                
                 result.surfaceLevel = GameGlobals.worldState.getSurfaceLevel();
                 result.surfaceLevelMinus1 = GameGlobals.worldState.getSurfaceLevel() - 1;
 
                 return result;
+            },
+
+            getDialogueEnemyCandidates: function (requirements) {
+                // encountered
+                if (requirements.source == "encountered") {
+                    let encounteredIDs = GameGlobals.gameState.stats.uniqueEnemiesEncountered || [];
+                    let encounteredCandidates = [];
+                    for (let i = 0; i < encounteredIDs.length; i++) {
+                        let enemy = EnemyConstants.tryGetEnemy(encounteredIDs[i]);
+                        if (!enemy) continue;
+                        if (requirements.type && enemy.enemyClass != requirements.type) continue;
+                        
+                        encounteredCandidates.push({ enemy: enemy, recencyScore: this.getEnemyRecencyScore(enemy.id) });
+                    }
+                    return encounteredCandidates;
+                }
+
+                // by level / district
+                let playerPosition = GameGlobals.playerHelper.getPosition();
+                let currentSector = GameGlobals.playerHelper.getLocation();
+                let currentDistrictIndex = currentSector.get(SectorFeaturesComponent).districtIndex;
+                if (!playerPosition || !currentSector) return [];
+
+                let sectors = [];
+
+                switch (requirements.source) {
+                    case "current_district":
+                        sectors = GameGlobals.levelHelper.getSectorsInDistrict(currentSector);
+                        break;
+                    case "other_district":
+                        sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPosition.level).filter(s => s.get(SectorFeaturesComponent).districtIndex != currentDistrictIndex);
+                        break;
+                    case "current_level":
+                        sectors = GameGlobals.levelHelper.getSectorsByLevel(playerPosition.level);
+                        break;
+                    default:
+                        return [];
+                }
+
+                sectors = sectors.slice().sort((a, b) => {
+                    let posA = a.get(PositionComponent).getPosition();
+                    let posB = b.get(PositionComponent).getPosition();
+                    return PositionConstants.getDistanceTo(playerPosition, posA) - PositionConstants.getDistanceTo(playerPosition, posB);
+                });
+
+                let candidatesByID = {};
+
+                for (let i = 0; i < sectors.length; i++) {
+                    let sector = sectors[i];
+
+                    let enemiesComponent = sector.get(EnemiesComponent);
+                    if (!enemiesComponent || !enemiesComponent.hasEnemies) continue;
+
+                    let sectorFeatures = sector.get(SectorFeaturesComponent);
+
+                    for (let j = 0; j < enemiesComponent.possibleEnemies.length; j++) {
+                        let enemyVO =  enemiesComponent.possibleEnemies[j];
+                        if (requirements.type && enemyVO.enemyClass != requirements.type) continue;
+
+                        let candidateID = requirements.source == "other_district"
+                            ? sectorFeatures.districtIndex + ":" + enemyVO.id
+                            : enemyVO.id;
+
+                        if (!candidatesByID[candidateID]) {
+                            candidatesByID[candidateID] = {
+                                enemy: enemyVO,
+                                sector: sector,
+                                prevalence: 0,
+                                recencyScore: this.getEnemyRecencyScore(enemyVO.id),
+                            };
+                        }
+
+                        candidatesByID[candidateID].prevalence++;
+                    }
+                }
+
+                return Object.keys(candidatesByID).map(id => candidatesByID[id]);
+            },
+
+            getDialogueEnemy: function (requirements) {
+                let candidates = this.getDialogueEnemyCandidates(requirements);
+                if (candidates.length == 0) return null;
+
+                let getPreferenceValue = function (candidate) {
+                    let difficulty = EnemyConstants.getDifficulty(candidate.enemy) || 0;
+                    let rarity = candidate.enemy.rarity;
+                    let localRarity = rarity - (candidate.prevalence || 0);
+
+                    switch (requirements.preference) {
+                        case "dangerous": return difficulty;
+                        case "rare": return requirements.source == "encountered" ? rarity : localRarity;
+                        case "common": return requirements.source == "encountered" ? -rarity : -localRarity;
+                        default: return 0;
+                    }
+                };
+
+                candidates.sort((a, b) => {
+                    let preferenceDifference = getPreferenceValue(b) - getPreferenceValue(a);
+                    if (preferenceDifference != 0) return preferenceDifference;
+                    return b.recencyScore - a.recencyScore;
+                });
+
+                return candidates[0];
+            },
+
+            getEnemyRecencyScore: function (enemyID) {
+                let recentEncounteredIDs = GameGlobals.gameState.stats.recentEnemiesEncountered || [];
+                return recentEncounteredIDs.lastIndexOf(enemyID);
             },
 
             addDialogueTextParamsFromCosts: function (result, costs) {                

@@ -94,12 +94,18 @@ define(
 		getCondition: function () {
 			return SectorConstants.getCondition(this.wear, this.damage);
 		},
+
+		getZone: function () {
+			return WorldConstants.getStage(this.zone);
+		},
 		
 		isEarlyZone: function () {
 			return WorldConstants.getStage(this.zone) == WorldConstants.CAMP_STAGE_EARLY;
 		}
 		
 	});
+
+	SectorFeaturesComponent.ALL_HAZARDS = [ "cold", "debris", "flooded", "poison", "radiation", "territory" ];
 
 	return SectorFeaturesComponent;
 });

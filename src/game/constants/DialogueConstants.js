@@ -2,11 +2,12 @@ define([
 	'ash', 
 	'json!game/data/DialogueData.json', 
 	'game/constants/PlayerActionConstants',
+	'game/constants/EnemyConstants',
 	'game/vos/DialogueVO', 
 	'game/vos/DialoguePageVO', 
 	'game/vos/DialogueOptionVO', 
 	'game/vos/ResultVO'
-], function (Ash, DialogueData, PlayerActionConstants, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
+], function (Ash, DialogueData, PlayerActionConstants, EnemyConstants, DialogueVO, DialoguePageVO, DialogueOptionVO, ResultVO) {
 	
 	let DialogueConstants = {
 
@@ -26,6 +27,8 @@ define([
 		dialogueSources: {},
 
 		dialogues: {},
+
+		context: "dialogue",
 
 		init: function () {
 		},
@@ -70,14 +73,17 @@ define([
 
 		mergeBundleIntoSource: function (source, bundleID, bundlesRaw, seenBundles) {
 			let bundle = bundlesRaw[bundleID];
+
 			if (!bundle) {
-				log.w("no such dialogue bundle found: " + bundleID + " included by source " + source.id);
+				log.w("no such dialogue bundle found: " + bundleID + " included by source " + source.id, this);
 				return;
 			}
+
 			if (seenBundles.indexOf(bundleID) >= 0) {
-				log.w("dialogue bundle recursion detected: " + bundleID);
+				log.w("dialogue bundle recursion detected: " + bundleID, this);
 				return;
 			}
+
 			seenBundles.push(bundleID);
 
 			let bundleDialogues = bundle.dialogues || {};
@@ -104,6 +110,7 @@ define([
 
 			vo.titleTextKey = this.parseTextKey(d.titleKey);
 			vo.conditions = PlayerActionConstants.getRequirementsFromRaw(d.conditions);
+			vo.conditions.enemy = this.parseEnemyRequirements(dialogueID, vo.conditions.enemy);
 			vo.storyTag = d.storyTag || null;
 			vo.isRepeatable = d.repeatable === false ? false : true;
 			vo.isUnique = d.isUnique;
@@ -298,6 +305,33 @@ define([
 			}
 
 			return optionVO;
+		},
+
+		parseEnemyRequirements: function (dialogueID, data) {
+			if (!data) return null;
+
+			let validSources = [ "current_district", "current_level", "other_district", "encountered" ];
+			let validPreferences = [ "dangerous", "rare", "common" ];
+			let source = data.source || "current_level";
+			let preference = data.preference || "common";
+			let type = data.type || null;
+
+			if (validSources.indexOf(source) < 0) {
+				log.w("invalid enemy source for dialogue " + dialogueID + ": " + source, this);
+				source = "current_level";
+			}
+
+			if (validPreferences.indexOf(preference) < 0) {
+				log.w("invalid enemy preference for dialogue " + dialogueID + ": " + preference, this);
+				preference = "common";
+			}
+			
+			if (type && !EnemyConstants.enemyTexts[type]) {
+				log.w("invalid enemy type for dialogue " + dialogueID + ": " + type, this);
+				type = null;
+			}
+
+			return { source: source, preference: preference, type: type };
 		},
 
 		getDialogueEntries: function (sourceID, setting) {

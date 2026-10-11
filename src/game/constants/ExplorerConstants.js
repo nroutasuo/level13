@@ -36,8 +36,8 @@ define(['ash',
 			COST_SCAVENGE: "cost_scavenge", // decrease scavenge cost
 			COST_SCOUT: "cost_scout", // decrease scout cost
 			COST_LOCKPICK: "cost_lockpick", // negate lockpick costs
-			DETECT_SUPPLIES: "detect_supplies", // detect supplies in current and adjacdent sectors
-			DETECT_INGREDIENTS: "detect_ingredients", // detect ingredients in current and adjacdent sectors
+			DETECT_SUPPLIES: "detect_supplies", // detect supplies in current and adjacent sectors
+			DETECT_INGREDIENTS: "detect_ingredients", // detect ingredients in current and adjacent sectors
 			DETECT_HAZARDS: "detect_hazards", // detect hazards in adjacent sectors 
 			DETECT_POI: "detect_poi", // detect POI such as locales and passages in adjacent sectors
 			MAPPING: "mapping", // find more map pieces

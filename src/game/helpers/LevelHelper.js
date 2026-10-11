@@ -19,6 +19,7 @@ define([
 	'game/nodes/sector/BeaconNode',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/GangNode',
+	'game/nodes/PlayerLocationNode',
 	'game/components/common/PositionComponent',
 	'game/components/common/RevealedComponent',
 	'game/components/common/VisitedComponent',
@@ -58,6 +59,7 @@ define([
 	BeaconNode,
 	SectorNode,
 	GangNode,
+	PlayerLocationNode,
 	PositionComponent,
 	RevealedComponent,
 	VisitedComponent,
@@ -85,6 +87,7 @@ define([
 		sectorNodes: null,
 		beaconNodes: null,
 		gangNodes: null,
+		playerLocationNodes: null,
 
 		// todo check using VOCache for these (compare performance)
 		sectorEntitiesByPosition: {}, // int (level) -> int (x) -> int (y) -> entity
@@ -96,6 +99,7 @@ define([
 			this.sectorNodes = engine.getNodeList(SectorNode);
 			this.beaconNodes = engine.getNodeList(BeaconNode);
 			this.gangNodes = engine.getNodeList(GangNode);
+			this.playerLocationNodes = engine.getNodeList(PlayerLocationNode);
 			VOCache.create("LevelHelper-SectorNeighboursMap", 300);
 		},
 
@@ -210,15 +214,18 @@ define([
 			return this.getSectorByPosition(level, parts[0], parts[1]);
 		},
 		
-		getSectorsAround: function (position, radius) {
-			var result = [];
+		getSectorsAround: function (sector, radius, limitToDistrict) {
+			let result = [];
+			let position = sector.get(PositionComponent);
+			let districtIndex = sector.get(SectorFeaturesComponent).districtIndex;
 			
 			for (var x = position.sectorX - radius; x <= position.sectorX + radius; x++) {
 				for (var y = position.sectorY - radius; y <= position.sectorY + radius; y++) {
-					var sector = this.getSectorByPosition(position.level, x, y);
-					if (sector) {
-						result.push(sector);
-					}
+					let sector2 = this.getSectorByPosition(position.level, x, y);
+					if (!sector2) continue;
+					let districtIndex2 = sector2.get(SectorFeaturesComponent).districtIndex;
+					if (limitToDistrict && districtIndex !== districtIndex2) continue;
+					result.push(sector);
 				}
 			}
 			return result;
@@ -665,7 +672,7 @@ define([
 			return result;
 		},
 
-		getLevelStats: function (level) {
+		getLevelStats: function (level, districtIndex) {
 			let levelStats = {};
 			levelStats.totalSectors = 0;
 			levelStats.countClearedSectors = 0;
@@ -679,15 +686,19 @@ define([
 			levelStats.countInvestigatableSectors = 0;
 			levelStats.countSeenClearedWorkshops = 0;
 			levelStats.hasCamp = false;
+
+			let isDistrict = districtIndex > 0 || districtIndex === 0;
 			
 			for (let node = this.sectorNodes.head; node; node = node.next) {
 				let sectorPosition = node.entity.get(PositionComponent);
 				let sectorStatus = GameGlobals.sectorHelper.getSectorStatus(node.entity);
+				let featuresComponent = node.entity.get(SectorFeaturesComponent);
+
 				if (sectorPosition.level !== level) continue;
+				if (isDistrict && featuresComponent.districtIndex != districtIndex) continue;
 				levelStats.totalSectors++;
 
 				let statusComponent = node.entity.get(SectorStatusComponent);
-				let featuresComponent = node.entity.get(SectorFeaturesComponent);
 				let workshopComponent = node.entity.get(WorkshopComponent);
 				let sectorControlComponent = node.entity.get(SectorControlComponent);
 				let isVisited = GameGlobals.sectorHelper.isVisited(node.entity);
@@ -709,6 +720,10 @@ define([
 			this.calculateLevelStatPercentages(levelStats);
 
 			return levelStats;
+		},
+
+		getDistrictStats: function (level, districtIndex) {
+			return this.getLevelStats(level, districtIndex);
 		},
 
 		calculateLevelStatPercentages: function (levelStats) {
@@ -1220,6 +1235,99 @@ define([
 			let levelComponent = levelEntity.get(LevelComponent);
 			return levelComponent.districts;
 		},
+
+		getSectorsInDistrict: function (sector) {
+			sector = sector || this.playerLocationNodes.head?.entity;
+			if (!sector) return [];
+
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+			let districtIndex = featuresComponent.districtIndex;
+
+			let level = sector.get(PositionComponent).level;
+			let sectors = this.getSectorsByLevel(level);
+			let result = [];
+			for (let i = 0; i < sectors.length; i++) {
+				let s = sectors[i];
+				if (s.get(SectorFeaturesComponent).districtIndex === districtIndex) {
+					result.push(s);
+				}
+			}
+
+			return result;
+		},
+
+		getDistrictHazard: function (sector) {
+			sector = sector || this.playerLocationNodes.head?.entity;
+			if (!sector) return null;
+
+			let sectors = this.getSectorsInDistrict(sector);
+			let hazardCounts = {}; // type -> num sectors
+			let hazards = SectorFeaturesComponent.ALL_HAZARDS;
+
+			for (let i = 0; i < sectors.length; i++) {
+				let s = sectors[i];
+				let hazardsVO = s.get(SectorFeaturesComponent).hazards;
+				for (let j = 0; j < hazards.length; j++) {
+					let hazard = hazards[j];
+					if (hazardsVO[hazard]) {
+						if (!hazardCounts[hazard]) hazardCounts[hazard] = 0;
+						hazardCounts[hazard]++;
+					}
+				}
+			}
+
+			let maxCount = 0;
+			let maxCountHazard = null;
+
+			for (let hazard in hazardCounts) {
+				let count = hazardCounts[hazard];
+				if (count < 3) continue;
+				if (count < maxCount) continue;
+				maxCount = count;
+				maxCountHazard = hazard;
+			}
+
+			return maxCountHazard;
+		},
+
+		getDistrictHazards: function (sector) {
+			sector = sector || this.playerLocationNodes.head?.entity;
+			if (!sector) return null;
+
+			let sectors = this.getSectorsInDistrict(sector);
+
+			return this.getSectorsMazHazards(sectors);
+		},
+
+		getLevelHazards: function (sector) {
+			sector = sector || this.playerLocationNodes.head?.entity;
+			if (!sector) return null;
+
+			let level = sector.get(PositionComponent).level;
+			let sectors = this.getSectorsByLevel(level);
+
+			return this.getSectorsMazHazards(sectors);
+		},
+
+		getSectorsMazHazards: function (sectors) {
+			let result = {};
+
+			let hazards = SectorFeaturesComponent.ALL_HAZARDS;
+
+			for (let i = 0; i < sectors.length; i++) {
+				let sector = sectors[i];
+				let hazardsVO = sector.get(SectorFeaturesComponent).hazards;
+				for (let j = 0; j < hazards.length; j++) {
+					let hazard = hazards[j];
+					if (hazardsVO[hazard]) {
+						if (!result[hazard]) result[hazard] = 0;
+						result[hazard] = Math.max(result[hazard], hazardsVO[hazard]);
+					}
+				}
+			}
+
+			return result;
+		},
 		
 		isCampReachableByTribeTraders: function (sector) {
 			let camp = sector.get(CampComponent);
@@ -1288,6 +1396,20 @@ define([
 			return first == sector;
 		},
 
+		getIncompleteLevel: function () {
+			let currentLevel = this.playerLocationNodes.head?.position.level;
+
+			for (let level = GameGlobals.worldState.getGroundLevel(); level <= GameGlobals.worldState.getSurfaceLevel(); level++) {
+				if (level == currentLevel) continue;
+				let levelStats = this.getLevelStats(level);
+				if (levelStats.percentScoutedSectors > 0 && levelStats.percentScoutedSectors < 1) {
+					return level;
+				}
+			}
+
+			return null;
+		},
+
 		getInvestigatableLocales: function (level) {
 			let locales = [];
 			
@@ -1303,6 +1425,20 @@ define([
 				}
 			}
 			return locales;
+		},
+
+		getInvestigatableLocaleData: function () {
+			let currentLevel = this.playerLocationNodes.head?.position.level;
+
+			for (let level = GameGlobals.worldState.getGroundLevel(); level <= GameGlobals.worldState.getSurfaceLevel(); level++) {
+				if (level == currentLevel) continue;
+				let locales = this.getInvestigatableLocales(level);
+				if (locales.length > 0) {
+					return { level: level, localeVO: locales[0] };
+				}
+			}
+
+			return null;
 		},
 		
 		getLevelLocales: function (level, includeScouted, localeBracket, excludeLocaleVO, requireBlueprints) {

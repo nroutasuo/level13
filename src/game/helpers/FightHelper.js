@@ -157,6 +157,9 @@ define([
 			}
 
 			sector.add(new FightEncounterComponent(enemy, action, this.pendingEnemies, this.totalEnemies, gangComponent));
+			
+			GameGlobals.gameState.increaseGameStatList("uniqueEnemiesEncountered", enemy.id);
+			GameGlobals.gameState.increaseGameStatList("recentEnemiesEncountered", enemy.id, true);
 		},
 
 		startFight: function () {

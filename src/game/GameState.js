@@ -153,6 +153,8 @@ define(['ash'], function (Ash) {
 			this.initListStat("uniqueItemsEquipped");
 			this.initListStat("uniqueItemsFound");
 			this.initListStat("uniqueEnemiesDefeated");
+			this.initListStat("uniqueEnemiesEncountered");
+			this.initListStat("recentEnemiesEncountered");
 			this.initListStat("uniqueOutNPCsMet");
 		},
 
@@ -430,7 +432,7 @@ define(['ash'], function (Ash) {
 			this.stats[name] = [];
 		},
 
-		increaseGameStatList: function (name, id) {
+		increaseGameStatList: function (name, id, moveToEnd) {
 			if (!this.stats[name]) {
 				log.w("[GameStats] can't increase list player stat [" + name + "]: no such player stat");
 				return;
@@ -441,7 +443,11 @@ define(['ash'], function (Ash) {
 				return;
 			}
 
-			if (this.stats[name].indexOf(id) >= 0) return;
+			let existingIndex = this.stats[name].indexOf(id);
+			if (existingIndex >= 0) {
+				if (!moveToEnd) return;
+				this.stats[name].splice(existingIndex, 1);
+			}
 
 			this.stats[name].push(id);
 		},

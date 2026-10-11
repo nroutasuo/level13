@@ -13,6 +13,7 @@ define([
 	'game/constants/MovementConstants',
 	'game/constants/TextConstants',
 	'game/constants/TradeConstants',
+	'game/constants/WorldConstants',
 	'game/nodes/sector/SectorNode',
 	'game/nodes/PlayerLocationNode',
 	'game/components/common/CampComponent',
@@ -42,6 +43,7 @@ define([
 	MovementConstants,
 	TextConstants,
 	TradeConstants,
+	WorldConstants,
 	SectorNode,
 	PlayerLocationNode,
 	CampComponent,
@@ -92,6 +94,20 @@ define([
 			if (!sector) return false;
 			let status = this.getSectorStatus(sector);
 			return status !== SectorConstants.MAP_SECTOR_STATUS_UNVISITED_INVISIBLE;
+		},
+		
+		getTextParams: function (sector) {
+			if (!sector && this.playerLocationNodes.head) sector = this.playerLocationNodes.head.entity;
+			if (!sector) return {};
+
+			let featuresComponent = sector.get(SectorFeaturesComponent);
+
+			let result = {};
+
+			result.sectorStyle = TextConstants.getSectorStyleDisplayName(featuresComponent.sectorStyle);
+			result.sectorType = TextConstants.getSectorTypeDisplayName(featuresComponent.sectorType);
+
+			return result;
 		},
 		
 		getTextFeatures: function (sector) {
@@ -632,30 +648,50 @@ define([
 			}
 			
 			let campOrdinal = GameGlobals.worldState.getCampOrdinal(sectorPosition.level);
+			let districtVO = GameGlobals.sectorHelper.getDistrictVO(sector);
 
 			switch (poiType) {
+				case "blocker_debris": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_DEBRIS)) return {};
+					break;
+				case "blocker_explosives": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_EXPLOSIVES)) return {};
+					break;
+				case "blocker_gap": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_GAP)) return {};
+					break;
+				case "blocker_gate": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_TOLL_GATE)) return {};
+					break;
+				case "blocker_waste": 
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE)) return {};
+					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
+					break;
 				case "campable":
 					if (sectorFeatures.campable) return {};
 					break;
-				case "settlement":
-					if (sectorLocales.hasLocale(localeTypes.tradingpartner)) {
-						let partner = TradeConstants.getTradePartner(campOrdinal);
-						return { nameTextKey: partner.name };
-					}
+				case "center":
+					if (Math.abs(sectorPosition.sectorX) <= 1 && Math.abs(sectorPosition.sectorY) <= 1) return {};
 					break;
-				case "spring":
-					if (sectorFeatures.hasSpring) {
-						let springName = TextConstants.getSpringName(sectorFeatures);
-						return { nameTextKey: springName };
-					}
+				case "dangerous_district":
+					if (districtVO.stage !== WorldConstants.CAMP_STAGE_EARLY) return { sectorType: districtVO.type };
+					break;		
+				case "feature_collapse": 
+					if (sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE) || sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_COLLAPSE_EDGE)) return {};
+					break;
+				case "feature_hq": 
+					if (sectorFeatures.hasFeature(WorldConstants.FEATURE_STRUCTURE_GIGA_CENTER)) return {};
+					break;
+				case "feature_mountain": 
+					if (sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_MOUNTAIN) || sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_MOUNTAIN_EDGE)) return {};
+					break;
+				case "feature_well": 
+					if (sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_WELL) || sectorFeatures.hasFeature(WorldConstants.FEATURE_HOLE_WELL_EDGE)) return {};
 					break;
 				case "grove":
 					if (sectorLocales.hasLocale(localeTypes.grove)) {
 						return { nameTextKey: "grove" };
 					}
-					break;
-				case "ingredients": 
-					if (sectorFeatures.itemsScavengeable.length > 0) return {};
 					break;
 				case "hazard_pollution": 
 					if (sectorFeatures.hazards.poison > 0) return {};
@@ -675,32 +711,35 @@ define([
 				case "hazard_territory": 
 					if (sectorFeatures.hazards.territory > 0) return {};
 					break;
-				case "blocker_debris": 
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_DEBRIS)) return {};
-					break;
-				case "blocker_explosives": 
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_EXPLOSIVES)) return {};
-					break;
-				case "blocker_gap": 
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_GAP)) return {};
-					break;
-				case "blocker_gate": 
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_TOLL_GATE)) return {};
-					break;
-				case "blocker_waste": 
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_RADIOACTIVE)) return {};
-					if (this.hasBlockingBlockerInAnyDirection(sector, MovementConstants.BLOCKER_TYPE_WASTE_TOXIC)) return {};
-					break;
+				case "ingredients": 
+					if (sectorFeatures.itemsScavengeable.length > 0) return {};
+					break;				
 				case "passage":
 					if (passagesComponent.hasLevelPassage()) return {};
-					break;
-				case "center":
-					if (Math.abs(sectorPosition.sectorX) <= 1 && Math.abs(sectorPosition.sectorY) <= 1) return {};
 					break;
 				case "poi":
 					if (this.getNumUnscoutedLocales(sector) > 0) return {};
 					if (this.getNumUnexaminedSpots(sector) > 0) return {};
 					if (passagesComponent.hasLevelPassage()) return {};
+					break;
+				case "settlement":
+					if (sectorLocales.hasLocale(localeTypes.tradingpartner)) {
+						let partner = TradeConstants.getTradePartner(campOrdinal);
+						return { nameTextKey: partner.name };
+					}
+					break;
+				case "spring":
+					if (sectorFeatures.hasSpring) {
+						let springName = TextConstants.getSpringName(sectorFeatures);
+						return { nameTextKey: springName };
+					}
+					break;
+				case "unexplored_sector":
+					if (!sectorStatus.scouted) return {};
+					break;
+				case "unexplored_district":
+					let stats = GameGlobals.levelHelper.getDistrictStats(sectorPosition.level, sectorFeatures.districtIndex);
+					if (stats.percentScoutedSectors < 20) return { sectorType: districtVO.type };
 					break;
 				default:
 					log.w("no such poi type defined: " + poiType);

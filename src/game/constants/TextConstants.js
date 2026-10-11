@@ -617,6 +617,18 @@ function (Ash, TextData, ArrayUtils, MathUtils, ObjectUtils, DescriptionMapper, 
 			return Text.t(this.getTextKey("ui.exploration.heap_" + resourceName + "_name", modifiers));
 		},
 
+		getSectorStyleDisplayName: function (sectorStyle) {
+			return Text.t("world.city.sector_style_" + sectorStyle.replace("-", "_") + "_name");
+		},
+
+		getSectorTypeDisplayName: function (sectorType) {
+			return Text.t("world.city.sector_type_" + sectorType + "_name");
+		},
+
+		getHazrdDisplayNameNoun: function (hazardType) {
+			return Text.t("game.hazards." + hazardType + "_name");
+		},
+
 		getResourcesTextVO: function (resourcesVO, currency) {
 			let list = [];
 

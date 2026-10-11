@@ -155,6 +155,10 @@ define([
 			return playerActionComponent.getBusyAction();
 		},
 
+		getParty: function () {
+			return this.playerStatsNodes.head.explorers.getParty();
+		},
+
 		getActiveDespairType: function () {
 			if (!GameGlobals.gameState.isFeatureUnlocked("camp")) return null;
 			if (!GameGlobals.gameState.isFeatureUnlocked("move")) return null;

@@ -533,7 +533,7 @@ define([
 					let maxRefugees = MathUtils.clamp(campNode.camp.population / 6, 3, 16);
 					let refugeesNum = MathUtils.randomIntBetween(2, maxRefugees + 1);
 					let isStoryRefugees = GameGlobals.gameState.getStoryFlag(StoryConstants.flags.APOCALYPSE_PENDING_REFUGEES);
-					let dialogueSource = isStoryRefugees ? "refugees_earthquake" : "refugees_default";
+					let dialogueSource = isStoryRefugees ? "character_refugees_earthquake" : "character_refugees_default";
 					campNode.entity.add(new RefugeesComponent(refugeesNum, dialogueSource));
 					logMsg = "A group of refugees from the City arrives at the camp.";
 					break;

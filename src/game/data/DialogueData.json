@@ -28,8 +28,214 @@
 					"character_generic_meet_world_feature_mountain_02",
 					"character_generic_meet_world_feature_sunwell_01",
 					"character_generic_meet_world_feature_sunwell_02",
+					"character_generic_outside_zone_early_01",
 					"character_generic_story_searching_for_greenhouse_01",
 					"character_generic_story_searching_for_greenhouse_02"
+				]
+			}
+		},
+		"bundle_character_interest_enemies": {
+			"dialogues": {
+				"meet": [
+					"character_generic_nature_enemy_apparition_01",
+					"character_generic_nature_enemy_big_animal_01",
+					"character_generic_nature_enemy_bird_01",
+					"character_generic_nature_enemy_common_01",
+					"character_generic_nature_enemy_flora_01",
+					"character_generic_nature_enemy_fungi_01",
+					"character_generic_nature_enemy_rare_01",
+					"character_generic_nature_enemy_robot_01",
+					"character_generic_nature_enemy_small_animal_01",
+					"character_generic_nature_enemy_structure_01"
+				]
+			}
+		},
+		"bundle_character_traveler": {
+			"dialogues": {
+				"meet": [
+					"character_generic_traveler_sector_type_residential_01",
+					"character_generic_traveler_sector_type_industrial_01",
+					"character_generic_traveler_sector_type_maintenance_01",
+					"character_generic_traveler_sector_type_commercial_01",
+					"character_generic_traveler_sector_type_public_01",
+					"character_generic_traveler_sector_type_01",
+					"character_generic_traveler_sector_style_01"
+				]
+			}
+		},
+		"bundle_explorer_fighter_confident": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_ability_fight_outside_01",
+					"explorer_generic_ability_flee_outside_01",
+					"explorer_generic_fighter_enemy_common_01",
+					"explorer_generic_fighter_enemy_current_district_01",
+					"explorer_generic_fighter_enemy_current_district_02",
+					"explorer_generic_fighter_enemy_dangerous_01",
+					"explorer_generic_fighter_outside_01",
+					"explorer_generic_fighter_outside_02"
+				]
+			}
+		},
+		"bundle_explorer_generic_ability": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_ability_cost_collectors_in_02",
+					"explorer_generic_ability_cost_collectors_outside_01",
+					"explorer_generic_ability_cost_collectors_outside_02",
+					"explorer_generic_ability_cost_lockpick_in_02",
+					"explorer_generic_ability_cost_lockpick_outside_01",
+					"explorer_generic_ability_cost_lockpick_outside_02",
+					"explorer_generic_ability_cost_movement_in_02",
+					"explorer_generic_ability_cost_movement_outside_01",
+					"explorer_generic_ability_cost_movement_outside_02",
+					"explorer_generic_ability_cost_scavenge_in_02",
+					"explorer_generic_ability_cost_scavenge_outside_01",
+					"explorer_generic_ability_cost_scavenge_outside_02",
+					"explorer_generic_ability_cost_scout_in_02",
+					"explorer_generic_ability_cost_scout_outside_01",
+					"explorer_generic_ability_cost_scout_outside_02",
+					"explorer_generic_ability_detect_hazards_in_02",
+					"explorer_generic_ability_detect_hazards_outside_01",
+					"explorer_generic_ability_detect_hazards_outside_02",
+					"explorer_generic_ability_detect_ingredients_in_02",
+					"explorer_generic_ability_detect_ingredients_outside_01",
+					"explorer_generic_ability_detect_ingredients_outside_02",
+					"explorer_generic_ability_detect_poi_in_02",
+					"explorer_generic_ability_detect_poi_outside_01",
+					"explorer_generic_ability_detect_poi_outside_02",
+					"explorer_generic_ability_detect_supplies_in_02",
+					"explorer_generic_ability_detect_supplies_outside_01",
+					"explorer_generic_ability_detect_supplies_outside_02",
+					"explorer_generic_ability_fight_in_02",
+					"explorer_generic_ability_fight_outside_01",
+					"explorer_generic_ability_fight_outside_02",
+					"explorer_generic_ability_flee_in_02",
+					"explorer_generic_ability_flee_outside_01",
+					"explorer_generic_ability_flee_outside_02",
+					"explorer_generic_ability_handler_in_02",
+					"explorer_generic_ability_handler_outside_01",
+					"explorer_generic_ability_handler_outside_02",
+					"explorer_generic_ability_mapping_in_02",
+					"explorer_generic_ability_mapping_outside_01",
+					"explorer_generic_ability_mapping_outside_02",
+					"explorer_generic_ability_scavenge_blueprints_in_02",
+					"explorer_generic_ability_scavenge_blueprints_outside_01",
+					"explorer_generic_ability_scavenge_blueprints_outside_02",
+					"explorer_generic_ability_scavenge_general_in_02",
+					"explorer_generic_ability_scavenge_general_outside_01",
+					"explorer_generic_ability_scavenge_general_outside_02",
+					"explorer_generic_ability_scavenge_ingredients_in_02",
+					"explorer_generic_ability_scavenge_ingredients_outside_01",
+					"explorer_generic_ability_scavenge_ingredients_outside_02",
+					"explorer_generic_ability_scavenge_supplies_in_02",
+					"explorer_generic_ability_scavenge_supplies_outside_01",
+					"explorer_generic_ability_scavenge_supplies_outside_02",
+					"explorer_generic_ability_scavenge_valuables_in_02",
+					"explorer_generic_ability_scavenge_valuables_outside_01",
+					"explorer_generic_ability_scavenge_valuables_outside_02",
+					"explorer_generic_ability_stat_evidence_in_02",
+					"explorer_generic_ability_stat_evidence_outside_01",
+					"explorer_generic_ability_stat_evidence_outside_02",
+					"explorer_generic_ability_stat_hope_in_02",
+					"explorer_generic_ability_stat_hope_outside_01",
+					"explorer_generic_ability_stat_hope_outside_02",
+					"explorer_generic_ability_stat_rumours_in_02",
+					"explorer_generic_ability_stat_rumours_outside_01",
+					"explorer_generic_ability_stat_rumours_outside_02"
+				]
+			}
+		},
+		"bundle_explorer_generic_assertive_survival": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_interact_directions_home_01",
+					"explorer_generic_interact_district_01",
+					"explorer_generic_interact_district_02",
+					"explorer_generic_interact_low_food_01",
+					"explorer_generic_interact_low_water_01",
+					"explorer_generic_interact_nap_used_01"
+				]
+			}
+		},
+		"bundle_explorer_generic_dreamer": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_dreamer_sector_type_commercial_01",
+					"explorer_generic_dreamer_sector_type_maintenance_01",
+					"explorer_generic_dreamer_sector_type_public_01",
+					"explorer_generic_dreamer_sector_type_residential_01",
+					"explorer_generic_dreamer_sector_type_residential_02",
+					"explorer_generic_outside_sector_empty_01"
+				]
+			}
+		},
+		"bundle_explorer_generic_expertise_city": {
+			"dialogues": {
+				"interact": [
+					"character_generic_outside_sector_style_karboque_01",
+					"character_generic_sector_type_empty_01",
+					"explorer_generic_outside_sector_style_cittadinian_01",
+					"explorer_generic_outside_sector_style_kievan_01",
+					"explorer_generic_outside_sector_style_western_01",
+					"explorer_generic_sector_wealth_high_01",
+					"explorer_generic_sector_wealth_low_01",
+					"explorer_generic_sector_wear_high_01",
+					"explorer_generic_sector_wear_low_01"
+				]
+			}
+		},
+		"bundle_explorer_generic_goal_camps": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_interact_directions_safety_02",
+					"explorer_generic_interact_new_camp_10_01",
+					"explorer_generic_interact_new_camp_12_01",
+					"explorer_generic_interact_new_camp_13_01",
+					"explorer_generic_interact_new_camp_14_01",
+					"explorer_generic_interact_new_camp_15_01",
+					"explorer_generic_interact_new_camp_3_01",
+					"explorer_generic_interact_new_camp_4_01",
+					"explorer_generic_interact_new_camp_7_01",
+					"explorer_generic_interact_new_camp_8_01",
+					"explorer_generic_interact_new_camp_9_01",
+					"explorer_generic_neutral_in_party_01",
+					"explorer_generic_neutral_not_in_party_01",
+					"explorer_generic_story_apocalypse_evacuation_known",
+					"explorer_generic_story_find_greenhouse",
+					"explorer_generic_story_searching_for_greenhouse_01",
+					"explorer_generic_story_searching_for_greenhouse_02"
+				]
+			}
+		},
+		"bundle_explorer_generic_goal_exploration": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_interact_tip_unexplored_level_02",
+					"explorer_generic_keen_in_party_01",
+					"explorer_generic_keen_not_in_party_01"
+				]
+			}
+		},
+		"bundle_explorer_generic_goal_rescue": {
+			"dialogues": {
+				"interact": [
+					"explorer_generic_story_rescue_absence_01",
+					"explorer_generic_story_rescue_found_01",
+					"explorer_generic_story_rescue_prospector_hint_01",
+					"explorer_generic_story_rescue_prospector_hint_02",
+					"explorer_generic_story_rescue_prospector_intro"
+				]
+			}
+		},
+		"bundle_explorer_generic_personal": {
+			"dialogues": {
+				"interact": [
+					"explorer_slummer_outside_sector_style_slum_general_01",
+					"explorer_slummer_outside_sector_style_slum_hun_01",
+					"explorer_surfacer_outside_sector_style_humanist_01",
+					"explorer_surfacer_outside_sector_style_modern_01",
+					"explorer_surfacer_outside_sector_style_neowestern_01"
 				]
 			}
 		},
@@ -81,99 +287,27 @@
 					"character_workerGeneric_interact_04",
 					"character_workerGeneric_interact_escape_01",
 					"character_workerGeneric_interact_injury_01",
+					"character_workerGeneric_luxury_amber_available_01",
+					"character_workerGeneric_luxury_chocolate_available_01",
+					"character_workerGeneric_luxury_coffee_available_01",
+					"character_workerGeneric_luxury_diamonds_available_01",
+					"character_workerGeneric_luxury_emeralds_available_01",
+					"character_workerGeneric_luxury_gold_available_01",
+					"character_workerGeneric_luxury_honey_available_01",
+					"character_workerGeneric_luxury_ivory_available_01",
+					"character_workerGeneric_luxury_jade_available_01",
+					"character_workerGeneric_luxury_olives_available_01",
+					"character_workerGeneric_luxury_pearls_available_01",
+					"character_workerGeneric_luxury_salt_available_01",
+					"character_workerGeneric_luxury_silver_available_01",
+					"character_workerGeneric_luxury_spices_available_01",
+					"character_workerGeneric_luxury_tea_available_01",
+					"character_workerGeneric_luxury_tobacco_available_01",
+					"character_workerGeneric_luxury_truffles_available_01",
 					"character_workerGeneric_story_apocalypse_plan_ready_03",
 					"character_workerGeneric_story_apocalypse_plan_ready_04",
 					"character_workerGeneric_story_escape_build_passage_01",
 					"character_workerGeneric_story_escape_build_passage_02"
-				]
-			}
-		},
-		"bundle_explorer_fighter_confident": {
-			"dialogues": {
-				"interact": [
-					"explorer_generic_ability_fight_outside_01",
-					"explorer_generic_ability_flee_outside_01",
-					"explorer_generic_fighter_enemy_current_district_01",
-					"explorer_generic_fighter_enemy_current_district_02",
-					"explorer_generic_fighter_outside_01",
-					"explorer_generic_fighter_outside_02"
-				]
-			}
-		},
-		"bundle_explorer_generic_assertive_survival": {
-			"dialogues": {
-				"interact": [
-					"explorer_generic_interact_directions_home_01",
-					"explorer_generic_interact_district_01",
-					"explorer_generic_interact_district_02",
-					"explorer_generic_interact_low_food_01",
-					"explorer_generic_interact_low_water_01"
-				]
-			}
-		},
-		"bundle_explorer_generic_goal_camps": {
-			"dialogues": {
-				"interact": [
-					"explorer_generic_interact_directions_safety_02",
-					"explorer_generic_interact_new_camp_10_01",
-					"explorer_generic_interact_new_camp_12_01",
-					"explorer_generic_interact_new_camp_13_01",
-					"explorer_generic_interact_new_camp_14_01",
-					"explorer_generic_interact_new_camp_15_01",
-					"explorer_generic_interact_new_camp_3_01",
-					"explorer_generic_interact_new_camp_4_01",
-					"explorer_generic_interact_new_camp_7_01",
-					"explorer_generic_interact_new_camp_8_01",
-					"explorer_generic_interact_new_camp_9_01",
-					"explorer_generic_story_apocalypse_evacuation_known",
-					"explorer_generic_story_find_greenhouse",
-					"explorer_generic_story_searching_for_greenhouse_01",
-					"explorer_generic_story_searching_for_greenhouse_02"
-				]
-			}
-		},
-		"bundle_explorer_generic_goal_rescue": {
-			"dialogues": {
-				"interact": [
-					"explorer_generic_story_rescue_absence_01",
-					"explorer_generic_story_rescue_found_01",
-					"explorer_generic_story_rescue_prospector_hint_01",
-					"explorer_generic_story_rescue_prospector_hint_02",
-					"explorer_generic_story_rescue_prospector_intro"
-				]
-			}
-		},
-		"bundle_explorer_generic_ability": {
-			"dialogues": {
-				"interact": [
-					"explorer_generic_ability_cost_blueprints_outside_01",
-					"explorer_generic_ability_cost_lockpick_outside_01",
-					"explorer_generic_ability_cost_movement_outside_01",
-					"explorer_generic_ability_cost_scout_outside_01",
-					"explorer_generic_ability_detect_hazards_outside_01",
-					"explorer_generic_ability_detect_ingredients_outside_01",
-					"explorer_generic_ability_detect_poi_outside_01",
-					"explorer_generic_ability_detect_supplies_outside_01",
-					"explorer_generic_ability_fight_outside_01",
-					"explorer_generic_ability_flee_outside_01",
-					"explorer_generic_ability_handler_outside_01",
-					"explorer_generic_ability_handler_outside_02",
-					"explorer_generic_ability_mapping_outside_01",
-					"explorer_generic_ability_mapping_outside_02",
-					"explorer_generic_ability_scavenge_blueprints_outside_01",
-					"explorer_generic_ability_scavenge_blueprints_outside_02",
-					"explorer_generic_ability_scavenge_general_outside_01",
-					"explorer_generic_ability_scavenge_ingredients_outside_01",
-					"explorer_generic_ability_scavenge_supplies_outside_01",
-					"explorer_generic_ability_scavenge_supplies_outside_02",
-					"explorer_generic_ability_scavenge_valuables_outside_01",
-					"explorer_generic_ability_scavenge_valuables_outside_02",
-					"explorer_generic_ability_stat_evidence_outside_01",
-					"explorer_generic_ability_stat_evidence_outside_02",
-					"explorer_generic_ability_stat_hope_outside_01",
-					"explorer_generic_ability_stat_hope_outside_02",
-					"explorer_generic_ability_stat_rumours_outside_01",
-					"explorer_generic_ability_stat_rumours_outside_02"
 				]
 			}
 		}
@@ -416,10 +550,7 @@
 				"numCamps": 9,
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				}
 			},
@@ -1045,10 +1176,7 @@
 		},
 		"character_darkDweller_default_interact_01": {
 			"conditions": {
-				"population": [
-					5,
-					-1
-				]
+				"population": [ 5, -1 ]
 			},
 			"pages": [
 				"character_darkDweller_default_interact_01_p1"
@@ -1110,10 +1238,7 @@
 				"inCamp": true,
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -1126,10 +1251,7 @@
 				"inCamp": true,
 				"player": {
 					"position": {
-						"level": [
-							14,
-							-1
-						]
+						"level": [ 14, -1 ]
 					}
 				}
 			},
@@ -1343,10 +1465,7 @@
 		"character_drifter_default_meet_08": {
 			"conditions": {
 				"playerInventory": {
-					"resource_water": [
-						-1,
-						4
-					]
+					"resource_water": [ -1, 4 ]
 				}
 			},
 			"pages": [
@@ -1364,10 +1483,7 @@
 		"character_drifter_default_meet_09": {
 			"conditions": {
 				"level": {
-					"population": [
-						0.5,
-						-1
-					]
+					"population": [ 0.5, -1 ]
 				}
 			},
 			"pages": [
@@ -2232,6 +2348,10 @@
 		},
 		"character_generic_helpful_enemy_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -2240,6 +2360,10 @@
 		},
 		"character_generic_helpful_enemy_02": {
 			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_level"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -2248,7 +2372,12 @@
 		},
 		"character_generic_helpful_enemy_03": {
 			"conditions": {
-				"inCamp": false
+				"enemy": {
+					"preference": "dangerous",
+					"source": "other_district"
+				},
+				"inCamp": false,
+				"vicinity": "dangerous_district"
 			},
 			"pages": [
 				"character_generic_helpful_enemy_03_p1"
@@ -2407,7 +2536,7 @@
 		"character_generic_meet_district_current_commercial_01": {
 			"conditions": {
 				"sector": {
-					"type": "commerical"
+					"sectorStyle": "commerical"
 				}
 			},
 			"pages": [
@@ -2417,7 +2546,7 @@
 		"character_generic_meet_district_current_industrial_01": {
 			"conditions": {
 				"sector": {
-					"type": "industrial"
+					"sectorType": "industrial"
 				}
 			},
 			"pages": [
@@ -2427,7 +2556,7 @@
 		"character_generic_meet_district_current_public_01": {
 			"conditions": {
 				"sector": {
-					"type": "public"
+					"sectorType": "public"
 				}
 			},
 			"pages": [
@@ -2437,7 +2566,7 @@
 		"character_generic_meet_district_current_residential_01": {
 			"conditions": {
 				"sector": {
-					"type": "residential"
+					"sectorType": "residential"
 				}
 			},
 			"pages": [
@@ -2450,7 +2579,8 @@
 					"hasHazard": true
 				},
 				"sector": {
-					"zone": "late"
+					"hasHazard": false,
+					"zone": "l"
 				}
 			},
 			"pages": [
@@ -2459,8 +2589,12 @@
 		},
 		"character_generic_meet_district_warning_02": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district"
+				},
 				"sector": {
-					"zone": "late"
+					"zone": "l"
 				}
 			},
 			"pages": [
@@ -2469,7 +2603,7 @@
 		},
 		"character_generic_meet_world_feature_collapse_01": {
 			"conditions": {
-				"vicinity": "collapse"
+				"vicinity": "feature_collapse"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_collapse_01_p1"
@@ -2477,7 +2611,7 @@
 		},
 		"character_generic_meet_world_feature_collapse_02": {
 			"conditions": {
-				"vicinity": "collapse"
+				"vicinity": "feature_collapse"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_collapse_02_p1"
@@ -2485,7 +2619,7 @@
 		},
 		"character_generic_meet_world_feature_giga_center_01": {
 			"conditions": {
-				"vicinity": "hq"
+				"vicinity": "feature_hq"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_giga_center_01_p1"
@@ -2493,7 +2627,7 @@
 		},
 		"character_generic_meet_world_feature_mountain_01": {
 			"conditions": {
-				"vicinity": "mountain"
+				"vicinity": "feature_mountain"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_mountain_01_p1"
@@ -2501,7 +2635,7 @@
 		},
 		"character_generic_meet_world_feature_mountain_02": {
 			"conditions": {
-				"vicinity": "mountain"
+				"vicinity": "feature_mountain"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_mountain_02_p1"
@@ -2509,7 +2643,7 @@
 		},
 		"character_generic_meet_world_feature_sunwell_01": {
 			"conditions": {
-				"vicinity": "well"
+				"vicinity": "feature_well"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_sunwell_01_p1"
@@ -2517,14 +2651,145 @@
 		},
 		"character_generic_meet_world_feature_sunwell_02": {
 			"conditions": {
-				"vicinity": "well"
+				"vicinity": "feature_well"
 			},
 			"pages": [
 				"character_generic_meet_world_feature_sunwell_02_p1"
 			]
 		},
+		"character_generic_nature_enemy_apparition_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "apparition"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_apparition_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_big_animal_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "big_animal"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_big_animal_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_bird_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "bird"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_bird_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_common_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_level"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_common_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_flora_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "flora"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_flora_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_fungi_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "fungi"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_fungi_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_rare_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "rare",
+					"source": "encountered"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_rare_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_robot_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "robot"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_robot_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_small_animal_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "small_animal"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_small_animal_01_p1"
+			]
+		},
+		"character_generic_nature_enemy_structure_01": {
+			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "structure"
+				}
+			},
+			"pages": [
+				"character_generic_nature_enemy_structure_01_p1"
+			]
+		},
+		"character_generic_outside_sector_style_karboque_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "karboque"
+				}
+			},
+			"pages": [
+				"character_generic_outside_sector_style_karboque_01_p1"
+			]
+		},
+		"character_generic_outside_zone_early_01": {
+			"conditions": {
+				"sector": {
+					"zone": "e"
+				}
+			},
+			"pages": [
+				"character_generic_outside_zone_early_01_p1"
+			]
+		},
 		"character_generic_reserved_meet_01": {
-			"conditions": { },
+			"conditions": {},
 			"pages": [
 				"character_generic_reserved_meet_01_p1"
 			]
@@ -2532,6 +2797,17 @@
 		"character_generic_reserved_meet_02": {
 			"pages": [
 				"character_generic_reserved_meet_02_p1"
+			]
+		},
+		"character_generic_sector_type_empty_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "empty"
+				}
+			},
+			"pages": [
+				"character_generic_sector_type_empty_01_p1"
 			]
 		},
 		"character_generic_story_explain_ground_01": {
@@ -2596,10 +2872,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							3,
-							-1
-						]
+						"level": [ 3, -1 ]
 					}
 				}
 			},
@@ -2691,10 +2964,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							20
-						]
+						"level": [ -1, 20 ]
 					}
 				}
 			},
@@ -2737,10 +3007,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							2,
-							14
-						]
+						"level": [ 2, 14 ]
 					}
 				}
 			},
@@ -2774,10 +3041,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							14,
-							-1
-						]
+						"level": [ 14, -1 ]
 					}
 				},
 				"sector": {
@@ -2901,14 +3165,76 @@
 				}
 			]
 		},
+		"character_generic_traveler_sector_style_01": {
+			"conditions": {
+				"sector": {
+					"wear": [ 1, -1 ]
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_style_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_01": {
+			"pages": [
+				"character_generic_traveler_sector_type_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_commercial_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "commercial"
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_type_commercial_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_industrial_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "industrial"
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_type_industrial_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_maintenance_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "maintenance"
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_type_maintenance_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_public_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "public"
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_type_public_01_p1"
+			]
+		},
+		"character_generic_traveler_sector_type_residential_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "residential"
+				}
+			},
+			"pages": [
+				"character_generic_traveler_sector_type_residential_01_p1"
+			]
+		},
 		"character_generic_world_level_numbers_01": {
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				}
 			},
@@ -2980,10 +3306,7 @@
 		"character_hunter_default_meet_06": {
 			"conditions": {
 				"playerInventory": {
-					"resource_food": [
-						-1,
-						4
-					]
+					"resource_food": [ -1, 4 ]
 				}
 			},
 			"pages": [
@@ -2999,6 +3322,12 @@
 			]
 		},
 		"character_hunter_default_meet_07": {
+			"conditions": {
+				"enemy": {
+					"preference": "rare",
+					"source": "encountered"
+				}
+			},
 			"pages": [
 				"character_hunter_default_meet_07_p1"
 			]
@@ -3073,6 +3402,16 @@
 				"character_machineCultist_default_meet_13_p1"
 			]
 		},
+		"character_machineCultist_sector_type_maintenance_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "maintenance"
+				}
+			},
+			"pages": [
+				"character_machineCultist_sector_type_maintenance_01_p1"
+			]
+		},
 		"character_mercenary_default_meet_01": {
 			"pages": [
 				"character_mercenary_default_meet_01_p1"
@@ -3102,6 +3441,12 @@
 			]
 		},
 		"character_mercenary_default_meet_05": {
+			"conditions": {
+				"enemy": {
+					"preference": "rare",
+					"source": "encountered"
+				}
+			},
 			"pages": [
 				"character_mercenary_default_meet_05_p1"
 			]
@@ -3260,6 +3605,12 @@
 			]
 		},
 		"character_natureCultist_default_meet_08": {
+			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_level"
+				}
+			},
 			"pages": [
 				"character_natureCultist_default_meet_08_p1"
 			]
@@ -3494,10 +3845,7 @@
 		"character_shaman_default_event_04": {
 			"conditions": {
 				"improvements": {
-					"temple": [
-						1,
-						-1
-					]
+					"temple": [ 1, -1 ]
 				}
 			},
 			"pages": [
@@ -3594,10 +3942,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							15
-						]
+						"level": [ -1, 15 ]
 					}
 				}
 			},
@@ -3632,7 +3977,7 @@
 		},
 		"character_slumRefugee_default_interact_06": {
 			"conditions": {
-				"numCamp": 15,
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -3690,10 +4035,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							15
-						]
+						"level": [ -1, 15 ]
 					}
 				}
 			},
@@ -3793,7 +4135,7 @@
 		},
 		"character_surfaceRefugee_default_interact_11": {
 			"conditions": {
-				"numCamp": 15,
+				"numCamps": 15,
 				"storyFlags": {
 					"APOCALYPSE_PLAN_READY": true
 				}
@@ -3844,10 +4186,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				},
 				"storyFlags": {
@@ -3883,10 +4222,7 @@
 				"maxNumCamps": 3,
 				"player": {
 					"position": {
-						"level": [
-							9,
-							-1
-						]
+						"level": [ 9, -1 ]
 					}
 				},
 				"storyFlags": {
@@ -3901,10 +4237,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							10
-						]
+						"level": [ -1, 10 ]
 					}
 				},
 				"storyFlags": {
@@ -3949,10 +4282,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerAcademicFactor": [
-							1.01,
-							-1
-						]
+						"workerAcademicFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -3985,10 +4315,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerArtisanFactor": [
-							1.01,
-							-1
-						]
+						"workerArtisanFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4189,7 +4516,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"disaster": true
+						"signatureDisaster": true
 					}
 				},
 				"inCamp": true
@@ -4202,10 +4529,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"diseaseFactor": [
-							1.01,
-							-1
-						]
+						"diseaseFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4218,10 +4542,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"diseaseFactor": [
-							1.01,
-							-1
-						]
+						"diseaseFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4234,10 +4555,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"diseaseFactor": [
-							-1,
-							1
-						]
+						"diseaseFactor": [ -1, 1 ]
 					}
 				},
 				"inCamp": true
@@ -4250,10 +4568,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"diseaseFactor": [
-							-1,
-							1
-						]
+						"diseaseFactor": [ -1, 1 ]
 					}
 				},
 				"inCamp": true
@@ -4266,10 +4581,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"habitability": [
-							1.01,
-							-1
-						]
+						"habitability": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4282,10 +4594,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"habitability": [
-							-1,
-							1
-						]
+						"habitability": [ -1, 1 ]
 					}
 				},
 				"inCamp": true
@@ -4298,10 +4607,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"raidDangerFactor": [
-							1.01,
-							-1
-						]
+						"raidDangerFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4314,10 +4620,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"raidDangerFactor": [
-							1.01,
-							-1
-						]
+						"raidDangerFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4330,10 +4633,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"raidDangerFactor": [
-							-1,
-							1
-						]
+						"raidDangerFactor": [ -1, 1 ]
 					}
 				},
 				"inCamp": true
@@ -4346,10 +4646,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"traderFactor": [
-							1.01,
-							-1
-						]
+						"traderFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4362,10 +4659,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"traderFactor": [
-							-1,
-							1
-						]
+						"traderFactor": [ -1, 1 ]
 					}
 				},
 				"inCamp": true
@@ -4378,10 +4672,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerAcademicFactor": [
-							1.01,
-							-1
-						]
+						"workerAcademicFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4394,10 +4685,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerArtisanFactor": [
-							1.01,
-							-1
-						]
+						"workerArtisanFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4410,10 +4698,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerFoodFactor": [
-							1.01,
-							-1
-						]
+						"workerFoodFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4426,10 +4711,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerHopeFactor": [
-							1.01,
-							-1
-						]
+						"workerHopeFactor": [ 1.01, -1 ]
 					}
 				},
 				"deity": true,
@@ -4443,10 +4725,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerMetalFactor": [
-							1.01,
-							-1
-						]
+						"workerMetalFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4459,10 +4738,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerWaterFactor": [
-							1.01,
-							-1
-						]
+						"workerWaterFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -4519,10 +4795,18 @@
 		"character_workerGeneric_interact_explorer_injury_01": {
 			"conditions": {
 				"inCamp": true,
-				"pages": [
-					"character_workerGeneric_interact_explorer_injury_01_p1"
-				],
-				"player": {
+				"party": {
+					"hasInjuredExplorer": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_interact_explorer_injury_01_p1"
+			]
+		},
+		"character_workerGeneric_interact_explorer_injury_02": {
+			"conditions": {
+				"inCamp": true,
+				"party": {
 					"hasInjuredExplorer": true
 				}
 			},
@@ -4666,12 +4950,12 @@
 		"character_workerGeneric_interact_injury_01": {
 			"conditions": {
 				"improvements": {
-					"hospital": [
-						1,
-						-1
-					]
+					"hospital": [ 1, -1 ]
 				},
-				"inCamp": true
+				"inCamp": true,
+				"perkEffects": {
+					"Injury": [ 0.1, 1 ]
+				}
 			},
 			"pages": [
 				"character_workerGeneric_interact_injury_01_p1"
@@ -4682,10 +4966,7 @@
 				"numCamps": 9,
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -4729,10 +5010,7 @@
 			"conditions": {
 				"deity": true,
 				"improvements": {
-					"shrine": [
-						1,
-						-1
-					]
+					"shrine": [ 1, -1 ]
 				}
 			},
 			"pages": [
@@ -4764,10 +5042,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							16
-						]
+						"level": [ -1, 16 ]
 					}
 				},
 				"storyFlags": {
@@ -4787,6 +5062,176 @@
 			},
 			"pages": [
 				"character_workerGeneric_interact_story_greenhouse_found_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_amber_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"AMBER": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_amber_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_chocolate_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"CHOCOLATE": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_coffee_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"COFFEE": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_diamonds_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"DIAMONDS": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_diamonds_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_emeralds_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"EMERALDS": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_emeralds_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_gold_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"GOLD": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_generic_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_honey_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"HONEY": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_ivory_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"IVORY": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_generic_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_jade_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"JADE": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_generic_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_olives_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"OLIVES": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_pearls_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"PEARLS": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_pearls_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_salt_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"SALT": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_silver_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"SILVER": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_generic_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_spices_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"SPICES": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_tea_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TEA": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_tobacco_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TOBACCO": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
+			]
+		},
+		"character_workerGeneric_luxury_truffles_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TRUFFLES": true
+				}
+			},
+			"pages": [
+				"character_workerGeneric_luxury_edible_available_01_p1"
 			]
 		},
 		"character_workerGeneric_meet_01": {
@@ -4876,10 +5321,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerHopeFactor": [
-							1.01,
-							-1
-						]
+						"workerHopeFactor": [ 1.01, -1 ]
 					}
 				},
 				"deity": true,
@@ -5029,10 +5471,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerMetalFactor": [
-							1.01,
-							-1
-						]
+						"workerMetalFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -5162,10 +5601,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							14,
-							-1
-						]
+						"level": [ 14, -1 ]
 					}
 				}
 			},
@@ -5220,10 +5656,7 @@
 		"character_workerTrapper_default_meet_03": {
 			"conditions": {
 				"playerInventory": {
-					"resource_food": [
-						-1,
-						4
-					]
+					"resource_food": [ -1, 4 ]
 				}
 			},
 			"pages": [
@@ -5242,10 +5675,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerFoodFactor": [
-							1.01,
-							-1
-						]
+						"workerFoodFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -5309,10 +5739,7 @@
 		"character_workerWater_default_meet_03": {
 			"conditions": {
 				"playerInventory": {
-					"resource_water": [
-						-1,
-						4
-					]
+					"resource_water": [ -1, 4 ]
 				}
 			},
 			"pages": [
@@ -5331,10 +5758,7 @@
 			"conditions": {
 				"camp": {
 					"feature": {
-						"workerWaterFactor": [
-							1.01,
-							-1
-						]
+						"workerWaterFactor": [ 1.01, -1 ]
 					}
 				},
 				"inCamp": true
@@ -5343,7 +5767,17 @@
 				"character_workerWater_interact_camp_worker_water_bonus_01_p1"
 			]
 		},
-		"explorer_generic_ability_cost_blueprints_outside_01": {
+		"explorer_generic_ability_cost_collectors_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_collectors"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_collectors_in_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_collectors_outside_01": {
 			"conditions": {
 				"explorer": {
 					"abilityType": "cost_collectors"
@@ -5351,7 +5785,27 @@
 				"inCamp": false
 			},
 			"pages": [
-				"explorer_generic_ability_cost_blueprints_outside_01_p1"
+				"explorer_generic_ability_cost_collectors_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_cost_collectors_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_collectors"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_collectors_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_lockpick_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_lockpick"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_lockpick_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_cost_lockpick_outside_01": {
@@ -5365,6 +5819,26 @@
 				"explorer_generic_ability_cost_lockpick_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_cost_lockpick_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_lockpick"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_lockpick_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_movement_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_movement"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_movement_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_cost_movement_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5374,6 +5848,56 @@
 			},
 			"pages": [
 				"explorer_generic_ability_cost_movement_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_cost_movement_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_movement"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_movement_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_scavenge_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_scavenge"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_scavenge_in_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_scavenge_outside_01": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_scavenge"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_scavenge_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_cost_scavenge_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_scavenge"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_scavenge_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_cost_scout_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_scout"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_scout_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_cost_scout_outside_01": {
@@ -5387,6 +5911,26 @@
 				"explorer_generic_ability_cost_scout_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_cost_scout_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "cost_scout"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_cost_scout_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_detect_hazards_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_hazards"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_hazards_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_detect_hazards_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5396,6 +5940,26 @@
 			},
 			"pages": [
 				"explorer_generic_ability_detect_hazards_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_detect_hazards_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_hazards"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_hazards_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_detect_ingredients_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_ingredients"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_ingredients_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_detect_ingredients_outside_01": {
@@ -5409,6 +5973,26 @@
 				"explorer_generic_ability_detect_ingredients_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_detect_ingredients_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_ingredients"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_ingredients_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_detect_poi_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_poi"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_poi_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_detect_poi_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5418,6 +6002,26 @@
 			},
 			"pages": [
 				"explorer_generic_ability_detect_poi_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_detect_poi_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_poi"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_poi_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_detect_supplies_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_supplies"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_supplies_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_detect_supplies_outside_01": {
@@ -5431,6 +6035,26 @@
 				"explorer_generic_ability_detect_supplies_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_detect_supplies_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "detect_supplies"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_detect_supplies_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_fight_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "fight"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_fight_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_fight_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5442,6 +6066,26 @@
 				"explorer_generic_ability_fight_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_fight_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "fight"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_fight_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_flee_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "flee"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_flee_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_flee_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5451,6 +6095,26 @@
 			},
 			"pages": [
 				"explorer_generic_ability_flee_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_flee_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "flee"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_flee_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_handler_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "handler"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_handler_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_handler_outside_01": {
@@ -5475,6 +6139,16 @@
 				"explorer_generic_ability_handler_outside_02_p1"
 			]
 		},
+		"explorer_generic_ability_mapping_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "mapping"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_mapping_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_mapping_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5495,6 +6169,16 @@
 			},
 			"pages": [
 				"explorer_generic_ability_mapping_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_scavenge_blueprints_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_blueprints"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_blueprints_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_scavenge_blueprints_outside_01": {
@@ -5519,6 +6203,16 @@
 				"explorer_generic_ability_scavenge_blueprints_outside_02_p1"
 			]
 		},
+		"explorer_generic_ability_scavenge_general_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_general"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_general_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_scavenge_general_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5530,6 +6224,26 @@
 				"explorer_generic_ability_scavenge_general_outside_01_p1"
 			]
 		},
+		"explorer_generic_ability_scavenge_general_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_general"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_general_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_scavenge_ingredients_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_ingredients"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_ingredients_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_scavenge_ingredients_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5539,6 +6253,26 @@
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_ingredients_outside_01_p1"
+			]
+		},
+		"explorer_generic_ability_scavenge_ingredients_outside_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_ingredients"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_ingredients_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_scavenge_supplies_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_supplies"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_supplies_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_scavenge_supplies_outside_01": {
@@ -5563,6 +6297,16 @@
 				"explorer_generic_ability_scavenge_supplies_outside_02_p1"
 			]
 		},
+		"explorer_generic_ability_scavenge_valuables_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "scavenge_valuables"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_scavenge_valuables_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_scavenge_valuables_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5583,6 +6327,16 @@
 			},
 			"pages": [
 				"explorer_generic_ability_scavenge_valuables_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_stat_evidence_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "stat_evidence"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_stat_evidence_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_stat_evidence_outside_01": {
@@ -5607,6 +6361,16 @@
 				"explorer_generic_ability_stat_evidence_outside_02_p1"
 			]
 		},
+		"explorer_generic_ability_stat_hope_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "stat_hope"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_stat_hope_in_02_p1"
+			]
+		},
 		"explorer_generic_ability_stat_hope_outside_01": {
 			"conditions": {
 				"explorer": {
@@ -5627,6 +6391,16 @@
 			},
 			"pages": [
 				"explorer_generic_ability_stat_hope_outside_02_p1"
+			]
+		},
+		"explorer_generic_ability_stat_rumours_in_02": {
+			"conditions": {
+				"explorer": {
+					"abilityType": "stat_rumours"
+				}
+			},
+			"pages": [
+				"explorer_generic_ability_stat_rumours_in_02_p1"
 			]
 		},
 		"explorer_generic_ability_stat_rumours_outside_01": {
@@ -5850,8 +6624,80 @@
 				"explorer_generic_dog_outside_03_p1"
 			]
 		},
+		"explorer_generic_dreamer_sector_type_commercial_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "commercial"
+				}
+			},
+			"pages": [
+				"explorer_generic_dreamer_sector_type_commercial_01_p1"
+			]
+		},
+		"explorer_generic_dreamer_sector_type_maintenance_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "maintenance"
+				}
+			},
+			"pages": [
+				"explorer_generic_dreamer_sector_type_maintenance_01_p1"
+			]
+		},
+		"explorer_generic_dreamer_sector_type_public_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "public"
+				}
+			},
+			"pages": [
+				"explorer_generic_dreamer_sector_type_public_01_p1"
+			]
+		},
+		"explorer_generic_dreamer_sector_type_residential_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "residential",
+					"wealth": [ -1, 5 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_dreamer_sector_type_residential_01_p1"
+			]
+		},
+		"explorer_generic_dreamer_sector_type_residential_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "residential",
+					"wealth": [ 5, -1 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_dreamer_sector_type_residential_02_p1"
+			]
+		},
+		"explorer_generic_fighter_enemy_common_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "encountered"
+				}
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_common_01_p1"
+			]
+		},
 		"explorer_generic_fighter_enemy_current_district_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_district"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -5860,6 +6706,10 @@
 		},
 		"explorer_generic_fighter_enemy_current_district_02": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -5868,6 +6718,10 @@
 		},
 		"explorer_generic_fighter_enemy_current_level_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_level"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -5876,15 +6730,35 @@
 		},
 		"explorer_generic_fighter_enemy_current_level_02": {
 			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_level"
+				},
 				"inCamp": false
 			},
 			"pages": [
 				"explorer_generic_fighter_enemy_current_level_02_p1"
 			]
 		},
+		"explorer_generic_fighter_enemy_dangerous_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "encountered"
+				}
+			},
+			"pages": [
+				"explorer_generic_fighter_enemy_dangerous_01_p1"
+			]
+		},
 		"explorer_generic_fighter_enemy_other_district_01": {
 			"conditions": {
-				"inCamp": false
+				"enemy": {
+					"preference": "dangerous",
+					"source": "other_district"
+				},
+				"inCamp": false,
+				"vicinity": "dangerous_district"
 			},
 			"pages": [
 				"explorer_generic_fighter_enemy_other_district_01_p1"
@@ -5919,10 +6793,7 @@
 				"inCamp": false,
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -5976,7 +6847,8 @@
 		},
 		"explorer_generic_interact_directions_district_01": {
 			"conditions": {
-				"inCamp": false
+				"inCamp": false,
+				"vicinity": "unexplored_district"
 			},
 			"pages": [
 				"explorer_generic_interact_directions_district_01_p1"
@@ -5997,10 +6869,10 @@
 		"explorer_generic_interact_directions_home_01": {
 			"conditions": {
 				"inCamp": false,
-				"stamina": [
-					-1,
-					200
-				]
+				"level": {
+					"hasCamp": true
+				},
+				"stamina": [ -1, 200 ]
 			},
 			"isPriority": true,
 			"pages": [
@@ -6010,10 +6882,7 @@
 		"explorer_generic_interact_directions_home_02": {
 			"conditions": {
 				"inCamp": false,
-				"stamina": [
-					-1,
-					200
-				]
+				"stamina": [ -1, 200 ]
 			},
 			"isPriority": true,
 			"pages": [
@@ -6063,10 +6932,7 @@
 			"conditions": {
 				"inCamp": false,
 				"level": {
-					"population": [
-						-1,
-						0.1
-					]
+					"population": [ -1, 0.1 ]
 				}
 			},
 			"pages": [
@@ -6098,7 +6964,7 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"zone": "late"
+					"zone": "l"
 				}
 			},
 			"pages": [
@@ -6109,7 +6975,7 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"zone": "early"
+					"zone": "e"
 				}
 			},
 			"pages": [
@@ -6295,17 +7161,11 @@
 		"explorer_generic_interact_low_food_01": {
 			"conditions": {
 				"improvements": {
-					"collector_food": [
-						-1,
-						1
-					]
+					"collector_food": [ -1, 1 ]
 				},
 				"inCamp": false,
 				"playerInventory": {
-					"resource_food": [
-						-1,
-						1
-					]
+					"resource_food": [ -1, 1 ]
 				}
 			},
 			"isPriority": true,
@@ -6316,17 +7176,11 @@
 		"explorer_generic_interact_low_water_01": {
 			"conditions": {
 				"improvements": {
-					"collector_water": [
-						-1,
-						1
-					]
+					"collector_water": [ -1, 1 ]
 				},
 				"inCamp": false,
 				"playerInventory": {
-					"resource_water": [
-						-1,
-						1
-					]
+					"resource_water": [ -1, 1 ]
 				}
 			},
 			"isPriority": true,
@@ -6334,245 +7188,14 @@
 				"explorer_generic_interact_low_water_01_p1"
 			]
 		},
-		"explorer_generic_interact_story_apocalypse_01": {
+		"explorer_generic_interact_nap_used_01": {
 			"conditions": {
-				"explorer": {
-					"trust": 2
-				},
-				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
+				"excursion": {
+					"numNaps": [ 1, -1 ]
 				}
 			},
 			"pages": [
-				"explorer_generic_interact_story_apocalypse_01_p1"
-			]
-		},
-		"explorer_generic_interact_story_apocalypse_02": {
-			"conditions": {
-				"explorer": {
-					"trust": 6
-				},
-				"storyFlags": {
-					"APOCALYPSE_KNOWN": true
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_story_apocalypse_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_cold_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"cold": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_cold_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_cold_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"cold": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_cold_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_debris_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"debris": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_debris_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_debris_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"debris": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_debris_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_flood_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"flood": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_flood_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_flood_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"flood": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_flood_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_pollution_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"poison": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_pollution_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_pollution_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"poison": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_pollution_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_radiation_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"radiation": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_radiation_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_radiation_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"radiation": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_radiation_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_territory_01": {
-			"conditions": {
-				"explorer": {
-					"inParty": true
-				},
-				"inCamp": true,
-				"level": {
-					"hazards": {
-						"territory": [
-							1,
-							-1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_territory_01_p1"
-			]
-		},
-		"explorer_generic_interact_tip_hazard_territory_02": {
-			"conditions": {
-				"inCamp": false,
-				"sector": {
-					"hazards": {
-						"territory": [
-							0,
-							1
-						]
-					}
-				}
-			},
-			"pages": [
-				"explorer_generic_interact_tip_hazard_territory_02_p1"
-			]
-		},
-		"explorer_generic_interact_tip_unexplored_level_01": {
-			"pages": [
-				"explorer_generic_interact_tip_unexplored_level_01_p1"
+				"explorer_generic_interact_nap_used_01_p1"
 			]
 		},
 		"explorer_generic_interact_new_camp_10_01": {
@@ -6583,19 +7206,6 @@
 			},
 			"pages": [
 				"explorer_generic_interact_new_camp_10_01_p1"
-			]
-		},
-		"explorer_unique_journalist_interact_new_camp_11_01": {
-			"conditions": {
-				"explorer": {
-					"trust": 2
-				},
-				"inCamp": 11,
-				"maxNumCamps": 11,
-				"numCamps": 11
-			},
-			"pages": [
-				"explorer_unique_journalist_interact_new_camp_11_01_p1"
 			]
 		},
 		"explorer_generic_interact_new_camp_12_01": {
@@ -6677,19 +7287,6 @@
 				"explorer_generic_interact_new_camp_4_01_p1"
 			]
 		},
-		"explorer_unique_journalist_interact_new_camp_5_01": {
-			"conditions": {
-				"explorer": {
-					"trust": 2
-				},
-				"inCamp": 5,
-				"maxNumCamps": 5,
-				"numCamps": 5
-			},
-			"pages": [
-				"explorer_unique_journalist_interact_new_camp_5_01_p1"
-			]
-		},
 		"explorer_generic_interact_new_camp_6_01": {
 			"conditions": {
 				"explorer": {
@@ -6741,6 +7338,247 @@
 			},
 			"pages": [
 				"explorer_generic_interact_new_camp_9_01_p1"
+			]
+		},
+		"explorer_generic_interact_story_apocalypse_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_01_p1"
+			]
+		},
+		"explorer_generic_interact_story_apocalypse_02": {
+			"conditions": {
+				"explorer": {
+					"trust": 6
+				},
+				"storyFlags": {
+					"APOCALYPSE_KNOWN": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_story_apocalypse_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_cold_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"cold": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_cold_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_cold_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"cold": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_cold_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_debris_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"debris": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_debris_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_debris_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"debris": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_debris_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_flood_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"flooded": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_flood_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_flood_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"flooded": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_flood_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_pollution_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"poison": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_pollution_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_pollution_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"poison": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_pollution_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_radiation_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"radiation": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_radiation_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_radiation_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"radiation": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_radiation_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_territory_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": true
+				},
+				"inCamp": true,
+				"level": {
+					"hazards": {
+						"territory": [ 1, -1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_territory_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_hazard_territory_02": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"hazards": {
+						"territory": [ 0, 1 ]
+					}
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_hazard_territory_02_p1"
+			]
+		},
+		"explorer_generic_interact_tip_unexplored_level_01": {
+			"conditions": {
+				"world": {
+					"hasIncompleteLevel": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_unexplored_level_01_p1"
+			]
+		},
+		"explorer_generic_interact_tip_unexplored_level_02": {
+			"conditions": {
+				"world": {
+					"hasIncompleteLevel": true
+				}
+			},
+			"pages": [
+				"explorer_generic_interact_tip_unexplored_level_02_p1"
+			]
+		},
+		"explorer_generic_keen_in_party_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": "e"
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"explorer_generic_keen_in_party_01_p1"
+			]
+		},
+		"explorer_generic_keen_not_in_party_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": "e"
+				}
+			},
+			"pages": [
+				"explorer_generic_keen_not_in_party_01_p1"
 			]
 		},
 		"explorer_generic_mercenary_event_01": {
@@ -6886,6 +7724,27 @@
 				"explorer_generic_mule_outside_01_p1"
 			]
 		},
+		"explorer_generic_neutral_in_party_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": "e"
+				},
+				"inCamp": true
+			},
+			"pages": [
+				"explorer_generic_neutral_in_party_01_p1"
+			]
+		},
+		"explorer_generic_neutral_not_in_party_01": {
+			"conditions": {
+				"explorer": {
+					"inParty": "e"
+				}
+			},
+			"pages": [
+				"explorer_generic_neutral_not_in_party_01_p1"
+			]
+		},
 		"explorer_generic_olm_event_01": {
 			"pages": [
 				"explorer_generic_olm_event_01_p1"
@@ -6949,6 +7808,46 @@
 			},
 			"pages": [
 				"explorer_generic_olm_outside_02_p1"
+			]
+		},
+		"explorer_generic_outside_sector_empty_01": {
+			"conditions": {
+				"sector": {
+					"sectorType": "empty"
+				}
+			},
+			"pages": [
+				"explorer_generic_outside_sector_empty_01_p1"
+			]
+		},
+		"explorer_generic_outside_sector_style_cittadinian_01": {
+			"conditions": {
+				"sector": {
+					"sectorStyle": "cittadinian"
+				}
+			},
+			"pages": [
+				"explorer_generic_outside_sector_style_cittadinian_01_p1"
+			]
+		},
+		"explorer_generic_outside_sector_style_kievan_01": {
+			"conditions": {
+				"sector": {
+					"sectorStyle": "kievan"
+				}
+			},
+			"pages": [
+				"explorer_generic_outside_sector_style_kievan_01_p1"
+			]
+		},
+		"explorer_generic_outside_sector_style_western_01": {
+			"conditions": {
+				"sector": {
+					"sectorStyle": "western"
+				}
+			},
+			"pages": [
+				"explorer_generic_outside_sector_style_western_01_p1"
 			]
 		},
 		"explorer_generic_raven_event_01": {
@@ -7055,10 +7954,7 @@
 				},
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -7090,6 +7986,28 @@
 			},
 			"pages": [
 				"explorer_generic_scavenger_outside_01_p1"
+			]
+		},
+		"explorer_generic_scout_enemy_common_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_district"
+				}
+			},
+			"pages": [
+				"explorer_generic_scout_enemy_common_01_p1"
+			]
+		},
+		"explorer_generic_scout_enemy_dangerous_01": {
+			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district"
+				}
+			},
+			"pages": [
+				"explorer_generic_scout_enemy_dangerous_01_p1"
 			]
 		},
 		"explorer_generic_scout_event_01": {
@@ -7186,6 +8104,46 @@
 				"explorer_generic_scout_outside_01_p1"
 			]
 		},
+		"explorer_generic_sector_wealth_high_01": {
+			"conditions": {
+				"sector": {
+					"wealth": [ 5, -1 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_sector_wealth_high_01_p1"
+			]
+		},
+		"explorer_generic_sector_wealth_low_01": {
+			"conditions": {
+				"sector": {
+					"wealth": [ -1, 5 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_sector_wealth_low_01_p1"
+			]
+		},
+		"explorer_generic_sector_wear_high_01": {
+			"conditions": {
+				"sector": {
+					"wear": [ 5, -1 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_sector_wear_high_01_p1"
+			]
+		},
+		"explorer_generic_sector_wear_low_01": {
+			"conditions": {
+				"sector": {
+					"wear": [ -1, 5 ]
+				}
+			},
+			"pages": [
+				"explorer_generic_sector_wear_low_01_p1"
+			]
+		},
 		"explorer_generic_story_apocalypse_evacuation_known": {
 			"conditions": {
 				"explorer": {
@@ -7280,18 +8238,9 @@
 				},
 				"tribe": {
 					"improvements": {
-						"spaceship1": [
-							1,
-							-1
-						],
-						"spaceship2": [
-							1,
-							-1
-						],
-						"spaceship3": [
-							1,
-							-1
-						]
+						"spaceship1": [ 1, -1 ],
+						"spaceship2": [ 1, -1 ],
+						"spaceship3": [ 1, -1 ]
 					}
 				}
 			},
@@ -7343,6 +8292,19 @@
 			},
 			"pages": [
 				"explorer_generic_story_rescue_absence_01_p1"
+			]
+		},
+		"explorer_generic_story_rescue_found_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				},
+				"storyFlags": {
+					"RESCUE_EXPLORER_FOUND": true
+				}
+			},
+			"pages": [
+				"explorer_generic_story_rescue_found_01_p1"
 			]
 		},
 		"explorer_generic_story_rescue_prospector_hint_01": {
@@ -7422,6 +8384,76 @@
 			},
 			"pages": [
 				"explorer_generic_story_searching_for_greenhouse_02_p1"
+			]
+		},
+		"explorer_slummer_outside_sector_style_slum_general_01": {
+			"conditions": {
+				"explorer": {
+					"origin": "slums"
+				},
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "slum-general"
+				}
+			},
+			"pages": [
+				"explorer_slummer_outside_sector_style_slum_general_01_p1"
+			]
+		},
+		"explorer_slummer_outside_sector_style_slum_hun_01": {
+			"conditions": {
+				"explorer": {
+					"origin": "slums"
+				},
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "slum-hun"
+				}
+			},
+			"pages": [
+				"explorer_slummer_outside_sector_style_slum_hun_01_p1"
+			]
+		},
+		"explorer_surfacer_outside_sector_style_humanist_01": {
+			"conditions": {
+				"explorer": {
+					"origin": "surface"
+				},
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "humanist"
+				}
+			},
+			"pages": [
+				"explorer_surfacer_outside_sector_style_humanist_01_p1"
+			]
+		},
+		"explorer_surfacer_outside_sector_style_modern_01": {
+			"conditions": {
+				"explorer": {
+					"origin": "surface"
+				},
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "modern"
+				}
+			},
+			"pages": [
+				"explorer_surfacer_outside_sector_style_modern_01_p1"
+			]
+		},
+		"explorer_surfacer_outside_sector_style_neowestern_01": {
+			"conditions": {
+				"explorer": {
+					"origin": "surface"
+				},
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "neo-western"
+				}
+			},
+			"pages": [
+				"explorer_surfacer_outside_sector_style_neowestern_01_p1"
 			]
 		},
 		"explorer_template_amnesiac_event_01": {
@@ -7546,10 +8578,7 @@
 		"explorer_template_amnesiac_interact_14": {
 			"conditions": {
 				"improvements": {
-					"garden": [
-						1,
-						-1
-					]
+					"garden": [ 1, -1 ]
 				}
 			},
 			"pages": [
@@ -7559,10 +8588,7 @@
 		"explorer_template_amnesiac_interact_15": {
 			"conditions": {
 				"improvements": {
-					"lights": [
-						1,
-						-1
-					]
+					"lights": [ 1, -1 ]
 				},
 				"inCamp": false
 			},
@@ -7633,10 +8659,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							20
-						]
+						"level": [ -1, 20 ]
 					}
 				}
 			},
@@ -7754,7 +8777,9 @@
 		},
 		"explorer_template_architect_interact_13": {
 			"conditions": {
-				"trust": 3
+				"explorer": {
+					"trust": 3
+				}
 			},
 			"pages": [
 				"explorer_template_architect_interact_13_p1"
@@ -7762,7 +8787,9 @@
 		},
 		"explorer_template_architect_interact_14": {
 			"conditions": {
-				"trust": 4
+				"explorer": {
+					"trust": 4
+				}
 			},
 			"pages": [
 				"explorer_template_architect_interact_14_p1"
@@ -7770,7 +8797,9 @@
 		},
 		"explorer_template_architect_interact_15": {
 			"conditions": {
-				"trust": 7
+				"explorer": {
+					"trust": 7
+				}
 			},
 			"pages": [
 				"explorer_template_architect_interact_15_p1"
@@ -7778,8 +8807,10 @@
 		},
 		"explorer_template_architect_interact_16": {
 			"conditions": {
-				"inCamp": false,
-				"trust": 7
+				"explorer": {
+					"trust": 7
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_architect_interact_16_p1"
@@ -7787,7 +8818,9 @@
 		},
 		"explorer_template_architect_interact_17": {
 			"conditions": {
-				"trust": 5
+				"explorer": {
+					"trust": 5
+				}
 			},
 			"pages": [
 				"explorer_template_architect_interact_17_p1"
@@ -7822,7 +8855,10 @@
 		},
 		"explorer_template_architect_outside_03": {
 			"conditions": {
-				"trust": 1
+				"explorer": {
+					"trust": 1
+				},
+				"inCamp": false
 			},
 			"pages": [
 				"explorer_template_architect_outside_03_p1"
@@ -7832,18 +8868,29 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "cittadinian"
+					"sectorStyle": "cittadinian"
 				}
 			},
 			"pages": [
 				"explorer_template_architect_outside_cittadinian_01_p1"
 			]
 		},
+		"explorer_template_architect_outside_commercial_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "commercial"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_commercial_01_p1"
+			]
+		},
 		"explorer_template_architect_outside_humanist_01": {
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "humanist"
+					"sectorStyle": "humanist"
 				}
 			},
 			"pages": [
@@ -7854,18 +8901,29 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "industrial"
+					"sectorType": "industrial"
 				}
 			},
 			"pages": [
 				"explorer_template_architect_outside_industrial_01_p1"
 			]
 		},
+		"explorer_template_architect_outside_industrial_style_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorStyle": "industrial"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_industrial_style_01_p1"
+			]
+		},
 		"explorer_template_architect_outside_karboque_01": {
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "karboque"
+					"sectorStyle": "karboque"
 				}
 			},
 			"pages": [
@@ -7876,7 +8934,7 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "kievan"
+					"sectorStyle": "kievan"
 				}
 			},
 			"pages": [
@@ -7887,7 +8945,7 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "modern"
+					"sectorStyle": "modern"
 				}
 			},
 			"pages": [
@@ -7898,18 +8956,41 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "neowestern"
+					"sectorStyle": "neowestern"
 				}
 			},
 			"pages": [
 				"explorer_template_architect_outside_neowestern_01_p1"
 			]
 		},
+		"explorer_template_architect_outside_public_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "public"
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_public_01_p1"
+			]
+		},
+		"explorer_template_architect_outside_residential_01": {
+			"conditions": {
+				"inCamp": false,
+				"sector": {
+					"sectorType": "residential",
+					"wealth": [ 2, -1 ]
+				}
+			},
+			"pages": [
+				"explorer_template_architect_outside_residential_01_p1"
+			]
+		},
 		"explorer_template_architect_outside_slum_01": {
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "slum"
+					"sectorStyle": "slum"
 				}
 			},
 			"pages": [
@@ -7920,7 +9001,7 @@
 			"conditions": {
 				"inCamp": false,
 				"sector": {
-					"style": "western"
+					"sectorStyle": "western"
 				}
 			},
 			"pages": [
@@ -8060,10 +9141,23 @@
 		},
 		"explorer_template_bard_interact_13": {
 			"conditions": {
-				"trust": 8
+				"explorer": {
+					"trust": 8
+				}
 			},
 			"pages": [
 				"explorer_template_bard_interact_13_p1"
+			]
+		},
+		"explorer_template_bard_luxury_honey_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"HONEY": true
+				},
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_template_bard_luxury_honey_available_01_p1"
 			]
 		},
 		"explorer_template_bard_meet_01": {
@@ -8117,52 +9211,100 @@
 			]
 		},
 		"explorer_template_bureaucrat_interact_03": {
+			"conditions": {
+				"explorer": {
+					"trust": 1
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_03_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_04": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_04_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_05": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_05_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_06": {
+			"conditions": {
+				"explorer": {
+					"trust": 3
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_06_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_07": {
+			"conditions": {
+				"explorer": {
+					"trust": 4
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_07_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_08": {
+			"conditions": {
+				"explorer": {
+					"trust": 5
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_08_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_09": {
+			"conditions": {
+				"explorer": {
+					"trust": 5
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_09_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_10": {
+			"conditions": {
+				"explorer": {
+					"trust": 6
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_10_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_11": {
+			"conditions": {
+				"explorer": {
+					"trust": 7
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_11_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_12": {
 			"conditions": {
+				"explorer": {
+					"trust": 5
+				},
 				"storyFlags": {
 					"FALL_SEEN_EVACUATION": true
 				}
@@ -8172,16 +9314,31 @@
 			]
 		},
 		"explorer_template_bureaucrat_interact_13": {
+			"conditions": {
+				"explorer": {
+					"trust": 8
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_13_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_14": {
+			"conditions": {
+				"explorer": {
+					"trust": 5
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_14_p1"
 			]
 		},
 		"explorer_template_bureaucrat_interact_15": {
+			"conditions": {
+				"explorer": {
+					"trust": 5
+				}
+			},
 			"pages": [
 				"explorer_template_bureaucrat_interact_15_p1"
 			]
@@ -8197,6 +9354,9 @@
 			]
 		},
 		"explorer_template_bureaucrat_outside_02": {
+			"conditions": {
+				"vicinity": "unexplored_sector"
+			},
 			"pages": [
 				"explorer_template_bureaucrat_outside_02_p1"
 			]
@@ -8204,10 +9364,7 @@
 		"explorer_template_bureaucrat_outside_03": {
 			"conditions": {
 				"sector": {
-					"wear": [
-						5,
-						-1
-					]
+					"wear": [ 5, -1 ]
 				}
 			},
 			"pages": [
@@ -8217,10 +9374,7 @@
 		"explorer_template_bureaucrat_outside_04": {
 			"conditions": {
 				"sector": {
-					"wear": [
-						-1,
-						5
-					]
+					"wear": [ -1, 5 ]
 				}
 			},
 			"pages": [
@@ -8540,6 +9694,16 @@
 				"explorer_template_guard_interact_14_p1"
 			]
 		},
+		"explorer_template_guard_luxury_tobacco_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TOBACCO": true
+				}
+			},
+			"pages": [
+				"explorer_template_guard_luxury_tobacco_available_01_p1"
+			]
+		},
 		"explorer_template_guard_meet_01": {
 			"pages": [
 				"explorer_template_guard_meet_01_p1"
@@ -8582,19 +9746,6 @@
 			},
 			"pages": [
 				"explorer_template_guard_story_rescue_absence_01_p1"
-			]
-		},
-		"explorer_generic_story_rescue_found_01": {
-			"conditions": {
-				"explorer": {
-					"trust": 3
-				},
-				"storyFlags": {
-					"RESCUE_EXPLORER_FOUND": true
-				}
-			},
-			"pages": [
-				"explorer_generic_story_rescue_found_01_p1"
 			]
 		},
 		"explorer_template_hacker_event_01": {
@@ -8731,6 +9882,16 @@
 		"explorer_template_hacker_interact_18": {
 			"pages": [
 				"explorer_template_hacker_interact_18_p1"
+			]
+		},
+		"explorer_template_hacker_luxury_tea_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TEA": true
+				}
+			},
+			"pages": [
+				"explorer_template_hacker_luxury_tea_available_01_p1"
 			]
 		},
 		"explorer_template_hacker_meet_01": {
@@ -8933,10 +10094,7 @@
 		"explorer_template_lover_story_escape_stay_01": {
 			"conditions": {
 				"explorer": {
-					"meetCampOrdinal": [
-						-1,
-						8
-					]
+					"meetCampOrdinal": [ -1, 8 ]
 				},
 				"storyFlags": {
 					"ESCAPE_SEARCHING_FOR_EXIT": false
@@ -9136,10 +10294,7 @@
 					"hasHazard": false
 				},
 				"sector": {
-					"wear": [
-						5,
-						-1
-					]
+					"wear": [ 5, -1 ]
 				}
 			},
 			"pages": [
@@ -9149,14 +10304,21 @@
 		"explorer_template_researcher_interact_outside_sterile": {
 			"conditions": {
 				"sector": {
-					"wear": [
-						-1,
-						2
-					]
+					"wear": [ -1, 2 ]
 				}
 			},
 			"pages": [
 				"explorer_template_researcher_interact_outside_sterile_p1"
+			]
+		},
+		"explorer_template_researcher_luxury_spices_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"SPICES": true
+				}
+			},
+			"pages": [
+				"explorer_template_researcher_luxury_spices_available_01_p1"
 			]
 		},
 		"explorer_template_researcher_meet_01": {
@@ -9301,7 +10463,9 @@
 		},
 		"explorer_template_slummer_interact_03": {
 			"conditions": {
-				"trust": 1
+				"explorer": {
+					"trust": 1
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_03_p1"
@@ -9309,7 +10473,9 @@
 		},
 		"explorer_template_slummer_interact_04": {
 			"conditions": {
-				"trust": 2
+				"explorer": {
+					"trust": 2
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_04_p1"
@@ -9317,7 +10483,9 @@
 		},
 		"explorer_template_slummer_interact_05": {
 			"conditions": {
-				"trust": 3
+				"explorer": {
+					"trust": 3
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_05_p1"
@@ -9325,7 +10493,9 @@
 		},
 		"explorer_template_slummer_interact_06": {
 			"conditions": {
-				"trust": 4
+				"explorer": {
+					"trust": 4
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_06_p1"
@@ -9333,7 +10503,9 @@
 		},
 		"explorer_template_slummer_interact_07": {
 			"conditions": {
-				"trust": 5
+				"explorer": {
+					"trust": 5
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_07_p1"
@@ -9341,7 +10513,9 @@
 		},
 		"explorer_template_slummer_interact_08": {
 			"conditions": {
-				"trust": 6
+				"explorer": {
+					"trust": 6
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_08_p1"
@@ -9349,7 +10523,9 @@
 		},
 		"explorer_template_slummer_interact_09": {
 			"conditions": {
-				"trust": 7
+				"explorer": {
+					"trust": 7
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_09_p1"
@@ -9357,7 +10533,9 @@
 		},
 		"explorer_template_slummer_interact_10": {
 			"conditions": {
-				"trust": 8
+				"explorer": {
+					"trust": 8
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_10_p1"
@@ -9365,7 +10543,9 @@
 		},
 		"explorer_template_slummer_interact_11": {
 			"conditions": {
-				"trust": 9
+				"explorer": {
+					"trust": 9
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_11_p1"
@@ -9373,7 +10553,9 @@
 		},
 		"explorer_template_slummer_interact_12": {
 			"conditions": {
-				"trust": 10
+				"explorer": {
+					"trust": 10
+				}
 			},
 			"pages": [
 				"explorer_template_slummer_interact_12_p1"
@@ -9394,6 +10576,10 @@
 		},
 		"explorer_template_slummer_outside_02": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -9420,7 +10606,9 @@
 		},
 		"explorer_template_surfacer_interact_03": {
 			"conditions": {
-				"trust": 1
+				"explorer": {
+					"trust": 1
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_03_p1"
@@ -9428,7 +10616,9 @@
 		},
 		"explorer_template_surfacer_interact_04": {
 			"conditions": {
-				"trust": 2
+				"explorer": {
+					"trust": 2
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_04_p1"
@@ -9436,7 +10626,9 @@
 		},
 		"explorer_template_surfacer_interact_05": {
 			"conditions": {
-				"trust": 3
+				"explorer": {
+					"trust": 3
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_05_p1"
@@ -9444,7 +10636,9 @@
 		},
 		"explorer_template_surfacer_interact_06": {
 			"conditions": {
-				"trust": 4
+				"explorer": {
+					"trust": 4
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_06_p1"
@@ -9452,7 +10646,9 @@
 		},
 		"explorer_template_surfacer_interact_07": {
 			"conditions": {
-				"trust": 5
+				"explorer": {
+					"trust": 5
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_07_p1"
@@ -9460,7 +10656,9 @@
 		},
 		"explorer_template_surfacer_interact_08": {
 			"conditions": {
-				"trust": 6
+				"explorer": {
+					"trust": 6
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_08_p1"
@@ -9468,8 +10666,10 @@
 		},
 		"explorer_template_surfacer_interact_09": {
 			"conditions": {
-				"maxNumCamps": 14,
-				"trust": 7
+				"explorer": {
+					"trust": 7
+				},
+				"maxNumCamps": 14
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_09_p1"
@@ -9477,7 +10677,9 @@
 		},
 		"explorer_template_surfacer_interact_10": {
 			"conditions": {
-				"trust": 8
+				"explorer": {
+					"trust": 8
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_10_p1"
@@ -9485,7 +10687,9 @@
 		},
 		"explorer_template_surfacer_interact_11": {
 			"conditions": {
-				"trust": 9
+				"explorer": {
+					"trust": 9
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_11_p1"
@@ -9493,7 +10697,9 @@
 		},
 		"explorer_template_surfacer_interact_12": {
 			"conditions": {
-				"trust": 10
+				"explorer": {
+					"trust": 10
+				}
 			},
 			"pages": [
 				"explorer_template_surfacer_interact_12_p1"
@@ -9639,10 +10845,7 @@
 		"explorer_template_teen_interact_14": {
 			"conditions": {
 				"improvements": {
-					"lights": [
-						1,
-						-1
-					]
+					"lights": [ 1, -1 ]
 				}
 			},
 			"pages": [
@@ -9652,6 +10855,16 @@
 		"explorer_template_teen_interact_15": {
 			"pages": [
 				"explorer_template_teen_interact_15_p1"
+			]
+		},
+		"explorer_template_teen_luxury_chocolate_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"CHOCOLATE": true
+				}
+			},
+			"pages": [
+				"explorer_template_teen_luxury_chocolate_available_01_p1"
 			]
 		},
 		"explorer_template_teen_meet_01": {
@@ -9835,10 +11048,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				}
 			},
@@ -9849,10 +11059,7 @@
 		"explorer_unique_gambler_interact_15": {
 			"conditions": {
 				"improvements": {
-					"temple": [
-						1,
-						-1
-					]
+					"temple": [ 1, -1 ]
 				},
 				"inCamp": true
 			},
@@ -9862,7 +11069,9 @@
 		},
 		"explorer_unique_gambler_interact_16": {
 			"conditions": {
-				"trust": 8
+				"explorer": {
+					"trust": 8
+				}
 			},
 			"pages": [
 				"explorer_unique_gambler_interact_16_p1"
@@ -9976,10 +11185,7 @@
 				},
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							8
-						]
+						"level": [ -1, 8 ]
 					}
 				}
 			},
@@ -10159,10 +11365,7 @@
 				"inCamp": true,
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -10174,10 +11377,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							14
-						]
+						"level": [ -1, 14 ]
 					}
 				}
 			},
@@ -10331,6 +11531,11 @@
 		},
 		"explorer_unique_handler_interact_enemy_big_animal_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "rare",
+					"source": "encountered",
+					"type": "big_animal"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10339,6 +11544,10 @@
 		},
 		"explorer_unique_handler_interact_enemy_big_animal_02": {
 			"conditions": {
+				"enemy": {
+					"source": "encountered",
+					"type": "big_animal"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10347,6 +11556,10 @@
 		},
 		"explorer_unique_handler_interact_enemy_bird_01": {
 			"conditions": {
+				"enemy": {
+					"source": "current_level",
+					"type": "bird"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10355,6 +11568,11 @@
 		},
 		"explorer_unique_handler_interact_enemy_flora_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_district",
+					"type": "flora"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10363,6 +11581,10 @@
 		},
 		"explorer_unique_handler_interact_enemy_flora_02": {
 			"conditions": {
+				"enemy": {
+					"source": "current_district",
+					"type": "flora"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10371,6 +11593,11 @@
 		},
 		"explorer_unique_handler_interact_enemy_fungi_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "dangerous",
+					"source": "current_district",
+					"type": "fungi"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10379,6 +11606,11 @@
 		},
 		"explorer_unique_handler_interact_enemy_small_animal_01": {
 			"conditions": {
+				"enemy": {
+					"preference": "common",
+					"source": "current_district",
+					"type": "small_animal"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10387,6 +11619,10 @@
 		},
 		"explorer_unique_handler_interact_enemy_small_animal_02": {
 			"conditions": {
+				"enemy": {
+					"source": "current_district",
+					"type": "small_animal"
+				},
 				"inCamp": false
 			},
 			"pages": [
@@ -10461,10 +11697,7 @@
 			"conditions": {
 				"player": {
 					"position": {
-						"level": [
-							-1,
-							3
-						]
+						"level": [ -1, 3 ]
 					}
 				}
 			},
@@ -10521,10 +11754,7 @@
 				},
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				}
 			},
@@ -10539,10 +11769,7 @@
 				},
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				}
 			},
@@ -10640,10 +11867,7 @@
 					"trust": 3
 				},
 				"inCamp": true,
-				"population": [
-					16,
-					-1
-				]
+				"population": [ 16, -1 ]
 			},
 			"pages": [
 				"explorer_unique_hermit_interact_10_p1"
@@ -10712,16 +11936,23 @@
 				},
 				"player": {
 					"position": {
-						"level": [
-							15,
-							-1
-						]
+						"level": [ 15, -1 ]
 					}
 				},
 				"vicinity": "passage"
 			},
 			"pages": [
 				"explorer_unique_hermit_interact_directions_passage_01_p1"
+			]
+		},
+		"explorer_unique_hermit_luxury_truffles_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"TRUFFLES": true
+				}
+			},
+			"pages": [
+				"explorer_unique_hermit_luxury_truffles_available_01_p1"
 			]
 		},
 		"explorer_unique_hermit_meet_01": {
@@ -10735,6 +11966,14 @@
 			},
 			"pages": [
 				"explorer_unique_hermit_outside_01_p1"
+			]
+		},
+		"explorer_unique_hermit_outside_02": {
+			"conditions": {
+				"inCamp": false
+			},
+			"pages": [
+				"explorer_unique_hermit_outside_02_p1"
 			]
 		},
 		"explorer_unique_hermit_story_apocalypse_plan_ready_01": {
@@ -10925,6 +12164,42 @@
 			"isUrgent": true,
 			"pages": [
 				"explorer_unique_journalist_interact_forced_investigate_01_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_new_camp_11_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"inCamp": 11,
+				"maxNumCamps": 11,
+				"numCamps": 11
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_new_camp_11_01_p1"
+			]
+		},
+		"explorer_unique_journalist_interact_new_camp_5_01": {
+			"conditions": {
+				"explorer": {
+					"trust": 2
+				},
+				"inCamp": 5,
+				"maxNumCamps": 5,
+				"numCamps": 5
+			},
+			"pages": [
+				"explorer_unique_journalist_interact_new_camp_5_01_p1"
+			]
+		},
+		"explorer_unique_journalist_luxury_coffee_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"COFFEE": true
+				}
+			},
+			"pages": [
+				"explorer_unique_journalist_luxury_coffee_available_01_p1"
 			]
 		},
 		"explorer_unique_journalist_meet_01": {
@@ -11144,6 +12419,11 @@
 			]
 		},
 		"explorer_unique_journalist_tip_investigate_locale_01": {
+			"conditions": {
+				"world": {
+					"hasInvestigatableLocale": true
+				}
+			},
 			"pages": [
 				"explorer_unique_journalist_tip_investigate_locale_01_p1"
 			]
@@ -11320,7 +12600,9 @@
 		},
 		"explorer_unique_prospector_interact_16": {
 			"conditions": {
-				"trust": 8
+				"explorer": {
+					"trust": 8
+				}
 			},
 			"pages": [
 				"explorer_unique_prospector_interact_16_p1"
@@ -11347,6 +12629,16 @@
 		"explorer_unique_prospector_interact_20": {
 			"pages": [
 				"explorer_unique_prospector_interact_20_p1"
+			]
+		},
+		"explorer_unique_prospector_luxury_olives_available_01": {
+			"conditions": {
+				"availableLuxuryResources": {
+					"OLIVES": true
+				}
+			},
+			"pages": [
+				"explorer_unique_prospector_luxury_olives_available_01_p1"
 			]
 		},
 		"explorer_unique_prospector_meet_01": {
@@ -11682,10 +12974,7 @@
 							"buttonKey": "locale_interaction_treatment",
 							"conditions": {
 								"perkEffects": {
-									"Injury": [
-										0.1,
-										1
-									]
+									"Injury": [ 0.1, 1 ]
 								}
 							},
 							"response": "treatment"
@@ -12116,10 +13405,7 @@
 						{
 							"buttonKey": "npc_request_disassemble",
 							"costs": {
-								"item_disassemblable": [
-									1,
-									-1
-								]
+								"item_disassemblable": [ 1, -1 ]
 							},
 							"isPreviewCosts": true,
 							"response": "disassemble"
@@ -12128,10 +13414,7 @@
 							"buttonKey": "npc_request_repair",
 							"conditions": {
 								"playerInventory": {
-									"item_broken": [
-										1,
-										-1
-									]
+									"item_broken": [ 1, -1 ]
 								}
 							},
 							"costs": {
@@ -12152,10 +13435,7 @@
 						{
 							"buttonKey": "npc_request_disassemble",
 							"costs": {
-								"item_disassemblable": [
-									1,
-									-1
-								]
+								"item_disassemblable": [ 1, -1 ]
 							},
 							"isPreviewCosts": true,
 							"response": "disassemble_done"
@@ -12676,7 +13956,9 @@
 				]
 			},
 			"includes": [
-				"bundle_character_helpful_directions"
+				"bundle_character_helpful_directions",
+				"bundle_character_interest_enemies",
+				"bundle_character_traveler"
 			]
 		},
 		"character_elder_default": {
@@ -12772,7 +14054,9 @@
 				]
 			},
 			"includes": [
-				"bundle_character_helpful_directions"
+				"bundle_character_helpful_directions",
+				"bundle_character_interest_enemies",
+				"bundle_character_traveler"
 			]
 		},
 		"character_machineCultist_default": {
@@ -12790,7 +14074,8 @@
 					"character_machineCultist_default_meet_10",
 					"character_machineCultist_default_meet_11",
 					"character_machineCultist_default_meet_12",
-					"character_machineCultist_default_meet_13"
+					"character_machineCultist_default_meet_13",
+					"character_machineCultist_sector_type_maintenance_01"
 				]
 			}
 		},
@@ -12814,7 +14099,9 @@
 				]
 			},
 			"includes": [
-				"bundle_character_helpful_directions"
+				"bundle_character_helpful_directions",
+				"bundle_character_interest_enemies",
+				"bundle_character_traveler"
 			]
 		},
 		"character_messenger_default": {
@@ -12848,7 +14135,8 @@
 				]
 			},
 			"includes": [
-				"bundle_character_helpful_directions"
+				"bundle_character_helpful_directions",
+				"bundle_character_traveler"
 			]
 		},
 		"character_namekeeper_default": {
@@ -12869,7 +14157,8 @@
 					"character_namekeeper_default_meet_05",
 					"character_namekeeper_default_meet_06"
 				]
-			}
+			},
+			"includes": []
 		},
 		"character_natureCultist_default": {
 			"dialogues": {
@@ -12889,7 +14178,10 @@
 					"character_natureCultist_default_meet_08",
 					"character_natureCultist_default_meet_09"
 				]
-			}
+			},
+			"includes": [
+				"bundle_character_interest_enemies"
+			]
 		},
 		"character_pilgrim_default": {
 			"dialogues": {
@@ -12914,7 +14206,10 @@
 					"character_pilgrim_default_meet_09",
 					"character_pilgrim_default_meet_10"
 				]
-			}
+			},
+			"includes": [
+				"bundle_character_traveler"
+			]
 		},
 		"character_refugees_default": {
 			"dialogues": {
@@ -13008,7 +14303,9 @@
 					"character_slumRefugee_default_interact_09",
 					"character_slumRefugee_default_interact_10",
 					"character_slumRefugee_default_interact_11",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_hint_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
@@ -13078,14 +14375,16 @@
 					"character_surfaceRefugee_default_interact_11",
 					"character_surfaceRefugee_default_interact_12",
 					"character_surfaceRefugee_default_interact_13",
+					"character_workerGeneric_interact_camp_feature_disaster_high_01",
 					"character_workerGeneric_interact_explorer_injury_01",
-					"character_workerGeneric_interact_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_apothecary_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_library_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_tradingpost_01",
+					"character_workerGeneric_interact_injury_01",
 					"character_workerGeneric_interact_overcrowded_01",
 					"character_workerGeneric_interact_spirits_01",
 					"character_workerGeneric_interact_spirits_02",
@@ -13234,6 +14533,7 @@
 					"character_workerConcrete_default_interact_04",
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_evidence_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01"
 				]
@@ -13250,6 +14550,7 @@
 					"character_workerGardener_default_interact_02",
 					"character_workerGardener_default_interact_03",
 					"character_workerGeneric_default_interact_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01"
 				],
 				"meet": [
@@ -13286,6 +14587,7 @@
 					"character_workerArtisan_interact_camp_worker_artisan_bonus_01",
 					"character_workerGeneric_interact_escape_02",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
@@ -13326,6 +14628,7 @@
 					"character_workerGeneric_default_interact_01",
 					"character_workerGeneric_interact_escape_02",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_improve_worker_cleric_2_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
@@ -13389,6 +14692,7 @@
 					"character_workerGeneric_interact_escape_01",
 					"character_workerGeneric_interact_escape_02",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_injury_01",
@@ -13428,6 +14732,7 @@
 				"interact": [
 					"character_workerGeneric_interact_escape_02",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_darkfarm_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
@@ -13459,6 +14764,7 @@
 				"interact": [
 					"character_workerGeneric_interact_escape_02",
 					"character_workerGeneric_interact_explorer_injury_01",
+					"character_workerGeneric_interact_explorer_injury_02",
 					"character_workerGeneric_interact_hint_upgrade_generic_rumours_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_fortifications_01",
 					"character_workerGeneric_interact_hint_upgrade_unlock_building_robots_01",
@@ -13486,7 +14792,7 @@
 		},
 		"explorer_generic_01": {
 			"dialogues": {
-				"event": [ ],
+				"event": [],
 				"interact": [
 					"explorer_generic_human_outside_01",
 					"explorer_generic_human_outside_02",
@@ -13535,6 +14841,8 @@
 					"explorer_generic_scavenger_outside_01",
 					"explorer_generic_scout_interact_02",
 					"explorer_generic_scout_outside_01",
+					"explorer_generic_scout_enemy_common_01",
+					"explorer_generic_scout_enemy_dangerous_01",
 					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
@@ -13552,6 +14860,7 @@
 			"includes": [
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
+				"bundle_explorer_generic_goal_exploration",
 				"bundle_explorer_generic_goal_rescue"
 			]
 		},
@@ -13780,7 +15089,9 @@
 			"includes": [
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_generic_scout_01": {
@@ -13835,6 +15146,8 @@
 					"explorer_generic_scout_interact_05",
 					"explorer_generic_scout_interact_06",
 					"explorer_generic_scout_outside_01",
+					"explorer_generic_scout_enemy_common_01",
+					"explorer_generic_scout_enemy_dangerous_01",
 					"explorer_generic_story_apocalypse_evacuation_known",
 					"explorer_generic_story_apocalypse_investiage_01",
 					"explorer_generic_story_apocalypse_plan_ready_01",
@@ -13853,7 +15166,9 @@
 			"includes": [
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_generic_servo_01": {
@@ -13917,7 +15232,8 @@
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_fighter_confident",
 				"bundle_explorer_generic_goal_camps",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_dreamer"
 			]
 		},
 		"explorer_template_architect": {
@@ -13940,15 +15256,6 @@
 					"explorer_generic_interact_injured_party_02",
 					"explorer_generic_interact_injured_recovering_02",
 					"explorer_generic_interact_tip_unexplored_level_01",
-					"explorer_template_architect_outside_cittadinian_01",
-					"explorer_template_architect_outside_humanist_01",
-					"explorer_template_architect_outside_industrial_01",
-					"explorer_template_architect_outside_karboque_01",
-					"explorer_template_architect_outside_kievan_01",
-					"explorer_template_architect_outside_modern_01",
-					"explorer_template_architect_outside_neowestern_01",
-					"explorer_template_architect_outside_slum_01",
-					"explorer_template_architect_outside_western_01",
 					"explorer_generic_story_apocalypse_quest_start",
 					"explorer_generic_story_apocalypse_space_ship_ready",
 					"explorer_template_amnesiac_outside_01",
@@ -13957,6 +15264,19 @@
 					"explorer_template_architect_interact_01",
 					"explorer_template_architect_interact_02",
 					"explorer_template_architect_interact_03",
+					"explorer_template_architect_outside_cittadinian_01",
+					"explorer_template_architect_outside_commercial_01",
+					"explorer_template_architect_outside_humanist_01",
+					"explorer_template_architect_outside_industrial_01",
+					"explorer_template_architect_outside_industrial_style_01",
+					"explorer_template_architect_outside_karboque_01",
+					"explorer_template_architect_outside_kievan_01",
+					"explorer_template_architect_outside_modern_01",
+					"explorer_template_architect_outside_neowestern_01",
+					"explorer_template_architect_outside_public_01",
+					"explorer_template_architect_outside_residential_01",
+					"explorer_template_architect_outside_slum_01",
+					"explorer_template_architect_outside_western_01",
 					"explorer_template_architect_interact_04",
 					"explorer_template_architect_interact_05",
 					"explorer_template_architect_interact_06",
@@ -13986,7 +15306,10 @@
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
 				"bundle_explorer_generic_goal_camps",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_expertise_city",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_template_bard": {
@@ -14022,6 +15345,7 @@
 					"explorer_template_bard_interact_11",
 					"explorer_template_bard_interact_12",
 					"explorer_template_bard_interact_13",
+					"explorer_template_bard_luxury_honey_available_01",
 					"explorer_template_bard_outside_01",
 					"explorer_template_bard_outside_02",
 					"explorer_template_bard_story_apocalypse_plan_ready_01"
@@ -14031,7 +15355,9 @@
 				]
 			},
 			"includes": [
-				"bundle_explorer_generic_goal_camps"
+				"bundle_explorer_generic_dreamer",
+				"bundle_explorer_generic_goal_camps",
+				"bundle_explorer_generic_goal_exploration"
 			]
 		},
 		"explorer_template_bureaucrat": {
@@ -14071,7 +15397,8 @@
 			},
 			"includes": [
 				"bundle_explorer_generic_ability",
-				"bundle_explorer_generic_goal_camps"
+				"bundle_explorer_generic_goal_camps",
+				"bundle_explorer_generic_expertise_city"
 			]
 		},
 		"explorer_template_darkdweller": {
@@ -14171,6 +15498,7 @@
 					"explorer_template_guard_interact_12",
 					"explorer_template_guard_interact_13",
 					"explorer_template_guard_interact_14",
+					"explorer_template_guard_luxury_tobacco_available_01",
 					"explorer_template_guard_outside_01",
 					"explorer_template_guard_outside_02",
 					"explorer_template_guard_story_expedition_found_01",
@@ -14231,6 +15559,7 @@
 					"explorer_template_hacker_interact_16",
 					"explorer_template_hacker_interact_17",
 					"explorer_template_hacker_interact_18",
+					"explorer_template_hacker_luxury_tea_available_01",
 					"explorer_template_hacker_outside_01",
 					"explorer_template_hacker_outside_02",
 					"explorer_template_hacker_story_apocalypse_plan_ready_01"
@@ -14241,7 +15570,8 @@
 			},
 			"includes": [
 				"bundle_explorer_generic_ability",
-				"bundle_explorer_generic_assertive_survival"
+				"bundle_explorer_generic_assertive_survival",
+				"bundle_explorer_generic_goal_exploration"
 			]
 		},
 		"explorer_template_lover": {
@@ -14305,7 +15635,9 @@
 			"includes": [
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_fighter_confident",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_template_researcher": {
@@ -14376,6 +15708,7 @@
 					"explorer_template_researcher_interact_outside_danger",
 					"explorer_template_researcher_interact_outside_nature",
 					"explorer_template_researcher_interact_outside_sterile",
+					"explorer_template_researcher_luxury_spices_available_01",
 					"explorer_template_researcher_outside_01",
 					"explorer_template_researcher_outside_02",
 					"explorer_template_researcher_outside_03",
@@ -14389,7 +15722,9 @@
 				]
 			},
 			"includes": [
-				"bundle_explorer_generic_ability"
+				"bundle_explorer_generic_ability",
+				"bundle_explorer_generic_dreamer",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_template_slummer": {
@@ -14435,7 +15770,9 @@
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
 				"bundle_explorer_generic_goal_camps",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_template_surfacer": {
@@ -14480,7 +15817,9 @@
 			},
 			"includes": [
 				"bundle_explorer_generic_ability",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_template_teen": {
@@ -14524,6 +15863,7 @@
 					"explorer_template_teen_interact_15",
 					"explorer_template_teen_outside_01",
 					"explorer_template_teen_outside_02",
+					"explorer_template_teen_luxury_chocolate_available_01",
 					"explorer_template_teen_story_rescue_absence_01"
 				],
 				"meet": [
@@ -14610,7 +15950,9 @@
 				]
 			},
 			"includes": [
-				"bundle_explorer_generic_ability"
+				"bundle_explorer_generic_ability",
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_unique_handler": {
@@ -14739,7 +16081,9 @@
 					"explorer_unique_hermit_interact_15",
 					"explorer_unique_hermit_interact_16",
 					"explorer_unique_hermit_interact_directions_passage_01",
+					"explorer_unique_hermit_luxury_truffles_available_01",
 					"explorer_unique_hermit_outside_01",
+					"explorer_unique_hermit_outside_02",
 					"explorer_unique_hermit_story_apocalypse_plan_ready_01",
 					"explorer_unique_hermit_story_fall_exodus_01"
 				],
@@ -14749,7 +16093,9 @@
 			},
 			"includes": [
 				"bundle_explorer_generic_ability",
-				"bundle_explorer_generic_goal_camps"
+				"bundle_explorer_generic_expertise_city",
+				"bundle_explorer_generic_goal_camps",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_unique_journalist": {
@@ -14807,6 +16153,7 @@
 					"explorer_unique_journalist_interact_17",
 					"explorer_unique_journalist_interact_forced_investigate_01",
 					"explorer_unique_journalist_interact_new_camp_5_01",
+					"explorer_unique_journalist_luxury_coffee_available_01",
 					"explorer_unique_journalist_outside_01",
 					"explorer_unique_journalist_outside_02",
 					"explorer_unique_journalist_outside_03",
@@ -14836,8 +16183,11 @@
 			"includes": [
 				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
+				"bundle_explorer_generic_expertise_city",
 				"bundle_explorer_generic_goal_camps",
-				"bundle_explorer_generic_goal_rescue"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_goal_rescue",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"explorer_unique_prospector": {
@@ -14897,6 +16247,7 @@
 					"explorer_unique_prospector_interact_18",
 					"explorer_unique_prospector_interact_19",
 					"explorer_unique_prospector_interact_20",
+					"explorer_unique_prospector_luxury_olives_available_01",
 					"explorer_unique_prospector_outside_01",
 					"explorer_unique_prospector_outside_02",
 					"explorer_unique_prospector_story_apocalypse_plan_ready_01",
@@ -14919,9 +16270,12 @@
 				]
 			},
 			"includes": [
+				"bundle_explorer_generic_ability",
 				"bundle_explorer_generic_assertive_survival",
+				"bundle_explorer_generic_expertise_city",
 				"bundle_explorer_generic_goal_camps",
-				"bundle_explorer_generic_ability"
+				"bundle_explorer_generic_goal_exploration",
+				"bundle_explorer_generic_personal"
 			]
 		},
 		"visitor_expedition": {

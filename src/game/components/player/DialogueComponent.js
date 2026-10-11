@@ -6,7 +6,7 @@ define(['ash'], function (Ash) {
             this.activeDialogue = dialogueVO;
 			this.explorerVO = explorerVO;
 			this.characterVO = characterVO;
-			this.textParams = textParams;
+			this.textParams = textParams || {};
 
 			this.currentPageID = null;
 			this.pendingSelectionID = null;

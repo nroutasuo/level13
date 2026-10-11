@@ -446,6 +446,7 @@ define([
 	
 				let inCamp = this.playerStatsNodes.head.entity.get(PositionComponent).inCamp;
 				let level = sector.get(PositionComponent).level;
+				let campOrdinal = GameGlobals.worldState.getCampOrdinal(positionComponent.level);
 	
 				var currentPopulation = campComponent ? Math.floor(campComponent.population) : 0;
 				
@@ -1115,6 +1116,31 @@ define([
 						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
 						if (result) return result;
 					}
+
+					if (typeof requirements.camp.exposed !== "undefined") {
+						let currentValue = featuresComponent.sunlit && improvementsComponent.getCount(improvementNames.sundome) <= 0;
+						let requiredValue = requirements.camp.exposed;
+						let trueReason = this.getDisabledReasonVO("ui.action.disabled_reason_camp_exposed", null, PlayerActionConstants.DISABLED_REASON_EXPOSED);
+						let falseReason = this.getDisabledReasonVO(null, null, PlayerActionConstants.DISABLED_REASON_EXPOSED, "Camp not exposed to direct sunlight");
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue, trueReason, falseReason);
+						if (result) return result;
+					}
+
+					if (requirements.camp.feature) {
+						let features = GameGlobals.campHelper.getCampUniqueFeaturesSummary(campOrdinal);
+						for (let key in requirements.camp.feature) {
+							let range = requirements.camp.feature[key];
+							let currentVal = features[key];
+
+							if (key == "disaster") {
+								let result = this.checkRequirementsBoolean(range, currentVal);
+								if (result) return result;
+							}
+
+							let result = this.checkRequirementsRange(range, currentVal);
+							if (result) return result;
+						}
+					}
 				}
 
 				if (requirements.sector) {
@@ -1377,7 +1403,6 @@ define([
 					}
 					
 					if (typeof requirements.sector.acessible_to_workers != "undefined") {
-						var campOrdinal = GameGlobals.worldState.getCampOrdinal(positionComponent.level);
 						var campCount = GameGlobals.gameState.numCamps;
 						var requiredValue = requirements.sector.acessible_to_workers;
 						var currentValue = campCount >= campOrdinal;
@@ -1388,27 +1413,45 @@ define([
 					}
 					
 					if (requirements.sector.hazards) {
-						for (var hazard in requirements.sector.hazards) {
-							var range = requirements.sector.hazards[hazard];
-							var currentVal = featuresComponent.hazards[hazard] || 0;
-							let result = this.checkRequirementsRange(
-								range,
-								currentVal,
-								"Min {min} " + hazard,
-								"Max {max} " + hazard,
-								"Requires " + hazard,
-								"Too much " + hazard + " here",
-							);
-							if (result) {
-								return result;
-							}
-						}
+						let result = this.checkRequirementsHazards(requirements.sector.hazards, featuresComponent.hazards);
+						if (result) return result;
+					}
+
+					if (typeof requirements.sector.hasHazard !== "undefined") {
+						let result = this.checkRequirementsBoolean(requirements.sector.hasHazard, featuresComponent.hasHazards());
+						if (result) return result;
 					}
 					
 					if (requirements.sector.buildingDensity) {
 						let result = this.checkRequirementsRange(requirements.sector.buildingDensity, featuresComponent.buildingDensity, "Sector too sparsely built", "Sector too densely built");
-						if (result) {
-							return result;
+						if (result) return result;
+					}
+					
+					if (requirements.sector.wear) {
+						let result = this.checkRequirementsRange(requirements.sector.wear, featuresComponent.wear, "Sector condition too bad", "Sector condition too good");
+						if (result) return result;
+					}
+					
+					if (requirements.sector.wealth) {
+						let result = this.checkRequirementsRange(requirements.sector.wealth, featuresComponent.wealth, "Sector too poor", "Sector too wealthy");
+						if (result) return result;
+					}
+
+					if (requirements.sector.sectorType) {
+						if (requirements.sector.sectorType !== featuresComponent.sectorType) {
+							return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "wrong sectorType") };
+						}
+					}
+
+					if (requirements.sector.sectorStyle) {
+						if (requirements.sector.sectorStyle !== featuresComponent.sectorStyle) {
+							return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "wrong sectorStyle") };
+						}
+					}
+
+					if (requirements.sector.zone) {
+						if (requirements.sector.zone !== featuresComponent.getZone()) {
+							return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "wrong sectorStyle") };
 						}
 					}
 					
@@ -1434,9 +1477,27 @@ define([
 					}
 				}
 
+				if (requirements.district) {
+					if (requirements.district.hazards) {
+						let result = this.checkRequirementsHazards(requirements.district.hazards, GameGlobals.sectorHelper.getDistrictHazards(sector));
+						if (result) return result;
+					}
+					
+					if (typeof requirements.district.hasHazard != "undefined") {
+						let hazard = GameGlobals.levelHelper.getDistrictHazard(sector);
+						let result = this.checkRequirementsBoolean(requirements.district.hasHazard, hazard != null);
+						if (result) return result;
+					}
+				}
+
 				if (requirements.level) {
 					let levelEntity = GameGlobals.levelHelper.getLevelEntityForPosition(level);
 					let levelComponent = levelEntity.get(LevelComponent);
+					
+					if (requirements.level.hazards) {
+						let result = this.checkRequirementsHazards(requirements.level.hazards, GameGlobals.levelHelper.getLevelHazards(sector));
+						if (result) return result;
+					}
 
 					if (typeof requirements.level.hasCamp !== "undefined") {
 						let value = levelEntity.has(CampComponent);
@@ -1469,6 +1530,22 @@ define([
 					let level = requirements.levelUnlocked;
 					if (!GameGlobals.levelHelper.isLevelUnlocked(level)) {
 						return { value: 0, reason: this.getDisabledReasonVO(null, null, null, "level unlocked") };
+					}
+				}
+
+				if (requirements.world) {
+					if (requirements.world.hasIncompleteLevel) {
+						let requiredValue = requirements.world.hasIncompleteLevel;
+						let currentValue = GameGlobals.levelHelper.getIncompleteLevel() != null;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
+					}
+
+					if (requirements.world.hasInvestigatableLocale) {
+						let requiredValue = requirements.world.hasInvestigatableLocale;
+						let currentValue = GameGlobals.levelHelper.getInvestigatableLocaleData() != null;
+						let result = this.checkRequirementsBoolean(requiredValue, currentValue);
+						if (result) return result;
 					}
 				}
 				
@@ -1614,17 +1691,6 @@ define([
 					}
 				}
 				
-				if (requirements.camp) {
-					if (typeof requirements.camp.exposed !== "undefined") {
-						let currentValue = featuresComponent.sunlit && improvementsComponent.getCount(improvementNames.sundome) <= 0;
-						let requiredValue = requirements.camp.exposed;
-						let trueReason = this.getDisabledReasonVO("ui.action.disabled_reason_camp_exposed", null, PlayerActionConstants.DISABLED_REASON_EXPOSED);
-						let falseReason = this.getDisabledReasonVO(null, null, PlayerActionConstants.DISABLED_REASON_EXPOSED, "Camp not exposed to direct sunlight");
-						let result = this.checkRequirementsBoolean(requiredValue, currentValue, trueReason, falseReason);
-						if (result) return result;
-					}
-				}
-				
 				if (requirements.vision) {
 					let result = this.checkRequirementsRange(
 						requirements.vision, 
@@ -1708,6 +1774,26 @@ define([
 			if (GameGlobals.gameState.isLaunchStarted) return { value: 0, reason: this.getDisabledReasonVO(PlayerActionConstants.DISABLED_REASON_LAUNCHED) };
 			
 			return { value: lowestFraction, reason: this.getDisabledReasonVO(reason, reasonParams, baseReason, reasonDebugInfo) };
+		},
+
+		checkRequirementsHazards: function (requirements, values) {
+			for (let hazard in requirements) {
+				let range = requirements[hazard];
+				let currentVal = values[hazard] || 0;
+				let result = this.checkRequirementsRange(
+					range,
+					currentVal,
+					"Min {min} " + hazard,
+					"Max {max} " + hazard,
+					"Requires " + hazard,
+					"Too much " + hazard + " here",
+				);
+				if (result) {
+					return result;
+				}
+			}
+
+			return null;
 		},
 
 		checkRequirementsDictionary: function (requirements, fnGetValue) {
