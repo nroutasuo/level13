@@ -2455,6 +2455,9 @@
 			"corp_mining": "(logo with a big G)",
 			"faction_donbalism": "(stylized waves)",
 			"faction_ugurism": "(the mechanical eye)",
+			"faction_machine_cult_warning_air": "WARNING AIR NOT SUITABLE FOR HUMANS",
+			"faction_machine_cult_territory": "THE CITY IS BREATHES",
+			"faction_nature_cult_territory": "RETURN TO YOUR ROOTS",
 			"gang_hansa": "Hansa",
 			"gang_red_hats": "Red Hats"
 		},

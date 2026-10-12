@@ -447,13 +447,17 @@ define([
 		generateGraffiti: function (seed, worldVO, levelVO, sectorVO) {
 			if (sectorVO.activity < 2) return;
 			if (sectorVO.activity > 8) return;
-			if (sectorVO.damage > 5) return;
+			if (sectorVO.damage > 8) return;
 			if (sectorVO.buildingDensity < 2) return;
 			if (sectorVO.buildingDensity > 8) return;
 			if (sectorVO.sectorStyle == SectorConstants.STYLE_KIEVAN) return;
 			if (sectorVO.sectorStyle == SectorConstants.STYLE_CITTADINIAN) return;
 			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_EMPTY) return;
 			if (sectorVO.sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE) return;
+			
+			let level = levelVO.level;
+			let isGroundLevel = level == worldVO.bottomLevel;
+			if (isGroundLevel) return;
 
 			let districtVO = levelVO.districts[sectorVO.districtIndex];
 			let districtType = districtVO.type;
@@ -471,24 +475,27 @@ define([
 			}
 
 			// sector affiliation and religion
-			if (neighbours.length != 2 && sectorVO.wealth < 8 && sectorVO.wear < 8 && rand < 0.25) {
-				if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_MINECORP) {
-					if (sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
-						return "story.graffiti.corp_mining";
+			if (districtVO.affiliation) {
+				if (neighbours.length != 2 && sectorVO.wealth < 8 && sectorVO.wear < 8 && rand < 0.25) {
+					if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_MINECORP) {
+						if (sectorType == SectorConstants.SECTOR_TYPE_INDUSTRIAL) {
+							return "story.graffiti.corp_mining";
+						}
 					}
-				}
 
-				if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_HANSA) {
-					if (sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) {
-						return "story.graffiti.gang_hansa";
+					if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_HANSA) {
+						if (sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) {
+							return "story.graffiti.gang_hansa";
+						}
 					}
-				}
 
-				if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_DONBALISM) {
-					if (sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
-						return "story.graffiti.faction_donbalism";
+					if (districtVO.affiliation == SectorConstants.SECTOR_AFFILIATION_DONBALISM) {
+						if (sectorType == SectorConstants.SECTOR_TYPE_RESIDENTIAL) {
+							return "story.graffiti.faction_donbalism";
+						}
 					}
 				}
+				return null;
 			}
 
 			// pre-fall religions and politics
@@ -500,6 +507,13 @@ define([
 				if (sectorType == SectorConstants.SECTOR_TYPE_COMMERCIAL) {
 					return "story.graffiti.faction_ugurism";
 				}
+			}
+
+			// post-fall cults
+			if (sectorVO.activity < 8 && sectorVO.wear > 1) {
+				if (neighbours.length == 1 && rand < 0.5) return "story.graffiti.faction_machine_cult_warning_air";
+				if (sectorType == SectorConstants.SECTOR_TYPE_MAINTENANCE && rand < 0.1) return "story.graffiti.faction_machine_cult_territory";
+				if ((sectorVO.sunlit > 0 || sectorVO.wear > 8) && rand < 0.1) return "story.graffiti.faction_nature_cult_territory";
 			}
 
 			return null;
