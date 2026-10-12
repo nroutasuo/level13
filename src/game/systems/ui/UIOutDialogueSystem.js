@@ -133,8 +133,7 @@ define([
 				GameGlobals.uiFunctions.toggle("#dialogue-module-title", false);
 			}
 			
-			let textKey = pageVO.textKey;
-			if (!textKey && pageVO.resultTemplate) textKey = "Found something";
+			let textKey = this.getPageTextKey(pageVO);
 			$("#dialogue-module-dialogue p").html(Text.t(textKey, textParams));
 
 			let metaTextKey = pageVO.metaTextKey;
@@ -198,6 +197,30 @@ define([
 			GameGlobals.uiFunctions.createButtons("#dialogue-popup .buttonbox");
 
 			GlobalSignals.elementCreatedSignal.dispatch();
+		},
+
+		getPageTextKey: function (pageVO) {
+			// choose from random
+			if (pageVO.textKey == "random" && pageVO.randomTextKeys && pageVO.randomTextKeys.length > 0) {
+				let validRandomKeys = [];
+				for (let i = 0; i < pageVO.randomTextKeys.length; i++) {
+					let randomKeyData = pageVO.randomTextKeys[i];
+					let reqsCheck = GameGlobals.playerActionsHelper.checkGeneralRequirementaInternal(randomKeyData.conditions);
+					if (reqsCheck.value < 1) continue;
+					if (!randomKeyData.textKey) continue;
+					validRandomKeys.push(randomKeyData);
+				}
+				if (validRandomKeys.length > 0) {
+					let random = pageVO.randomSeed || 0;
+					return validRandomKeys[random & validRandomKeys.length].textKey;
+				}
+			}
+			// plain text key
+			if (pageVO.textKey) return pageVO.textKey;
+			// default fallback with result
+			if (pageVO.resultTemplate) return "ui.exploration.action_rewards_generic_message_01";
+			// nothing
+			return "";
 		},
 
 		getSelectionDiv: function (selectionDef) {

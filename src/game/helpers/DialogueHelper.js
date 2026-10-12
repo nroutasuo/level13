@@ -133,7 +133,7 @@ define(['ash',
                 return selection && selection.length > 0 ? selection.val() : null;
             },
 
-            isDialogueValid: function (dialogueVO, explorerVO, storyTag) {
+            isDialogueValid: function (dialogueVO, explorerVO, characterVO, storyTag) {
                 if (!dialogueVO) return false;
 
                 // story tag checks
@@ -174,6 +174,11 @@ define(['ash',
                         if (typeof conditions.explorer.isFamiliarLevel !== "undefined" && conditions.explorer.isFamiliarLevel != GameGlobals.explorerHelper.isFamiliarWithCurrentLevel(explorerVO)) return false;
                         if (conditions.explorer.meetCampOrdinal 
                             && GameGlobals.playerActionsHelper.checkRequirementsRange(conditions.explorer.meetCampOrdinal, explorerVO.meetCampOrdinal)) return false;
+                    }
+
+                    if (conditions.character) {
+                        if (!characterVO) return false;
+                        if (conditions.character.minCompletedDialogues && characterVO.completedDialogues.length < conditions.character.minCompletedDialogues) return false;
                     }
 
                     // - dialogue specific: vicinity
@@ -653,7 +658,7 @@ define(['ash',
                     }
 
                     // skip if not valid due to dialogue conditions
-                    if (!this.isDialogueValid(entry, explorerVO, storyTag)) continue;
+                    if (!this.isDialogueValid(entry, explorerVO, null, storyTag)) continue;
 
                     let status = this.getExplorerDialogueStatusForEntry(explorerVO, entry);
 
@@ -705,7 +710,7 @@ define(['ash',
                     let now = new Date().getTime();
                     if (now - characterVO.lastShownDialogueTimestamp < minDialogueRepeatTime) {
                         let lastShownDialogueVO = DialogueConstants.getDialogue(lastShownDialogueID);
-                        if (GameGlobals.dialogueHelper.isDialogueValid(lastShownDialogueVO)) {
+                        if (GameGlobals.dialogueHelper.isDialogueValid(lastShownDialogueVO, null, characterVO)) {
                             dialogueID = lastShownDialogueID;
                         }
                     }
@@ -747,7 +752,7 @@ define(['ash',
 
                     if (!entry) continue;
 
-                    if (!this.isDialogueValid(entry)) continue;
+                    if (!this.isDialogueValid(entry, null, characterVO)) continue;
 
                     result.push(entry);
                 }

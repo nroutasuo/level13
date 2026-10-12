@@ -5,6 +5,7 @@ define(['ash'], function (Ash) {
         pageID: null,
 		titleTextKey: null,
         textKey: null,
+		randomTextKeys: [],
 		logMessageKey: null,
 		action: null,
 		resultTemplate: null,

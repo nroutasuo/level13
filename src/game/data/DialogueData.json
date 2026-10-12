@@ -1566,17 +1566,11 @@
 				"character_elder_default_interact_08_p1"
 			]
 		},
-		"character_fortuneTeller_default_event_01": {
-			"conditions": {
-				"storyFlags": {
-					"RESCUE_EXPLORER_FOUND": false,
-					"RESCUE_EXPLORER_LEFT": false
-				}
-			},
+		"character_fortuneTeller_event_fortune": {
 			"pages": [
 				{
 					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
+					"key": "character_fortuneTeller_default_fortune_intro_01_p1",
 					"options": [
 						{
 							"buttonKey": "npc_request_agree",
@@ -1593,343 +1587,123 @@
 				},
 				{
 					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_01_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_02": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
+					"key": "random",
+					"randomKeys": [
 						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_01_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_02_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_03": {
-			"conditions": {
-				"maxNumCamps": 12
-			},
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_02_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_03_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_04": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_03_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_04_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_05": {
-			"conditions": {
-				"maxNumCamps": 7
-			},
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_04_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_05_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_06": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_05_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_06_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_07": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_06_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_07_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_08": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_07_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_08_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_09": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_08_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_09_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_10": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_09_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_10_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_event_11": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_01_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
+							"key": "character_fortuneTeller_default_fortune_10_p1"
 						},
 						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
+							"key": "character_fortuneTeller_default_fortune_11_p1"
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_12_p1"
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_13_p1",
+							"conditions": {
+								"maxNumCamps": 8
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_14_p1",
+							"conditions": {
+								"maxNumCamps": 8
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_15_p1",
+							"conditions": {
+								"maxNumCamps": 8
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_16_p1",
+							"conditions": {
+								"deity": false
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_17_p1",
+							"conditions": {
+								"deity": false
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_18_p1",
+							"conditions": {
+								"storyFlags": {
+								"RESCUE_EXPLORER_FOUND": false,
+								"RESCUE_EXPLORER_LEFT": false
+								}
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_19_p1",
+							"conditions": {
+								"storyFlags": {
+								"RESCUE_EXPLORER_FOUND": false,
+								"RESCUE_EXPLORER_LEFT": false
+								}
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_20_p1",
+							"conditions": {
+								"maxNumCamps": 12
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_21_p1",
+							"conditions": {
+								"maxNumCamps": 12
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_22_p1",
+							"conditions": {
+								"maxNumCamps": 12
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_23_p1",
+							"conditions": {
+								"maxNumCamps": 12
+							}
+						},
+						{
+							"key": "character_fortuneTeller_default_fortune_24_p1",
+							"conditions": {
+								"maxNumCamps": 12
+							}
 						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_11_p1",
+					],
 					"options": "END",
 					"result": {
 						"replaceDialogue": true
@@ -1937,413 +1711,63 @@
 				},
 				{
 					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
+					"key": "character_fortuneTeller_default_fortune_skip_01_p1"
 				}
 			]
 		},
 		"character_fortuneTeller_default_event_done_01": {
+			"conditions": {
+				"character": {
+					"minCompletedDialogues": 1
+				}
+			},
 			"pages": [
 				"character_fortuneTeller_default_event_01_p1"
 			]
 		},
 		"character_fortuneTeller_default_event_done_02": {
+			"conditions": {
+				"character": {
+					"minCompletedDialogues": 1
+				}
+			},
 			"pages": [
 				"character_fortuneTeller_default_event_02_p1"
 			]
 		},
+		"character_fortuneTeller_default_event_done_03": {
+			"conditions": {
+				"character": {
+					"minCompletedDialogues": 1
+				}
+			},
+			"pages": [
+				"character_fortuneTeller_default_event_03_p1"
+			]
+		},
 		"character_fortuneTeller_default_meet_01": {
-			"conditions": {
-				"storyFlags": {
-					"RESCUE_EXPLORER_FOUND": false,
-					"RESCUE_EXPLORER_LEFT": false
-				}
-			},
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_01_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_02": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_02_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_03": {
-			"conditions": {
-				"maxNumCamps": 12
-			},
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_03_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_04": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_04_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_05": {
-			"conditions": {
-				"maxNumCamps": 7
-			},
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_05_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_06": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_06_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_07": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_07_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_08": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_08_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_09": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_09_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_10": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_10_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_11": {
-			"pages": [
-				{
-					"id": "request",
-					"key": "character_fortuneTeller_default_intro_02_p1",
-					"options": [
-						{
-							"buttonKey": "npc_request_agree",
-							"costs": {
-								"silver": 1
-							},
-							"response": "accept"
-						},
-						{
-							"buttonKey": "npc_request_reject",
-							"response": "reject"
-						}
-					]
-				},
-				{
-					"id": "accept",
-					"key": "character_fortuneTeller_default_fortune_11_p1",
-					"options": "END",
-					"result": {
-						"replaceDialogue": true
-					}
-				},
-				{
-					"id": "reject",
-					"key": "character_fortuneTeller_default_skip_01_p1"
-				}
-			]
-		},
-		"character_fortuneTeller_default_meet_done_01": {
 			"pages": [
 				"character_fortuneTeller_default_meet_01_p1"
 			]
 		},
-		"character_fortuneTeller_default_meet_done_02": {
+		"character_fortuneTeller_default_meet_02": {
 			"pages": [
 				"character_fortuneTeller_default_meet_02_p1"
 			]
 		},
-		"character_fortuneTeller_default_meet_done_03": {
+		"character_fortuneTeller_default_meet_03": {
 			"pages": [
 				"character_fortuneTeller_default_meet_03_p1"
 			]
 		},
-		"character_fortuneTeller_default_meet_done_04": {
+		"character_fortuneTeller_default_meet_04": {
 			"pages": [
 				"character_fortuneTeller_default_meet_04_p1"
+			]
+		},
+		"character_fortuneTeller_default_meet_05": {
+			"pages": [
+				"character_fortuneTeller_default_meet_05_p1"
 			]
 		},
 		"character_generic_helpful_enemy_01": {
@@ -13980,36 +13404,17 @@
 		"character_fortuneTeller_default": {
 			"dialogues": {
 				"event": [
-					"character_fortuneTeller_default_event_01",
-					"character_fortuneTeller_default_event_02",
-					"character_fortuneTeller_default_event_03",
-					"character_fortuneTeller_default_event_04",
-					"character_fortuneTeller_default_event_05",
-					"character_fortuneTeller_default_event_06",
-					"character_fortuneTeller_default_event_07",
-					"character_fortuneTeller_default_event_08",
-					"character_fortuneTeller_default_event_09",
-					"character_fortuneTeller_default_event_10",
-					"character_fortuneTeller_default_event_11",
+					"character_fortuneTeller_event_fortune",
 					"character_fortuneTeller_default_event_done_01",
-					"character_fortuneTeller_default_event_done_02"
+					"character_fortuneTeller_default_event_done_02",
+					"character_fortuneTeller_default_event_done_03"
 				],
 				"meet": [
 					"character_fortuneTeller_default_meet_01",
 					"character_fortuneTeller_default_meet_02",
 					"character_fortuneTeller_default_meet_03",
 					"character_fortuneTeller_default_meet_04",
-					"character_fortuneTeller_default_meet_05",
-					"character_fortuneTeller_default_meet_06",
-					"character_fortuneTeller_default_meet_07",
-					"character_fortuneTeller_default_meet_08",
-					"character_fortuneTeller_default_meet_09",
-					"character_fortuneTeller_default_meet_10",
-					"character_fortuneTeller_default_meet_11",
-					"character_fortuneTeller_default_meet_done_01",
-					"character_fortuneTeller_default_meet_done_02",
-					"character_fortuneTeller_default_meet_done_03",
-					"character_fortuneTeller_default_meet_done_04"
+					"character_fortuneTeller_default_meet_05"
 				]
 			}
 		},

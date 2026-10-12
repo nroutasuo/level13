@@ -150,6 +150,17 @@ define([
 			let pageKey = typeof pageData === "string" ? pageData : pageData.key;
 			pageVO.textKey = this.parseTextKey(pageKey);
 
+			if (pageVO.textKey == "random") {
+				pageVO.randomTextKeys = [];
+				for (let j = 0; j < pageData.randomKeys.length; j++) {
+					let randomKeyData = pageData.randomKeys[j];
+					let randomKeyVO = {};
+					randomKeyVO.textKey = this.parseTextKey(randomKeyData.key);
+					randomKeyVO.conditions = PlayerActionConstants.getRequirementsFromRaw(randomKeyData.conditions);
+					pageVO.randomTextKeys.push(randomKeyVO);
+				}
+			}
+
 			if (pageData.titleKey) {
 				pageVO.titleTextKey = this.parseTextKey(pageData.titleKey);
 			}
@@ -198,6 +209,7 @@ define([
 
 		parseTextKey: function (key) {
 			if (!key) return null;
+			if (key === "random") return "random";
 
 			let result = key;
 

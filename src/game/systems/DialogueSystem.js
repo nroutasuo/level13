@@ -140,6 +140,8 @@ define([
 
 			log.i("start dialogue page: " + pageID);
 
+			pageVO.randomSeed = Math.floor(Math.random() * 1000);
+
 			// performn action if any and save its results (if immediate) to display on page
 			let actionResultVO = null;
 			if (pageVO && pageVO.action) {

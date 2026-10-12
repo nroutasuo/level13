@@ -389,7 +389,7 @@ define(['ash',
 				return;
 			}
 
-			if (!GameGlobals.dialogueHelper.isDialogueValid(dialogueVO, explorerVO)) {
+			if (!GameGlobals.dialogueHelper.isDialogueValid(dialogueVO, explorerVO, characterVO)) {
 				log.w("not able to start dialogue - not valid: " + id, this);
 				return;
 			}
