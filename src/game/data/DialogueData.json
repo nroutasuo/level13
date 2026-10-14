@@ -2783,13 +2783,15 @@
 		},
 		"character_machineCultist_default_meet_06": {
 			"pages": [
-				"character_machineCultist_default_meet_06_p1"
-			],
-			"result": {
-				"gainedItems": [
-					"cache_evidence_43"
-				]
-			}
+				{ 
+					"key": "character_machineCultist_default_meet_06_p1",
+					"result": {
+						"gainedItems": [
+							"cache_evidence_43"
+						]
+					}
+				}
+			]
 		},
 		"character_machineCultist_default_meet_07": {
 			"pages": [
@@ -3041,13 +3043,15 @@
 		},
 		"character_natureCultist_default_meet_09": {
 			"pages": [
-				"character_natureCultist_default_meet_09_p1"
-			],
-			"result": {
-				"gainedItems": [
-					"cache_hope_11"
-				]
-			}
+				{
+					"key": "character_natureCultist_default_meet_09_p1",
+					"result": {
+						"gainedItems": [
+							"cache_hope_11"
+						]
+					}
+				}
+			]
 		},
 		"character_pilgrim_default_meet_01": {
 			"pages": [
