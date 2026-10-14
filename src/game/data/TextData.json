@@ -174,7 +174,8 @@
 				{ "text": "the life of a rich but lonely businessman", "filters": { "bookType": "fiction" } },
 				{ "text": "a boy's friendship with a robot", "filters": { "bookType": "fiction" } },
 				{ "text": "a computer program that made people forget who they were", "filters": { "bookType": "fiction" } },
-				{ "text": "forgotten places outside the City", "filters": { "bookType": "fiction" } }
+				{ "text": "forgotten places outside the City", "filters": { "bookType": "fiction" } },
+				{ "text": "an old fisherman scouring the dead seas for a last catch", "filters": { "bookType": "fiction" } }
 			],
 			"c-setting": [
 				{ "text": "the early days of the City, where poorer people lived on the edges and rich in the middle", "filters": { "bookType": "fiction"} },
@@ -1044,13 +1045,13 @@
 		"params": {
 			"n-sector": [
 				{ "text": [ "sector", "space" ], "filters": { "hasVision": false } },
-				{ "text": [ "residential complex", "apartment complex", "residential cluster", "residential quarter" ], "filters": { "sectorType": "residential" } },
+				{ "text": [ "residential complex", "apartment complex", "residential cluster", "residential quarter", "dormitory cluster", "habitation module" ], "filters": { "sectorType": "residential" } },
 				{ "text": [ "slum enclave", "shanty town", "landfill site", "slum village" ], "filters": { "sectorType": "residential", "wealth": [0, 4] } },
-				{ "text": [ "industrial complex", "industrial area", "industrial block", "warehouse", "storage depot", "manufacturing facility" ], "filters": { "sectorType": "industrial" } },
-				{ "text": [ "transport hall", "maintenance area", "transport hub", "vehicle depot", "bot depot" ], "filters": { "sectorType": "maintenance" } },
+				{ "text": [ "industrial complex", "industrial area", "industrial block", "warehouse", "storage depot", "manufacturing facility", "processing plant", "assembly zone", "aquaculture farm", "cannery" ], "filters": { "sectorType": "industrial" } },
+				{ "text": [ "transport hall", "maintenance area", "transport hub", "vehicle depot", "bot depot", "recycling center", "utility nexus", "generator hall" ], "filters": { "sectorType": "maintenance" } },
 				{ "text": [ "shopping mall", "shopping center", "office complex", "commercial quarter", "office park" ], "filters": { "sectorType": "commercial" } },
-				{ "text": [ "amusement park", "library", "university campus", "sports complex" ], "filters": { "sectorType": "public" } },
-				{ "text": [ "prison complex" ], "filters": { "sectorType": "public", "wealth": [0, 6] } },
+				{ "text": [ "amusement park", "library", "university campus", "sports complex", "transit hub" ], "filters": { "sectorType": "public" } },
+				{ "text": [ "prison complex", "memorial plaza" ], "filters": { "sectorType": "public", "wealth": [0, 6] } },
 				{ "text": [ "research complex" ], "filters": { "sectorStyle": "humanist", "sectorType": [ "industrial", "commercial", "public" ], "wealth": [3, -1] } },
 				{ "text": [ "sports hall" ], "filters": { "sectorStyle": "karboque", "sectorType": [ "residential", "public" ] } },
 				{ "text": [ "movie thetre", "game hall" ], "filters": { "sectorStyle": "modern", "sectorType": [ "commercial" ] } },
@@ -1067,9 +1068,10 @@
 				{ "text": [ "square", "plaza", "courtyard" ], "filters": { "buildingDensity": [0, 4] } },
 				{ "text": [ "hall", "throughfare", "boulevard", "avenue", "arcade", "street" ], "filters": { "buildingDensity": [4, 8] } },
 				{ "text": [ "alley", "tunnel", "passageway", "hallway", "corridor" ], "filters": { "buildingDensity": [8, -1] } },
+				{ "text": [ "crossing", "junction", "crossover", "transfer point", "interchange" ], "filters": { "numNeighbours": [3, -1] } },
 				{ "text": [ "corner", "quarter" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "section", "span" ], "filters": { "sectorStyle": "humanist", "wealth": [ -1, 8 ] } },
-				{ "text": [ "sector", "area" ], "filters": { "sectorStyle": "industrial" } },
+				{ "text": [ "sector", "area", "loading bay" ], "filters": { "sectorStyle": "industrial" } },
 				{ "text": [ "sector", "zone", "block" ], "filters": { "sectorStyle": "karboque" } },
 				{ "text": [ "walkway" ], "filters": { "sectorStyle": "kievan" } },
 				{ "text": [ "path" ], "filters": { "sectorStyle": "modern" } },
@@ -1082,11 +1084,11 @@
 				{ "text": [ "residential tower", "apartment house", "residential building with countless of rows of identical balconies", "housing block", "residence", "apartment building", "estate tower" ], "filters": { "sectorType": "residential" } },
 				{ "text": [ "residence", "estate tower" ], "filters": { "sectorType": "residential", "wealth": [5, -1] } },
 				{ "text": [ "power plant", "factory", "storehouse", "workshop", "warehouse", "water processing plant" ], "filters": { "sectorType": "industrial" } },
-				{ "text": [ "nuclear power plant", "nuclear waste depot", "nuclear waste processing unit", "arms factory" ], "filters": { "sectorType": "industrial", "radiation": [1, -1] } },
+				{ "text": [ "nuclear power plant", "nuclear waste depot", "nuclear waste processing unit", "arms factory", "forge stack" ], "filters": { "sectorType": "industrial", "radiation": [1, -1] } },
 				{ "text": [ "chemical plant", "refinery", "garbage processing plant" ], "filters": { "sectorType": "industrial", "poison": [1, -1] } },
 				{ "text": [ "shopping center", "department store", "office building", "cafe", "bar", "restaurant tower" ], "filters": { "sectorType": "commercial" } },
 				{ "text": [ "library", "prison", "school", "university building", "park", "public square", "sports hall", "metro station", "research laboratory", "government building", "museum", "arena", "concert hall" ], "filters": { "sectorType": "public" } },
-				{ "text": [ "maintenace hub", "cable car station", "utility building", "water treatment station" ], "filters": { "sectorType": "maintenance" } },
+				{ "text": [ "maintenace hub", "cable car station", "utility building", "water treatment station", "data center" ], "filters": { "sectorType": "maintenance" } },
 				{ "text": [ "temple", "decorative fountain", "war-time bunker" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "tram stop", "school", "cultural center" ], "filters": { "sectorStyle": "humanist" } },
 				{ "text": [ "public square", "monument" ], "filters": { "sectorStyle": "karboque" } },
@@ -1104,7 +1106,7 @@
 				{ "text": [ "factories", "workshops", "storehouses", "warehouses", "workshops", "refineries" ], "filters": { "sectorType": "industrial" } },
 				{ "text": [ "shopping towers", "shopping malls", "shops", "stores", "offices", "office towers" ], "filters": { "sectorType": "commercial" } },
 				{ "text": [ "public buildings", "government buildings" ], "filters": { "sectorType": "public" } },
-				{ "text": [ "utility buildings", "data centers", "control rooms", "automated control units" ], "filters": { "sectorType": "maintenance" } },
+				{ "text": [ "utility buildings", "data centers", "control rooms", "automated control units", "cooling towers" ], "filters": { "sectorType": "maintenance" } },
 				{ "text": [ "single-family houses", "little shops" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "identical high-rises" ], "filters": { "sectorStyle": "humanist" } },
 				{ "text": [ "factories", "halls", "vehicle garages", "bot garages" ], "filters": { "sectorStyle": "industrial" } },
@@ -1120,6 +1122,7 @@
 				{ "text": [ "brick", "stone", "recycled brick" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "steel", "metal", "reinforced plastic" ], "filters": { "sectorStyle": "humanist" } },
 				{ "text": [ "plastic panel", "steel", "reinforced concrete" ], "filters": { "sectorStyle": "industrial" } },
+				{ "text": [ "rusted steel" ], "filters": { "wear": [ 5, -1 ] } },
 				{ "text": [ "concrete", "stone replica" ], "filters": { "sectorStyle": "karboque" } },
 				{ "text": [ "tile", "stone", "glass" ], "filters": { "sectorStyle": "kievan" } },
 				{ "text": [ "glass", "steel", "metal", "nanoglass", "aerographite" ], "filters": { "sectorStyle": "modern" } },
@@ -1133,7 +1136,7 @@
 				{ "text": [ "covered", "canopied", "layered" ], "filters": { "hasVision": true } },
 				{ "text": [ "sunlit", "sun-swathed", "dazzling", "bright", "windy" ], "filters": { "sunlit": true, "hasVision": "*" } },
 				{ "text": [ "gleaming", "glistening" ], "filters": { "wear": [0, 6], "damage": 0, "sunlit": true } },
-				{ "text": [ "overgrown" ], "filters": { "wear": [5, -1], "sunlit": true } },
+				{ "text": [ "overgrown", "brooding" ], "filters": { "wear": [5, -1], "sunlit": true } },
 				{ "text": [ "dark", "dark", "shadowy", "indistict" ], "filters": { "sunlit": false, "hasVision": "*" } },
 				{ "text": [ "dull", "gloomy" ], "filters": { "sunlit": false, "campable": false } },
 				{ "text": [ "calm", "safe", "comfortable" ], "filters": { "campable": true } },
@@ -1165,13 +1168,13 @@
 				{ "text": [ "hidden" ], "filters": { "localeTypes": "compound" } },
 				{ "text": [ "forgotten" ], "filters": { "localeTypes": "depot" } },
 				{ "text": [ "hidden" ], "filters": { "localeTypes": [ "seedDepot", "spaceFactory", "isolationCenter" ] } },
-				{ "text": [ "desolate", "eerily quiet", "bleak", "dirty", "nondescript" ], "filters": { "hasVision": "*", "wear": [5, -1], "campable": false } },
+				{ "text": [ "desolate", "eerily quiet", "bleak", "dirty", "nondescript", "warped" ], "filters": { "hasVision": "*", "wear": [5, -1], "campable": false } },
 				{ "text": [ "well-preserved" ], "filters": { "wear": [0, 6], "damage": 0 } },
 				{ "text": [ "humming" ], "filters": { "hasVision": "*", "wear": [0, 6], "damage": 0 } },
 				{ "text": [ "strange", "snug", "traditional", "unfamiliar", "quaint", "spacious", "round" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "dense", "planter-dotted", "grey" ], "filters": { "sectorStyle": "humanist" } },
 				{ "text": [ "typical" ], "filters": { "sectorStyle": "humanist", "hasLevelFeature": false } },
-				{ "text": [ "industrial", "blocky", "grey", "functional" ], "filters": { "sectorStyle": "industrial" } },
+				{ "text": [ "industrial", "blocky", "grey", "functional", "droning" ], "filters": { "sectorStyle": "industrial" } },
 				{ "text": [ "symmetric", "functional", "organised", "measured", "geometric", "colorless", "uniform", "accessible", "low", "monotonous" ], "filters": { "sectorStyle": "karboque" } },
 				{ "text": [ "dainty", "strange", "crooked", "mysterious", "bizarre" ], "filters": { "sectorStyle": "kievan" } },
 				{ "text": [ "organic", "decorative", "utopian", "harmonious", "quaint" ], "filters": { "sectorStyle": "western" } },
@@ -1183,10 +1186,10 @@
 				{ "text": [ "standard", "regular" ], "filters": { "wealth": [4, 8] } },
 				{ "text": [ "upscale", "affluent", "opulent" ], "filters": { "wealth": [8, -1] } },
 				{ "text": [ "wide" ], "filters": { "hasVision": "*", "buildingDensity": [0, 3] } },
-				{ "text": [ "spacious" ], "filters": { "buildingDensity": [0, 3] } },
+				{ "text": [ "spacious", "echoing" ], "filters": { "buildingDensity": [0, 3] } },
 				{ "text": [ "wide", "spacious" ], "filters": { "hasVision": "*", "buildingDensity": [3, 6] } },
 				{ "text": [ "narrow" ], "filters": { "hasVision": "*", "buildingDensity": [6, 9] } },
-				{ "text": [ "dense", "low" ], "filters": { "buildingDensity": [9, -1] } },
+				{ "text": [ "dense", "low", "stagnant" ], "filters": { "buildingDensity": [9, -1] } },
 				{ "text": [ "narrow", "cramped", "tight" ], "filters": { "hasVision": "*", "buildingDensity": [9, -1] } },
 				{ "text": [ "jagged", "rugged", "debris-filled" ], "filters": { "hasVision": "*", "damage": [1, -1] } },
 				{ "text": [ "damaged", "broken" ], "filters": { "damage": [1, -1] } },
@@ -1194,9 +1197,9 @@
 				{ "text": [ "commercial", "once bustling" ], "filters": { "sectorType": "commerical" } },
 				{ "text": [ "financial", "posh" ], "filters": { "wealth": [5, -1], "sectorType": "commerical" } },
 				{ "text": [ "residential", "urban", "private" ], "filters": { "sectorType": "residential" } },
-				{ "text": [ "plain", "industrial", "sleek", "smooth", "precise", "unambigious" ], "filters": { "sectorType": "industrial" } },
-				{ "text": [ "grand", "dignified", "solemn", "grand", "ordinary", "imposing" ], "filters": { "sectorType": "public" } },
-				{ "text": [ "chaotic", "cluttered", "bare", "quietly thrumming", "strangely pristine", "strangely propotioned" ], "filters": { "sectorType": "maintenance" } },
+				{ "text": [ "plain", "industrial", "sleek", "smooth", "precise", "unambigious", "briny", "smelly" ], "filters": { "sectorType": "industrial" } },
+				{ "text": [ "grand", "dignified", "solemn", "grand", "ordinary", "imposing", "civic" ], "filters": { "sectorType": "public" } },
+				{ "text": [ "chaotic", "cluttered", "bare", "quietly thrumming", "strangely pristine", "strangely propotioned", "clicking" ], "filters": { "sectorType": "maintenance" } },
 				{ "text": [ "dead-end", "secluded" ], "filters": { "numNeighbours": 1 } },
 				{ "text": [ "central" ], "filters": { "isDistrictMiddle": true } }
 			],
@@ -1212,7 +1215,7 @@
 				{ "text": [ "empty", "inaccessible", "enormous", "uncanny", "symmetrical", "imposing", "indimidating" ], "filters": { "sectorType": "public" } },
 				{ "text": [ "strange", "beige", "yellow", "light brown", "stacked", "historical" ], "filters": { "sectorStyle": "cittadinian" } },
 				{ "text": [ "white", "mass-produced", "tall", "narrow", "concrete", "windowless", "utilitarian", "distinct", "sober" ], "filters": { "sectorStyle": "humanist" } },
-				{ "text": [ "industrial", "grey", "white", "yellow", "orange", "striped", "blocky", "concrete", "massive", "faceless" ], "filters": { "sectorStyle": "industrial" } },
+				{ "text": [ "industrial", "grey", "white", "yellow", "orange", "striped", "blocky", "concrete", "massive", "faceless", "modular" ], "filters": { "sectorStyle": "industrial" } },
 				{ "text": [ "robust", "grey", "massive", "sturdy", "symmetric", "big", "rectangular", "hive-like" ], "filters": { "sectorStyle": "karboque" } },
 				{ "text": [ "dainty", "strange", "blue", "decorative", "purple", "tall", "distinct", "tiled", "historical", "ornate" ], "filters": { "sectorStyle": "kievan" } },
 				{ "text": [ "glossy", "dizzying", "spartan", "glass-walled", "bizarre", "rounded", "screen-covered" ], "filters": { "sectorStyle": "modern" } },
@@ -1301,7 +1304,7 @@
 						"filters": { "buildingDensity": [3, 8] }
 					},
 					{
-						"text": "{a} {a-sectortype} {n-street} scatterd with [an-decos]",
+						"text": "{a} {a-sectortype} {n-street} scattered with {an-decos}",
 						"filters": { "hasHazards": false, "campable": false }
 					},
 					{
@@ -1321,7 +1324,7 @@
 						"filters": { "hasHazards": false, "hasEnemies": false }
 					},
 					{
-						"text": "{a} {a-sectortype} {n-street} with some [an-decos] and {a-building} {n-buildings}",
+						"text": "{a} {a-sectortype} {n-street} with some {an-decos} and {a-building} {n-buildings}",
 						"filters": { "buildingDensity": [3, 8], "campable": false }
 					},
 					{
@@ -1333,7 +1336,7 @@
 						"filters": { "buildingDensity": [5, -1] }
 					},
 					{
-						"text": "{a} {a-sectortype} {n-street} with some [an-decos]",
+						"text": "{a} {a-sectortype} {n-street} with some {an-decos}",
 						"filters": { "hasHazards": false, "campable": false }
 					},
 					{
@@ -1638,6 +1641,14 @@
 					{
 						"text": "{A} {a-street} {n-street} where the air hangs heavy and tastes metallic.",
 						"filters": { "sectorType": "industrial", "wear": [3, -1] }
+					},
+					{
+						"text": "A {a-street} {n-street} with rows of empty concrete tanks; the air carries the sour sting of brine and rotting kelp",
+						"filters": { "sectorType": "industrial", "buildingDensity": [3, 8] }
+					},
+					{
+						"text": "{a} {n-street} past broken recirculation tanks with the humid breath of decomposing algae hanging in the air.",
+						"filters": { "sectorType": "industrial", "buildingDensity": [3, 8] }
 					},
 					{
 						"text": "A dusty, anonymous corridor between the some real places in the City",
