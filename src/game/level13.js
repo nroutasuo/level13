@@ -174,7 +174,6 @@ define([
 				.then(() => this.loadVersion())
 				.then(() => this.setupGame())
 				.then(() => this.initializePlugins(plugins))
-				.then(() => this.runDataChecks())
 				.catch(ex => {
 					ExceptionHandler.handleException(ex);
 				});
@@ -288,10 +287,6 @@ define([
 				}
 				resolve();
 			});
-		},
-
-		runDataChecks: function () {
-			// GameGlobals.dialogueHelper.checkDialogueData();
 		},
 
 		addLogicSystems: function () {
