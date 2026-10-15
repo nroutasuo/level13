@@ -4494,8 +4494,10 @@
 		},
 		"character_workerGeneric_luxury_amber_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"AMBER": true
+				"camp": {
+					"availableLuxuryResources": {
+						"AMBER": true
+					}
 				}
 			},
 			"pages": [
@@ -4504,8 +4506,10 @@
 		},
 		"character_workerGeneric_luxury_chocolate_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"CHOCOLATE": true
+				"camp": {
+					"availableLuxuryResources": {
+						"CHOCOLATE": true
+					}
 				}
 			},
 			"pages": [
@@ -4514,8 +4518,10 @@
 		},
 		"character_workerGeneric_luxury_coffee_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"COFFEE": true
+				"camp": {
+					"availableLuxuryResources": {
+						"COFFEE": true
+					}
 				}
 			},
 			"pages": [
@@ -4524,8 +4530,10 @@
 		},
 		"character_workerGeneric_luxury_diamonds_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"DIAMONDS": true
+				"camp": {
+					"availableLuxuryResources": {
+						"DIAMONDS": true
+					}
 				}
 			},
 			"pages": [
@@ -4534,8 +4542,10 @@
 		},
 		"character_workerGeneric_luxury_emeralds_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"EMERALDS": true
+				"camp": {
+					"availableLuxuryResources": {
+						"EMERALDS": true
+					}
 				}
 			},
 			"pages": [
@@ -4544,8 +4554,10 @@
 		},
 		"character_workerGeneric_luxury_gold_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"GOLD": true
+				"camp": {
+					"availableLuxuryResources": {
+						"GOLD": true
+					}
 				}
 			},
 			"pages": [
@@ -4554,8 +4566,10 @@
 		},
 		"character_workerGeneric_luxury_honey_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"HONEY": true
+				"camp": {
+					"availableLuxuryResources": {
+						"HONEY": true
+					}
 				}
 			},
 			"pages": [
@@ -4564,8 +4578,10 @@
 		},
 		"character_workerGeneric_luxury_ivory_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"IVORY": true
+				"camp": {
+					"availableLuxuryResources": {
+						"IVORY": true
+					}
 				}
 			},
 			"pages": [
@@ -4574,8 +4590,10 @@
 		},
 		"character_workerGeneric_luxury_jade_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"JADE": true
+				"camp": {
+					"availableLuxuryResources": {
+						"JADE": true
+					}
 				}
 			},
 			"pages": [
@@ -4584,8 +4602,10 @@
 		},
 		"character_workerGeneric_luxury_olives_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"OLIVES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"OLIVES": true
+					}
 				}
 			},
 			"pages": [
@@ -4594,8 +4614,10 @@
 		},
 		"character_workerGeneric_luxury_pearls_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"PEARLS": true
+				"camp": {
+					"availableLuxuryResources": {
+						"PEARLS": true
+					}
 				}
 			},
 			"pages": [
@@ -4604,8 +4626,10 @@
 		},
 		"character_workerGeneric_luxury_salt_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"SALT": true
+				"camp": {
+					"availableLuxuryResources": {
+						"SALT": true
+					}
 				}
 			},
 			"pages": [
@@ -4614,8 +4638,10 @@
 		},
 		"character_workerGeneric_luxury_silver_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"SILVER": true
+				"camp": {
+					"availableLuxuryResources": {
+						"SILVER": true
+					}
 				}
 			},
 			"pages": [
@@ -4624,8 +4650,10 @@
 		},
 		"character_workerGeneric_luxury_spices_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"SPICES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"SPICES": true
+					}
 				}
 			},
 			"pages": [
@@ -4634,8 +4662,10 @@
 		},
 		"character_workerGeneric_luxury_tea_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TEA": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TEA": true
+					}
 				}
 			},
 			"pages": [
@@ -4644,8 +4674,10 @@
 		},
 		"character_workerGeneric_luxury_tobacco_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TOBACCO": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TOBACCO": true
+					}
 				}
 			},
 			"pages": [
@@ -4654,8 +4686,10 @@
 		},
 		"character_workerGeneric_luxury_truffles_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TRUFFLES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TRUFFLES": true
+					}
 				}
 			},
 			"pages": [
@@ -8579,8 +8613,10 @@
 		},
 		"explorer_template_bard_luxury_honey_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"HONEY": true
+				"camp": {
+					"availableLuxuryResources": {
+						"HONEY": true
+					}
 				},
 				"inCamp": false
 			},
@@ -9124,8 +9160,10 @@
 		},
 		"explorer_template_guard_luxury_tobacco_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TOBACCO": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TOBACCO": true
+					}
 				}
 			},
 			"pages": [
@@ -9314,8 +9352,10 @@
 		},
 		"explorer_template_hacker_luxury_tea_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TEA": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TEA": true
+					}
 				}
 			},
 			"pages": [
@@ -9741,8 +9781,10 @@
 		},
 		"explorer_template_researcher_luxury_spices_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"SPICES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"SPICES": true
+					}
 				}
 			},
 			"pages": [
@@ -10287,8 +10329,10 @@
 		},
 		"explorer_template_teen_luxury_chocolate_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"CHOCOLATE": true
+				"camp": {
+					"availableLuxuryResources": {
+						"CHOCOLATE": true
+					}
 				}
 			},
 			"pages": [
@@ -11375,8 +11419,10 @@
 		},
 		"explorer_unique_hermit_luxury_truffles_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"TRUFFLES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"TRUFFLES": true
+					}
 				}
 			},
 			"pages": [
@@ -11622,8 +11668,10 @@
 		},
 		"explorer_unique_journalist_luxury_coffee_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"COFFEE": true
+				"camp": {
+					"availableLuxuryResources": {
+						"COFFEE": true
+					}
 				}
 			},
 			"pages": [
@@ -12061,8 +12109,10 @@
 		},
 		"explorer_unique_prospector_luxury_olives_available_01": {
 			"conditions": {
-				"availableLuxuryResources": {
-					"OLIVES": true
+				"camp": {
+					"availableLuxuryResources": {
+						"OLIVES": true
+					}
 				}
 			},
 			"pages": [
