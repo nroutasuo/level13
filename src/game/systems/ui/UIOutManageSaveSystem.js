@@ -107,7 +107,7 @@ function (Ash, UIList, FileUtils, GameGlobals, GlobalSignals, GameConstants, UIC
 
 		updateHeader: function () {
 			$("#manage-save-popup-header").text(this.showImport ? "Import save" : "Manage saves");
-			$("#manage-save-info").text(this.showImport ? "Paste an exported save below to load it." : "Note that the game is still in alpha and updates can break old saves.");
+			$("#manage-save-info").text(this.showImport ? "Paste an exported save below to load it." : "Note that the game is still in beta and updates can break old saves.");
 			$("#manage-save-info").toggleClass("p-meta", !this.showImport);
 		},
 
