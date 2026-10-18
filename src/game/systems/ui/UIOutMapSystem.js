@@ -639,7 +639,7 @@ define([
 					improvements.getCount(improvementNames.passageDownHole) > 0;
 				result.push(TextConstants.getPassageDescription(sectorPassages.passageDown, PositionConstants.DIRECTION_DOWN, passageDownBuilt, true));
 			}
-			if (unScoutedLocales > 0) result.push("unscouted locales");
+			if (unScoutedLocales > 0) result.push("unscouted locales (" + unScoutedLocales + ")");
 			if (numUnexaminedSpots > 0) result.push("unexamined features");
 			if (sectorFeatures.hasSpring) result.push(TextConstants.getSpringName(sectorFeatures));
 			
