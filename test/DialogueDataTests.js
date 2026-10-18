@@ -68,6 +68,7 @@ define([
 
 		QUnit.test("every dialogue is referenced by a source", function (assert) {
 			let referencedDialogueIDs = {};
+			let codeReferencedDialoguePrefixes = [ "locale_", "item_", "investigate_locale_intro_" ];
 
 			for (let sourceID in DialogueConstants.dialogueSources) {
 				let source = DialogueConstants.dialogueSources[sourceID];
@@ -80,6 +81,9 @@ define([
 			}
 
 			for (let dialogueID in DialogueConstants.dialogues) {
+				let isCodeReferenced = codeReferencedDialoguePrefixes.some(prefix => dialogueID.indexOf(prefix) === 0);
+				if (isCodeReferenced) continue;
+
 				assert.ok(referencedDialogueIDs[dialogueID], "dialogue " + dialogueID + " is referenced by a source");
 			}
 		});
